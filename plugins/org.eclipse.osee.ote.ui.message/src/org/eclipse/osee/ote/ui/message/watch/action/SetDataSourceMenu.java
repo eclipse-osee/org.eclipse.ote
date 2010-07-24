@@ -15,38 +15,37 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.nebula.widgets.xviewer.XSubMenuManager;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.ui.message.tree.WatchedMessageNode;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public class SetDataSourceMenu extends XSubMenuManager implements IMenuListener {
-	private final static String NAME = "Set Data Source";
-	private final WatchedMessageNode node;
+   private final static String NAME = "Set Data Source";
+   private final WatchedMessageNode node;
 
-	public static IContributionItem createMenu(WatchedMessageNode node) {
-		if (!node.getSubscription().getAvailableTypes().isEmpty()) {
-			return new SetDataSourceMenu(node);
-		}
-		return new ActionContributionItem(new DisabledAction(NAME));
-	}
-	
-	protected SetDataSourceMenu(WatchedMessageNode node) {
-		super(NAME);
-		this.node = node;
-		setRemoveAllWhenShown(true);
-		setEnabled(!node.getSubscription().getAvailableTypes().isEmpty());
-		addMenuListener(this);
-	}
+   public static IContributionItem createMenu(WatchedMessageNode node) {
+      if (!node.getSubscription().getAvailableTypes().isEmpty()) {
+         return new SetDataSourceMenu(node);
+      }
+      return new ActionContributionItem(new DisabledAction(NAME));
+   }
 
-	@Override
-	public void menuAboutToShow(IMenuManager manager) {
-		for (MemType type : node.getSubscription().getAvailableTypes()) {
-			add(new SetDataSourceAction(node, type));
-		}
-		
-	}
+   protected SetDataSourceMenu(WatchedMessageNode node) {
+      super(NAME);
+      this.node = node;
+      setRemoveAllWhenShown(true);
+      setEnabled(!node.getSubscription().getAvailableTypes().isEmpty());
+      addMenuListener(this);
+   }
+
+   @Override
+   public void menuAboutToShow(IMenuManager manager) {
+      for (DataType type : node.getSubscription().getAvailableTypes()) {
+         add(new SetDataSourceAction(node, type));
+      }
+
+   }
 
 }
