@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Eviewer Plug-in
+Bundle-SymbolicName: lba.ote.ui.eviewer; singleton:=true
+Bundle-Version: 0.9.5.qualifier
+Bundle-Activator: lba.ote.ui.eviewer.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.ote.client.msg,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.ui.swt,
+ org.eclipse.osee.framework.ui.plugin,
+ org.eclipse.osee.ote.message,
+ org.eclipse.osee.ote.core,
+ org.eclipse.osee.ote.ui.message.util
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: lba.ote.ui.eviewer.view
+Import-Package: org.eclipse.osee.framework.jdk.core.persistence

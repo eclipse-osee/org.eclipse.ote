@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="OTE"
+            id="lba.ote.ui.eviewer">
+      </category>
+      <view
+            allowMultiple="true"
+            category="lba.ote.ui.eviewer"
+            class="lba.ote.ui.eviewer.view.ElementViewer"
+            icon="icons/sample.gif"
+            id="lba.ote.ui.eviewer.views.ElementViewer"
+            name="Element Viewer"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
+      <XNavigateItem
+            category="Messaging"
+            classname="lba.ote.ui.eviewer.view.MessageNavigateViewItems"
+            viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
+      </XNavigateItem>
+   </extension>
+
+</plugin>
