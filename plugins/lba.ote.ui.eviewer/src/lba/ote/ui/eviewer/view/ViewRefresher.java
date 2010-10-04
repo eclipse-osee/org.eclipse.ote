@@ -75,9 +75,6 @@ public class ViewRefresher extends PeriodicDisplayTask {
       this.autoReveal = autoReveal;
    }
 
-   /**
-    * @return
-    */
    public synchronized List<ElementUpdate> getUpdates() {
       return new ArrayList<ElementUpdate>(updates);
    }
