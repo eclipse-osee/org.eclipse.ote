@@ -12,10 +12,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author b1529404
@@ -74,7 +74,7 @@ public class CopyToClipboardJob extends Job {
    }
 
    private void sendToClipboard(final String text) {
-      PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+      AWorkbench.getDisplay().syncExec(new Runnable() {
 
          @Override
          public void run() {
