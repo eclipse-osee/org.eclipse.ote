@@ -23,7 +23,7 @@ class ColumnSorter {
             throw new IllegalStateException("no mapping for " + o2.getName());
 
          }
-         return val1 - val2;
+         return val1.compareTo(val2);
       }
    };
 

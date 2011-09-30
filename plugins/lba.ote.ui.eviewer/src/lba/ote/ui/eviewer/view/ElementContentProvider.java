@@ -21,9 +21,11 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+
 import lba.ote.ui.eviewer.Activator;
 import lba.ote.ui.eviewer.jobs.CopyToClipboardJob;
 import lba.ote.ui.eviewer.jobs.CopyToCsvFileJob;
+
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -208,7 +210,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
    }
 
    public synchronized List<ElementColumn> getColumns() {
-      return elementColumns;
+      return new ArrayList<ElementColumn>(elementColumns);
    }
 
    public synchronized void removeColumn(ElementColumn column) {

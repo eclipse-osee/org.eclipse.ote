@@ -27,9 +27,11 @@ public class ColumnConfiguration {
          columnOrdering.add(index);
       }
       columns = new ArrayList<ColumnDetails>(columnOrdering.size());
-      for (int index : columnOrdering) {
-         columns.add(new ColumnDetails(provider.getColumns().get(index)));
+
+      for (ElementColumn elementColumn : provider.getColumns()) {
+    	  columns.add(new ColumnDetails(elementColumn));
       }
+     
 
    }
 
