@@ -22,11 +22,11 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public class CopyToCsvFileJob extends Job {
 
-   private final List<ElementUpdate> updates;
+   private final ElementUpdate[] updates;
    private final File file;
    private final List<ElementColumn> elementColumns;
 
-   public CopyToCsvFileJob(File file, List<ElementColumn> elementColumns, List<ElementUpdate> updates) {
+   public CopyToCsvFileJob(File file, List<ElementColumn> elementColumns, ElementUpdate[] updates) {
       super("Element Viewer Save to CSV");
       this.file = file;
       this.elementColumns = elementColumns;
@@ -35,11 +35,10 @@ public class CopyToCsvFileJob extends Job {
 
    @Override
    protected IStatus run(IProgressMonitor monitor) {
-      monitor.beginTask("copy", updates.size());
+      monitor.beginTask("copy", updates.length);
       try {
-         FileOutputStream out = new FileOutputStream(file);
-         try {
-            PrintWriter writer = new PrintWriter(out);
+         PrintWriter writer = new PrintWriter(new FileOutputStream(file));
+         try {            
             int i;
             for (i = 0; i < elementColumns.size() - 1; i++) {
                writer.append(elementColumns.get(i).getName());
@@ -71,7 +70,7 @@ public class CopyToCsvFileJob extends Job {
             writer.flush();
             return Status.OK_STATUS;
          } finally {
-            out.close();
+            writer.close();
          }
       } catch (Exception e) {
          return new Status(IStatus.ERROR, Activator.getDefault().getBundle().getSymbolicName(),

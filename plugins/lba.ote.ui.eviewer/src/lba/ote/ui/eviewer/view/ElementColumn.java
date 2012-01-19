@@ -61,7 +61,7 @@ public class ElementColumn implements ISubscriptionListener {
             }
             ElementUpdate update = (ElementUpdate) element;
             Object value = update.getValue(ElementColumn.this);
-            return value != null ? value.toString() : "?";
+            return value != null ? value.toString().intern() : "?";
 
          }
 

@@ -22,11 +22,11 @@ import org.eclipse.swt.dnd.Transfer;
  */
 public class CopyToClipboardJob extends Job {
 
-   private final List<ElementUpdate> updates;
+   private final ElementUpdate[] updates;
    private final Clipboard clipboard;
    private final List<ElementColumn> elementColumns;
 
-   public CopyToClipboardJob(Clipboard clipboard, List<ElementColumn> elementColumns, List<ElementUpdate> updates) {
+   public CopyToClipboardJob(Clipboard clipboard, List<ElementColumn> elementColumns, ElementUpdate[] updates) {
       super("Element Viewer Copy to Clipboard");
       this.clipboard = clipboard;
       this.elementColumns = elementColumns;
@@ -35,7 +35,7 @@ public class CopyToClipboardJob extends Job {
 
    @Override
    protected IStatus run(IProgressMonitor monitor) {
-      monitor.beginTask("copy", updates.size());
+      monitor.beginTask("copy", updates.length);
       try {
          StringBuilder buffer = new StringBuilder(8192);
          int i;

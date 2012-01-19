@@ -21,11 +21,9 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-
 import lba.ote.ui.eviewer.Activator;
 import lba.ote.ui.eviewer.jobs.CopyToClipboardJob;
 import lba.ote.ui.eviewer.jobs.CopyToCsvFileJob;
-
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -61,7 +59,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
    @Override
    public Object[] getElements(Object inputElement) {
-      return refresher.getUpdates().toArray();
+      return refresher.getUpdates();
    }
 
    @Override
@@ -156,9 +154,14 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
    }
 
    @Override
-   public synchronized void update(SubscriptionDetails details, BitSet deltaSet) {
+   public  synchronized void update(SubscriptionDetails details, BitSet deltaSet) {
       final ElementUpdate update = new ElementUpdate(valueMap, elementColumns, deltaSet);
+
       refresher.addUpdate(update);
+      writeToStream(update);
+   }
+   
+   private void writeToStream(ElementUpdate update) {
       if (streamToFileWriter != null) {
          int i;
          for (i = 0; i < elementColumns.size() - 1; i++) {
@@ -187,7 +190,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
       return autoReveal;
    }
 
-   public void indexAndSortColumns() {
+   private void indexAndSortColumns() {
 
       valueMap = new HashMap<ElementColumn, Integer>();
       ColumnSorter sorter = new ColumnSorter(viewer.getTable().getColumnOrder());
@@ -224,7 +227,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          indexAndSortColumns();
          IDialogSettings settings = Activator.getDefault().getDialogSettings();
          IDialogSettings section = settings.getSection(COLUMN_NAME_STORE_SECTION);
-         if (settings == null) {
+         if (section == null) {
             return;
          }
          String[] columnNames = section.getArray(COLUMN_NAMES_KEY);
@@ -275,7 +278,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
       disposeAllColumns();
       IDialogSettings settings = Activator.getDefault().getDialogSettings();
       IDialogSettings section = settings.getSection(COLUMN_NAME_STORE_SECTION);
-      if (settings == null) {
+      if (section == null) {
          return;
       }
       section.put(COLUMN_NAMES_KEY, new String[0]);

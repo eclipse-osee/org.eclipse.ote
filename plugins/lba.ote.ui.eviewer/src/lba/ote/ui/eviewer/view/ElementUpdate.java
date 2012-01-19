@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author Ken J. Aguilar
  */
-public class ElementUpdate {
+public final class ElementUpdate {
    private final Object[] values;
    private final BitSet deltaSet;
    private final HashMap<ElementColumn, Integer> valueMap;
