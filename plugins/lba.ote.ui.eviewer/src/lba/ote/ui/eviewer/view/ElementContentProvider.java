@@ -18,12 +18,15 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+
 import lba.ote.ui.eviewer.Activator;
 import lba.ote.ui.eviewer.jobs.CopyToClipboardJob;
 import lba.ote.ui.eviewer.jobs.CopyToCsvFileJob;
+
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -246,7 +249,9 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          int i;
          for (i = 0; i < elementColumns.size() - 1; i++) {
             ElementColumn column = elementColumns.get(i);
-            writer.write(column.getElementPath().encode());
+            writer.write(column.getElementPath().encode());            
+            writer.write('=');
+            writer.write(column.isActive() ? "active" : "inactive");
             writer.write(',');
          }
          ElementColumn column = elementColumns.get(i);
@@ -264,11 +269,24 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
          String[] columnNames = reader.readLine().split(",");
          LinkedList<ElementPath> columnsToAdd = new LinkedList<ElementPath>();
+         HashSet<ElementPath> inactiveColumns = new HashSet<ElementPath>();
+         
          for (String name : columnNames) {
-            columnsToAdd.add(ElementPath.decode(name));
+        	String[] parts = name.split("=");    
+        	ElementPath path = ElementPath.decode(parts[0]);
+            columnsToAdd.add(path);
+            if (parts.length > 1 && parts[1].equals("inactive")) {
+            	inactiveColumns.add(path);
+            }
          }
          add(columnsToAdd, true);
-         viewer.refresh();
+
+          viewer.refresh();
+          for (ElementColumn column : elementColumns) {
+         	 if (inactiveColumns.contains(column.getElementPath())) {
+         		 column.setActive(false);
+         	 }
+          }
       } finally {
          reader.close();
       }

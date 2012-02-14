@@ -1,5 +1,9 @@
 package lba.ote.ui.eviewer.view;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import lba.ote.ui.eviewer.ClientMessageServiceTracker;
 import lba.ote.ui.eviewer.action.ActiveColumnMenu;
 import lba.ote.ui.eviewer.action.AddElementAction;
@@ -11,11 +15,13 @@ import lba.ote.ui.eviewer.action.RemoveColumnMenu;
 import lba.ote.ui.eviewer.action.SaveLoadAction;
 import lba.ote.ui.eviewer.action.StreamToFileAction;
 import lba.ote.ui.eviewer.action.ToggleAutoRevealAction;
+
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.TableViewer;
@@ -167,6 +173,32 @@ public class ElementViewer extends ViewPart {
       viewer.getControl().setFocus();
    }
 
+   public void startStreaming(String columnSetFile, String fileName) throws IOException{
+	   elementContentProvider.clearAllUpdates();
+	   if (columnSetFile != null) {
+         File file = new File(columnSetFile);
+         try {
+        	elementContentProvider.removeAll();
+            elementContentProvider.loadColumnsFromFile(file);
+         } catch (IOException ex) {
+            MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error", "Could not save file:\n" + file.getAbsolutePath());
+         }
+      }
+      File file = new File(fileName);
+      elementContentProvider.streamToFile(file);
+   }
+   
+   public void stopStreaming() {
+	   try {
+		elementContentProvider.streamToFile(null);
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+   }
    @Override
    public void dispose() {
       tracker.close();
