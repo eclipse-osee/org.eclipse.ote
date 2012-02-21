@@ -7,9 +7,11 @@ package lba.ote.ui.eviewer.view;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import lba.ote.ui.eviewer.Activator;
 import lba.ote.ui.eviewer.action.ColumnContentProvider;
-import lba.ote.ui.eviewer.action.ElementColumnLabelProvider;
+import lba.ote.ui.eviewer.action.ElementTableLabelProvider;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -61,33 +63,24 @@ public class ColumnConfigurationDialog extends Dialog {
       activeCol.setText("Active");
       activeCol.setWidth(90);
       columnViewer.setContentProvider(new ColumnContentProvider());
-      columnViewer.setLabelProvider(new ElementColumnLabelProvider());
+      columnViewer.setLabelProvider(new ElementTableLabelProvider());
 
       int operations = DND.DROP_MOVE | DND.DROP_COPY;
       Transfer[] types = new Transfer[] {TextTransfer.getInstance()};
 
       columnViewer.addDragSupport(operations, types, new DragSourceListener() {
-         private ColumnDetails details = null;
 
          @Override
          public void dragStart(DragSourceEvent event) {
-            IStructuredSelection selection = (IStructuredSelection) columnViewer.getSelection();
-            details = (ColumnDetails) selection.getFirstElement();
-            if (details == null) {
-               event.doit = false;
-               return;
-            }
-
          }
 
          @Override
          public void dragSetData(DragSourceEvent event) {
-            event.data = Integer.toString(configuration.indexOf(details));
+            event.data = "selection";
          }
 
          @Override
          public void dragFinished(DragSourceEvent event) {
-            details = null;
          }
       });
 
@@ -99,10 +92,8 @@ public class ColumnConfigurationDialog extends Dialog {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            ColumnDetails column = getFirstSelected();
-            if (column != null) {
-               configuration.moveUp(column);
-            }
+        	 List<ColumnDetails> list = getSelection();
+               configuration.moveUp(list);
 
          }
       });
@@ -113,10 +104,8 @@ public class ColumnConfigurationDialog extends Dialog {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            ColumnDetails column = getFirstSelected();
-            if (column != null) {
-               configuration.moveDown(column);
-            }
+        	List<ColumnDetails> list = getSelection();
+        	configuration.moveDown(list);
 
          }
       });

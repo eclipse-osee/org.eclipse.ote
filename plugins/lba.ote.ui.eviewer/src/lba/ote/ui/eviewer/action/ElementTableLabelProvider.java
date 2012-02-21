@@ -13,7 +13,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Ken J. Aguilar
  */
-public class ElementColumnLabelProvider implements ITableLabelProvider {
+public class ElementTableLabelProvider implements ITableLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, int columnIndex) {

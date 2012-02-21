@@ -5,6 +5,10 @@
  */
 package lba.ote.ui.eviewer.view;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -31,14 +35,22 @@ public class ColumnViewerDropAdaptor extends ViewerDropAdapter {
       super.drop(event);
    }
 
+   private List<ColumnDetails> getSelection() {
+	      IStructuredSelection selection = (IStructuredSelection) getViewer().getSelection();
+	      LinkedList<ColumnDetails> list = new LinkedList<ColumnDetails>();
+	      for (Object item : selection.toList()) {
+	         list.add((ColumnDetails) item);
+	      }
+	      return list;
+	   }
+   
    @Override
    public boolean performDrop(Object data) {
       if (target == null) {
          return false;
       }
-      int sourceIndex = Integer.parseInt((String) data);
-      int targetIndex = configuration.indexOf(target);
-      configuration.moveTo(sourceIndex, targetIndex);
+      
+      configuration.moveTo(getSelection(), target);
       return true;
    }
 
