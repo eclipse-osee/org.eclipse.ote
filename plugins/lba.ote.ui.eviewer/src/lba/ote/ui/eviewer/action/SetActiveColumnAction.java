@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import lba.ote.ui.eviewer.Activator;
 import lba.ote.ui.eviewer.view.ElementColumn;
 import lba.ote.ui.eviewer.view.ElementContentProvider;
 
@@ -29,6 +30,7 @@ public class SetActiveColumnAction extends Action  {
 	public SetActiveColumnAction(ElementContentProvider elementContentProvider) {
 		super("Set Active columns");
 		this.elementContentProvider = elementContentProvider;
+		setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor("ACTIVE_PNG"));
 	}
 
 	@Override

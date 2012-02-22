@@ -6,8 +6,10 @@
 package lba.ote.ui.eviewer.action;
 
 import java.util.logging.Level;
+
 import lba.ote.ui.eviewer.Activator;
 import lba.ote.ui.eviewer.view.ElementContentProvider;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -44,6 +46,7 @@ public class AddElementAction extends Action {
             MessageElementSelectionDialog msgElementSelectionDialog =
                new MessageElementSelectionDialog(shell, msgClassName, null);
             msgElementSelectionDialog.setMultipleSelection(true);
+            msgElementSelectionDialog.setIgnoreCase(true);
             msgElementSelectionDialog.open();
             result = msgElementSelectionDialog.getResult();
             if (result != null) {

@@ -52,9 +52,9 @@ public class ElementViewer extends ViewPart {
 	private AddElementAction addElementAction;
 	private ClearAllUpdatesAction clearAllUpdatesAction;
 	private ToggleAutoRevealAction toggleAutoRevealAction;
-	private RemoveColumnAction removeColumnMenu;
+	private RemoveColumnAction removeColumnAction;
 	private CopyAllAction copyAction;
-	private SetActiveColumnAction activeColumnMenu;
+	private SetActiveColumnAction activeColumnAction;
 	private SaveLoadAction saveLoadAction;
 	private StreamToFileAction streamToFileAction;
 	private ConfigureColumnsAction configureColumnAction;
@@ -113,8 +113,9 @@ public class ElementViewer extends ViewPart {
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(addElementAction);
 		manager.add(new Separator());
-		manager.add(activeColumnMenu);
-		manager.add(removeColumnMenu);
+		manager.add(activeColumnAction);
+		
+		manager.add(removeColumnAction);
 		manager.add(clearAllUpdatesAction);
 		manager.add(new Separator());
 		manager.add(copyAction);
@@ -122,6 +123,10 @@ public class ElementViewer extends ViewPart {
 
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+		
+		boolean hasColumns = !elementContentProvider.getColumns().isEmpty();
+		activeColumnAction.setEnabled(hasColumns);
+		removeColumnAction.setEnabled(hasColumns);
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
@@ -139,8 +144,8 @@ public class ElementViewer extends ViewPart {
 		addElementAction.setEnabled(false);
 		clearAllUpdatesAction = new ClearAllUpdatesAction(elementContentProvider);
 		toggleAutoRevealAction = new ToggleAutoRevealAction(elementContentProvider);
-		activeColumnMenu = new SetActiveColumnAction(elementContentProvider);
-		removeColumnMenu = new RemoveColumnAction(elementContentProvider);
+		activeColumnAction = new SetActiveColumnAction(elementContentProvider);
+		removeColumnAction = new RemoveColumnAction(elementContentProvider);
 		saveLoadAction = new SaveLoadAction(elementContentProvider);
 		streamToFileAction = new StreamToFileAction(elementContentProvider);
 
@@ -154,7 +159,7 @@ public class ElementViewer extends ViewPart {
 				if (event.getProperty() == StreamToFileAction.STREAMING) {
 					Boolean isStreaming = (Boolean) event.getNewValue();
 					addElementAction.setEnabled(!isStreaming);
-					removeColumnMenu.setEnabled(!isStreaming);
+					removeColumnAction.setEnabled(!isStreaming);
 					configureColumnAction.setEnabled(!isStreaming);
 				}
 			}

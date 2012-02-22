@@ -6,6 +6,7 @@
 package lba.ote.ui.eviewer.view;
 
 import lba.ote.ui.eviewer.Activator;
+
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -33,14 +34,16 @@ public class ElementColumn implements ISubscriptionListener {
    private boolean active = true;
    private volatile Object lastValue = null;
 
-   private final Image activeImg = Activator.getImageDescriptor("icons/active.png").createImage();
-   private final Image inactive = Activator.getImageDescriptor("icons/inactive.png").createImage();
+   private final Image activeImg;
+   private final Image inactive;
    private final String text;
    private volatile int index;
    private final TableViewer table;
 
    ElementColumn(TableViewer table, final int index, ElementPath path) {
       super();
+      activeImg = Activator.getDefault().getImageRegistry().get("ACTIVE_PNG");
+      inactive = Activator.getDefault().getImageRegistry().get("INACTIVE_PNG");
       this.table = table;
       this.path = path;
       column = new TableViewerColumn(table, SWT.LEFT);
@@ -96,8 +99,6 @@ public class ElementColumn implements ISubscriptionListener {
 
    public void dispose() {
       element = null;
-      activeImg.dispose();
-      inactive.dispose();
       column.getColumn().dispose();
    }
 

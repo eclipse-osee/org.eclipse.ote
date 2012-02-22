@@ -8,6 +8,7 @@ package lba.ote.ui.eviewer.view;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
+
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.client.msg.core.ISubscriptionListener;
 import org.eclipse.osee.ote.message.Message;

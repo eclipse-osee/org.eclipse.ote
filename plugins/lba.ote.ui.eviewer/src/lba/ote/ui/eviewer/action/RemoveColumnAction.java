@@ -5,6 +5,8 @@
  */
 package lba.ote.ui.eviewer.action;
 
+import java.util.HashSet;
+
 import lba.ote.ui.eviewer.view.ElementColumn;
 import lba.ote.ui.eviewer.view.ElementContentProvider;
 
@@ -32,13 +34,16 @@ public class RemoveColumnAction extends Action {
 		dialog.setTitle("Remove Columns");
 		dialog.setMessage("Select one or more columns to remove");
 		dialog.setEmptySelectionMessage("no columns selected");
+		dialog.setIgnoreCase(true);
 		dialog.setMultipleSelection(true);
 		dialog.open();
 		Object[] selection = dialog.getResult();
 		if (selection != null) {
-			for (Object item : selection) {
-				elementContentProvider.removeColumn((ElementColumn)item);
+			HashSet<ElementColumn> removed = new HashSet<ElementColumn>();
+			for (Object obj : selection) {
+				removed.add((ElementColumn)obj);
 			}
+			elementContentProvider.removeColumn(removed);
 		}
 	}
 	

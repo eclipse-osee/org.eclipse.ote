@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.osee.ote.message.ElementPath;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -101,8 +102,8 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 			updateInternalFile();
 		}
 	}
-	
-	private void create(ElementPath path) {
+
+	private ElementColumn create(ElementPath path) {
 		ElementColumn newColumn = new ElementColumn(viewer, elementColumns.size(), path);
 		SubscriptionDetails details = findDetails(path.getMessageClass());
 		if (details == null) {
@@ -113,8 +114,9 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 		elementColumns.add(newColumn);
 		indexAndSortColumns();
 		newColumn.addMoveListener(this);
+		return newColumn;
 	}
-	
+
 	private boolean findColumn(ElementPath path) {
 		String encodedPath = path.encode();
 		for (ElementColumn column : elementColumns) {
@@ -184,12 +186,12 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 	/**
 	 * @return the autoReveal
 	 */
-	 public boolean isAutoReveal() {
+	public boolean isAutoReveal() {
 		return autoReveal;
 	}
 
 	private void indexAndSortColumns() {
-
+		
 		valueMap = new HashMap<ElementColumn, Integer>();
 		ColumnSorter sorter = new ColumnSorter(viewer.getTable().getColumnOrder());
 		for (ElementColumn column : elementColumns) {
@@ -230,6 +232,22 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 		}
 	}
 
+	public synchronized void removeColumn(Collection<ElementColumn> columns) {
+
+		elementColumns.removeAll(columns);
+		viewer.getTable().setRedraw(false);
+		for (ElementColumn column : columns) {
+			column.removeMoveListener(this);
+			SubscriptionDetails subscription = findDetails(column.getMessageClassName());
+			if (subscription.removeColumn(column)) {
+				subscription.dispose();
+				subscriptions.remove(subscription);
+			}
+		}
+		indexAndSortColumns();
+		viewer.getTable().setRedraw(true);
+		updateInternalFile();
+	} 
 	private void updateInternalFile() {
 		try {
 			saveColumnsToFile(OseeData.getFile(INTERNAL_FILE_NAME));
@@ -253,6 +271,8 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 			}
 			ElementColumn column = elementColumns.get(i);
 			writer.write(column.getElementPath().encode());
+			writer.write('=');
+			writer.write(column.isActive() ? "active" : "inactive");
 			writer.write('\n');
 			writer.flush();
 		} finally {
@@ -264,6 +284,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 		LinkedList<ElementPath> columnsToAdd = new LinkedList<ElementPath>();
 		HashSet<ElementPath> inactiveColumns = new HashSet<ElementPath>();
 
+		viewer.getTable().setRedraw(false);
 		for (String name : columnNames) {
 			String[] parts = name.split("=");    
 			ElementPath path = ElementPath.decode(parts[0]);
@@ -274,20 +295,25 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 		}
 		add(columnsToAdd, false);
 
-		viewer.refresh();
+
 		for (ElementColumn column : elementColumns) {
 			if (inactiveColumns.contains(column.getElementPath())) {
 				column.setActive(false);
 			}
 		}
+		viewer.getTable().setRedraw(true);
 		updateInternalFile();
 	}
 
 	public void loadColumnsFromFile(File file) throws FileNotFoundException, IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 		try {
-
-			String[] columnNames = reader.readLine().split(",");
+			String line = reader.readLine();
+			if (line == null) {
+				// empty file
+				return;
+			}
+			String[] columnNames = line.split(",");
 			loadColumns(columnNames);
 		} finally {
 			reader.close();
@@ -367,18 +393,21 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 	 * handles the reordering of columns
 	 */
 	@Override
-	public synchronized void handleEvent(Event event) {
+	public void handleEvent(Event event) {
 
-		if (event.widget.isDisposed()) {
+		if (event.widget.isDisposed() || event.type != SWT.Move) {
 			return;
 		}
-		indexAndSortColumns();
-		LinkedHashSet<String> set = new LinkedHashSet<String>();
-		for (ElementColumn c : elementColumns) {
-			set.add(c.getElementPath().encode());
+		synchronized (this) {
+			indexAndSortColumns();
+			LinkedHashSet<String> set = new LinkedHashSet<String>();
+			for (ElementColumn c : elementColumns) {
+				set.add(c.getElementPath().encode());
+			}
+
+			updateInternalFile();
 		}
 
-		updateInternalFile();
 	}
 
 	public TableViewer getViewer() {
