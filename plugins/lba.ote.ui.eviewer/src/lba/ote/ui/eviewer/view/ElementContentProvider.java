@@ -18,7 +18,6 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -36,6 +35,7 @@ import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -231,19 +231,30 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 			updateInternalFile();
 		}
 	}
+	
+	private void enableMoveListeneing(boolean enable) {
+		for (ElementColumn column : elementColumns) {
+			if (enable) {
+				column.addMoveListener(this);
+			} else {
+				column.removeMoveListener(this);
+			}
+		}
+	}
 
 	public synchronized void removeColumn(Collection<ElementColumn> columns) {
-
+		enableMoveListeneing(false);
 		elementColumns.removeAll(columns);
 		viewer.getTable().setRedraw(false);
 		for (ElementColumn column : columns) {
-			column.removeMoveListener(this);
 			SubscriptionDetails subscription = findDetails(column.getMessageClassName());
 			if (subscription.removeColumn(column)) {
 				subscription.dispose();
 				subscriptions.remove(subscription);
 			}
+			Display.getCurrent().readAndDispatch();
 		}
+		enableMoveListeneing(true);
 		indexAndSortColumns();
 		viewer.getTable().setRedraw(true);
 		updateInternalFile();
@@ -400,11 +411,6 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 		}
 		synchronized (this) {
 			indexAndSortColumns();
-			LinkedHashSet<String> set = new LinkedHashSet<String>();
-			for (ElementColumn c : elementColumns) {
-				set.add(c.getElementPath().encode());
-			}
-
 			updateInternalFile();
 		}
 
