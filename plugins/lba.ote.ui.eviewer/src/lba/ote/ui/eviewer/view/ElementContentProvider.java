@@ -120,7 +120,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 	private boolean findColumn(ElementPath path) {
 		String encodedPath = path.encode();
 		for (ElementColumn column : elementColumns) {
-			if (column.getElementPath().encode().equals(encodedPath)); {
+			if (column.getElementPath().encode().equals(encodedPath)) {
 				return true;
 			}
 		}
