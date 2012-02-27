@@ -1,9 +1,10 @@
 package lba.ote.ui.eviewer.view;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Level;
 
+import lba.ote.ui.eviewer.Activator;
 import lba.ote.ui.eviewer.ClientMessageServiceTracker;
 import lba.ote.ui.eviewer.action.AddElementAction;
 import lba.ote.ui.eviewer.action.ClearAllUpdatesAction;
@@ -22,9 +23,8 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.swt.SWT;
@@ -73,7 +73,7 @@ public class ElementViewer extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		viewer = new TableViewer(parent, SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		viewer = new TableViewer(parent, SWT.DOUBLE_BUFFERED | SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.setUseHashlookup(true);
 		viewer.setContentProvider(elementContentProvider);
 		viewer.getTable().setHeaderVisible(true);
@@ -112,21 +112,21 @@ public class ElementViewer extends ViewPart {
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(addElementAction);
+		if (!elementContentProvider.getColumns().isEmpty()) {
+			manager.add(new Separator());
+			manager.add(activeColumnAction);
+
+			manager.add(removeColumnAction);
+		}
 		manager.add(new Separator());
-		manager.add(activeColumnAction);
-		
-		manager.add(removeColumnAction);
 		manager.add(clearAllUpdatesAction);
-		manager.add(new Separator());
 		manager.add(copyAction);
+		manager.add(new Separator());
 		manager.add(toggleAutoRevealAction);
 
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-		
-		boolean hasColumns = !elementContentProvider.getColumns().isEmpty();
-		activeColumnAction.setEnabled(hasColumns);
-		removeColumnAction.setEnabled(hasColumns);
+
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
@@ -147,23 +147,10 @@ public class ElementViewer extends ViewPart {
 		activeColumnAction = new SetActiveColumnAction(elementContentProvider);
 		removeColumnAction = new RemoveColumnAction(elementContentProvider);
 		saveLoadAction = new SaveLoadAction(elementContentProvider);
-		streamToFileAction = new StreamToFileAction(elementContentProvider);
+		streamToFileAction = new StreamToFileAction(this);
 
 		copyAction = new CopyAllAction(Display.getDefault(), elementContentProvider);
 		configureColumnAction = new ConfigureColumnsAction(elementContentProvider);
-
-		streamToFileAction.addPropertyChangeListener(new IPropertyChangeListener() {
-
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty() == StreamToFileAction.STREAMING) {
-					Boolean isStreaming = (Boolean) event.getNewValue();
-					addElementAction.setEnabled(!isStreaming);
-					removeColumnAction.setEnabled(!isStreaming);
-					configureColumnAction.setEnabled(!isStreaming);
-				}
-			}
-		});
 	}
 
 	private void hookDoubleClickAction() {
@@ -173,75 +160,77 @@ public class ElementViewer extends ViewPart {
 	/**
 	 * Passing the focus request to the viewer's control.
 	 */
-	 @Override
-	 public void setFocus() {
+	@Override
+	public void setFocus() {
 		viewer.getControl().setFocus();
-	 }
+	}
 
-	 public void startStreaming(String columnSetFile, String fileName) throws IOException{
-		 elementContentProvider.clearAllUpdates();
-		 if (columnSetFile != null) {
-			 File file = new File(columnSetFile);
-			 if (file.exists() && file.isFile()) {
-				 try {
-					 elementContentProvider.removeAll();
-					 elementContentProvider.loadColumnsFromFile(file);
-				 } catch (IOException ex) {
-					 MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error", "Could not save file:\n" + file.getAbsolutePath());
-				 }
-			 }
-		 }
-		 File file = new File(fileName);
-		 elementContentProvider.streamToFile(file);
-		 streamToFileAction.setChecked(true);
-	 }
+	public void startStreaming(String columnSetFile, String fileName) throws IOException{
+		if (columnSetFile != null) {
+			elementContentProvider.clearAllUpdates();
+			File file = new File(columnSetFile);
+			if (file.exists() && file.isFile()) {
+				try {
+					elementContentProvider.removeAll();
+					elementContentProvider.loadColumnsFromFile(file);
+				} catch (IOException ex) {
+					MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error", "Could not save file:\n" + file.getAbsolutePath());
+				}
+			}
+		}
+		File file = new File(fileName);
+		elementContentProvider.streamToFile(file);
+		streamToFileAction.setChecked(true);
+		configureColumnAction.setEnabled(false);
+		addElementAction.setEnabled(false);
+		removeColumnAction.setEnabled(false);
+	}
 
-	 public void stopStreaming() {
-		 try {
-			 elementContentProvider.streamToFile(null);
-			 streamToFileAction.setChecked(false);
-		 } catch (FileNotFoundException e) {
-			 // TODO Auto-generated catch block
-			 e.printStackTrace();
-		 } catch (IOException e) {
-			 // TODO Auto-generated catch block
-			 e.printStackTrace();
-		 }
-	 }
-	 @Override
-	 public void dispose() {
-		 tracker.close();
-		 copyAction.dispose();
-		 super.dispose();
-	 }
 
-	 public void serviceStarted(final IOteMessageService service) {
-		 Displays.pendInDisplayThread(new Runnable() {
+	public void stopStreaming() {
+		try {
+			elementContentProvider.streamToFile(null);
+			configureColumnAction.setEnabled(true);
+			addElementAction.setEnabled(true);
+			removeColumnAction.setEnabled(true);
+			streamToFileAction.setChecked(false);
+		} catch (Exception e) {
+			OseeLog.log(Activator.class, Level.SEVERE, "Erri while attempting to stop streaming", e);
+		}	 }
+	@Override
+	public void dispose() {
+		tracker.close();
+		copyAction.dispose();
+		super.dispose();
+	}
 
-			 @Override
-			 public void run() {
-				 addElementAction.setEnabled(true);
-				 viewer.setInput(service);
-				 if (getViewSite().getSecondaryId() == null) {
-					 elementContentProvider.loadLastColumns();
-				 }
-			 }
+	public void serviceStarted(final IOteMessageService service) {
+		Displays.pendInDisplayThread(new Runnable() {
 
-		 });
+			@Override
+			public void run() {
+				addElementAction.setEnabled(true);
+				viewer.setInput(service);
+				if (getViewSite().getSecondaryId() == null) {
+					elementContentProvider.loadLastColumns();
+				}
+			}
 
-	 }
+		});
 
-	 public void serviceStopping(final IOteMessageService service) {
-		 Displays.pendInDisplayThread(new Runnable() {
-			 @Override
-			 public void run() {
-				 addElementAction.setEnabled(false);
-				 if (viewer.getTable().isDisposed()) {
-					 return;
-				 }
-				 viewer.setInput(null);
-			 }
-		 });
+	}
 
-	 }
+	public void serviceStopping(final IOteMessageService service) {
+		Displays.pendInDisplayThread(new Runnable() {
+			@Override
+			public void run() {
+				addElementAction.setEnabled(false);
+				if (viewer.getTable().isDisposed()) {
+					return;
+				}
+				viewer.setInput(null);
+			}
+		});
+
+	}
 }

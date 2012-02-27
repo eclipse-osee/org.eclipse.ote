@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,6 +55,8 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
 	private HashMap<ElementColumn, Integer> valueMap = new HashMap<ElementColumn, Integer>();
 
+	private ElementUpdate last = null;
+	
 	public ElementContentProvider(int limit) {
 		this.limit = limit;
 	}
@@ -83,6 +84,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 			}
 			service = (IOteMessageService) newInput;
 			indexAndSortColumns();
+			last = null;
 			refresher = new ViewRefresher(this.viewer, limit);
 			refresher.setAutoReveal(autoReveal);
 			refresher.start();
@@ -154,9 +156,14 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 	}
 
 	@Override
-	public  synchronized void update(SubscriptionDetails details, BitSet deltaSet) {
-		final ElementUpdate update = new ElementUpdate(valueMap, elementColumns, deltaSet);
-
+	public  synchronized void update(SubscriptionDetails details) {
+		final ElementUpdate update;
+		if (last == null) {
+			update = new ElementUpdate(valueMap, elementColumns);
+		} else {
+			update = last.next(valueMap, elementColumns);
+		}
+		last = update;
 		refresher.addUpdate(update);
 		writeToStream(update);
 	}
@@ -181,6 +188,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
 	public void clearAllUpdates() {
 		refresher.clearUpdates();
+		last = null;
 	}
 
 	/**
@@ -331,7 +339,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 		}
 	}
 
-	public void removeAll() {
+	public synchronized void removeAll() {
 		disposeAllColumns();
 		updateInternalFile();
 		refresher.clearUpdates();
@@ -339,11 +347,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
 	private void disposeAllColumns() {
 		// we must remove all the move listeners first before we dispose or else bad things happen
-		for (SubscriptionDetails details : subscriptions) {
-			for (ElementColumn c : details.getColumns()) {
-				c.removeMoveListener(this);
-			}
-		}
+		enableMoveListeneing(false);
 		for (SubscriptionDetails details : subscriptions) {
 			details.dispose();
 		}

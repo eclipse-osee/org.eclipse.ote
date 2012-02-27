@@ -5,11 +5,10 @@
  */
 package lba.ote.ui.eviewer.view;
 
-import java.util.BitSet;
 
 /**
  * @author Ken J. Aguilar
  */
 public interface IUpdateListener {
-   void update(SubscriptionDetails details, BitSet deltaSet);
+   void update(SubscriptionDetails details);
 }

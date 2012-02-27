@@ -5,6 +5,9 @@
  */
 package lba.ote.ui.eviewer.view;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
 import lba.ote.ui.eviewer.Activator;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -31,15 +34,16 @@ public class ElementColumn implements ISubscriptionListener {
    private final String message;
    private final ElementPath path;
    private DiscreteElement<?> element;
-   private boolean active = true;
-   private volatile Object lastValue = null;
+   private volatile boolean active = true;
+   private final AtomicReference<Object> lastValueReference = new AtomicReference<Object>(new Object());
 
    private final Image activeImg;
    private final Image inactive;
    private final String text;
    private volatile int index;
    private final TableViewer table;
-
+   private final AtomicBoolean valueUpdatedFlag = new AtomicBoolean(false);
+   
    ElementColumn(TableViewer table, final int index, ElementPath path) {
       super();
       activeImg = Activator.getDefault().getImageRegistry().get("ACTIVE_PNG");
@@ -59,9 +63,6 @@ public class ElementColumn implements ISubscriptionListener {
 
          @Override
          public String getText(Object element) {
-            if (column.getColumn().isDisposed()) {
-               return "?";
-            }
             ElementUpdate update = (ElementUpdate) element;
             Object value = update.getValue(ElementColumn.this);
             return value != null ? value.toString().intern() : "?";
@@ -70,11 +71,8 @@ public class ElementColumn implements ISubscriptionListener {
 
          @Override
          public Color getBackground(Object element) {
-            if (column.getColumn().isDisposed()) {
-               return Displays.getSystemColor(SWT.COLOR_RED);
-            }
             ElementUpdate update = (ElementUpdate) element;
-            return update.getDeltaSet().get(index) ? Displays.getSystemColor(SWT.COLOR_GREEN) : null;
+            return update.isChanged(ElementColumn.this) ? Displays.getSystemColor(SWT.COLOR_GREEN) : null;
          }
 
       });
@@ -103,17 +101,20 @@ public class ElementColumn implements ISubscriptionListener {
    }
 
    public boolean update() {
-      Object value = element.getValue();
-      if (lastValue == null || !value.equals(lastValue)) {
-         lastValue = value;
+      Object current = element.getValue();
+      Object lastValue = lastValueReference.get();
+      if (!current.equals(lastValue)) {
+         lastValueReference.set(current);
+         valueUpdatedFlag.set(true);
          return true;
       }
       return false;
    }
 
    public Object getValue() {
-      return lastValue;
+      return lastValueReference.get();
    }
+
 
    public String getName() {
       return text;
@@ -123,6 +124,10 @@ public class ElementColumn implements ISubscriptionListener {
       return message;
    }
 
+   public boolean getAndClearUpdateState() {
+	   return valueUpdatedFlag.getAndSet(false);
+   }
+   
    @Override
    public void subscriptionActivated(IMessageSubscription subscription) {
    }
@@ -148,7 +153,7 @@ public class ElementColumn implements ISubscriptionListener {
       column.getColumn().setToolTipText(
          String.format("%s\nByte Offset: %d\nMSB: %d\nLSB: %d", text, element.getByteOffset(), element.getMsb(),
             element.getLsb()));
-      lastValue = element.getValue();
+      lastValueReference.set(element.getValue());
    }
 
    @Override
