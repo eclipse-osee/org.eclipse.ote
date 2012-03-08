@@ -33,16 +33,21 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * This sample class demonstrates how to plug-in a new workbench view. The view shows data obtained from the model. The
- * sample creates a dummy model on the fly, but a real implementation would connect to the model available either in
- * this or another plug-in (e.g. the workspace). The view is connected to the model using a content provider.
+ * This sample class demonstrates how to plug-in a new workbench view. The view
+ * shows data obtained from the model. The sample creates a dummy model on the
+ * fly, but a real implementation would connect to the model available either in
+ * this or another plug-in (e.g. the workspace). The view is connected to the
+ * model using a content provider.
  * <p>
- * The view uses a label provider to define how model objects should be presented in the view. Each view can present the
- * same model objects using different labels and icons, if needed. Alternatively, a single label provider can be shared
- * between views in order to ensure that objects of the same type are presented in the same way everywhere.
+ * The view uses a label provider to define how model objects should be
+ * presented in the view. Each view can present the same model objects using
+ * different labels and icons, if needed. Alternatively, a single label provider
+ * can be shared between views in order to ensure that objects of the same type
+ * are presented in the same way everywhere.
  * <p>
  */
 
@@ -58,7 +63,8 @@ public class ElementViewer extends ViewPart {
 	private SaveLoadAction saveLoadAction;
 	private StreamToFileAction streamToFileAction;
 	private ConfigureColumnsAction configureColumnAction;
-	private final ElementContentProvider elementContentProvider = new ElementContentProvider(8194);
+	private final ElementContentProvider elementContentProvider = new ElementContentProvider(
+			8194);
 	private final ClientMessageServiceTracker tracker;
 
 	/**
@@ -69,15 +75,21 @@ public class ElementViewer extends ViewPart {
 	}
 
 	/**
-	 * This is a callback that will allow us to create the viewer and initialize it.
+	 * This is a callback that will allow us to create the viewer and initialize
+	 * it.
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		viewer = new TableViewer(parent, SWT.DOUBLE_BUFFERED | SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+
+
+		viewer = new TableViewer(parent, SWT.DOUBLE_BUFFERED
+				| SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.setUseHashlookup(true);
 		viewer.setContentProvider(elementContentProvider);
 		viewer.getTable().setHeaderVisible(true);
 		viewer.getTable().setLinesVisible(true);
+
+
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
@@ -142,15 +154,19 @@ public class ElementViewer extends ViewPart {
 	private void makeActions() {
 		addElementAction = new AddElementAction(elementContentProvider);
 		addElementAction.setEnabled(false);
-		clearAllUpdatesAction = new ClearAllUpdatesAction(elementContentProvider);
-		toggleAutoRevealAction = new ToggleAutoRevealAction(elementContentProvider);
+		clearAllUpdatesAction = new ClearAllUpdatesAction(
+				elementContentProvider);
+		toggleAutoRevealAction = new ToggleAutoRevealAction(
+				elementContentProvider);
 		activeColumnAction = new SetActiveColumnAction(elementContentProvider);
 		removeColumnAction = new RemoveColumnAction(elementContentProvider);
 		saveLoadAction = new SaveLoadAction(elementContentProvider);
 		streamToFileAction = new StreamToFileAction(this);
 
-		copyAction = new CopyAllAction(Display.getDefault(), elementContentProvider);
-		configureColumnAction = new ConfigureColumnsAction(elementContentProvider);
+		copyAction = new CopyAllAction(Display.getDefault(),
+				elementContentProvider);
+		configureColumnAction = new ConfigureColumnsAction(
+				elementContentProvider);
 	}
 
 	private void hookDoubleClickAction() {
@@ -165,38 +181,84 @@ public class ElementViewer extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 
-	public void startStreaming(String columnSetFile, String fileName) throws IOException{
-		if (columnSetFile != null) {
-			elementContentProvider.clearAllUpdates();
-			File file = new File(columnSetFile);
-			if (file.exists() && file.isFile()) {
+
+	public void startStreaming(final String columnSetFile, final String fileName, final boolean disableRendering) {
+		final Display display = PlatformUI.getWorkbench().getDisplay();
+		Runnable task = new Runnable() {
+
+			@Override
+			public void run() {
+				if (columnSetFile != null) {
+					elementContentProvider.clearAllUpdates();
+					File file = new File(columnSetFile);
+					if (file.exists() && file.isFile()) {
+						try {
+							elementContentProvider.removeAll();
+							elementContentProvider.loadColumnsFromFile(file);
+						} catch (IOException ex) {
+							MessageDialog.openError(
+									Display.getCurrent().getActiveShell(),
+									"Error",
+									"Could not save file:\n"
+											+ file.getAbsolutePath());
+						}
+					}
+				}
+				File file = new File(fileName);
 				try {
-					elementContentProvider.removeAll();
-					elementContentProvider.loadColumnsFromFile(file);
-				} catch (IOException ex) {
-					MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error", "Could not save file:\n" + file.getAbsolutePath());
+					elementContentProvider.streamToFile(file);
+				} catch (Exception e) {
+					OseeLog.log(Activator.class, Level.SEVERE,
+							"Could not start streaming", e);
+					MessageDialog
+							.openError(display.getActiveShell(),
+									"Stream Error",
+									"Could not stream to file. See Error Log for details");
+					return;
+				}
+				streamToFileAction.setChecked(true);
+				configureColumnAction.setEnabled(false);
+				addElementAction.setEnabled(false);
+				removeColumnAction.setEnabled(false);
+				if (disableRendering) {
+					viewer.getTable().update();
+					viewer.getTable().setRedraw(false);
 				}
 			}
+		};
+		if (display.getThread() != Thread.currentThread()) {
+			display.syncExec(task);
+		} else {
+			task.run();
 		}
-		File file = new File(fileName);
-		elementContentProvider.streamToFile(file);
-		streamToFileAction.setChecked(true);
-		configureColumnAction.setEnabled(false);
-		addElementAction.setEnabled(false);
-		removeColumnAction.setEnabled(false);
 	}
-
+	
+	
 
 	public void stopStreaming() {
-		try {
-			elementContentProvider.streamToFile(null);
-			configureColumnAction.setEnabled(true);
-			addElementAction.setEnabled(true);
-			removeColumnAction.setEnabled(true);
-			streamToFileAction.setChecked(false);
-		} catch (Exception e) {
-			OseeLog.log(Activator.class, Level.SEVERE, "Erri while attempting to stop streaming", e);
-		}	 }
+		Displays.ensureInDisplayThread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					viewer.getTable().update();
+					viewer.getTable().setRedraw(true);		
+					elementContentProvider.streamToFile(null);
+					configureColumnAction.setEnabled(true);
+					addElementAction.setEnabled(true);
+					removeColumnAction.setEnabled(true);
+					streamToFileAction.setChecked(false);
+					
+				} catch (Exception e) {
+					OseeLog.log(Activator.class, Level.SEVERE,
+							"Erri while attempting to stop streaming", e);
+				}
+			}
+
+		});
+
+	}
+
 	@Override
 	public void dispose() {
 		tracker.close();

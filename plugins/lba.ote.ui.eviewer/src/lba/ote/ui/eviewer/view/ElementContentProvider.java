@@ -34,7 +34,6 @@ import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -260,7 +259,6 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 				subscription.dispose();
 				subscriptions.remove(subscription);
 			}
-			Display.getCurrent().readAndDispatch();
 		}
 		enableMoveListeneing(true);
 		indexAndSortColumns();
@@ -378,11 +376,12 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
 		if (streamToFileWriter != null) {
 			// stop streaming
+			streamToFileWriter.flush();
 			streamToFileWriter.close();
 			streamToFileWriter = null;
-			setMoveableColumns(true);
 		}
 		if (file == null) {
+			setMoveableColumns(true);
 			return;
 		}
 		setMoveableColumns(false);

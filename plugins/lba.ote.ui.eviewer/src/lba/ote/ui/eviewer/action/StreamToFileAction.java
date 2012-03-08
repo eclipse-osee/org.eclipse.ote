@@ -5,14 +5,11 @@
  */
 package lba.ote.ui.eviewer.action;
 
-import java.io.IOException;
-
 import lba.ote.ui.eviewer.Activator;
 import lba.ote.ui.eviewer.view.ElementViewer;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -40,11 +37,8 @@ public class StreamToFileAction extends Action {
 			dialog.setText("Save CSV file");
 			String result = dialog.open();
 			if (result != null) {
-				try {
-					elementViewer.startStreaming(null, result);
-				} catch (IOException ex) {
-					MessageDialog.openError(shell, "Error", "Could not setup streaming to file:\n" + result);
-				}
+				elementViewer.startStreaming(null, result, false);
+
 			} else {
 				setChecked(false);
 			}
