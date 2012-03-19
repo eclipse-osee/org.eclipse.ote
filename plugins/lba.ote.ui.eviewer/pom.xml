@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>lba.osee</groupId>
+		<artifactId>lba.osee.client.ote.parent</artifactId>
+		<version>0.9.9-SNAPSHOT</version>
+		<relativePath>../../plugins/lba.osee.client.ote.parent</relativePath>
+	</parent>
+
+	<artifactId>lba.ote.ui.eviewer</artifactId>
+	<packaging>eclipse-plugin</packaging>
+	<name>OTE Element Viewer</name>
+
+   <build>
+     <!-- workaround for https://issues.sonatype.org/browse/TYCHO-168 -->
+     <resources>
+      <resource>
+        <directory>src</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-source-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+  
+</project>
