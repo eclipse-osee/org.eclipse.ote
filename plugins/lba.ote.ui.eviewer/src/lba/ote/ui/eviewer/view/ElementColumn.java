@@ -101,12 +101,14 @@ public class ElementColumn implements ISubscriptionListener {
    }
 
    public boolean update() {
-      Object current = element.getValue();
-      Object lastValue = lastValueReference.get();
-      if (!current.equals(lastValue)) {
-         lastValueReference.set(current);
-         valueUpdatedFlag.set(true);
-         return true;
+      if(element != null){
+	      Object current = element.getValue();
+	      Object lastValue = lastValueReference.get();
+	      if (!current.equals(lastValue)) {
+	         lastValueReference.set(current);
+	         valueUpdatedFlag.set(true);
+	         return true;
+	      }
       }
       return false;
    }
@@ -149,10 +151,18 @@ public class ElementColumn implements ISubscriptionListener {
 
    @Override
    public void subscriptionResolved(IMessageSubscription subscription) {
+	  
       element = (DiscreteElement<?>) subscription.getMessage().getElementByPath(path);
-      column.getColumn().setToolTipText(
-         String.format("%s\nByte Offset: %d\nMSB: %d\nLSB: %d", text, element.getByteOffset(), element.getMsb(),
-            element.getLsb()));
+      Displays.ensureInDisplayThread(new Runnable() {
+		
+		@Override
+		public void run() {
+			column.getColumn().setToolTipText(
+			         String.format("%s\nByte Offset: %d\nMSB: %d\nLSB: %d", text, element.getByteOffset(), element.getMsb(),
+			            element.getLsb()));
+		}
+	   });
+      
       lastValueReference.set(element.getValue());
    }
 
