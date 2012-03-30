@@ -202,6 +202,9 @@ public class ElementViewer extends ViewPart {
 									"Could not save file:\n"
 											+ file.getAbsolutePath());
 						}
+					} else {
+						MessageDialog.openError(Display.getCurrent().getActiveShell(), "File Error", "The file " + file.getAbsolutePath() + " does not exist or is a directory");
+						return;
 					}
 				}
 				File file = new File(fileName);

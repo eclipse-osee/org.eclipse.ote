@@ -385,14 +385,18 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 			return;
 		}
 		setMoveableColumns(false);
+
 		streamToFileWriter = new PrintWriter(new FileOutputStream(file));
 		int i;
 		for (i = 0; i < elementColumns.size() - 1; i++) {
 			streamToFileWriter.write(elementColumns.get(i).getName());
 			streamToFileWriter.write(',');
 		}
-		streamToFileWriter.write(elementColumns.get(i).getName());
-		streamToFileWriter.write('\n');
+		if (elementColumns.size() > 0) {
+			streamToFileWriter.write(elementColumns.get(i).getName());
+			streamToFileWriter.write('\n');
+		}
+
 		streamToFileWriter.flush();
 
 	}

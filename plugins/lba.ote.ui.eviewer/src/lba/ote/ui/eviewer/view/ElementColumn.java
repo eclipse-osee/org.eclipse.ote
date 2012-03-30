@@ -30,7 +30,8 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class ElementColumn implements ISubscriptionListener {
 
-   private final TableViewerColumn column;
+   private static final String UNKNOWN_VALUE = "???";
+private final TableViewerColumn column;
    private final String message;
    private final ElementPath path;
    private DiscreteElement<?> element;
@@ -43,7 +44,8 @@ public class ElementColumn implements ISubscriptionListener {
    private volatile int index;
    private final TableViewer table;
    private final AtomicBoolean valueUpdatedFlag = new AtomicBoolean(false);
-   
+   private String tip;
+	
    ElementColumn(TableViewer table, final int index, ElementPath path) {
       super();
       activeImg = Activator.getDefault().getImageRegistry().get("ACTIVE_PNG");
@@ -62,6 +64,11 @@ public class ElementColumn implements ISubscriptionListener {
       column.setLabelProvider(new ColumnLabelProvider() {
 
          @Override
+		public String getToolTipText(Object element) {
+			return tip;
+		}
+
+		@Override
          public String getText(Object element) {
             ElementUpdate update = (ElementUpdate) element;
             Object value = update.getValue(ElementColumn.this);
@@ -75,7 +82,13 @@ public class ElementColumn implements ISubscriptionListener {
             return update.isChanged(ElementColumn.this) ? Displays.getSystemColor(SWT.COLOR_GREEN) : null;
          }
 
+		@Override
+		public int getToolTipDisplayDelayTime(Object object) {
+			return 500;
+		}
+
       });
+      tip = text;
       this.index = table.getTable().indexOf(column.getColumn());
    }
 
@@ -142,11 +155,13 @@ public class ElementColumn implements ISubscriptionListener {
    @Override
    public void subscriptionInvalidated(IMessageSubscription subscription) {
       element = null;
+      lastValueReference.set(UNKNOWN_VALUE);
    }
 
    @Override
    public void subscriptionNotSupported(IMessageSubscription subscription) {
       element = null;
+      lastValueReference.set(UNKNOWN_VALUE);
    }
 
    @Override
@@ -155,20 +170,28 @@ public class ElementColumn implements ISubscriptionListener {
       element = (DiscreteElement<?>) subscription.getMessage().getElementByPath(path);
       Displays.ensureInDisplayThread(new Runnable() {
 		
+
+
 		@Override
 		public void run() {
-			column.getColumn().setToolTipText(
-			         String.format("%s\nByte Offset: %d\nMSB: %d\nLSB: %d", text, element.getByteOffset(), element.getMsb(),
-			            element.getLsb()));
+			if (element == null) {
+				tip = "The element " + getElementPath() + " does not exist on " + getMessageClassName();
+			} else {
+				tip = String.format("%s\nByte Offset: %d\nMSB: %d\nLSB: %d", text, element.getByteOffset(), element.getMsb(),
+			            element.getLsb());
+			}
+			column.getColumn().setToolTipText(tip);
 		}
 	   });
-      
-      lastValueReference.set(element.getValue());
+      lastValueReference.set(element != null ? element.getValue() : UNKNOWN_VALUE);
    }
 
    @Override
    public void subscriptionUnresolved(IMessageSubscription subscription) {
+	  tip = "not found";
       element = null;
+      lastValueReference.set(UNKNOWN_VALUE);
+
    }
 
    /**
