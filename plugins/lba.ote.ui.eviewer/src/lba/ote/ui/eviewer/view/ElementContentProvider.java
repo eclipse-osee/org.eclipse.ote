@@ -365,7 +365,10 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
 	public void loadLastColumns() {
 		try {
-			loadColumnsFromFile(OseeData.getFile(INTERNAL_FILE_NAME));
+			File file = OseeData.getFile(INTERNAL_FILE_NAME);
+			if (file.isFile()) {
+				loadColumnsFromFile(file);
+			}
 
 		} catch (Exception e) {
 			OseeLog.log(Activator.class, Level.SEVERE, "could not read columns file", e);
