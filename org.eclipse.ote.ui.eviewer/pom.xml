@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>lba.osee</groupId>
-		<artifactId>lba.osee.client.ote.parent</artifactId>
+		<groupId>org.eclipse.ote</groupId>
+		<artifactId>org.eclipse.ote.parent</artifactId>
 		<version>0.11.0-SNAPSHOT</version>
-		<relativePath>../../plugins/lba.osee.client.ote.parent</relativePath>
+		<relativePath>../org.eclipse.ote.parent</relativePath>
 	</parent>
 
-	<artifactId>lba.ote.ui.eviewer</artifactId>
+	<artifactId>org.eclipse.ote.ui.eviewer</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>OTE Element Viewer</name>
 

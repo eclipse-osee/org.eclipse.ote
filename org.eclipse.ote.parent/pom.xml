@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.ote</groupId>
+		<artifactId>org.eclipse.ote.mavenbuild</artifactId>
+		<version>0.11.0-SNAPSHOT</version>
+		<relativePath>../org.eclipse.ote.mavenbuild</relativePath>
+	</parent>
+
+	<groupId>org.eclipse.ote</groupId>
+	<artifactId>org.eclipse.ote.parent</artifactId>
+	<packaging>pom</packaging>
+	<name>Eclipse OTE Parent (Incubation)</name>
+
+	<modules>
+		<module>../org.eclipse.ote.ui.message.util</module>
+		<module>../org.eclipse.ote.ui.eviewer</module>
+		<module>../org.eclipse.ote.ui.message</module>
+		<module>../org.eclipse.ote.ui.mux</module>
+		<module>../org.eclipse.ote.client.feature</module>
+
+		<module>../org.eclipse.ote.p2</module>
+	</modules>
+
+</project>

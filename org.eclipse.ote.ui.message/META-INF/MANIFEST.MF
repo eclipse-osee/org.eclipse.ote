@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE MessageTool Plug-in (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.ote.ui.message;singleton:=true
+Bundle-SymbolicName: org.eclipse.ote.ui.message;singleton:=true
 Bundle-Version: 0.11.0.qualifier
 Bundle-Activator: org.eclipse.ote.ui.message.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
