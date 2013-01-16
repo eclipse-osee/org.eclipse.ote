@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -21,7 +22,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.commands.RecordCommand.MessageRecordDetails;
 import org.eclipse.osee.ote.message.elements.Element;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.ote.ui.message.tree.ElementNode;
 import org.eclipse.ote.ui.message.tree.MessageNode;
 import org.eclipse.ote.ui.message.tree.WatchList;
@@ -268,7 +269,7 @@ public class RecordingFilter extends WizardPage {
          }
       }
 
-      public MessageRecordDetails create(String msg, MemType currentMemType) {
+      public MessageRecordDetails create(String msg, DataType currentMemType) {
          return new MessageRecordDetails(msg, currentMemType, headerDump, headers, bodyDump, elements);
       }
    }

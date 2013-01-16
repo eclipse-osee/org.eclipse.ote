@@ -12,6 +12,7 @@ package org.eclipse.ote.ui.message.watch.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.ote.ui.message.tree.WatchedMessageNode;
 
 /**
