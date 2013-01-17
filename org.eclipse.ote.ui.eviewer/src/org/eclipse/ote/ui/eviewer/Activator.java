@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
-	public static final String PLUGIN_ID = "lba.ote.ui.eviewer";
+	public static final String PLUGIN_ID = "org.eclipse.ote.ui.eviewer";
 	private static Activator plugin;
 
 	private BundleContext context;

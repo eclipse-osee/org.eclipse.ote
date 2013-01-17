@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 
-
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -52,7 +51,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 
 public class ElementViewer extends ViewPart {
-	public static final String VIEW_ID = "lba.ote.ui.eviewer.views.ElementViewer";
+	public static final String VIEW_ID = "org.eclipse.ote.ui.eviewer.view.ElementViewer";
 	private TableViewer viewer;
 	private AddElementAction addElementAction;
 	private ClearAllUpdatesAction clearAllUpdatesAction;

@@ -15,13 +15,13 @@
          icon="images/glasses.gif"
          category="osee.test.category"
          name="MessageView"
-         id="org.eclipse.osee.ote.ui.message.view.MessageView"/>
+         id="org.eclipse.ote.ui.message.view.MessageView"/>
       <view
          class="org.eclipse.ote.ui.message.watch.WatchView"
          icon="images/binoculars.gif"
          category="osee.test.category"
          name="MessageWatch"
-         id="org.eclipse.osee.ote.ui.message.watch.WatchView"/>
+         id="org.eclipse.ote.ui.message.watch.WatchView"/>
    </extension>
    <extension
          id="CsvRunner"
@@ -39,34 +39,7 @@
       viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
       </XNavigateItem>
    </extension>
-<extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.osee.ote.ui.TestPerspective">
-         <view
-               relationship="stack"
-               id="org.eclipse.osee.ote.ui.message.watch.WatchView"
-               relative="org.eclipse.jdt.ui.PackageExplorer">
-         </view>
-         <viewShortcut
-               id="org.eclipse.osee.ote.ui.message.watch.WatchView">
-         </viewShortcut>
-      </perspectiveExtension>
-   </extension>
-<extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.osee.ote.ui.TestPerspective">
-         <view
-               relationship="stack"
-               id="org.eclipse.osee.ote.ui.message.view.MessageView"
-               relative="org.eclipse.pde.runtime.LogView">
-         </view>
-         <viewShortcut
-               id="org.eclipse.osee.ote.ui.message.view.MessageView">
-         </viewShortcut>
-      </perspectiveExtension>
-   </extension>
+
    <extension
          id="CsvTransform"
          name="CsvTransform"

@@ -17,15 +17,6 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.osee.ote.ui.TestPerspective">
-         <viewShortcut
-               id="osee.test.muxTool.views.MuxView">
-         </viewShortcut>
-      </perspectiveExtension>
-   </extension>
-   <extension
          point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
       <XNavigateItem
             category="Messaging"

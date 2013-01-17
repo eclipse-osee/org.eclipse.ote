@@ -6,14 +6,14 @@
          point="org.eclipse.ui.views">
       <category
             name="OTE"
-            id="lba.ote.ui.eviewer">
+            id="org.eclipse.ote.ui.eviewer">
       </category>
       <view
             allowMultiple="true"
-            category="lba.ote.ui.eviewer"
+            category="org.eclipse.ote.ui.eviewer"
             class="org.eclipse.ote.ui.eviewer.view.ElementViewer"
             icon="icons/sample.gif"
-            id="lba.ote.ui.eviewer.views.ElementViewer"
+            id="org.eclipse.ote.ui.eviewer.view.ElementViewer"
             name="Element Viewer"
             restorable="true">
       </view>
