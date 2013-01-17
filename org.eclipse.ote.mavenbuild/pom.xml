@@ -99,12 +99,12 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<sonar.jdbc.url>sonar.jdbc.url:jdbc:postgresql://msa-linux-201.msc.az.boeing.com:5432/sonar</sonar.jdbc.url>
+				<sonar.jdbc.url></sonar.jdbc.url>
 				<sonar.jdbc.driverClassName>org.postgresql.Driver</sonar.jdbc.driverClassName>
 				<sonar.jdbc.username>sonar</sonar.jdbc.username>
 				<sonar.jdbc.password>sonar</sonar.jdbc.password>
 				<!-- SERVER ON A REMOTE HOST -->
-				<sonar.host.url>http://msa-linux-201.msc.az.boeing.com:9000/sonar</sonar.host.url>
+				<sonar.host.url></sonar.host.url>
 			</properties>
 		</profile>
 
