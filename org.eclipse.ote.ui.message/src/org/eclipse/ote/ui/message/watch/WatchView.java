@@ -68,8 +68,6 @@ import org.eclipse.osee.ote.message.tool.TransferConfig;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
-import org.eclipse.osee.ote.ui.message.util.ClientMessageServiceTracker;
-import org.eclipse.osee.ote.ui.message.util.IOteMessageClientView;
 import org.eclipse.ote.ui.message.OteMessageImage;
 import org.eclipse.ote.ui.message.internal.Activator;
 import org.eclipse.ote.ui.message.messageXViewer.MessageXViewer;
@@ -81,6 +79,8 @@ import org.eclipse.ote.ui.message.tree.MessageWatchLabelProvider;
 import org.eclipse.ote.ui.message.tree.RootNode;
 import org.eclipse.ote.ui.message.tree.WatchList;
 import org.eclipse.ote.ui.message.tree.WatchedMessageNode;
+import org.eclipse.ote.ui.message.util.ClientMessageServiceTracker;
+import org.eclipse.ote.ui.message.util.IOteMessageClientView;
 import org.eclipse.ote.ui.message.watch.action.ClearUpdatesAction;
 import org.eclipse.ote.ui.message.watch.action.DeleteSelectionAction;
 import org.eclipse.ote.ui.message.watch.action.SendMessageAction;
@@ -139,7 +139,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    private static final Pattern elmPattern = Pattern.compile("^(osee\\.test\\.core\\.message\\.[^.]+\\..+)\\.(.+)$");
    private static final Pattern msgPattern = Pattern.compile("^(osee\\.test\\.core\\.message\\.[^.]+\\..+)$");
 
-   public static final String VIEW_ID = "org.eclipse.osee.ote.ui.message.watch.WatchView";
+   public static final String VIEW_ID = "org.eclipse.ote.ui.message.watch.WatchView";
 
    private DetailsBox detailsBox;
    final IUdpTransferListener recBtnListener = new IUdpTransferListener() {
@@ -288,7 +288,7 @@ private MessageProviderVersion messageProviderVersion;
       recordButton.setEnabled(false);
 
       IExtension[] extensions =
-         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ote.ui.message.ToolbarItem").getExtensions();
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.ote.ui.message.ToolbarItem").getExtensions();
       for (IExtension ext : extensions) {
          for (IConfigurationElement el : ext.getConfigurationElements()) {
             if (el.getName().equals("ToolbarItem")) {
@@ -1002,8 +1002,12 @@ private MessageProviderVersion messageProviderVersion;
    }
 
    private void setNoLibraryStatus() {
-      treeViewer.getTree().setToolTipText("");
-      statusTxt.setText("no library detected");
+	  if(!treeViewer.getTree().isDisposed()){
+		  treeViewer.getTree().setToolTipText("");
+	  }
+	  if(!statusTxt.isDisposed()){
+		  statusTxt.setText("no library detected");
+	  }
    }
 
    @Override
@@ -1046,7 +1050,6 @@ private MessageProviderVersion messageProviderVersion;
 		  @Override
 		  public void run() {
 			  try {
-				  
 				  statusTxt.setText("libraries loaded");
 				  statusTxt.setToolTipText(messageProviderVersion.getVersion());
 			  } catch (Exception ex) {
@@ -1062,8 +1065,10 @@ private MessageProviderVersion messageProviderVersion;
 		  @Override
 		  public void run() {
 			  if(messageProviderVersion.isAnyAvailable()){
-				  statusTxt.setText("libraries loaded");
-				  statusTxt.setToolTipText(messageProviderVersion.getVersion());
+				  if(!statusTxt.isDisposed()){
+					  statusTxt.setText("libraries loaded");
+					  statusTxt.setToolTipText(messageProviderVersion.getVersion());
+				  }
 			  } else { 
 				  setNoLibraryStatus();
 			  } 

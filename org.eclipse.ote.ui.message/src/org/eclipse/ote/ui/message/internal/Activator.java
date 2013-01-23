@@ -18,7 +18,7 @@ import org.osgi.util.tracker.ServiceTracker;
 public class Activator extends OseeUiActivator {
 
    private static Activator pluginInstance;
-   public static final String PLUGIN_ID = "org.eclipse.osee.ote.ui.message";
+   public static final String PLUGIN_ID = "org.eclipse.ote.ui.message";
    private ServiceTracker oteClientServiceTracker;
 
    public Activator() {

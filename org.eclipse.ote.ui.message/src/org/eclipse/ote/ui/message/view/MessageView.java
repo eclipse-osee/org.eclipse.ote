@@ -87,7 +87,7 @@ public class MessageView extends ViewPart {
 
    protected Action expandAction, collapseAction, refreshAction, filterByName, bugAction;
    protected ViewerSorter nameSorter;
-   public static final String VIEW_ID = "org.eclipse.osee.ote.ui.message.view.MessageView";
+   public static final String VIEW_ID = "org.eclipse.ote.ui.message.view.MessageView";
    private Label startLabel;
    private Composite parentComposite;
    private Button searchButton;

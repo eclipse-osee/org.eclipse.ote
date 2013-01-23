@@ -12,9 +12,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.ote.message,
  org.eclipse.osee.ote.core,
- org.eclipse.osee.ote.ui.message.util,
  org.eclipse.osee.framework.plugin.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.ote.ui.eviewer.view
-Import-Package: org.eclipse.osee.framework.jdk.core.persistence
+Import-Package: org.eclipse.osee.framework.jdk.core.persistence,
+ org.eclipse.ote.ui.message.util

@@ -26,7 +26,7 @@ public class MuxToolPlugin extends AbstractUIPlugin {
    // The shared instance.
    private static MuxToolPlugin plugin;
 
-   public static String PLUGIN_ID = "org.eclipse.osee.ote.ui.mux";
+   public static String PLUGIN_ID = "org.eclipse.ote.ui.mux";
 
    /**
     * The constructor.

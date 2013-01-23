@@ -7,7 +7,6 @@ package org.eclipse.ote.ui.eviewer.action;
 
 import java.util.logging.Level;
 
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -16,10 +15,10 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.osee.ote.message.elements.Element;
-import org.eclipse.osee.ote.ui.message.util.MessageElementSelectionDialog;
-import org.eclipse.osee.ote.ui.message.util.MessageSelectionDialog;
 import org.eclipse.ote.ui.eviewer.Activator;
 import org.eclipse.ote.ui.eviewer.view.ElementContentProvider;
+import org.eclipse.ote.ui.message.util.MessageElementSelectionDialog;
+import org.eclipse.ote.ui.message.util.MessageSelectionDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /**

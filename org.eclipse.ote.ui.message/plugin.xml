@@ -43,7 +43,7 @@
    <extension
          id="CsvTransform"
          name="CsvTransform"
-         point="org.eclipse.osee.ote.ui.message.ToolbarItem">
+         point="org.eclipse.ote.ui.message.ToolbarItem">
       <ToolbarItem
             Action="org.eclipse.ote.ui.message.watch.recording.xform.CsvTransform"
             Label="Csv Transform"
