@@ -1,15 +1,16 @@
-package org.eclipse.ote.ui.message.view;
+package org.eclipse.ote.ui.message.view.internal;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ote.message.lookup.MessageInputItem;
+import org.eclipse.ote.ui.message.view.OteMessageViewImage;
 import org.eclipse.swt.graphics.Image;
 
 public class MessageViewLabelProvider implements ILabelProvider{
 
-	private static final Image elementImg = ImageManager.getImage(OteMessageImage.PIPE);
-	private static final Image messageImg = ImageManager.getImage(OteMessageImage.GEAR);
+	private static final Image elementImg = ImageManager.getImage(OteMessageViewImage.PIPE);
+	private static final Image messageImg = ImageManager.getImage(OteMessageViewImage.GEAR);
 
 	@Override
 	public void removeListener(ILabelProviderListener listener) {

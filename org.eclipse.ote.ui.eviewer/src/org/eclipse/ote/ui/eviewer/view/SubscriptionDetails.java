@@ -26,7 +26,8 @@ public class SubscriptionDetails implements ISubscriptionListener, IOSEEMessageL
 	private Message<?, ?, ?> message;
 
 	private final IUpdateListener listener;
-	private final HashSet<ElementColumn> deltaSet = new HashSet<ElementColumn>();
+	@SuppressWarnings("unused")
+   private final HashSet<ElementColumn> deltaSet = new HashSet<ElementColumn>();
 
 	public SubscriptionDetails(IMessageSubscription subscription, IUpdateListener listener) {
 		this.subscription = subscription;

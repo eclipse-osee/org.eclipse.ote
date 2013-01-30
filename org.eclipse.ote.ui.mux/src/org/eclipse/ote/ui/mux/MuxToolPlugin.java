@@ -21,6 +21,7 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class MuxToolPlugin extends AbstractUIPlugin {
 
+   @SuppressWarnings("rawtypes")
    private ServiceTracker oteClientServiceTracker;
 
    // The shared instance.
@@ -38,6 +39,7 @@ public class MuxToolPlugin extends AbstractUIPlugin {
    /**
     * This method is called upon plug-in activation
     */
+   @SuppressWarnings({ "unchecked", "rawtypes" })
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);

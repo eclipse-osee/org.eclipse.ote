@@ -14,16 +14,13 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
-/**
- * @author Andrew M. Finkbeiner
- */
-public enum OteMessageImage implements KeyedImage {
-   GEAR("gear.png"),
+public enum OteMessageViewImage implements KeyedImage {
+   GLASSES("glasses.gif"), GEAR("gear.png"),
    PIPE("pipe.png"), EXPAND_STATE("expand_state.gif"), COLLAPSE_STATE("collapse_state.gif");
    
    private final String fileName;
 
-   private OteMessageImage(String fileName) {
+   private OteMessageViewImage(String fileName) {
       this.fileName = fileName;
    }
 

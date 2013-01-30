@@ -8,14 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ote.ui.message.view;
+package org.eclipse.ote.ui.message.view.internal;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.ui.plugin.util.ViewPartUtil;
+import org.eclipse.ote.ui.message.view.MessageView;
 
-/**
- * @author Donald G. Dunne
- */
 public class MessageViewAction extends Action {
 
    public MessageViewAction() {

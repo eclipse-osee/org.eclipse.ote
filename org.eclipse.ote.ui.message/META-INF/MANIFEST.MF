@@ -24,7 +24,6 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.ote.ui.message,
  org.eclipse.ote.ui.message.internal,
  org.eclipse.ote.ui.message.tree,
- org.eclipse.ote.ui.message.view,
  org.eclipse.ote.ui.message.watch
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.core.exception,

@@ -29,6 +29,7 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class MessageSelectionDialog extends ElementListSelectionDialog {
 
+   @SuppressWarnings({ "rawtypes", "unchecked" })
    public MessageSelectionDialog(Shell parent) {
       super(parent, new ILabelProvider() {
 

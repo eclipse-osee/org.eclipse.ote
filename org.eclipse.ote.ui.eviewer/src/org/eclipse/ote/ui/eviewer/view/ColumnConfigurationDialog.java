@@ -8,7 +8,6 @@ package org.eclipse.ote.ui.eviewer.view;
 import java.util.LinkedList;
 import java.util.List;
 
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -163,6 +162,7 @@ public class ColumnConfigurationDialog extends Dialog {
       return list;
    }
 
+   @SuppressWarnings("unused")
    private ColumnDetails getFirstSelected() {
       if (columnViewer.getSelection().isEmpty()) {
          return null;

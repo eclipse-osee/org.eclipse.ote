@@ -33,6 +33,10 @@ import org.eclipse.ote.message.lookup.MessageInput;
 import org.eclipse.ote.message.lookup.MessageInputItem;
 import org.eclipse.ote.message.lookup.MessageInputUtil;
 import org.eclipse.ote.message.lookup.MessageLookup;
+import org.eclipse.ote.ui.message.view.internal.MessageInputComponent;
+import org.eclipse.ote.ui.message.view.internal.MessageViewContentProvider;
+import org.eclipse.ote.ui.message.view.internal.MessageViewLabelProvider;
+import org.eclipse.ote.ui.message.view.internal.ServiceUtility;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -58,11 +62,12 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ViewPart;
 
 public class MessageView extends ViewPart {
-   protected TreeViewer treeViewer;
-   protected Text searchText;
-   protected Action expandAction, collapseAction, filterByName, bugAction;
    public static final String VIEW_ID = "org.eclipse.ote.ui.message.view.MessageView2";
-   protected static final String PLUGIN_ID = "org.eclipse.ote.ui.message.view";
+   public static final String PLUGIN_ID = "org.eclipse.ote.ui.message.view";
+
+   private TreeViewer treeViewer;
+   private Text searchText;
+   private Action expandAction, collapseAction;
    private Label startLabel;
    private Composite parentComposite;
    private Button searchButton;
@@ -128,7 +133,7 @@ public class MessageView extends ViewPart {
       grp.setLayout(layout);
       Label l = new Label(grp, SWT.NULL);
       l.setText("Search:");
-      l.setToolTipText("Enter a regular expression filter.\nEnter space to see all.");
+      l.setToolTipText("Enter a search string.\n* is the wildcard.\nAn integer will search message ids.");
 
       searchText = new Text(grp, SWT.SINGLE | SWT.BORDER);
       searchText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -252,7 +257,7 @@ public class MessageView extends ViewPart {
       return previewMenu;
    }
 
-   protected void createActions() {
+   private void createActions() {
       final TreeViewer ftv = treeViewer;
       expandAction = new Action("Expand All") {
 
@@ -263,7 +268,7 @@ public class MessageView extends ViewPart {
             treeViewer.getTree().setRedraw(true);
          }
       };
-      expandAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageImage.EXPAND_STATE));
+      expandAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageViewImage.EXPAND_STATE));
       expandAction.setToolTipText("Expand All");
 
       collapseAction = new Action("Collapse All") {
@@ -275,11 +280,11 @@ public class MessageView extends ViewPart {
             treeViewer.getTree().setRedraw(true);
          }
       };
-      collapseAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageImage.COLLAPSE_STATE));
+      collapseAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageViewImage.COLLAPSE_STATE));
       collapseAction.setToolTipText("Collapse All");
    }
 
-   protected void createMenus() {
+   private void createMenus() {
       IMenuManager rootMenuManager = getViewSite().getActionBars().getMenuManager();
       rootMenuManager.setRemoveAllWhenShown(true);
       rootMenuManager.addMenuListener(new IMenuListener() {
@@ -292,12 +297,12 @@ public class MessageView extends ViewPart {
       fillMenu(rootMenuManager);
    }
 
-   protected void fillMenu(IMenuManager rootMenuManager) {
+   private void fillMenu(IMenuManager rootMenuManager) {
       rootMenuManager.add(expandAction);
       rootMenuManager.add(collapseAction);
    }
 
-   protected void createToolbar() {
+   private void createToolbar() {
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(expandAction);
       toolbarManager.add(collapseAction);

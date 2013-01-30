@@ -55,7 +55,6 @@ import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
-import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -256,7 +255,6 @@ private MessageProviderVersion messageProviderVersion;
       messageProviderVersion = new MessageProviderVersion();
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public void createPartControl(Composite parent) {
       final int numColumns = 4;
@@ -404,7 +402,6 @@ private MessageProviderVersion messageProviderVersion;
       treeViewer.addCustomizeToViewToolbar(this);
       createMenuActions();
 
-      setHelpContexts();
       setNoLibraryStatus();
       IOteClientService clientService = Activator.getDefault().getOteClientService();
       if (clientService == null) {
@@ -602,11 +599,6 @@ private MessageProviderVersion messageProviderVersion;
       toolbarManager.add(deleteAllAction);
       toolbarManager.add(saveAction);
       toolbarManager.add(loadAction);
-   }
-
-   private void setHelpContexts() {
-      // TODO: Change to use OteHelpContext
-      HelpUtil.setHelp(parentComposite, "message_watch", "org.eclipse.osee.ote.help.ui");
    }
 
    @Override

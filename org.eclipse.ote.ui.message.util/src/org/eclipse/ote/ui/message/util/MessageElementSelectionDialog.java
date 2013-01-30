@@ -53,6 +53,7 @@ public class MessageElementSelectionDialog extends ElementListSelectionDialog {
       setTitle("Message Element Selection");
    }
 
+   @SuppressWarnings({ "rawtypes", "unchecked" })
    private static Message<?, ?, ?> getMessage(String msg) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
       ServiceTracker tracker =
          new ServiceTracker(FrameworkUtil.getBundle(MessageElementSelectionDialog.class).getBundleContext(), MessageDefinitionProvider.class.getName(),

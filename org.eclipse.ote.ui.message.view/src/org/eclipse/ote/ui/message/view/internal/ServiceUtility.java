@@ -4,7 +4,7 @@
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
 
-package org.eclipse.ote.ui.message.view;
+package org.eclipse.ote.ui.message.view.internal;
 
 import java.util.logging.Level;
 
@@ -15,9 +15,6 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-/**
- * @author Michael P. Masterson
- */
 public class ServiceUtility {
    public static Class<ServiceUtility> getClazz(){
       return ServiceUtility.class;

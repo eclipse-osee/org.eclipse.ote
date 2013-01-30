@@ -19,6 +19,7 @@ public class Activator extends OseeUiActivator {
 
    private static Activator pluginInstance;
    public static final String PLUGIN_ID = "org.eclipse.ote.ui.message";
+   @SuppressWarnings("rawtypes")
    private ServiceTracker oteClientServiceTracker;
 
    public Activator() {
@@ -29,6 +30,7 @@ public class Activator extends OseeUiActivator {
       return pluginInstance;
    }
 
+   @SuppressWarnings({ "unchecked", "rawtypes" })
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
