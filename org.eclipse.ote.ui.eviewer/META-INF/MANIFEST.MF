@@ -17,4 +17,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.ote.ui.eviewer.view
 Import-Package: org.eclipse.osee.framework.jdk.core.persistence,
+ org.eclipse.ote.message.lookup,
  org.eclipse.ote.ui.message.util
+Service-Component: OSGI-INF/*.xml

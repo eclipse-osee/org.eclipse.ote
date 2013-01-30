@@ -428,6 +428,10 @@ private MessageProviderVersion messageProviderVersion;
                   String mwi = signalStripper.generateStringToWrite(data);
                   loadWatchFile(mwi);
                }
+            } else if (e.stateMask != SWT.CTRL && e.stateMask != SWT.ALT && e.keyCode == SWT.DEL){
+            	final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+                watchList.deleteSelection(selection);
+                refresh();
             }
          }
 
@@ -495,6 +499,7 @@ private MessageProviderVersion messageProviderVersion;
          public void run() {
             final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             watchList.deleteSelection(selection);
+            refresh();
          }
       };
 
@@ -509,7 +514,7 @@ private MessageProviderVersion messageProviderVersion;
             if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                "Delete All", "Delete All Watch Items?")) {
                watchList.deleteAll();
-               saveWatchFile();
+               refresh();
             }
          }
       };
@@ -663,7 +668,7 @@ private MessageProviderVersion messageProviderVersion;
             }
          }
       }
-      treeViewer.refresh();
+      refresh();
    }
 
    public void refresh() {

@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
+import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.ote.ui.eviewer.Activator;
 import org.eclipse.ote.ui.eviewer.ClientMessageServiceTracker;
 import org.eclipse.ote.ui.eviewer.action.AddElementAction;
@@ -297,4 +298,9 @@ public class ElementViewer extends ViewPart {
 		});
 
 	}
+	
+	public void addElement(ElementPath elementPath){
+		elementContentProvider.add(elementPath);
+	}
+	
 }
