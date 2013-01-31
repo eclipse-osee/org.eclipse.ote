@@ -40,7 +40,7 @@ public class MessageViewLabelProvider implements ILabelProvider{
 	@Override
 	public Image getImage(Object element) {
 		if(element instanceof MessageInputItem){
-			if(((MessageInputItem)element).getChildren().size() > 0){
+			if(((MessageInputItem)element).getElementPath() == null){
 				return messageImg;
 			} else {
 				return elementImg;

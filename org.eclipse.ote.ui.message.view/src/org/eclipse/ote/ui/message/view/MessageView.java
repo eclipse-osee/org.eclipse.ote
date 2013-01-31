@@ -11,8 +11,11 @@
 package org.eclipse.ote.ui.message.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,6 +28,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -33,10 +37,11 @@ import org.eclipse.ote.message.lookup.MessageInput;
 import org.eclipse.ote.message.lookup.MessageInputItem;
 import org.eclipse.ote.message.lookup.MessageInputUtil;
 import org.eclipse.ote.message.lookup.MessageLookup;
+import org.eclipse.ote.ui.message.util.CheckedSelectionDialog;
 import org.eclipse.ote.ui.message.view.internal.MessageInputComponent;
 import org.eclipse.ote.ui.message.view.internal.MessageViewContentProvider;
 import org.eclipse.ote.ui.message.view.internal.MessageViewLabelProvider;
-import org.eclipse.ote.ui.message.view.internal.ServiceUtility;
+import org.eclipse.ote.ui.message.view.internal.MessageViewServiceUtility;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -57,6 +62,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ViewPart;
@@ -64,16 +70,19 @@ import org.eclipse.ui.part.ViewPart;
 public class MessageView extends ViewPart {
    public static final String VIEW_ID = "org.eclipse.ote.ui.message.view.MessageView2";
    public static final String PLUGIN_ID = "org.eclipse.ote.ui.message.view";
+   protected static final String SEARCHING_ALL_TYPES = "Current Filter:\nSearching All Message Types";
 
    private TreeViewer treeViewer;
    private Text searchText;
-   private Action expandAction, collapseAction;
+   private Action expandAction, collapseAction, filterAction;
    private Label startLabel;
    private Composite parentComposite;
    private Button searchButton;
+   private Map<String, Boolean> filters;
 
    public MessageView() {
       super();
+      filters = new HashMap<String, Boolean>();
    }
 
    @Override
@@ -133,7 +142,7 @@ public class MessageView extends ViewPart {
       grp.setLayout(layout);
       Label l = new Label(grp, SWT.NULL);
       l.setText("Search:");
-      l.setToolTipText("Enter a search string.\n* is the wildcard.\nAn integer will search message ids.");
+      l.setToolTipText("Enter a search string.\n* is the wildcard.\nAn integer will search message ids.\n* will return all messages.\n** will return all messages that have elements.");
 
       searchText = new Text(grp, SWT.SINGLE | SWT.BORDER);
       searchText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -196,9 +205,20 @@ public class MessageView extends ViewPart {
     			  if (searchPattern.equals("")) {
     				  return new Status(IStatus.OK, PLUGIN_ID, "Empty Search String");
     			  }
-    			  MessageLookup messageLookup = ServiceUtility.getService(MessageLookup.class);
+    			  MessageLookup messageLookup = MessageViewServiceUtility.getService(MessageLookup.class);
     			  if(messageLookup != null){
-    				  final List<MessageInputItem> results = MessageInputUtil.messageLookupResultToMessageInputItem( messageLookup.lookup(searchTxt));
+    				  final List<MessageInputItem> results;
+    				  List<String> searchFilters = new ArrayList<String>();
+    				  for(Entry<String, Boolean> entry:filters.entrySet()){
+    				     if(entry.getValue()){
+    				        searchFilters.add(entry.getKey());
+    				     }
+    				  }
+    				  if(isFiltered() && searchFilters.size() > 0){
+    				     results = MessageInputUtil.messageLookupResultToMessageInputItem( messageLookup.lookup(searchTxt, searchFilters.toArray(new String[0])));
+    				  } else {
+    				     results = MessageInputUtil.messageLookupResultToMessageInputItem( messageLookup.lookup(searchTxt));
+    				  }
     				  Displays.ensureInDisplayThread(new Runnable() {
     					  @Override
     					  public void run() {
@@ -229,7 +249,7 @@ public class MessageView extends ViewPart {
 
    private Menu getPopupMenu(final Composite composite) {
       final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-      MessageInputComponent messageInputComponent = ServiceUtility.getService(MessageInputComponent.class);
+      MessageInputComponent messageInputComponent = MessageViewServiceUtility.getService(MessageInputComponent.class);
       
       if(selection.isEmpty() || messageInputComponent.getMessageInputs().size() == 0){
     	  return null;
@@ -282,6 +302,77 @@ public class MessageView extends ViewPart {
       };
       collapseAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageViewImage.COLLAPSE_STATE));
       collapseAction.setToolTipText("Collapse All");
+      
+      filterAction = new Action("Search Filters"){
+         @Override
+         public void run() {
+            Shell shell = Displays.getActiveShell();
+            MessageLookup messageLookup = MessageViewServiceUtility.getService(MessageLookup.class);
+            for(String filter:messageLookup.getAvailableMessageTypes()){
+               Boolean val = filters.get(filter);
+               if(val == null){
+                  filters.put(filter, true);
+               } else {
+                  filters.put(filter, val);
+               }
+            }
+            CheckedSelectionDialog msgSelectionDialog = new CheckedSelectionDialog(shell, "Message Types To Search", filters);
+            if (msgSelectionDialog.open() == Window.OK) {
+               if(allOff()){
+                  selectAllMemTypes();
+               }
+               filterAction.setToolTipText(getFilterTooltip(filters));
+            }
+         }
+
+         private String getFilterTooltip(Map<String, Boolean> filters) {
+            if(isFiltered()){
+               StringBuilder sb = new StringBuilder();
+               sb.append("Current Filter:\n");
+               for(Entry<String, Boolean> entry:filters.entrySet()){
+                  if(entry.getValue()){
+                     sb.append("Searching ");
+                  } else {
+                     sb.append("Ignoring ");
+                  }
+                  sb.append(entry.getKey());
+                  sb.append(" Message Type\n");
+               }
+               return sb.toString();
+            } else {
+               return SEARCHING_ALL_TYPES;
+            }
+         }
+      };
+      filterAction.setToolTipText(SEARCHING_ALL_TYPES);
+   }
+   
+   private void selectAllMemTypes(){
+      for(Entry<String, Boolean> entry:filters.entrySet()){
+         entry.setValue(true);
+      }
+   }
+   
+   private boolean isFiltered(){
+      boolean allOn = true;
+      for(Boolean selected:filters.values()){
+         if(!selected){
+            allOn = false;
+            break;
+         }
+      }
+      return !allOn;
+   }
+   
+   private boolean allOff(){
+      boolean allOff = true;
+      for(Boolean selected:filters.values()){
+         if(selected){
+            allOff = false;
+            break;
+         }
+      }
+      return allOff;
    }
 
    private void createMenus() {
@@ -304,8 +395,10 @@ public class MessageView extends ViewPart {
 
    private void createToolbar() {
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+      toolbarManager.add(filterAction);
       toolbarManager.add(expandAction);
       toolbarManager.add(collapseAction);
+      
    }
 
    /*

@@ -15,26 +15,26 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-public class ServiceUtility {
-   public static Class<ServiceUtility> getClazz(){
-      return ServiceUtility.class;
+public class MessageViewServiceUtility {
+   public static Class<MessageViewServiceUtility> getClazz(){
+      return MessageViewServiceUtility.class;
    }
 
    @SuppressWarnings({ "rawtypes", "unchecked" })
    public static <T> T getService(Class<T> clazz){
       BundleContext context = getContext();
       if(context == null){
-    	 OseeLog.log(ServiceUtility.class, Level.SEVERE, "Unable to get service " + clazz.getName());
+    	 OseeLog.log(MessageViewServiceUtility.class, Level.SEVERE, "Unable to get service " + clazz.getName());
          return null;
       }
       ServiceReference serviceReference = context.getServiceReference(clazz.getName());
       if(serviceReference == null){
-    	 OseeLog.log(ServiceUtility.class, Level.SEVERE, "Unable to get service " + clazz.getName());
+    	 OseeLog.log(MessageViewServiceUtility.class, Level.SEVERE, "Unable to get service " + clazz.getName());
          return null;
       }
       T obj = (T)getContext().getService(serviceReference);
       if(obj == null){
-    	  OseeLog.log(ServiceUtility.class, Level.SEVERE, "Unable to get service " + clazz.getName());
+    	  OseeLog.log(MessageViewServiceUtility.class, Level.SEVERE, "Unable to get service " + clazz.getName());
       }
       return obj; 
    }

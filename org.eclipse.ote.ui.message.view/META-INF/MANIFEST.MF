@@ -10,6 +10,7 @@ Import-Package: org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.ui.plugin.util,
  org.eclipse.osee.framework.ui.plugin.xnavigate,
  org.eclipse.osee.framework.ui.swt,
- org.eclipse.ote.message.lookup
+ org.eclipse.ote.message.lookup,
+ org.eclipse.ote.ui.message.util
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/MessageInputConsumerComponent.xml
