@@ -16,10 +16,11 @@ public class CheckedSelectionDialog extends TrayDialog {
 
    private Map<String, Boolean> selections;
    private Table table;
+   private String title;
    
    public CheckedSelectionDialog(Shell shell, String title, Map<String, Boolean> selections) {
       super(shell);
-      shell.setText(title);
+      this.title = title;
       this.selections = selections;
    }
 
@@ -35,6 +36,7 @@ public class CheckedSelectionDialog extends TrayDialog {
          item.setChecked(selections.get(filterArray[i]));
       }
       table.setLayoutData(new GridData(GridData.FILL_BOTH));
+      getShell().setText(title);
       return dialogArea;
    }
    

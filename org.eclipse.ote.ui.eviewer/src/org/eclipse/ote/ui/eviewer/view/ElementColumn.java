@@ -44,6 +44,7 @@ private final TableViewerColumn column;
    private final TableViewer table;
    private final AtomicBoolean valueUpdatedFlag = new AtomicBoolean(false);
    private String tip;
+   private String verbosetext;
 	
    ElementColumn(TableViewer table, final int index, ElementPath path) {
       super();
@@ -55,6 +56,7 @@ private final TableViewerColumn column;
 
       message = path.getMessageClass();
       text = path.toString();
+      verbosetext = getMessageName(message) + "." + path.toString();
       column.getColumn().setText(text);
       column.getColumn().setWidth(125);
       column.getColumn().setMoveable(true);
@@ -132,6 +134,10 @@ private final TableViewerColumn column;
 
    public String getName() {
       return text;
+   }
+   
+   public String getVerboseName() {
+      return verbosetext;
    }
 
    public String getMessageClassName() {

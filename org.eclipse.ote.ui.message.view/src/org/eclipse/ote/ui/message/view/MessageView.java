@@ -11,6 +11,7 @@
 package org.eclipse.ote.ui.message.view;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -68,7 +69,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ViewPart;
 
 public class MessageView extends ViewPart {
-   public static final String VIEW_ID = "org.eclipse.ote.ui.message.view.MessageView2";
+   public static final String VIEW_ID = "org.eclipse.ote.ui.message.view.MessageView";
    public static final String PLUGIN_ID = "org.eclipse.ote.ui.message.view";
    protected static final String SEARCHING_ALL_TYPES = "Current Filter:\nSearching All Message Types";
 
@@ -329,13 +330,16 @@ public class MessageView extends ViewPart {
             if(isFiltered()){
                StringBuilder sb = new StringBuilder();
                sb.append("Current Filter:\n");
-               for(Entry<String, Boolean> entry:filters.entrySet()){
-                  if(entry.getValue()){
+               List<String> keys = new ArrayList<String>();
+               keys.addAll(filters.keySet());
+               Collections.sort(keys);
+               for(String key:keys){
+                  if(filters.get(key)){
                      sb.append("Searching ");
                   } else {
                      sb.append("Ignoring ");
                   }
-                  sb.append(entry.getKey());
+                  sb.append(key);
                   sb.append(" Message Type\n");
                }
                return sb.toString();

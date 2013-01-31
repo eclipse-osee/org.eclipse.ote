@@ -39,6 +39,10 @@ public class MessageElementSelectionDialog extends ElementListSelectionDialog {
       this(parent, msg, null, false);
    }
    
+   public MessageElementSelectionDialog(Shell parent, Message<?, ?, ?> msg, ElementFilter filter) {
+      this(parent, msg, filter, false);
+   }
+   
    public MessageElementSelectionDialog(Shell parent, String msg, boolean headerOnly) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
       this(parent, getMessage(msg), null, headerOnly);
    }
