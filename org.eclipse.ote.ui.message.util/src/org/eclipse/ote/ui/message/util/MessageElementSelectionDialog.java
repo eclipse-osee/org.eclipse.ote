@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ote.ui.message.util;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.message.ElementPath;
+import org.eclipse.osee.ote.message.IMessageHeader;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.MessageDefinitionProvider;
 import org.eclipse.osee.ote.message.elements.Element;
@@ -34,18 +36,31 @@ import org.osgi.util.tracker.ServiceTracker;
 public class MessageElementSelectionDialog extends ElementListSelectionDialog {
 
    public MessageElementSelectionDialog(Shell parent, Message<?, ?, ?> msg) {
-      this(parent, msg, null);
+      this(parent, msg, null, false);
+   }
+   
+   public MessageElementSelectionDialog(Shell parent, Message<?, ?, ?> msg, ElementFilter filter) {
+      this(parent, msg, filter, false);
+   }
+   
+   public MessageElementSelectionDialog(Shell parent, String msg, boolean headerOnly) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+      this(parent, getMessage(msg), null, headerOnly);
    }
 
    public MessageElementSelectionDialog(Shell parent, String msg, ElementFilter filter) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalStateException {
-      this(parent, getMessage(msg), filter);
+      this(parent, getMessage(msg), filter, false);
    }
 
-   public MessageElementSelectionDialog(Shell parent, Message<?, ?, ?> msg, ElementFilter filter) {
+   public MessageElementSelectionDialog(Shell parent, Message<?, ?, ?> msg, ElementFilter filter, boolean headerOnly) {
       super(parent, new LabelProvider());
       LinkedList<Element> topLevelElements = new LinkedList<Element>();
       LinkedList<Element> filterElements = new LinkedList<Element>();
-      msg.getAllElements(topLevelElements);
+      if(headerOnly){
+         IMessageHeader header = msg.getActiveDataSource().getMsgHeader();
+         Collections.addAll(topLevelElements, header.getElements());
+      } else {
+         msg.getAllElements(topLevelElements);
+      }
 
       process(filter, topLevelElements, filterElements);
       setElements(filterElements.toArray());
@@ -53,6 +68,7 @@ public class MessageElementSelectionDialog extends ElementListSelectionDialog {
       setTitle("Message Element Selection");
    }
 
+   @SuppressWarnings({ "rawtypes", "unchecked" })
    private static Message<?, ?, ?> getMessage(String msg) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
       ServiceTracker tracker =
          new ServiceTracker(FrameworkUtil.getBundle(MessageElementSelectionDialog.class).getBundleContext(), MessageDefinitionProvider.class.getName(),

@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.osee.ote.message.elements.Element;
+import org.eclipse.ote.message.lookup.MessageLookupResult;
 import org.eclipse.ote.ui.eviewer.Activator;
 import org.eclipse.ote.ui.eviewer.view.ElementContentProvider;
 import org.eclipse.ote.ui.message.util.MessageElementSelectionDialog;
@@ -39,17 +40,17 @@ public class AddElementAction extends Action {
       Shell shell = Displays.getActiveShell();
       MessageSelectionDialog msgSelectionDialog = new MessageSelectionDialog(shell);
       if (msgSelectionDialog.open() == Window.OK) {
-         Object[] result = msgSelectionDialog.getResult();
-         String msgClassName = (String) result[0];
+         Object[] result = (Object[])msgSelectionDialog.getResult();
+         String msgClassName = ((MessageLookupResult) result[0]).getClassName();
          try {
             MessageElementSelectionDialog msgElementSelectionDialog =
                new MessageElementSelectionDialog(shell, msgClassName, null);
             msgElementSelectionDialog.setMultipleSelection(true);
             msgElementSelectionDialog.setIgnoreCase(true);
             msgElementSelectionDialog.open();
-            result = msgElementSelectionDialog.getResult();
-            if (result != null) {
-               for (Object r : result) {
+            Object[] elementresult = msgElementSelectionDialog.getResult();
+            if (elementresult != null) {
+               for (Object r : elementresult) {
                   Element element = (Element) r;
                   elementContentProvider.add(new ElementPath(element.getElementPath()));
                }

@@ -7,7 +7,6 @@ package org.eclipse.ote.ui.eviewer.action;
 
 import java.util.HashSet;
 
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.ote.ui.eviewer.view.ElementColumn;
 import org.eclipse.ote.ui.eviewer.view.ElementContentProvider;
@@ -29,7 +28,7 @@ public class RemoveColumnAction extends Action {
 	@Override
 	public void run() {
 
-		ElementListSelectionDialog dialog = new ElementListSelectionDialog(Display.getCurrent().getActiveShell(),new ElementLabelProvider());
+		ElementListSelectionDialog dialog = new ElementListSelectionDialog(Display.getCurrent().getActiveShell(),new ElementMessageLabelProvider());
 		dialog.setElements(elementContentProvider.getColumns().toArray());
 		dialog.setTitle("Remove Columns");
 		dialog.setMessage("Select one or more columns to remove");

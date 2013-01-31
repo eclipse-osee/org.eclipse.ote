@@ -55,7 +55,6 @@ import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
-import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -256,7 +255,6 @@ private MessageProviderVersion messageProviderVersion;
       messageProviderVersion = new MessageProviderVersion();
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public void createPartControl(Composite parent) {
       final int numColumns = 4;
@@ -404,7 +402,6 @@ private MessageProviderVersion messageProviderVersion;
       treeViewer.addCustomizeToViewToolbar(this);
       createMenuActions();
 
-      setHelpContexts();
       setNoLibraryStatus();
       IOteClientService clientService = Activator.getDefault().getOteClientService();
       if (clientService == null) {
@@ -428,6 +425,10 @@ private MessageProviderVersion messageProviderVersion;
                   String mwi = signalStripper.generateStringToWrite(data);
                   loadWatchFile(mwi);
                }
+            } else if (e.stateMask != SWT.CTRL && e.stateMask != SWT.ALT && e.keyCode == SWT.DEL){
+            	final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+                watchList.deleteSelection(selection);
+                refresh();
             }
          }
 
@@ -495,6 +496,7 @@ private MessageProviderVersion messageProviderVersion;
          public void run() {
             final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             watchList.deleteSelection(selection);
+            refresh();
          }
       };
 
@@ -509,7 +511,7 @@ private MessageProviderVersion messageProviderVersion;
             if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                "Delete All", "Delete All Watch Items?")) {
                watchList.deleteAll();
-               saveWatchFile();
+               refresh();
             }
          }
       };
@@ -599,11 +601,6 @@ private MessageProviderVersion messageProviderVersion;
       toolbarManager.add(loadAction);
    }
 
-   private void setHelpContexts() {
-      // TODO: Change to use OteHelpContext
-      HelpUtil.setHelp(parentComposite, "message_watch", "org.eclipse.osee.ote.help.ui");
-   }
-
    @Override
    public void setFocus() {
       // Set focus so that context sensitive help will work as soon as this
@@ -663,7 +660,7 @@ private MessageProviderVersion messageProviderVersion;
             }
          }
       }
-      treeViewer.refresh();
+      refresh();
    }
 
    public void refresh() {

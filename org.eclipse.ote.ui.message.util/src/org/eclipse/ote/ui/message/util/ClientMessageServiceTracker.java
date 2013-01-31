@@ -11,6 +11,7 @@
 package org.eclipse.ote.ui.message.util;
 
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.osgi.framework.BundleContext;
@@ -20,15 +21,18 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Ken J. Aguilar
  */
+@SuppressWarnings("rawtypes")
 public class ClientMessageServiceTracker extends ServiceTracker {
 
    private final IOteMessageClientView viewer;
 
+   @SuppressWarnings("unchecked")
    public ClientMessageServiceTracker(BundleContext context, IOteMessageClientView viewer) {
       super(context, IOteMessageService.class.getName(), null);
       this.viewer = viewer;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public synchronized Object addingService(ServiceReference reference) {
       IOteMessageService service = (IOteMessageService) super.addingService(reference);
@@ -40,6 +44,7 @@ public class ClientMessageServiceTracker extends ServiceTracker {
       return service;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public synchronized void removedService(ServiceReference reference, Object service) {
       try {

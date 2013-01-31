@@ -16,10 +16,13 @@
 	<name>Eclipse OTE Parent (Incubation)</name>
 
 	<modules>
+	   <module>../org.eclipse.ote.message.lookup</module>
 		<module>../org.eclipse.ote.ui.message.util</module>
 		<module>../org.eclipse.ote.ui.eviewer</module>
 		<module>../org.eclipse.ote.ui.message</module>
+		<module>../org.eclipse.ote.ui.message.view</module>
 		<module>../org.eclipse.ote.ui.mux</module>
+		<module>../org.eclipse.ote.serverclient.feature</module>
 		<module>../org.eclipse.ote.client.feature</module>
 
 		<module>../org.eclipse.ote.p2</module>

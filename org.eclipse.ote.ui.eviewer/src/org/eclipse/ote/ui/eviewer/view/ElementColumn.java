@@ -8,7 +8,6 @@ package org.eclipse.ote.ui.eviewer.view;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -45,6 +44,7 @@ private final TableViewerColumn column;
    private final TableViewer table;
    private final AtomicBoolean valueUpdatedFlag = new AtomicBoolean(false);
    private String tip;
+   private String verbosetext;
 	
    ElementColumn(TableViewer table, final int index, ElementPath path) {
       super();
@@ -55,7 +55,8 @@ private final TableViewerColumn column;
       column = new TableViewerColumn(table, SWT.LEFT);
 
       message = path.getMessageClass();
-      text = getMessageName(message) + "." + path.toString();
+      text = path.toString();
+      verbosetext = getMessageName(message) + "." + path.toString();
       column.getColumn().setText(text);
       column.getColumn().setWidth(125);
       column.getColumn().setMoveable(true);
@@ -134,6 +135,10 @@ private final TableViewerColumn column;
    public String getName() {
       return text;
    }
+   
+   public String getVerboseName() {
+      return verbosetext;
+   }
 
    public String getMessageClassName() {
       return message;
@@ -177,7 +182,7 @@ private final TableViewerColumn column;
 			if (element == null) {
 				tip = "The element " + getElementPath() + " does not exist on " + getMessageClassName();
 			} else {
-				tip = String.format("%s\nByte Offset: %d\nMSB: %d\nLSB: %d", text, element.getByteOffset(), element.getMsb(),
+				tip = String.format("%s.%s\nByte Offset: %d\nMSB: %d\nLSB: %d",  getMessageName(getMessageClassName()), text, element.getByteOffset(), element.getMsb(),
 			            element.getLsb());
 			}
 			column.getColumn().setToolTipText(tip);

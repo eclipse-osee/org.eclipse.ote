@@ -14,9 +14,11 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
+import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.ote.ui.eviewer.Activator;
 import org.eclipse.ote.ui.eviewer.ClientMessageServiceTracker;
 import org.eclipse.ote.ui.eviewer.action.AddElementAction;
+import org.eclipse.ote.ui.eviewer.action.AddHeaderElementAction;
 import org.eclipse.ote.ui.eviewer.action.ClearAllUpdatesAction;
 import org.eclipse.ote.ui.eviewer.action.ConfigureColumnsAction;
 import org.eclipse.ote.ui.eviewer.action.CopyAllAction;
@@ -54,6 +56,7 @@ public class ElementViewer extends ViewPart {
 	public static final String VIEW_ID = "org.eclipse.ote.ui.eviewer.view.ElementViewer";
 	private TableViewer viewer;
 	private AddElementAction addElementAction;
+	private AddHeaderElementAction addHeaderElementAction;
 	private ClearAllUpdatesAction clearAllUpdatesAction;
 	private ToggleAutoRevealAction toggleAutoRevealAction;
 	private RemoveColumnAction removeColumnAction;
@@ -123,6 +126,7 @@ public class ElementViewer extends ViewPart {
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(addElementAction);
+		manager.add(addHeaderElementAction);
 		if (!elementContentProvider.getColumns().isEmpty()) {
 			manager.add(new Separator());
 			manager.add(activeColumnAction);
@@ -151,6 +155,7 @@ public class ElementViewer extends ViewPart {
 	}
 
 	private void makeActions() {
+	   addHeaderElementAction = new AddHeaderElementAction(elementContentProvider);
 		addElementAction = new AddElementAction(elementContentProvider);
 		addElementAction.setEnabled(false);
 		clearAllUpdatesAction = new ClearAllUpdatesAction(
@@ -221,6 +226,7 @@ public class ElementViewer extends ViewPart {
 				streamToFileAction.setChecked(true);
 				configureColumnAction.setEnabled(false);
 				addElementAction.setEnabled(false);
+				addHeaderElementAction.setEnabled(false);
 				removeColumnAction.setEnabled(false);
 				if (disableRendering) {
 					viewer.getTable().update();
@@ -248,6 +254,7 @@ public class ElementViewer extends ViewPart {
 					elementContentProvider.streamToFile(null);
 					configureColumnAction.setEnabled(true);
 					addElementAction.setEnabled(true);
+					addHeaderElementAction.setEnabled(true);
 					removeColumnAction.setEnabled(true);
 					streamToFileAction.setChecked(false);
 					
@@ -274,6 +281,7 @@ public class ElementViewer extends ViewPart {
 			@Override
 			public void run() {
 				addElementAction.setEnabled(true);
+				addHeaderElementAction.setEnabled(true);
 				viewer.setInput(service);
 				if (getViewSite().getSecondaryId() == null) {
 					elementContentProvider.loadLastColumns();
@@ -289,6 +297,7 @@ public class ElementViewer extends ViewPart {
 			@Override
 			public void run() {
 				addElementAction.setEnabled(false);
+				addHeaderElementAction.setEnabled(false);
 				if (viewer.getTable().isDisposed()) {
 					return;
 				}
@@ -297,4 +306,9 @@ public class ElementViewer extends ViewPart {
 		});
 
 	}
+	
+	public void addElement(ElementPath elementPath){
+		elementContentProvider.add(elementPath);
+	}
+	
 }

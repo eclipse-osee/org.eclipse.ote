@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.eclipse.ote.ui.message.view.messageinput">
+   <implementation class="org.eclipse.ote.ui.message.view.internal.MessageInputComponent"/>
+   <reference bind="addMessageInput" cardinality="0..n" interface="org.eclipse.ote.message.lookup.MessageInput" name="MessageInput" policy="dynamic" unbind="removeMessageInput"/>
+   <service>
+      <provide interface="org.eclipse.ote.ui.message.view.internal.MessageInputComponent"/>
+   </service>
+</scr:component>

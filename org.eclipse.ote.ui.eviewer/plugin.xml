@@ -5,12 +5,12 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            name="OTE"
-            id="org.eclipse.ote.ui.eviewer">
+            name="OTE Messaging"
+            id="org.eclipse.ote.ui.messaging">
       </category>
       <view
             allowMultiple="true"
-            category="org.eclipse.ote.ui.eviewer"
+            category="org.eclipse.ote.ui.messaging"
             class="org.eclipse.ote.ui.eviewer.view.ElementViewer"
             icon="icons/sample.gif"
             id="org.eclipse.ote.ui.eviewer.view.ElementViewer"
