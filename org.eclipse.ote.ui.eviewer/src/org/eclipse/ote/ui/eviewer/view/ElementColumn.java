@@ -8,7 +8,6 @@ package org.eclipse.ote.ui.eviewer.view;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -55,7 +54,7 @@ private final TableViewerColumn column;
       column = new TableViewerColumn(table, SWT.LEFT);
 
       message = path.getMessageClass();
-      text = getMessageName(message) + "." + path.toString();
+      text = path.toString();
       column.getColumn().setText(text);
       column.getColumn().setWidth(125);
       column.getColumn().setMoveable(true);
@@ -177,7 +176,7 @@ private final TableViewerColumn column;
 			if (element == null) {
 				tip = "The element " + getElementPath() + " does not exist on " + getMessageClassName();
 			} else {
-				tip = String.format("%s\nByte Offset: %d\nMSB: %d\nLSB: %d", text, element.getByteOffset(), element.getMsb(),
+				tip = String.format("%s.%s\nByte Offset: %d\nMSB: %d\nLSB: %d",  getMessageName(getMessageClassName()), text, element.getByteOffset(), element.getMsb(),
 			            element.getLsb());
 			}
 			column.getColumn().setToolTipText(tip);
