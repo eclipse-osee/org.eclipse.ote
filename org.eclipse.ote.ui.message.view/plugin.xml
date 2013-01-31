@@ -12,8 +12,8 @@
             category="org.eclipse.ote.ui.messaging"
             class="org.eclipse.ote.ui.message.view.MessageView"
             icon="images/glasses.gif"
-            id="org.eclipse.ote.ui.message.view.MessageView2"
-            name="Message View2"
+            id="org.eclipse.ote.ui.message.view.MessageView"
+            name="Message View"
             restorable="true">
       </view>
    </extension>
