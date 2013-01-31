@@ -336,11 +336,17 @@ public class MessageView extends ViewPart {
                for(String key:keys){
                   if(filters.get(key)){
                      sb.append("Searching ");
-                  } else {
+                     sb.append(key);
+                     sb.append(" Message Type\n");
+                  } 
+               }
+               sb.append("---------------------------\n");
+               for(String key:keys){
+                  if(!filters.get(key)){
                      sb.append("Ignoring ");
-                  }
-                  sb.append(key);
-                  sb.append(" Message Type\n");
+                     sb.append(key);
+                     sb.append(" Message Type\n");
+                  } 
                }
                return sb.toString();
             } else {
