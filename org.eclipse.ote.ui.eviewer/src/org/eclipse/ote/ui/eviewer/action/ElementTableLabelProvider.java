@@ -23,7 +23,7 @@ public class ElementTableLabelProvider implements ITableLabelProvider {
    @Override
    public String getColumnText(Object element, int columnIndex) {
       if (columnIndex == 0) {
-         return ((ColumnDetails) element).getName();
+         return ((ColumnDetails) element).getVerboseName();
       }
       return ((ColumnDetails) element).isActive() ? "Active" : "Not Active";
    }
