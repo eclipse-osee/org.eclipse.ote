@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.TableColumn;
 public class ElementColumn implements ISubscriptionListener {
 
    private static final String UNKNOWN_VALUE = "???";
-private final TableViewerColumn column;
+   private final TableViewerColumn column;
    private final String message;
    private final ElementPath path;
    private DiscreteElement<?> element;
@@ -39,17 +39,21 @@ private final TableViewerColumn column;
 
    private final Image activeImg;
    private final Image inactive;
+   private final Image duplicate;
    private final String text;
    private volatile int index;
    private final TableViewer table;
    private final AtomicBoolean valueUpdatedFlag = new AtomicBoolean(false);
    private String tip;
    private String verbosetext;
+   private boolean duplicateName = false;
 	
    ElementColumn(TableViewer table, final int index, ElementPath path) {
       super();
-      activeImg = Activator.getDefault().getImageRegistry().get("ACTIVE_PNG");
+      activeImg = null;
       inactive = Activator.getDefault().getImageRegistry().get("INACTIVE_PNG");
+      duplicate = Activator.getDefault().getImageRegistry().get("DUPLICATE_PNG");
+      
       this.table = table;
       this.path = path;
       column = new TableViewerColumn(table, SWT.LEFT);
@@ -136,6 +140,22 @@ private final TableViewerColumn column;
       return text;
    }
    
+   public String getElementText() {
+      return text;
+   }
+   
+   public boolean isDuplicateName() {
+      return duplicateName;
+   }
+
+   public void setDuplicateName(boolean duplicateName) {
+      this.duplicateName = duplicateName;
+      if(active){
+         column.getColumn().setImage(duplicateName ? duplicate : activeImg);
+      }
+      setToolTip();
+   }
+
    public String getVerboseName() {
       return verbosetext;
    }
@@ -179,13 +199,7 @@ private final TableViewerColumn column;
 
 		@Override
 		public void run() {
-			if (element == null) {
-				tip = "The element " + getElementPath() + " does not exist on " + getMessageClassName();
-			} else {
-				tip = String.format("%s.%s\nByte Offset: %d\nMSB: %d\nLSB: %d",  getMessageName(getMessageClassName()), text, element.getByteOffset(), element.getMsb(),
-			            element.getLsb());
-			}
-			column.getColumn().setToolTipText(tip);
+		   setToolTip();
 		}
 	   });
       lastValueReference.set(element != null ? element.getValue() : UNKNOWN_VALUE);
@@ -197,6 +211,20 @@ private final TableViewerColumn column;
       element = null;
       lastValueReference.set(UNKNOWN_VALUE);
 
+   }
+   
+   private void setToolTip(){
+      String tip = "";
+      if (element == null) {
+         tip = "The element " + getElementPath() + " does not exist on " + getMessageClassName();
+      } else {
+         tip = String.format("%s.%s\nByte Offset: %d\nMSB: %d\nLSB: %d",  getMessageName(getMessageClassName()), text, element.getByteOffset(), element.getMsb(),
+                  element.getLsb());
+         if(duplicateName){
+            tip = "Note: Duplicate name in view\n" + tip;
+         }
+      }
+      column.getColumn().setToolTipText(tip);
    }
 
    /**

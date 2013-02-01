@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
-
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -204,12 +204,32 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 		for (ElementColumn column : elementColumns) {
 			valueMap.put(column, sorter.orderOf(column.recheckIndex()));
 		}
+		
+		determineConflicts();
 
 		sorter.sort(elementColumns);
 
 	}
 
-	/**
+	private void determineConflicts() {
+	   Map<String, Boolean> conflicts = new HashMap<String, Boolean>();
+	   for (ElementColumn column : elementColumns) {
+	      if(conflicts.containsKey(column.getElementText())){
+	         conflicts.put(column.getElementText(), true);
+	      } else {
+	         conflicts.put(column.getElementText(), false);
+	      }
+      }
+	   for (ElementColumn column : elementColumns) {
+         if(conflicts.get(column.getElementText())){
+            column.setDuplicateName(true);
+         } else {
+            column.setDuplicateName(false);
+         }
+      }
+   }
+
+   /**
 	 * @param autoReveal the autoReveal to set
 	 */
 	public void setAutoReveal(boolean autoReveal) {

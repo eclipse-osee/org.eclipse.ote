@@ -53,7 +53,7 @@ public class Activator extends AbstractUIPlugin {
 	protected void initializeImageRegistry(ImageRegistry reg) {
 		reg.put("ACTIVE_PNG", getImageDescriptor("icons/active.png"));
 		reg.put("INACTIVE_PNG", getImageDescriptor("icons/inactive.png"));
-		
+		reg.put("DUPLICATE_PNG", getImageDescriptor("icons/question_white.png"));
 	}
 
 	BundleContext getBundleContext() {
