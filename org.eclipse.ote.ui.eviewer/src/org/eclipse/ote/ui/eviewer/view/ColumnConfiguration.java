@@ -127,6 +127,7 @@ public class ColumnConfiguration {
 		for (ColumnDetails details : columns) {
 			details.apply();
 		}
+		provider.determineConflicts();
 
 	}
 

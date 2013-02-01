@@ -43,4 +43,7 @@ public class ColumnDetails {
       return column.getName();
    }
 
+   public String getVerboseName() {
+      return column.getVerboseName();
+   }
 }

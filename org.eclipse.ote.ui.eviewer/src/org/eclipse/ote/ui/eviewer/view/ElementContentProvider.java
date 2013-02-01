@@ -211,7 +211,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
 	}
 
-	private void determineConflicts() {
+	void determineConflicts() {
 	   Map<String, Boolean> conflicts = new HashMap<String, Boolean>();
 	   for (ElementColumn column : elementColumns) {
 	      if(conflicts.containsKey(column.getElementText())){
