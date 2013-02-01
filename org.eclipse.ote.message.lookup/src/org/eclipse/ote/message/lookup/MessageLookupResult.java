@@ -29,6 +29,10 @@ public class MessageLookupResult {
 		elements = new ArrayList<String>();
 	}
 	
+	public String getMessageType(){
+	   return messageType;
+	}
+	
 	public String toString(){
 		return String.format("%s name[%s] type[%s] id[%d]", messageClass, messageName, messageType, id);
 	}
