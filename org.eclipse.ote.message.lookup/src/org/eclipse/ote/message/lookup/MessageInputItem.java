@@ -9,18 +9,32 @@ public class MessageInputItem {
 	private String name;
 	private Object[] elementPath;
 	private List<MessageInputItem> children;
+   private String type;
 	
-	public MessageInputItem(String messageClass){
+
+   public MessageInputItem(String messageClass){
 		this.messageClass = messageClass;
 		this.name = messageClass;
+		this.type = "";
 		children = new ArrayList<MessageInputItem>();
 	}
 	
-	public MessageInputItem(String name, String messageClass){
+   public MessageInputItem(String name, String messageClass){
+      this(messageClass);
+      this.type = "";
+      this.name = name;
+   }
+   
+	public MessageInputItem(String name, String type, String messageClass){
 		this(messageClass);
+		this.type = type;
 		this.name = name;
 	}
 	
+	public String getType() {
+	   return type;
+	}
+
 	public void addElementPath(Object... elementPath){
 		this.elementPath = elementPath;
 	}
