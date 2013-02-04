@@ -12,7 +12,19 @@ public class MessageInputUtil {
 			messageInput.add(inputItem);
 			for(String element:result.getElements()){
 				MessageInputItem elementItem = new MessageInputItem(element, result.getClassName());
-				elementItem.addElementPath(result.getClassName(), element);
+				String[] paths = element.split("\\+");
+				List<Object> elementObjs = new ArrayList<Object>();
+				elementObjs.add(result.getClassName());
+				for(String path:paths){
+				   int number = 0;
+				   try{
+				      number = Integer.parseInt(path);
+				      elementObjs.add(number);
+				   } catch(NumberFormatException ex){
+				      elementObjs.add(path);
+				   }
+				}
+				elementItem.addElementPath(elementObjs.toArray());
 				inputItem.addChild(elementItem);
 			}
 		}
