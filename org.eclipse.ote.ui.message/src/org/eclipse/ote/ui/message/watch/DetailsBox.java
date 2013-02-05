@@ -52,7 +52,7 @@ import org.osgi.framework.Bundle;
  * @author Ken J. Aguilar
  */
 public class DetailsBox implements IRegistryEventListener {
-   private static final String EXTENSION_POINT_ID = "org.eclipse.osee.ote.ui.message.detailsProvider";
+   private static final String EXTENSION_POINT_ID = "org.eclipse.ote.ui.message.detailsProvider";
    private static final String ELEMENT = "TabProvider";
    private static final String PAYLOAD_TXT = "\npayload:\n    0:  ";
    private static final String HEADER_TXT = "header:\n    0:  ";
@@ -133,7 +133,9 @@ public class DetailsBox implements IRegistryEventListener {
    }
 
    public void dispose() {
-      courier.dispose();
+      if(!courier.isDisposed()){
+         courier.dispose();
+      }
    }
 
    private void renderHex(AbstractTreeNode node) {
@@ -364,13 +366,15 @@ public class DetailsBox implements IRegistryEventListener {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
+            if (!infoFolder.isDisposed()){
 
-            for (TabItem item : removedElements) {
-               if (selectedTab == item) {
-                  selectedTab = null;
-                  infoFolder.setSelection(hexDumpTab);
+               for (TabItem item : removedElements) {
+                  if (selectedTab == item) {
+                     selectedTab = null;
+                     infoFolder.setSelection(hexDumpTab);
+                  }
+                  item.dispose();
                }
-               item.dispose();
             }
          }
       });
