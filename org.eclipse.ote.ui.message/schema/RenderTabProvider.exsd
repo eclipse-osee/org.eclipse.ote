@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.osee.ote.ui.message" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.ote.ui.message" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.osee.ote.ui.message" id="org.eclipse.osee.ote.ui.message.detailsProvider" name="Message Details Provider"/>
+         <meta.schema plugin="org.eclipse.ote.ui.message" id="org.eclipse.ote.ui.message.detailsProvider" name="Message Details Provider"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.osee.ote.ui.message.watch.DetailsProvider:"/>
+                  <meta.attribute kind="java" basedOn="org.eclipse.ote.ui.message.watch.DetailsProvider:"/>
                </appInfo>
             </annotation>
          </attribute>

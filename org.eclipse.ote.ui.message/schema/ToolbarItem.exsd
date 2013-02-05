@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.osee.ote.ui.message">
+<schema targetNamespace="org.eclipse.ote.ui.message">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.osee.ote.ui.message" id="ToolbarItem" name="ToolbarItem"/>
+         <meta.schema plugin="org.eclipse.ote.ui.message" id="ToolbarItem" name="ToolbarItem"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]
