@@ -133,6 +133,11 @@ public class DetailsBox implements IRegistryEventListener {
    }
 
    public void dispose() {
+      IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+      if (extensionRegistry != null) {
+         extensionRegistry.removeListener(this);
+      }
+    
       if(!courier.isDisposed()){
          courier.dispose();
       }
