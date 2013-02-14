@@ -19,7 +19,7 @@ import org.osgi.framework.BundleContext;
  * @author Ken J. Aguilar
  */
 public class Activator extends AbstractUIPlugin {
-   public static final String PLUGIN_ID = "org.eclipse.osee.ote.ui.message.util";
+   public static final String PLUGIN_ID = "org.eclipse.ote.ui.message.util";
    private static Activator plugin;
 
    @Override
