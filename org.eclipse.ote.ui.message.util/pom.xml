@@ -12,7 +12,7 @@
 
 	<artifactId>org.eclipse.ote.ui.message.util</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>OTE Ui Message Util (Incubation)</name>
+	<name>Eclipse OTE Ui Message Util (Incubation)</name>
 
    <build>
      <!-- workaround for https://issues.sonatype.org/browse/TYCHO-168 -->

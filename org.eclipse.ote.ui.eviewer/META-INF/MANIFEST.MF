@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Eviewer Plug-in
+Bundle-Name: OTE Eviewer Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.ote.ui.eviewer;singleton:=true
 Bundle-Version: 0.11.0.qualifier
 Bundle-Activator: org.eclipse.ote.ui.eviewer.Activator

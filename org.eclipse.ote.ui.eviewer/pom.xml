@@ -12,10 +12,10 @@
 
 	<artifactId>org.eclipse.ote.ui.eviewer</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>OTE Element Viewer</name>
-
+	<name>Eclipse OTE Element Viewer (Incubation)</name>
+ <!--
    <build>
-     <!-- workaround for https://issues.sonatype.org/browse/TYCHO-168 -->
+     workaround for https://issues.sonatype.org/browse/TYCHO-168 
      <resources>
       <resource>
         <directory>src</directory>
@@ -31,5 +31,5 @@
       </plugin>
     </plugins>
   </build>
-  
+  -->
 </project>
