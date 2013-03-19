@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ote JMS Node  (Incubation)
-Bundle-SymbolicName: org.eclipse.ote.jms.node
+Bundle-SymbolicName: org.eclipse.ote.jms.node;singleton:=true
 Bundle-Version: 0.11.0.qualifier
 Bundle-Vendor: The Boeing Company
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

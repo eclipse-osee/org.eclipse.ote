@@ -7,8 +7,11 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
 Import-Package: org.eclipse.osee.framework.jdk.core.persistence,
  org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.messaging,
+ org.eclipse.osee.ote.core,
  org.eclipse.osee.ote.core.environment,
  org.eclipse.osee.ote.core.environment.interfaces,
+ org.eclipse.osee.ote.core.framework.prompt,
  org.eclipse.osee.ote.message.elements,
  org.eclipse.ote.bytemessage,
  org.eclipse.ote.connect.messages,

@@ -10,64 +10,49 @@
  *******************************************************************************/
 package org.eclipse.ote.connect.server.internal;
 
+import java.util.logging.Level;
+
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
-import org.eclipse.ote.bytemessage.OteByteMessageResponseFuture;
 import org.eclipse.ote.bytemessage.OteSendByteMessage;
 import org.eclipse.ote.connect.messages.RequestStatus;
-import org.eclipse.ote.connect.messages.ServerConfigurationRequest;
 import org.eclipse.ote.connect.messages.ServerSessionRequest;
 import org.eclipse.ote.connect.messages.ServerSessionResponse;
 import org.eclipse.ote.statemachine.BaseInput;
-import org.eclipse.ote.statemachine.ChildStateMachineState;
+import org.eclipse.ote.statemachine.BaseState;
 import org.eclipse.ote.statemachine.StateMachine;
 
-public class StateAcceptSession extends ChildStateMachineState {
+public class StateAcceptSession extends BaseState {
 
    private OteSendByteMessage sender;
-   private OteByteMessageResponseFuture<ServerConfigurationRequest> serverConfigurationRequestFuture;
+   private IHostTestEnvironment host;
 
-   public StateAcceptSession(StateMachine sm, OteSendByteMessage sender, IRuntimeLibraryManager runtimeLibraryManager) throws Exception {
-      super(sm);
+   public StateAcceptSession(StateMachine sm, OteSendByteMessage sender, IRuntimeLibraryManager runtimeLibraryManager, IHostTestEnvironment host) throws Exception {
       this.sender = sender;
-      
-      InputServerConfigurationRequest inputServerConfigurationRequest = new InputServerConfigurationRequest(sm);
-      InputStartingConfiguration inputStartingConfiguration = new InputStartingConfiguration(sm);
-      InputAcceptingUpdatedConfiguration inputAcceptingUpdatedConfiguration = new InputAcceptingUpdatedConfiguration(sm);
-      
-      serverConfigurationRequestFuture = sender.asynchResponse(ServerConfigurationRequest.class, ServerConfigurationRequest.TOPIC, new ServerSessionConfigurationHandler(inputServerConfigurationRequest));
-      
-      StateAcceptConfiguration stateAcceptConfiguration = new StateAcceptConfiguration(sender, inputAcceptingUpdatedConfiguration, inputStartingConfiguration, runtimeLibraryManager);
-      StateRejectConfiguration stateRejectConfiguration = new StateRejectConfiguration(sender);
-      
-      setDefaultInitialState(stateAcceptConfiguration);
-      newTransition(stateAcceptConfiguration, inputServerConfigurationRequest, stateAcceptConfiguration);
-      newTransition(stateAcceptConfiguration, inputStartingConfiguration, stateRejectConfiguration);
-      newTransition(stateRejectConfiguration, inputServerConfigurationRequest, stateRejectConfiguration);
-      newTransition(stateRejectConfiguration, inputAcceptingUpdatedConfiguration, stateAcceptConfiguration);
-      
+      this.host = host;
    }
 
    @Override
-   public void exit(){
-      super.exit();
-      serverConfigurationRequestFuture.cancel();
-   }
-
-   @Override
-   public void preRunStateMachine(BaseInput input) {
+   public void run(BaseInput input) {
       if(InputServerSessionRequest.TYPE == input.getType()){
          InputServerSessionRequest inputServerSessionRequest = (InputServerSessionRequest)input;
          ServerSessionRequest request = inputServerSessionRequest.get();
          ServerSessionResponse response = new ServerSessionResponse();
          response.setSessionUUID(request.getSessionUUID());
          response.STATUS.setValue(RequestStatus.yes);
+         try{
+            host.requestEnvironment(new ServerSideRemoteUserSession(request.getSessionUUID(), sender), null);
+         } catch (Throwable ex){
+            response.STATUS.setValue(RequestStatus.no);
+            OseeLog.log(getClass(), Level.SEVERE, "Failed to start test environment", ex);
+         }
          sender.asynchSend(response);
       }
    }
 
    @Override
-   public void postRunStateMachine(BaseInput input) {
-      
+   public void entry() {
    }
 
 }

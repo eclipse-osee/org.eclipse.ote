@@ -38,6 +38,7 @@ public final class StateMachine {
    private StateMachineIdFactory factory;
    private BaseState defaultInitialState;
    private int nextStateId = 0;
+   private boolean debug = true;
    
    public StateMachine(String name){
       this(new StateMachineIdFactory(), name);
@@ -58,6 +59,12 @@ public final class StateMachine {
             throw new Exception("CurrentState is null, statemachine was not properly initialized.  Please ensure that if any child state machines were created and entry() was implemented that you call super.entry().");
          }
          BaseState nextState = stateTransitionTable.getTransition(input, currentState);
+         if(debug ) {
+            System.out.println("======================"+name+"========================");
+            System.out.println("INPUT: " + input.toString());
+            System.out.println("CURRENTSTATE: " + currentState.toString());
+            System.out.println("NEXTSTATE: " + (nextState == null ? "" : nextState.toString()));
+         }
          if(nextState != null){
             currentState.run(input);
             if(nextState != currentState){

@@ -20,6 +20,11 @@ public abstract class BaseInput{
       id = this.stateMachine.getIdFactory().getNextInputId();
    }
    
+   public BaseInput(BaseInput input) {
+      this.stateMachine = input.stateMachine;
+      this.id = input.id;
+   }
+
    public void addToStateMachineQueue(){
       this.stateMachine.addToQueue(this);
    }

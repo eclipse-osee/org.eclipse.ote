@@ -23,7 +23,7 @@ public class ConnectAndConfigureComponent {
 
    public void start(){
       
-      stateMachine = new SessionStateMachine(runtimeLibraryManager);
+      stateMachine = new SessionStateMachine(runtimeLibraryManager, host);
       
       stateMachine.start();
    }
