@@ -38,7 +38,7 @@ public final class StateMachine {
    private StateMachineIdFactory factory;
    private BaseState defaultInitialState;
    private int nextStateId = 0;
-   private boolean debug = true;
+   private boolean debug = false;
    
    public StateMachine(String name){
       this(new StateMachineIdFactory(), name);

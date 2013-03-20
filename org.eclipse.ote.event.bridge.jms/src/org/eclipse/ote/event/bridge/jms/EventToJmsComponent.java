@@ -41,7 +41,6 @@ public class EventToJmsComponent extends OseeMessagingListener implements EventH
    }
 
    void start(){
-      System.out.println("hehe");
    }
 
    void stop(){
