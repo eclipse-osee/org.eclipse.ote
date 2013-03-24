@@ -42,7 +42,7 @@ public class StateAcceptSession extends BaseState {
          response.setSessionUUID(request.getSessionUUID());
          response.STATUS.setValue(RequestStatus.yes);
          try{
-            host.requestEnvironment(new ServerSideRemoteUserSession(request.getSessionUUID(), sender), null);
+            host.requestEnvironment(new ServerSideRemoteUserSession(request.getSessionUUID(), sender), request.getSessionUUID(), null);
          } catch (Throwable ex){
             response.STATUS.setValue(RequestStatus.no);
             OseeLog.log(getClass(), Level.SEVERE, "Failed to start test environment", ex);

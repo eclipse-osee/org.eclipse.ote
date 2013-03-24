@@ -66,21 +66,19 @@
 				<lbaOseeRepo>lba.osee</lbaOseeRepo>
 				<orgEclipseOseeRepo>org.eclipse.osee</orgEclipseOseeRepo>
 				<gitRepoRoot>file:///C:/UserData/CAx/gitrepos/osee</gitRepoRoot>
-
 				<osee.client-site>${gitRepoRoot}/${orgEclipseOseeRepo}/plugins/org.eclipse.osee.client.all.p2/target/repository</osee.client-site>
-				<!--  
-				<osee.server-site>${gitRepoRoot}/${orgEclipseOseeRepo}/plugins/org.eclipse.osee.server.p2/target/repository</osee.server-site>
-				<osee.runtime-site>${gitRepoRoot}/${orgEclipseOseeRepo}/plugins/org.eclipse.osee.runtime.p2/target/repository</osee.runtime-site>
-				<osee.ote-site>${gitRepoRoot}/${orgEclipseOseeRepo}/plugins/org.eclipse.osee.ote.p2/target/repository</osee.ote-site>
 				<osee.lba-site>${gitRepoRoot}/${lbaOseeRepo}/plugins/lba.osee.client.p2/target/repository</osee.lba-site>
-				<osee.lba.ote-site>${gitRepoRoot}/${lbaOseeRepo}/plugins/lba.osee.client.ote.p2/target/repository</osee.lba.ote-site>
-				 -->
 			</properties>
 			<repositories>
 				<repository>
-					<id>osee.ote</id>
+					<id>osee.client</id>
 					<layout>p2</layout>
 					<url>${osee.client-site}</url>
+				</repository>
+				<repository>
+					<id>lba.client</id>
+					<layout>p2</layout>
+					<url>${osee.lba-site}</url>
 				</repository>
 			</repositories>
 		</profile>
