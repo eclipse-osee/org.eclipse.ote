@@ -14,7 +14,6 @@ import java.util.logging.Level;
 
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
-import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.ote.bytemessage.OteByteMessageResponseFuture;
 import org.eclipse.ote.bytemessage.OteSendByteMessage;
 import org.eclipse.ote.connect.messages.ServerSessionRequest;
@@ -23,14 +22,12 @@ import org.eclipse.ote.statemachine.StateMachine;
 import org.osgi.service.event.EventAdmin;
 
 public class SessionStateMachine {
-   private IRuntimeLibraryManager runtimeLibraryManager;
    StateMachine sm;
    private OteByteMessageResponseFuture<ServerSessionRequest> serverSessionRequestFuture;
    private IHostTestEnvironment host;
 
    
-   public SessionStateMachine( IRuntimeLibraryManager runtimeLibraryManager, IHostTestEnvironment host){
-      this.runtimeLibraryManager = runtimeLibraryManager;
+   public SessionStateMachine(IHostTestEnvironment host){
       this.host = host;
    }
    
@@ -47,7 +44,7 @@ public class SessionStateMachine {
          serverSessionRequestFuture = 
                sender.asynchResponse(ServerSessionRequest.class, ServerSessionRequest.TOPIC, new ServerSessionRequestHandler(inputServerSesisonRequest));
          
-         StateAcceptSession stateAcceptSession = new StateAcceptSession(sm, sender, runtimeLibraryManager, host);
+         StateAcceptSession stateAcceptSession = new StateAcceptSession(sm, sender, host);
          StateRejectSession stateRejectSession = new StateRejectSession(sender);
 
          sm.setDefaultInitialState(stateAcceptSession);
