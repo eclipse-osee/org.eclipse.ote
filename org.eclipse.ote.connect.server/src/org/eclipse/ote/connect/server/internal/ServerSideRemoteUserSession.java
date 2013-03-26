@@ -15,78 +15,71 @@ import org.eclipse.ote.bytemessage.OteSendByteMessage;
 public class ServerSideRemoteUserSession implements IRemoteUserSession {
 
    public ServerSideRemoteUserSession(UUID sessionUUID, OteSendByteMessage sender) {
-      // TODO Auto-generated constructor stub
+      
    }
 
    @Override
    public void initiateYesNoPrompt(IYesNoPromptResponse prompt) throws Exception {
-      // TODO Auto-generated method stub
-
+      System.out.println("ServerSideRemoteUserSession initiateYesNoPrompt " + prompt.getPromptMessage());
    }
 
    @Override
    public void cancelPrompts() throws Exception {
-      // TODO Auto-generated method stub
-
+      System.out.println("ServerSideRemoteUserSession cancelPrompts");
    }
 
    @Override
    public String getAddress() throws RemoteException {
-      // TODO Auto-generated method stub
-      return "mine";
+      return "ServerSideRemoteUserSession mine";
    }
 
    @Override
    public OSEEPerson1_4 getUser() throws RemoteException {
-      // TODO Auto-generated method stub
+      System.out.println("ServerSideRemoteUserSession getUser");
       return new OSEEPerson1_4("na", "na", "na");
    }
 
    @Override
    public byte[] getFile(String workspacePath) throws RemoteException {
-      // TODO Auto-generated method stub
+      System.out.println("ServerSideRemoteUserSession getFile" + workspacePath);
       return null;
    }
 
    @Override
    public long getFileDate(String workspacePath) throws RemoteException {
-      // TODO Auto-generated method stub
+      System.out.println("ServerSideRemoteUserSession getFileDate" + workspacePath);
       return 0;
    }
 
    @Override
    public void initiatePassFailPrompt(IPassFailPromptResponse prompt) throws RemoteException {
-      // TODO Auto-generated method stub
-      System.out.println("initiatePassFailPrompt " + prompt.toString());
+      System.out.println("ServerSideRemoteUserSession initiatePassFailPrompt " + prompt.toString());
    }
 
    @Override
    public void initiateUserInputPrompt(IUserInputPromptResponse prompt) throws RemoteException {
-      // TODO Auto-generated method stub
-      System.out.println("initiateUserInputPrompt " + prompt.toString());
+      System.out.println("ServerSideRemoteUserSession initiateUserInputPrompt " + prompt.toString());
    }
 
    @Override
    public void initiateResumePrompt(IResumeResponse prompt) throws RemoteException {
-      // TODO Auto-generated method stub
-      System.out.println("initiateResumePrompt " + prompt.toString());
+      System.out.println("ServerSideRemoteUserSession initiateResumePrompt " + prompt.toString());
    }
 
    @Override
    public void initiateInformationalPrompt(String message) throws RemoteException {
-      // TODO Auto-generated method stub
-      System.out.println("initiateInformationalPrompt " + message.toString());
+      System.out.println("ServerSideRemoteUserSession initiateInformationalPrompt " + message.toString());
    }
 
    @Override
    public boolean isAlive() throws RemoteException {
-      // TODO Auto-generated method stub
+      System.out.println("ServerSideRemoteUserSession isAlive ");
       return true;
    }
 
    @Override
    public void sendMessageToClient(Message message) throws RemoteException {
-      System.out.println("sendMessageToClient " + message.toString());
+      System.out.println("ServerSideRemoteUserSession sendMessageToClient " + message.toString());
    }
 
 }
