@@ -11,19 +11,16 @@
 package org.eclipse.ote.connect.server;
 
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
-import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.ote.connect.server.internal.SessionStateMachine;
 
 public class ConnectAndConfigureComponent {
    
-   @SuppressWarnings("unused")
    private IHostTestEnvironment host;
-   private IRuntimeLibraryManager runtimeLibraryManager;
    private SessionStateMachine stateMachine;
 
    public void start(){
       
-      stateMachine = new SessionStateMachine(runtimeLibraryManager, host);
+      stateMachine = new SessionStateMachine(host);
       
       stateMachine.start();
    }
@@ -40,14 +37,6 @@ public class ConnectAndConfigureComponent {
    
    public void unbindHostTestEnvironment(IHostTestEnvironment host){
       this.host = null;
-   }
-   
-   public void bindRuntimeLibraryManager(IRuntimeLibraryManager runtimeLibraryManager){
-      this.runtimeLibraryManager = runtimeLibraryManager;
-   }
-   
-   public void unbindRuntimeLibraryManager(IRuntimeLibraryManager runtimeLibraryManager){
-      this.runtimeLibraryManager = null;
    }
    
 }

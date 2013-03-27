@@ -4,13 +4,13 @@ import java.io.Serializable;
 import java.rmi.server.ExportException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Future;
 
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
-import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.status.CommandEndedStatusEnum;
 import org.eclipse.osee.ote.core.environment.status.OTEStatusBoard;
 import org.eclipse.osee.ote.core.framework.IMethodResult;
@@ -30,13 +30,13 @@ class RunTestsCommand implements ITestServerCommand, Serializable {
    private final List<IPropertyStore> scripts;
    private volatile boolean cancel = false;
    private volatile boolean isRunning = false;
-   private final UserTestSessionKey sessionKey;
+   private final UUID sessionKey;
    private final String guid;
    private final List<RunTestsHandle> handles;
 
    private TestEnvironment environment;
 
-   public RunTestsCommand(String guid, UserTestSessionKey sessionKey, IPropertyStore global, List<IPropertyStore> scripts) {
+   public RunTestsCommand(String guid, UUID sessionKey, IPropertyStore global, List<IPropertyStore> scripts) {
       handles = new ArrayList<RunTestsHandle>();
       this.global = global;
       this.scripts = scripts;
@@ -44,7 +44,7 @@ class RunTestsCommand implements ITestServerCommand, Serializable {
       this.guid = guid;
    }
 
-   public UserTestSessionKey getSessionKey() {
+   public UUID getSessionKey() {
       return sessionKey;
    }
 
@@ -109,7 +109,7 @@ class RunTestsCommand implements ITestServerCommand, Serializable {
    }
 
    @Override
-   public UserTestSessionKey getUserSessionKey() {
+   public UUID getUserSessionKey() {
       return sessionKey;
    }
 

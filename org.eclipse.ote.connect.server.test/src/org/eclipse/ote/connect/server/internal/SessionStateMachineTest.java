@@ -15,7 +15,6 @@ import java.util.UUID;
 
 import junit.framework.Assert;
 
-import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.ote.bytemessage.OteSendByteMessage;
 import org.eclipse.ote.connect.messages.RequestStatus;
 import org.eclipse.ote.connect.messages.ServerSessionRequest;
@@ -44,10 +43,8 @@ public class SessionStateMachineTest {
 
       OteSendByteMessage sender = new OteSendByteMessage(ServiceUtility.getService(EventAdmin.class));
       UUID id = UUID.randomUUID();
-      IRuntimeLibraryManager runtimeLibManager = ServiceUtility.getService(IRuntimeLibraryManager.class);
-      Assert.assertNotNull(runtimeLibManager);
       
-      SessionStateMachine stateMachine = new SessionStateMachine(runtimeLibManager, null);
+      SessionStateMachine stateMachine = new SessionStateMachine(null);
       stateMachine.start();
     
       ServerSessionRequest request = new ServerSessionRequest();

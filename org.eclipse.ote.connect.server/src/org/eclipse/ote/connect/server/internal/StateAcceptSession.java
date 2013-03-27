@@ -14,7 +14,6 @@ import java.util.logging.Level;
 
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
-import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.ote.bytemessage.OteSendByteMessage;
 import org.eclipse.ote.connect.messages.RequestStatus;
 import org.eclipse.ote.connect.messages.ServerSessionRequest;
@@ -28,7 +27,7 @@ public class StateAcceptSession extends BaseState {
    private OteSendByteMessage sender;
    private IHostTestEnvironment host;
 
-   public StateAcceptSession(StateMachine sm, OteSendByteMessage sender, IRuntimeLibraryManager runtimeLibraryManager, IHostTestEnvironment host) throws Exception {
+   public StateAcceptSession(StateMachine sm, OteSendByteMessage sender, IHostTestEnvironment host) throws Exception {
       this.sender = sender;
       this.host = host;
    }
@@ -42,7 +41,7 @@ public class StateAcceptSession extends BaseState {
          response.setSessionUUID(request.getSessionUUID());
          response.STATUS.setValue(RequestStatus.yes);
          try{
-            host.requestEnvironment(new ServerSideRemoteUserSession(request.getSessionUUID(), sender), null);
+            host.requestEnvironment(new ServerSideRemoteUserSession(request.getSessionUUID(), sender), request.getSessionUUID(), null);
          } catch (Throwable ex){
             response.STATUS.setValue(RequestStatus.no);
             OseeLog.log(getClass(), Level.SEVERE, "Failed to start test environment", ex);
