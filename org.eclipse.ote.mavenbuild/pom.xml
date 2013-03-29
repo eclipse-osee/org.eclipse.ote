@@ -10,7 +10,6 @@
 	<version>0.11.0-SNAPSHOT</version>
 
 	<properties>
-		<gitRepoRoot>file:../../..</gitRepoRoot>
 		<build-alias>-DEV</build-alias>
 		<tycho-version>0.16.0</tycho-version>
 		<tychoExtrasVersion>0.16.0</tychoExtrasVersion>
@@ -38,45 +37,14 @@
 			<layout>p2</layout>
 			<url>${nebula-site}</url>
 		</repository>
+		<repository>
+			<id>osee</id>
+			<layout>p2</layout>
+			<url>${osee-site}</url>
+		</repository>
 	</repositories>
 
 	<profiles>
-	  <profile>
-			<id>oseeRemote</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<osee.client-site>${oseeClientP2}</osee.client-site>
-			</properties>
-			<repositories>
-				<repository>
-					<id>osee</id>
-					<layout>p2</layout>
-					<url>${osee.client-site}</url>
-				</repository>
-			</repositories>
-		</profile>
-		<profile>
-			<id>oseeLocal</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<orgEclipseOseeRepo>org.eclipse.osee</orgEclipseOseeRepo>
-				<gitRepoRoot></gitRepoRoot>
-				<!-- on windows: file:///C:/somepath/to/repo/root -->
-				<osee.client-site>${gitRepoRoot}/${orgEclipseOseeRepo}/plugins/org.eclipse.osee.client.all.p2/target/repository</osee.client-site>
-			</properties>
-			<repositories>
-				<repository>
-					<id>osee.client</id>
-					<layout>p2</layout>
-					<url>${osee.client-site}</url>
-				</repository>
-			</repositories>
-		</profile>
-
 		<profile>
 			<id>sonar</id>
 			<activation>
