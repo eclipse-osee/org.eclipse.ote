@@ -25,6 +25,7 @@
 	   <module>../org.eclipse.ote.connect.server</module>
 	   <module>../org.eclipse.ote.connect.server.test</module>
 	   <module>../org.eclipse.ote.event.bridge.jms</module>
+		<module>../org.eclipse.ote.io</module>
 	   <module>../org.eclipse.ote.jms.node</module>
 		<module>../org.eclipse.ote.services.core</module>
 		<module>../org.eclipse.ote.statemachine</module>
