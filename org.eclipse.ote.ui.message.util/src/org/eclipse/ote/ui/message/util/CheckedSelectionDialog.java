@@ -32,6 +32,7 @@ public class CheckedSelectionDialog extends TrayDialog {
       super(shell);
       this.title = title;
       this.selections = selections;
+      setHelpAvailable(false);
    }
 
    @Override
