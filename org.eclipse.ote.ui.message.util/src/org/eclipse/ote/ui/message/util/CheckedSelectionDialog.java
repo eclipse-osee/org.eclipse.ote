@@ -12,10 +12,14 @@ package org.eclipse.ote.ui.message.util;
 
 import java.util.Arrays;
 import java.util.Map;
-
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -50,7 +54,42 @@ public class CheckedSelectionDialog extends TrayDialog {
       getShell().setText(title);
       return dialogArea;
    }
-   
+
+   @Override
+   protected Control createButtonBar(Composite parent) {
+      Composite composite = new Composite(parent, SWT.NONE);
+      GridLayout layout = new GridLayout();
+      layout.marginWidth = 11;
+      layout.marginHeight = 7;
+      layout.horizontalSpacing = 0;
+      composite.setLayout(layout);
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+      composite.setFont(parent.getFont());
+
+      final Button selectAllButton = new Button(composite, SWT.CHECK);
+      selectAllButton.setText("Select All");
+      selectAllButton.setSelection(true);
+
+      selectAllButton.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            for (TableItem item : table.getItems()) {
+
+               if (selectAllButton.getSelection()) {
+                  item.setChecked(true);
+               } else {
+                  item.setChecked(false);
+               }
+            }
+         }
+      });
+
+     Control buttonSection = super.createButtonBar(composite);
+     ((GridData) buttonSection.getLayoutData()).grabExcessHorizontalSpace = true;
+     return composite;
+  }
+ 
    public Map<String, Boolean> getFilters(){
       return selections;
    }
