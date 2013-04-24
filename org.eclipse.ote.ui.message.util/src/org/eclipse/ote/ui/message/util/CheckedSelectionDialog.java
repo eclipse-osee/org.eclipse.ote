@@ -59,7 +59,7 @@ public class CheckedSelectionDialog extends TrayDialog {
    protected Control createButtonBar(Composite parent) {
       Composite composite = new Composite(parent, SWT.NONE);
       GridLayout layout = new GridLayout();
-      layout.marginWidth = 11;
+      layout.marginWidth = 20;
       layout.marginHeight = 7;
       layout.horizontalSpacing = 0;
       composite.setLayout(layout);
