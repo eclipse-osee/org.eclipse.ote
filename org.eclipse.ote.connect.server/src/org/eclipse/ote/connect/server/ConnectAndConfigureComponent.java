@@ -12,15 +12,17 @@ package org.eclipse.ote.connect.server;
 
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.ote.connect.server.internal.SessionStateMachine;
+import org.osgi.service.event.EventAdmin;
 
 public class ConnectAndConfigureComponent {
    
    private IHostTestEnvironment host;
    private SessionStateMachine stateMachine;
+   private EventAdmin eventAdmin;
 
    public void start(){
       
-      stateMachine = new SessionStateMachine(host);
+      stateMachine = new SessionStateMachine(host, eventAdmin);
       
       stateMachine.start();
    }
@@ -37,6 +39,14 @@ public class ConnectAndConfigureComponent {
    
    public void unbindHostTestEnvironment(IHostTestEnvironment host){
       this.host = null;
+   }
+   
+   public void bindEventAdmin(EventAdmin eventAdmin){
+      this.eventAdmin = eventAdmin;
+   }
+   
+   public void unbindEventAdmin(EventAdmin eventAdmin){
+      this.eventAdmin = null;
    }
    
 }
