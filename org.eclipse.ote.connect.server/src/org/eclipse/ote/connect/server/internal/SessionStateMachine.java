@@ -17,7 +17,6 @@ import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.ote.bytemessage.OteByteMessageResponseFuture;
 import org.eclipse.ote.bytemessage.OteSendByteMessage;
 import org.eclipse.ote.connect.messages.ServerSessionRequest;
-import org.eclipse.ote.services.core.ServiceUtility;
 import org.eclipse.ote.statemachine.StateMachine;
 import org.osgi.service.event.EventAdmin;
 
@@ -25,17 +24,19 @@ public class SessionStateMachine {
    StateMachine sm;
    private OteByteMessageResponseFuture<ServerSessionRequest> serverSessionRequestFuture;
    private IHostTestEnvironment host;
+   private EventAdmin eventAdmin;
 
    
-   public SessionStateMachine(IHostTestEnvironment host){
+   public SessionStateMachine(IHostTestEnvironment host, EventAdmin eventAdmin){
       this.host = host;
+      this.eventAdmin = eventAdmin;
    }
    
    public void start(){
       try{
          sm = new StateMachine("SessionStateMachine");
 
-         OteSendByteMessage sender = new OteSendByteMessage(ServiceUtility.getService(EventAdmin.class));
+         OteSendByteMessage sender = new OteSendByteMessage(eventAdmin);
          
          InputServerSessionRequest inputServerSesisonRequest = new InputServerSessionRequest(sm);
          InputNoMoreSessions inputNoMoreSessions = new InputNoMoreSessions(sm);
