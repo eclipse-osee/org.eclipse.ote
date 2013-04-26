@@ -44,7 +44,7 @@ public class SessionStateMachineTest {
       OteSendByteMessage sender = new OteSendByteMessage(ServiceUtility.getService(EventAdmin.class));
       UUID id = UUID.randomUUID();
       
-      SessionStateMachine stateMachine = new SessionStateMachine(null);
+      SessionStateMachine stateMachine = new SessionStateMachine(null, ServiceUtility.getService(EventAdmin.class));
       stateMachine.start();
     
       ServerSessionRequest request = new ServerSessionRequest();
