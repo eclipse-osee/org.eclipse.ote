@@ -56,7 +56,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.osee.ote.message.MessageDefinitionProvider;
@@ -466,7 +465,7 @@ private MessageProviderVersion messageProviderVersion;
             treeViewer.getTree().setRedraw(true);
          }
       };
-      expandAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageImage.EXPAND_STATE));
+      expandAction.setImageDescriptor(OteMessageImage.EXPAND_STATE.createImageDescriptor());
       expandAction.setToolTipText("Expand All");
 
       Action showNameAction = new Action("Show Names", SWT.TOGGLE) {
@@ -476,7 +475,7 @@ private MessageProviderVersion messageProviderVersion;
             treeViewer.refresh();
          }
       };
-      showNameAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageImage.SHOW_NAMES));
+      showNameAction.setImageDescriptor(OteMessageImage.SHOW_NAMES.createImageDescriptor());
       showNameAction.setToolTipText("Show Message Names");
 
       Action collapseAction = new Action("Collapse All") {
@@ -488,7 +487,7 @@ private MessageProviderVersion messageProviderVersion;
             treeViewer.getTree().setRedraw(true);
          }
       };
-      collapseAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageImage.COLLAPSE_STATE));
+      collapseAction.setImageDescriptor(OteMessageImage.COLLAPSE_STATE.createImageDescriptor());
       collapseAction.setToolTipText("Collapse All");
 
       Action deleteAction = new Action("Delete") {
@@ -502,7 +501,7 @@ private MessageProviderVersion messageProviderVersion;
 
       deleteAction.setToolTipText("Delete");
 
-      deleteAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageImage.DELETE));
+      deleteAction.setImageDescriptor(OteMessageImage.DELETE.createImageDescriptor());
 
       Action deleteAllAction = new Action("Delete All") {
 
@@ -516,7 +515,7 @@ private MessageProviderVersion messageProviderVersion;
          }
       };
       deleteAllAction.setToolTipText("Delete All");
-      deleteAllAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageImage.DELETE_ALL));
+      deleteAllAction.setImageDescriptor(OteMessageImage.DELETE_ALL.createImageDescriptor());
 
       Action refreshAction = new Action("Refresh") {
          @Override
@@ -525,7 +524,7 @@ private MessageProviderVersion messageProviderVersion;
          }
       };
       refreshAction.setToolTipText("refresh");
-      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageImage.REFRESH));
+      refreshAction.setImageDescriptor(OteMessageImage.REFRESH.createImageDescriptor());
 
       Action saveAction = new Action("Save Items") {
          private String saveFilePath = null;
@@ -557,7 +556,7 @@ private MessageProviderVersion messageProviderVersion;
          }
       };
       saveAction.setToolTipText("Save Watch Items");
-      saveAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageImage.SAVE));
+      saveAction.setImageDescriptor(OteMessageImage.SAVE.createImageDescriptor());
 
       Action loadAction = new Action("Load Items") {
          private String loadFilePath = null;
@@ -589,7 +588,7 @@ private MessageProviderVersion messageProviderVersion;
          }
       };
       loadAction.setToolTipText("Load Watch Items");
-      loadAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageImage.OPEN));
+      loadAction.setImageDescriptor(OteMessageImage.OPEN.createImageDescriptor());
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(showNameAction);
       toolbarManager.add(refreshAction);

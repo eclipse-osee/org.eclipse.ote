@@ -32,7 +32,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.ote.message.lookup.MessageInput;
 import org.eclipse.ote.message.lookup.MessageInputItem;
@@ -289,7 +288,7 @@ public class MessageView extends ViewPart {
             treeViewer.getTree().setRedraw(true);
          }
       };
-      expandAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageViewImage.EXPAND_STATE));
+      expandAction.setImageDescriptor(OteMessageViewImage.EXPAND_STATE.createImageDescriptor());
       expandAction.setToolTipText("Expand All");
 
       collapseAction = new Action("Collapse All") {
@@ -301,7 +300,7 @@ public class MessageView extends ViewPart {
             treeViewer.getTree().setRedraw(true);
          }
       };
-      collapseAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageViewImage.COLLAPSE_STATE));
+      collapseAction.setImageDescriptor(OteMessageViewImage.COLLAPSE_STATE.createImageDescriptor());
       collapseAction.setToolTipText("Collapse All");
       
       filterAction = new Action("Search Filters"){
