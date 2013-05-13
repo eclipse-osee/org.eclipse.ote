@@ -11,8 +11,8 @@
 
 	<properties>
 		<build-alias>-DEV</build-alias>
-		<tycho-version>0.16.0</tycho-version>
-		<tychoExtrasVersion>0.16.0</tychoExtrasVersion>
+		<tycho-version>0.17.0</tycho-version>
+		<tychoExtrasVersion>0.17.0</tychoExtrasVersion>
 		<platform-version-name>juno</platform-version-name>
 		<orbit-version>R20120119162704</orbit-version>
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
