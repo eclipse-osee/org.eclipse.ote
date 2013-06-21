@@ -18,9 +18,12 @@ public abstract class DatagramChannelRunnable implements Runnable {
 	private LinkedBlockingQueue<DatagramChannelData> data;
 	private InetSocketAddress address;   
 
-	DatagramChannelRunnable(InetSocketAddress address){
+	public DatagramChannelRunnable(InetSocketAddress address){
 		this.address = address;
 	}
+	
+	public DatagramChannelRunnable(){
+   }
 
 	void setQueue(LinkedBlockingQueue<DatagramChannelData> data) {
 		this.data = data;
