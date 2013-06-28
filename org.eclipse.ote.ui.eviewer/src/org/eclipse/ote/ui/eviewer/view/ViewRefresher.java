@@ -11,8 +11,15 @@
 package org.eclipse.ote.ui.eviewer.view;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.PeriodicDisplayTask;
+import org.eclipse.ote.io.CircularBuffer;
 
 /**
  * @author Ken J. Aguilar
@@ -20,74 +27,97 @@ import org.eclipse.osee.framework.ui.swt.PeriodicDisplayTask;
 public class ViewRefresher extends PeriodicDisplayTask {
 
    private final TableViewer viewer;
-   private final ElementUpdate[] updates;
-   private int updateAppendIndex = 0;
    private ElementUpdate[] incomingUpdates = new ElementUpdate[2048];
+   
    private int incomingCount = 0;
    private boolean autoReveal = true;
-   private boolean updatesWrappedAround = false;
+   
+   private ReentrantLock lock;
+   private Condition clearIncomingUpdates;
+   private CircularBuffer<ElementUpdate> updatesNew;
+   private volatile boolean updateView = true;
+   
    public ViewRefresher(TableViewer viewer, int limit) {
       super(viewer.getTable().getDisplay(), 333);
+      lock = new ReentrantLock();
+      clearIncomingUpdates = lock.newCondition();
+      
+      updatesNew = new CircularBuffer<ElementUpdate>(limit);
+      
       this.viewer = viewer;
-      this.updates = new ElementUpdate[limit];
    }
 
    @Override
-   protected synchronized void update() {
-      if (incomingCount == 0) {
-         return;
-      }
-      viewer.getTable().setRedraw(false);
-      int newTotal = updateAppendIndex + incomingCount;
-      if (newTotal > updates.length) {
-         // remove the oldest updates from the viewer
-         int numberToRemove = newTotal - updates.length;
-         viewer.remove(Arrays.copyOfRange(updates, 0, numberToRemove));
-         
-         // the updates array is now wrapping around since we surpassed the arrays capacity
-         updatesWrappedAround = true;
-         
-         // find how much capacity with have remaining before we wrap
-         int remaining = updates.length - updateAppendIndex;
-         // fill the remaining portion of the updates array with the incoming 
-         System.arraycopy(incomingUpdates, 0, updates, updateAppendIndex, remaining);
-         // wrap around and fill the part of the updates array that got removed
-         System.arraycopy(incomingUpdates, remaining, updates, 0, numberToRemove);
-         updateAppendIndex = numberToRemove;
-      } else {
-         if (updatesWrappedAround) {
-            // if we are wrapping around then for every incoming update we must remove the oldest update from the viewwer
-            viewer.remove(getUpdatesWithWrapAround(incomingCount));
+   protected void update() {
+      try{
+         lock.lock();
+
+         if (incomingCount == 0) {
+            return;
          }
-         System.arraycopy(incomingUpdates, 0, updates, updateAppendIndex, incomingCount);
-         updateAppendIndex += incomingCount;
-      }
-      viewer.add(Arrays.copyOf(incomingUpdates, incomingCount));
-      incomingCount = 0;
-      if (autoReveal) {
-         viewer.reveal(updates[updateAppendIndex-1]);
-      }
-      viewer.getTable().setRedraw(true);
-   }
-
-   public synchronized void addUpdate(ElementUpdate update) {
-      if (incomingCount >= incomingUpdates.length) {
-         // force an update to free up space on our incoming array
-         getDisplay().syncExec(new Runnable() {
-            
-            @Override
-            public void run() {
-               update();
+         ElementUpdate[] overWritten = updatesNew.add(incomingUpdates, 0, incomingCount);
+         
+         if(updateView){
+            viewer.getTable().setRedraw(false);
+            viewer.remove(overWritten);
+            viewer.add(Arrays.copyOf(incomingUpdates, incomingCount > incomingUpdates.length ? incomingUpdates.length : incomingCount));
+            if (autoReveal) {
+               viewer.reveal(updatesNew.head());
             }
-         });
+            viewer.getTable().setRedraw(true);
+         }
+         
+         incomingCount = 0;
+         clearIncomingUpdates.signalAll();
+      } finally {
+         lock.unlock();
       }
-      incomingUpdates[incomingCount++] = update;
+   }
+   
+   public void forceUpdate(){
+      getDisplay().asyncExec(new Runnable() {
+         @Override
+         public void run() {
+            update();
+         }
+      });
    }
 
-   public synchronized void clearUpdates() {
-      updateAppendIndex = 0;
-      updatesWrappedAround = false;
-      viewer.refresh();
+   public void addUpdate(ElementUpdate update) {
+      try {
+         lock.lock();
+
+         boolean needsClear = incomingCount >= incomingUpdates.length;
+
+         if (needsClear) {
+            // force an update to free up space on our incoming array
+            forceUpdate();
+            try{
+               long nanoTime = TimeUnit.SECONDS.toNanos(5);
+               while(nanoTime > 0 && needsClear){
+                  nanoTime = clearIncomingUpdates.awaitNanos(nanoTime);
+                  needsClear = incomingCount >= incomingUpdates.length;
+               }
+            } catch(InterruptedException ex){
+               OseeLog.log(getClass(), Level.SEVERE, ex);
+            }
+         }
+         
+         incomingUpdates[incomingCount++] = update;
+         
+      } finally {
+         lock.unlock();
+      }
+   }
+
+   public void clearUpdates() {
+      try{
+         lock.lock();
+         updatesNew.clear();
+         viewer.refresh();
+      } finally {
+         lock.unlock();
+      }
    }
 
    /**
@@ -100,45 +130,31 @@ public class ViewRefresher extends PeriodicDisplayTask {
    /**
     * @param autoReveal the autoReveal to set
     */
-   public synchronized void setAutoReveal(boolean autoReveal) {
-      this.autoReveal = autoReveal;
+   public void setAutoReveal(boolean autoReveal) {
+      try{
+         lock.lock();
+         this.autoReveal = autoReveal;
+      } finally {
+         lock.unlock();
+      }
    }
 
-   public synchronized ElementUpdate getUpdate(int index) {
-      if (updatesWrappedAround) {
-         int calcIndex = updateAppendIndex + index ;
-         if (calcIndex >= updates.length) {
-            calcIndex -= updates.length;
-         }
-         return updates[calcIndex];
-      } else {
-         return updates[index];
+   public ElementUpdate[] getUpdates() {
+      try{
+         lock.lock();
+         return updatesNew.getCopy(ElementUpdate.class);
+      }finally{
+         lock.unlock();
       }
    }
-   
-   public synchronized ElementUpdate[] getUpdates() {
-      if (updatesWrappedAround) {
-         ElementUpdate[] copy = new ElementUpdate[updates.length];
-         int remaining = updates.length - updateAppendIndex;
-         System.arraycopy(updates, updateAppendIndex, copy, 0, remaining);
-         System.arraycopy(updates, 0, copy, remaining, updateAppendIndex);
-         return copy;
-      } else {
-         return Arrays.copyOf(updates, updateAppendIndex);
+
+   public void setUpdateView(boolean updateView) {
+      this.updateView = updateView;
+      if(updateView){
+         viewer.getTable().setRedraw(false);
+         viewer.refresh();
+         viewer.getTable().setRedraw(true);
       }
    }
-   
-   private ElementUpdate[] getUpdatesWithWrapAround(int count) {
-         ElementUpdate[] copy = new ElementUpdate[count];
-         if ((count + updateAppendIndex) > updates.length) {
-            int remaining = updates.length - updateAppendIndex;
-            System.arraycopy(updates, updateAppendIndex, copy, 0, remaining);
-            System.arraycopy(updates, 0, copy, remaining, count - remaining);  
-         } else {
-            System.arraycopy(updates, updateAppendIndex, copy, 0, count);
-         }
-         return copy;
-   }
-   
    
 }

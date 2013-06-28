@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -60,6 +61,8 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 	private HashMap<ElementColumn, Integer> valueMap = new HashMap<ElementColumn, Integer>();
 
 	private ElementUpdate last = null;
+   private ReentrantLock streamWriteLock = new ReentrantLock();
+   private volatile boolean acceptUpdates = true;
 	
 	public ElementContentProvider(int limit) {
 		this.limit = limit;
@@ -77,6 +80,10 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 			refresher.stop();
 		}
 		disposeAllColumns();
+	}
+	
+	public void forceUpdate(){
+	   refresher.forceUpdate();
 	}
 
 	@Override
@@ -161,33 +168,40 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
 	@Override
 	public  synchronized void update(SubscriptionDetails details) {
-		final ElementUpdate update;
-		if (last == null) {
-			update = new ElementUpdate(valueMap, elementColumns);
-		} else {
-			update = last.next(valueMap, elementColumns);
-		}
-		last = update;
-		refresher.addUpdate(update);
-		writeToStream(update);
+	   if(acceptUpdates ){
+	      final ElementUpdate update;
+	      if (last == null) {
+	         update = new ElementUpdate(valueMap, elementColumns);
+	      } else {
+	         update = last.next(valueMap, elementColumns);
+	      }
+	      last = update;
+	      refresher.addUpdate(update);
+	      writeToStream(update);
+	   }
 	}
 
 	private void writeToStream(ElementUpdate update) {
-		if (streamToFileWriter != null) {
-			int i;
-			for (i = 0; i < elementColumns.size() - 1; i++) {
-				Object o = update.getValue(elementColumns.get(i));
-				if (o != null) {
-					streamToFileWriter.append(o.toString());
-				}
-				streamToFileWriter.append(',');
-			}
-			Object o = update.getValue(elementColumns.get(i));
-			if (o != null) {
-				streamToFileWriter.append(o.toString());
-			}
-			streamToFileWriter.append('\n');
-		}
+	   try{
+	      streamWriteLock.lock();
+	      if (streamToFileWriter != null) {
+	         int i;
+	         for (i = 0; i < elementColumns.size() - 1; i++) {
+	            Object o = update.getValue(elementColumns.get(i));
+	            if (o != null) {
+	               streamToFileWriter.append(o.toString());
+	            }
+	            streamToFileWriter.append(',');
+	         }
+	         Object o = update.getValue(elementColumns.get(i));
+	         if (o != null) {
+	            streamToFileWriter.append(o.toString());
+	         }
+	         streamToFileWriter.append('\n');
+	      }
+	   } finally {
+	      streamWriteLock.unlock();
+	   }
 	}
 
 	public void clearAllUpdates() {
@@ -400,33 +414,36 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 		}
 	}
 
-	public synchronized void streamToFile(File file) throws FileNotFoundException, IOException {
+	public void streamToFile(File file) throws FileNotFoundException, IOException {
+	   try{
+	      streamWriteLock.lock();
+	      if (streamToFileWriter != null) {
+	         // stop streaming
+	         streamToFileWriter.flush();
+	         streamToFileWriter.close();
+	         streamToFileWriter = null;
+	      }
+	      if (file == null) {
+	         setMoveableColumns(true);
+	         return;
+	      }
+	      setMoveableColumns(false);
 
-		if (streamToFileWriter != null) {
-			// stop streaming
-			streamToFileWriter.flush();
-			streamToFileWriter.close();
-			streamToFileWriter = null;
-		}
-		if (file == null) {
-			setMoveableColumns(true);
-			return;
-		}
-		setMoveableColumns(false);
+	      streamToFileWriter = new PrintWriter(new FileOutputStream(file));
+	      int i;
+	      for (i = 0; i < elementColumns.size() - 1; i++) {
+	         streamToFileWriter.write(elementColumns.get(i).getName());
+	         streamToFileWriter.write(',');
+	      }
+	      if (elementColumns.size() > 0) {
+	         streamToFileWriter.write(elementColumns.get(i).getName());
+	         streamToFileWriter.write('\n');
+	      }
 
-		streamToFileWriter = new PrintWriter(new FileOutputStream(file));
-		int i;
-		for (i = 0; i < elementColumns.size() - 1; i++) {
-			streamToFileWriter.write(elementColumns.get(i).getName());
-			streamToFileWriter.write(',');
-		}
-		if (elementColumns.size() > 0) {
-			streamToFileWriter.write(elementColumns.get(i).getName());
-			streamToFileWriter.write('\n');
-		}
-
-		streamToFileWriter.flush();
-
+	      streamToFileWriter.flush();
+	   } finally {
+	      streamWriteLock.unlock();
+	   }
 	}
 
 	private void setMoveableColumns(boolean moveable) {
@@ -454,4 +471,12 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 	public TableViewer getViewer() {
 		return viewer;
 	}
+
+   public void setUpdateView(boolean updateView) {
+      refresher.setUpdateView(updateView);
+   }
+
+   public void togglePauseUpdates() {
+      acceptUpdates = !acceptUpdates;
+   }
 }
