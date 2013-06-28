@@ -33,6 +33,7 @@ import org.eclipse.ote.ui.eviewer.action.ClearAllUpdatesAction;
 import org.eclipse.ote.ui.eviewer.action.ConfigureColumnsAction;
 import org.eclipse.ote.ui.eviewer.action.CopyAllAction;
 import org.eclipse.ote.ui.eviewer.action.OpenNewElementViewer;
+import org.eclipse.ote.ui.eviewer.action.PauseUpdatesAction;
 import org.eclipse.ote.ui.eviewer.action.RemoveColumnAction;
 import org.eclipse.ote.ui.eviewer.action.SaveLoadAction;
 import org.eclipse.ote.ui.eviewer.action.SetActiveColumnAction;
@@ -69,6 +70,7 @@ public class ElementViewer extends ViewPart {
 	private AddHeaderElementAction addHeaderElementAction;
 	private ClearAllUpdatesAction clearAllUpdatesAction;
 	private ToggleAutoRevealAction toggleAutoRevealAction;
+	private PauseUpdatesAction pauseUpdatesAction;
 	private RemoveColumnAction removeColumnAction;
 	private CopyAllAction copyAction;
 	private SetActiveColumnAction activeColumnAction;
@@ -102,6 +104,9 @@ public class ElementViewer extends ViewPart {
 		viewer.getTable().setLinesVisible(true);
 
 
+//		viewer.setPreserveSelection(false);
+		
+		
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
@@ -160,6 +165,7 @@ public class ElementViewer extends ViewPart {
 		manager.add(clearAllUpdatesAction);
 		manager.add(toggleAutoRevealAction);
 		manager.add(saveLoadAction);
+		manager.add(pauseUpdatesAction);
 		manager.add(streamToFileAction);
 		manager.add(new OpenNewElementViewer());
 	}
@@ -181,6 +187,7 @@ public class ElementViewer extends ViewPart {
 				elementContentProvider);
 		configureColumnAction = new ConfigureColumnsAction(
 				elementContentProvider);
+		pauseUpdatesAction = new PauseUpdatesAction(elementContentProvider);
 	}
 
 	private void hookDoubleClickAction() {
@@ -238,10 +245,9 @@ public class ElementViewer extends ViewPart {
 				addElementAction.setEnabled(false);
 				addHeaderElementAction.setEnabled(false);
 				removeColumnAction.setEnabled(false);
-				if (disableRendering) {
-					viewer.getTable().update();
-					viewer.getTable().setRedraw(false);
-				}
+				
+				elementContentProvider.setUpdateView(!disableRendering);
+				
 			}
 		};
 		if (display.getThread() != Thread.currentThread()) {
@@ -259,9 +265,9 @@ public class ElementViewer extends ViewPart {
 			@Override
 			public void run() {
 				try {
-					viewer.getTable().update();
-					viewer.getTable().setRedraw(true);		
+				   elementContentProvider.forceUpdate();
 					elementContentProvider.streamToFile(null);
+					elementContentProvider.setUpdateView(true);
 					configureColumnAction.setEnabled(true);
 					addElementAction.setEnabled(true);
 					addHeaderElementAction.setEnabled(true);
@@ -320,5 +326,5 @@ public class ElementViewer extends ViewPart {
 	public void addElement(ElementPath elementPath){
 		elementContentProvider.add(elementPath);
 	}
-	
+
 }
