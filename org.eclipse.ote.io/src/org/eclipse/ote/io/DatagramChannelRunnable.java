@@ -8,14 +8,14 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.logging.Level;
 
 import org.eclipse.osee.framework.logging.OseeLog;
 
 public abstract class DatagramChannelRunnable implements Runnable {
 
-	private LinkedBlockingQueue<DatagramChannelData> data;
+	private ArrayBlockingQueue<DatagramChannelData> data;
 	private InetSocketAddress address;   
 
 	public DatagramChannelRunnable(InetSocketAddress address){
@@ -25,7 +25,7 @@ public abstract class DatagramChannelRunnable implements Runnable {
 	public DatagramChannelRunnable(){
    }
 
-	void setQueue(LinkedBlockingQueue<DatagramChannelData> data) {
+	void setQueue(ArrayBlockingQueue<DatagramChannelData> data) {
 		this.data = data;
 	}
 
@@ -48,7 +48,9 @@ public abstract class DatagramChannelRunnable implements Runnable {
 							continue;
 						}
 					}
-					for (DatagramChannelData data : dataToSend) {
+					int size = dataToSend.size();
+					for (int i = 0; i < size; i++) {
+						DatagramChannelData data = dataToSend.get(i);
 						if (data == DatagramChannelWorker.POISON_PILL) {
 							keepRunning = false;
 							break;
@@ -69,8 +71,10 @@ public abstract class DatagramChannelRunnable implements Runnable {
 				} catch (IOException ex){
 					OseeLog.log(getClass(), Level.SEVERE, "Error trying to send data", ex);
 				} finally {
-					for(DatagramChannelData datagramChannelData: dataToSend){
-						datagramChannelData.postProcess();
+					int size = dataToSend.size();
+					for (int i = 0; i < size; i++) {
+						DatagramChannelData data = dataToSend.get(i);
+						data.postProcess();
 					}
 				}
 			} 
