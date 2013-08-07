@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ote.ui.message.view.internal;
+package org.eclipse.ote.ui.message.view.search;
 
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
@@ -18,7 +18,7 @@ import org.eclipse.ote.message.lookup.MessageInputItem;
 import org.eclipse.ote.ui.message.view.OteMessageViewImage;
 import org.eclipse.swt.graphics.Image;
 
-public class MessageViewLabelProvider extends StyledCellLabelProvider {
+public class MessageSearchViewLabelProvider extends StyledCellLabelProvider {
 
 	private static final Image elementImg = ImageManager.getImage(OteMessageViewImage.PIPE);
 	private static final Image messageImg = ImageManager.getImage(OteMessageViewImage.GEAR);

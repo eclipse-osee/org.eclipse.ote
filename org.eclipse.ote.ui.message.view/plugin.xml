@@ -10,10 +10,10 @@
       <view
             allowMultiple="false"
             category="org.eclipse.ote.ui.messaging"
-            class="org.eclipse.ote.ui.message.view.MessageView"
+            class="org.eclipse.ote.ui.message.view.MessageSearchView"
             icon="images/glasses.gif"
-            id="org.eclipse.ote.ui.message.view.MessageView"
-            name="Message View"
+            id="org.eclipse.ote.ui.message.view.MessageSearchView"
+            name="Message Search View"
             restorable="true">
       </view>
    </extension>

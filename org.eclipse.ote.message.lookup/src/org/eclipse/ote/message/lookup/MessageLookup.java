@@ -16,6 +16,7 @@ import java.util.List;
 public interface MessageLookup {
 	List<MessageLookupResult> lookup(String searchString);
 	List<MessageLookupResult> lookup(String searchString, String... messageType);
+	MessageLookupResult lookupClass(String messageName);
 	List<String> getAvailableMessageTypes();
 	List<String> getMessageSources();
 }

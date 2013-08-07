@@ -26,11 +26,11 @@ public enum OteMessageViewImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(MessageView.PLUGIN_ID, "images", fileName);
+      return ImageManager.createImageDescriptor(MessageSearchView.PLUGIN_ID, "images", fileName);
    }
 
    @Override
    public String getImageKey() {
-      return MessageView.PLUGIN_ID + ".images." + fileName;
+      return MessageSearchView.PLUGIN_ID + ".images." + fileName;
    }
 }

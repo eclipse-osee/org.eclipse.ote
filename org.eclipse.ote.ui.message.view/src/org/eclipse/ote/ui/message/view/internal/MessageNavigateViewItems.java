@@ -17,13 +17,14 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.ote.ui.message.view.OteMessageViewImage;
+import org.eclipse.ote.ui.message.view.search.MessageSearchViewAction;
 
 public class MessageNavigateViewItems implements IXNavigateContainer {
 
    @Override
    public List<XNavigateItem> getNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
-      items.add(new XNavigateItemAction(null, new MessageViewAction(), OteMessageViewImage.GLASSES, false));
+      items.add(new XNavigateItemAction(null, new MessageSearchViewAction(), OteMessageViewImage.GLASSES, false));
       return items;
    }
 

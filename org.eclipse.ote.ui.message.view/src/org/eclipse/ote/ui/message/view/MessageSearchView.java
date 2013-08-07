@@ -39,9 +39,9 @@ import org.eclipse.ote.message.lookup.MessageInputUtil;
 import org.eclipse.ote.message.lookup.MessageLookup;
 import org.eclipse.ote.ui.message.util.CheckedSelectionDialog;
 import org.eclipse.ote.ui.message.view.internal.MessageInputComponent;
-import org.eclipse.ote.ui.message.view.internal.MessageViewContentProvider;
-import org.eclipse.ote.ui.message.view.internal.MessageViewLabelProvider;
 import org.eclipse.ote.ui.message.view.internal.MessageViewServiceUtility;
+import org.eclipse.ote.ui.message.view.search.MessageSearchViewContentProvider;
+import org.eclipse.ote.ui.message.view.search.MessageSearchViewLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -67,8 +67,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ViewPart;
 
-public class MessageView extends ViewPart {
-   public static final String VIEW_ID = "org.eclipse.ote.ui.message.view.MessageView";
+public class MessageSearchView extends ViewPart {
+   public static final String VIEW_ID = "org.eclipse.ote.ui.message.view.MessageSearchView";
    public static final String PLUGIN_ID = "org.eclipse.ote.ui.message.view";
    protected static final String SEARCHING_ALL_TYPES = "Current Filter:\nSearching All Message Types";
 
@@ -80,7 +80,7 @@ public class MessageView extends ViewPart {
    private Button searchButton;
    private Map<String, Boolean> filters;
 
-   public MessageView() {
+   public MessageSearchView() {
       super();
       filters = new HashMap<String, Boolean>();
    }
@@ -111,8 +111,8 @@ public class MessageView extends ViewPart {
       Widgets.attachToParent(tree, SWT.LEFT, 0, 0);
       Widgets.attachToParent(tree, SWT.RIGHT, 100, 0);
       treeViewer.setUseHashlookup(true);
-      treeViewer.setContentProvider(new MessageViewContentProvider());
-      treeViewer.setLabelProvider(new MessageViewLabelProvider());
+      treeViewer.setContentProvider(new MessageSearchViewContentProvider());
+      treeViewer.setLabelProvider(new MessageSearchViewLabelProvider());
       tree.addMouseListener(new MouseAdapter() {
 
          @Override
@@ -228,7 +228,7 @@ public class MessageView extends ViewPart {
     			  }
     			  return new Status(IStatus.OK, PLUGIN_ID, IStatus.OK, "", null);
     		  } catch (Throwable t) {
-    			  OseeLog.log(MessageView.class, Level.SEVERE, "exception during search operation", t);
+    			  OseeLog.log(MessageSearchView.class, Level.SEVERE, "exception during search operation", t);
     			  return new Status(IStatus.CANCEL, PLUGIN_ID, IStatus.CANCEL, "", t);
     		  } finally {
     			  Displays.pendInDisplayThread(new Runnable() {
