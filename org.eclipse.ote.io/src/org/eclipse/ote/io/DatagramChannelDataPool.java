@@ -20,7 +20,7 @@ public class DatagramChannelDataPool {
    }
    
    public DatagramChannelData get() throws InterruptedException{
-      DatagramChannelData datagramChannelData = data.poll(500, TimeUnit.MILLISECONDS);
+      DatagramChannelData datagramChannelData = data.poll(5000, TimeUnit.MILLISECONDS);
       if(datagramChannelData == null){
          OseeLog.log(getClass(), Level.WARNING, "Timed out waiting for datagram send object");
          datagramChannelData = factory.create(this);
