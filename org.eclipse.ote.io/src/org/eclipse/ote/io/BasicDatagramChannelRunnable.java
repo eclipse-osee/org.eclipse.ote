@@ -16,10 +16,14 @@ public class BasicDatagramChannelRunnable extends DatagramChannelRunnable {
    
    @Override
    public void doSend(DatagramChannel channel, List<DatagramChannelData> dataToSend) throws IOException {
-      for(DatagramChannelData data: dataToSend){
+	  int size = dataToSend.size();
+      for(int i = 0; i < size; i++){
+         DatagramChannelData data = dataToSend.get(i);
          data.getByteBuffer().flip();
-         for(SocketAddress address: data.getAddresses()){
-            channel.send(data.getByteBuffer(), address);
+         List<SocketAddress> addresses = data.getAddresses();
+         int innerSize = addresses.size();
+         for(int j = 0; j < innerSize; j++){
+            channel.send(data.getByteBuffer(), addresses.get(j));
             data.getByteBuffer().rewind();
          }
       }
