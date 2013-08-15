@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.ote.ui.message.view.OteMessageViewImage;
-import org.eclipse.ote.ui.message.view.search.MessageSearchViewAction;
 
 public class MessageNavigateViewItems implements IXNavigateContainer {
 

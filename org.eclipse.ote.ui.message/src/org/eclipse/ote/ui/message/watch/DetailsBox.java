@@ -36,6 +36,8 @@ import org.eclipse.ote.ui.message.tree.INodeVisitor;
 import org.eclipse.ote.ui.message.tree.MessageNode;
 import org.eclipse.ote.ui.message.tree.RootNode;
 import org.eclipse.ote.ui.message.tree.WatchedMessageNode;
+import org.eclipse.ote.ui.message.view.MessageInfoComposite;
+import org.eclipse.ote.ui.message.view.MessageInfoSelectionListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -72,12 +74,15 @@ public class DetailsBox implements IRegistryEventListener {
 
    private final TabFolder infoFolder;
    private final TabItem hexDumpTab;
+   private final TabItem databaseTab;
    private final StyledText hexDumpTxt;
    private final Font courier;
    private final Image hexImg;
+   private final MessageInfoComposite databaseComposite;
    private final StringBuilder strBuilder = new StringBuilder(8500);
    private TabItem selectedTab;
    private final HashMap<String, TabItem> detailsProviderMap = new HashMap<String, TabItem>();
+   private AbstractTreeNode lastDatabaseNode;
 
    private static final String[] hexTbl = new String[256];
 
@@ -97,10 +102,16 @@ public class DetailsBox implements IRegistryEventListener {
       hexDumpTab.setText("Hex Dump");
       hexDumpTab.setImage(hexImg);
       hexDumpTab.setToolTipText("displays hex dump of currently selected message");
-      hexDumpTxt =
-         new StyledText(infoFolder, SWT.DOUBLE_BUFFERED | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
+      hexDumpTxt = new StyledText(infoFolder, SWT.DOUBLE_BUFFERED | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
       hexDumpTxt.setFont(courier);
       hexDumpTab.setControl(hexDumpTxt);
+
+      databaseTab = new TabItem(infoFolder, SWT.NONE);
+      databaseTab.setText("Database Info");
+      databaseTab.setToolTipText("Displays static info about a selected message");
+      databaseComposite = new MessageInfoComposite(infoFolder);
+      databaseTab.setControl(databaseComposite);
+      lastDatabaseNode = null;
 
       installExtensionRegistryListener();
 
@@ -125,6 +136,9 @@ public class DetailsBox implements IRegistryEventListener {
       }
       if (selectedTab == hexDumpTab) {
          renderHex(node);
+      }
+      else if (selectedTab == databaseTab) {
+         updateDatabaseInfo(node);
       } else {
          DetailsProvider provider = (DetailsProvider) selectedTab.getControl();
          provider.render(node);
@@ -137,7 +151,7 @@ public class DetailsBox implements IRegistryEventListener {
       if (extensionRegistry != null) {
          extensionRegistry.removeListener(this);
       }
-    
+
       if(!courier.isDisposed()){
          courier.dispose();
       }
@@ -166,55 +180,55 @@ public class DetailsBox implements IRegistryEventListener {
 
             Element e = msg.getElement(node.getElementPath().getElementPath());
             if (e != null) {
-            	if (!e.isNonMappingElement()) {
-            		MessageData data = msg.getActiveDataSource();
-            		int headerSize = data.getMsgHeader() == null ? 0 : data.getMsgHeader().getHeaderSize();
-            		if (e.getByteOffset() >= data.getCurrentLength() - headerSize) {
-            			hexDumpTxt.setText("element outside of current message size");
-            			hexDumpTxt.setRedraw(true);
-            			return null;
-            		}
-            		StyleRange range = new StyleRange();
-            		range.background = Displays.getSystemColor(SWT.COLOR_GRAY);
-            		range.foreground = Displays.getSystemColor(SWT.COLOR_BLACK);
-            		int offset = e.getByteOffset() + e.getMsb() / 8;
-            		range.length = (e.getLsb() - e.getMsb() + 8) / 8 * HEX_DUMP_CHARS_PER_BYTE - 1;
+               if (!e.isNonMappingElement()) {
+                  MessageData data = msg.getActiveDataSource();
+                  int headerSize = data.getMsgHeader() == null ? 0 : data.getMsgHeader().getHeaderSize();
+                  if (e.getByteOffset() >= data.getCurrentLength() - headerSize) {
+                     hexDumpTxt.setText("element outside of current message size");
+                     hexDumpTxt.setRedraw(true);
+                     return null;
+                  }
+                  StyleRange range = new StyleRange();
+                  range.background = Displays.getSystemColor(SWT.COLOR_GRAY);
+                  range.foreground = Displays.getSystemColor(SWT.COLOR_BLACK);
+                  int offset = e.getByteOffset() + e.getMsb() / 8;
+                  range.length = (e.getLsb() - e.getMsb() + 8) / 8 * HEX_DUMP_CHARS_PER_BYTE - 1;
 
-            		int line = offset / HEX_DUMP_BYTES_PER_ROW * HEX_DUMP_LINE_WIDTH;
-            		int lineIndent = offset % HEX_DUMP_BYTES_PER_ROW * HEX_DUMP_CHARS_PER_BYTE;
-            		range.start = line + lineIndent + payloadStart;
+                  int line = offset / HEX_DUMP_BYTES_PER_ROW * HEX_DUMP_LINE_WIDTH;
+                  int lineIndent = offset % HEX_DUMP_BYTES_PER_ROW * HEX_DUMP_CHARS_PER_BYTE;
+                  range.start = line + lineIndent + payloadStart;
 
-            		if(!(e instanceof ArrayElement)){
+                  if(!(e instanceof ArrayElement)){
 
-            			if (HEX_DUMP_PREFIX_CHARS + lineIndent + range.length >= HEX_DUMP_LINE_WIDTH) {
-            				int remaing = range.length - (HEX_DUMP_LINE_WIDTH - lineIndent - 9);
-            				StyleRange[] ranges = new StyleRange[remaing / HEX_DUMP_NON_PREFIX_CHAR + 2];
-            				ranges[0] = range;
-            				range.length -= remaing;
-            				int c = 1;
-            				while (remaing > 0) {
-            					StyleRange newRange = new StyleRange();
-            					ranges[c] = newRange;
-            					newRange.background = range.background;
-            					newRange.foreground = range.foreground;
-            					newRange.start = line + c * HEX_DUMP_LINE_WIDTH + payloadStart;
-            					newRange.length = remaing < HEX_DUMP_NON_PREFIX_CHAR ? remaing : HEX_DUMP_NON_PREFIX_CHAR;
-            					remaing -= newRange.length;
-            					c++;
-            				}
-            				try{
-            					hexDumpTxt.setStyleRanges(ranges);
-            				} catch (Throwable th){
-            					th.printStackTrace();
-            				}
-            			} else {
-            				try{
-            					hexDumpTxt.setStyleRange(range);
-            				} catch (Throwable th){
-            					th.printStackTrace();
-            				}
-            			}
-            		}
+                     if (HEX_DUMP_PREFIX_CHARS + lineIndent + range.length >= HEX_DUMP_LINE_WIDTH) {
+                        int remaing = range.length - (HEX_DUMP_LINE_WIDTH - lineIndent - 9);
+                        StyleRange[] ranges = new StyleRange[remaing / HEX_DUMP_NON_PREFIX_CHAR + 2];
+                        ranges[0] = range;
+                        range.length -= remaing;
+                        int c = 1;
+                        while (remaing > 0) {
+                           StyleRange newRange = new StyleRange();
+                           ranges[c] = newRange;
+                           newRange.background = range.background;
+                           newRange.foreground = range.foreground;
+                           newRange.start = line + c * HEX_DUMP_LINE_WIDTH + payloadStart;
+                           newRange.length = remaing < HEX_DUMP_NON_PREFIX_CHAR ? remaing : HEX_DUMP_NON_PREFIX_CHAR;
+                           remaing -= newRange.length;
+                           c++;
+                        }
+                        try{
+                           hexDumpTxt.setStyleRanges(ranges);
+                        } catch (Throwable th){
+                           th.printStackTrace();
+                        }
+                     } else {
+                        try{
+                           hexDumpTxt.setStyleRange(range);
+                        } catch (Throwable th){
+                           th.printStackTrace();
+                        }
+                     }
+                  }
                   hexDumpTxt.setTopIndex(msg.getHeaderSize() / HEX_DUMP_BYTES_PER_ROW + offset / HEX_DUMP_BYTES_PER_ROW + 2);
                   hexDumpTxt.setRedraw(true);
                }
@@ -244,6 +258,39 @@ public class DetailsBox implements IRegistryEventListener {
       };
       node.visit(visitor);
    }
+
+   private void updateDatabaseInfo(AbstractTreeNode node) {
+      if (lastDatabaseNode == node) {
+         return;
+      }
+      lastDatabaseNode = node;
+      if (node == null) {
+         databaseComposite.search("");
+         return;
+      }
+      final INodeVisitor<Object> visitor = new INodeVisitor<Object>() {
+         @Override
+         public Object elementNode(final ElementNode node) {
+            WatchedMessageNode msgNode = (WatchedMessageNode) node.getMessageNode();
+            databaseComposite.search(msgNode.getMessageClassName());
+            return node;
+         }
+
+         @Override
+         public Object messageNode(final MessageNode node) {
+            WatchedMessageNode msgNode = (WatchedMessageNode) node;
+            databaseComposite.search(msgNode.getMessageClassName());
+            return node;
+         }
+
+         @Override
+         public Object rootNode(RootNode node) {
+            return node;
+         }
+      };
+      node.visit(visitor);
+   }
+
 
    /**
     * writes message data to a buffer in hex format
@@ -315,15 +362,15 @@ public class DetailsBox implements IRegistryEventListener {
                String bundleName = element.getContributor().getName();
                Bundle bundle = Platform.getBundle(bundleName);
                if (bundle == null) {
-                  OseeLog.logf(DetailsBox.class, Level.SEVERE, 
-                     "no bundle found for name %s while handling extension element %s", bundleName, element.getName());
+                  OseeLog.logf(DetailsBox.class, Level.SEVERE,
+                        "no bundle found for name %s while handling extension element %s", bundleName, element.getName());
                   return;
                }
                try {
                   Class<?> clazz = bundle.loadClass(className);
                   Class<? extends DetailsProvider> detailsClazz = clazz.asSubclass(DetailsProvider.class);
                   Constructor<? extends DetailsProvider> constructor =
-                     detailsClazz.getConstructor(Composite.class, int.class);
+                        detailsClazz.getConstructor(Composite.class, int.class);
                   try {
                      DetailsProvider provider = constructor.newInstance(infoFolder, SWT.NONE);
                      TabItem newTab = new TabItem(infoFolder, SWT.NONE);
@@ -336,16 +383,16 @@ public class DetailsBox implements IRegistryEventListener {
                   }
                } catch (ClassCastException ex) {
                   OseeLog.logf(
-                     DetailsBox.class,
-                     Level.SEVERE,
-                     "the class named %s is not a subclass of %s", className,
+                        DetailsBox.class,
+                        Level.SEVERE,
+                        "the class named %s is not a subclass of %s", className,
                         DetailsProvider.class.getName());
                } catch (ClassNotFoundException ex) {
                   OseeLog.logf(DetailsBox.class, Level.SEVERE,
-                     "no class found named %s in bundle %s", className, bundleName);
+                        "no class found named %s in bundle %s", className, bundleName);
                } catch (NoSuchMethodException ex) {
                   OseeLog.logf(DetailsBox.class, Level.SEVERE,
-                     "can't find appropriate constructor for %s", className);
+                        "can't find appropriate constructor for %s", className);
                }
             }
          }
@@ -387,5 +434,9 @@ public class DetailsBox implements IRegistryEventListener {
 
    @Override
    public void removed(IExtensionPoint[] arg0) {
+   }
+
+   public void setMessageInfoSelectionListener(MessageInfoSelectionListener listener) {
+      databaseComposite.setSelectionListener(listener);
    }
 }

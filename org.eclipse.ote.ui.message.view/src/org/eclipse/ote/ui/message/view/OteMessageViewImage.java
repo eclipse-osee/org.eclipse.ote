@@ -11,26 +11,37 @@
 package org.eclipse.ote.ui.message.view;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.swt.graphics.Image;
 
-public enum OteMessageViewImage implements KeyedImage {
-   GLASSES("glasses.gif"), GEAR("gear.png"),
-   PIPE("pipe.png"), EXPAND_STATE("expand_state.gif"), COLLAPSE_STATE("collapse_state.gif");
-   
-   private final String fileName;
+import ote.model.ui.utility.IKeyedImageHelped;
+import ote.model.ui.utility.KeyedImageHelper;
+
+public enum OteMessageViewImage implements KeyedImage, IKeyedImageHelped {
+   GLASSES("glasses.gif"),
+   GEAR("gear.png"),
+   PIPE("pipe.png"),
+   EXPAND_STATE("expand_state.gif"),
+   COLLAPSE_STATE("collapse_state.gif");
+
+   private final KeyedImageHelper helper;
 
    private OteMessageViewImage(String fileName) {
-      this.fileName = fileName;
+      helper = new KeyedImageHelper(MessageSearchView.PLUGIN_ID, fileName);
    }
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(MessageSearchView.PLUGIN_ID, "images", fileName);
+      return helper.createImageDescriptor();
    }
 
    @Override
    public String getImageKey() {
-      return MessageSearchView.PLUGIN_ID + ".images." + fileName;
+      return helper.getImageKey();
+   }
+
+   @Override
+   public Image getImage() {
+      return helper.getImage(this);
    }
 }

@@ -43,6 +43,7 @@ import org.eclipse.ote.ui.message.view.internal.MessageViewServiceUtility;
 import org.eclipse.ote.ui.message.view.search.MessageSearchViewContentProvider;
 import org.eclipse.ote.ui.message.view.search.MessageSearchViewLabelProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -54,10 +55,13 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
@@ -65,9 +69,10 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.part.ViewPart;
 
-public class MessageSearchView extends ViewPart {
+public class MessageSearchView extends ViewPart implements MessageInfoSelectionListener {
    public static final String VIEW_ID = "org.eclipse.ote.ui.message.view.MessageSearchView";
    public static final String PLUGIN_ID = "org.eclipse.ote.ui.message.view";
    protected static final String SEARCHING_ALL_TYPES = "Current Filter:\nSearching All Message Types";
@@ -79,6 +84,7 @@ public class MessageSearchView extends ViewPart {
    private Composite parentComposite;
    private Button searchButton;
    private Map<String, Boolean> filters;
+   private MessageInfoComposite infoComposite;
 
    public MessageSearchView() {
       super();
@@ -87,6 +93,20 @@ public class MessageSearchView extends ViewPart {
 
    @Override
    public void createPartControl(Composite parent) {
+      parent.setLayout(new FillLayout());
+      SashForm sash = new SashForm(parent, SWT.HORIZONTAL);
+
+      Composite left = new Composite(sash, SWT.NONE);
+      left.setLayout(new FillLayout());
+      createSearchControl(left);
+
+      Composite right = new Composite(sash, SWT.NONE);
+      right.setLayout(new FillLayout());
+      infoComposite = new MessageInfoComposite(right);
+      infoComposite.setSelectionListener(this);
+   }
+
+   public void createSearchControl(Composite parent) {
       GridLayout layout = new GridLayout();
       layout.numColumns = 1;
       layout.verticalSpacing = 0;
@@ -129,7 +149,22 @@ public class MessageSearchView extends ViewPart {
          }
 
       });
+      tree.addSelectionListener(new SelectionListener() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            TreeItem[] selection = tree.getSelection();
+            if (selection.length == 1) {
+               if (selection[0].getData() instanceof MessageInputItem) {
+                  String classname = ((MessageInputItem)selection[0].getData()).getMessageClass();
+                  infoComposite.search(classname);
+               }
+            }
+         }
 
+         @Override
+         public void widgetDefaultSelected(SelectionEvent e) {
+         }
+      });
       /*
        * Create a text field to be used for filtering the elements displayed by the tree treeViewer
        */
@@ -198,49 +233,49 @@ public class MessageSearchView extends ViewPart {
       searchButton.setEnabled(false);
       final Job searchJob = new Job("Searching Messages") {
 
-    	  @Override
-    	  public IStatus run(IProgressMonitor monitor) {
-    		  try {
-    			  String searchTxt = searchPattern;
-    			  if (searchPattern.equals("")) {
-    				  return new Status(IStatus.OK, PLUGIN_ID, "Empty Search String");
-    			  }
-    			  MessageLookup messageLookup = MessageViewServiceUtility.getService(MessageLookup.class);
-    			  if(messageLookup != null){
-    				  final List<MessageInputItem> results;
-    				  List<String> searchFilters = new ArrayList<String>();
-    				  for(Entry<String, Boolean> entry:filters.entrySet()){
-    				     if(entry.getValue()){
-    				        searchFilters.add(entry.getKey());
-    				     }
-    				  }
-    				  if(isFiltered() && searchFilters.size() > 0){
-    				     results = MessageInputUtil.messageLookupResultToMessageInputItem( messageLookup.lookup(searchTxt, searchFilters.toArray(new String[0])));
-    				  } else {
-    				     results = MessageInputUtil.messageLookupResultToMessageInputItem( messageLookup.lookup(searchTxt));
-    				  }
-    				  Displays.ensureInDisplayThread(new Runnable() {
-    					  @Override
-    					  public void run() {
-    						  treeViewer.setInput(results);
-    					  }
-    				  });
-    			  }
-    			  return new Status(IStatus.OK, PLUGIN_ID, IStatus.OK, "", null);
-    		  } catch (Throwable t) {
-    			  OseeLog.log(MessageSearchView.class, Level.SEVERE, "exception during search operation", t);
-    			  return new Status(IStatus.CANCEL, PLUGIN_ID, IStatus.CANCEL, "", t);
-    		  } finally {
-    			  Displays.pendInDisplayThread(new Runnable() {
-    				  @Override
-    				  public void run() {
-    					  treeViewer.getTree().setBackground(bgColor);
-    					  searchText.setEnabled(true);
-    					  searchButton.setEnabled(true);
-    				  }
-    			  });
-    		  }
-    	  }
+         @Override
+         public IStatus run(IProgressMonitor monitor) {
+            try {
+               String searchTxt = searchPattern;
+               if (searchPattern.equals("")) {
+                  return new Status(IStatus.OK, PLUGIN_ID, "Empty Search String");
+               }
+               MessageLookup messageLookup = MessageViewServiceUtility.getService(MessageLookup.class);
+               if(messageLookup != null){
+                  final List<MessageInputItem> results;
+                  List<String> searchFilters = new ArrayList<String>();
+                  for(Entry<String, Boolean> entry:filters.entrySet()){
+                     if(entry.getValue()){
+                        searchFilters.add(entry.getKey());
+                     }
+                  }
+                  if(isFiltered() && searchFilters.size() > 0){
+                     results = MessageInputUtil.messageLookupResultToMessageInputItem( messageLookup.lookup(searchTxt, searchFilters.toArray(new String[0])));
+                  } else {
+                     results = MessageInputUtil.messageLookupResultToMessageInputItem( messageLookup.lookup(searchTxt));
+                  }
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        treeViewer.setInput(results);
+                     }
+                  });
+               }
+               return new Status(IStatus.OK, PLUGIN_ID, IStatus.OK, "", null);
+            } catch (Throwable t) {
+               OseeLog.log(MessageSearchView.class, Level.SEVERE, "exception during search operation", t);
+               return new Status(IStatus.CANCEL, PLUGIN_ID, IStatus.CANCEL, "", t);
+            } finally {
+               Displays.pendInDisplayThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     treeViewer.getTree().setBackground(bgColor);
+                     searchText.setEnabled(true);
+                     searchButton.setEnabled(true);
+                  }
+               });
+            }
+         }
 
       };
       searchJob.setUser(true);
@@ -250,29 +285,29 @@ public class MessageSearchView extends ViewPart {
    private Menu getPopupMenu(final Composite composite) {
       final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
       MessageInputComponent messageInputComponent = MessageViewServiceUtility.getService(MessageInputComponent.class);
-      
+
       if(selection.isEmpty() || messageInputComponent.getMessageInputs().size() == 0){
-    	  return null;
+         return null;
       }
       final Menu previewMenu = new Menu(composite);
       for(final MessageInput messageInput: messageInputComponent.getMessageInputs()){
-    	  MenuItem item = new MenuItem(previewMenu, SWT.CASCADE);
-    	  item.setText("Add to " + messageInput.getLabel());
-    	  item.addSelectionListener(new SelectionAdapter() {
-    		  @Override
-    		  public void widgetSelected(SelectionEvent e) {
-    			  List<MessageInputItem> selectedItems = new ArrayList<MessageInputItem>();
-    			  @SuppressWarnings("rawtypes")
-    			  Iterator it = selection.iterator();
-    			  while(it.hasNext()){
-    				  Object selectedItem = it.next();
-    				  if(selectedItem instanceof MessageInputItem){
-    					  selectedItems.add((MessageInputItem)selectedItem);
-    				  }
-    			  }
-    			  messageInput.add(selectedItems);
-    		  }
-    	  });
+         MenuItem item = new MenuItem(previewMenu, SWT.CASCADE);
+         item.setText("Add to " + messageInput.getLabel());
+         item.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               List<MessageInputItem> selectedItems = new ArrayList<MessageInputItem>();
+               @SuppressWarnings("rawtypes")
+               Iterator it = selection.iterator();
+               while(it.hasNext()){
+                  Object selectedItem = it.next();
+                  if(selectedItem instanceof MessageInputItem){
+                     selectedItems.add((MessageInputItem)selectedItem);
+                  }
+               }
+               messageInput.add(selectedItems);
+            }
+         });
       }
       return previewMenu;
    }
@@ -302,7 +337,7 @@ public class MessageSearchView extends ViewPart {
       };
       collapseAction.setImageDescriptor(OteMessageViewImage.COLLAPSE_STATE.createImageDescriptor());
       collapseAction.setToolTipText("Collapse All");
-      
+
       filterAction = new Action("Search Filters"){
          @Override
          public void run() {
@@ -337,7 +372,7 @@ public class MessageSearchView extends ViewPart {
                      sb.append("Searching ");
                      sb.append(key);
                      sb.append(" Message Type\n");
-                  } 
+                  }
                }
                sb.append("---------------------------\n");
                for(String key:keys){
@@ -345,7 +380,7 @@ public class MessageSearchView extends ViewPart {
                      sb.append("Ignoring ");
                      sb.append(key);
                      sb.append(" Message Type\n");
-                  } 
+                  }
                }
                return sb.toString();
             } else {
@@ -355,13 +390,13 @@ public class MessageSearchView extends ViewPart {
       };
       filterAction.setToolTipText(SEARCHING_ALL_TYPES);
    }
-   
+
    private void selectAllMemTypes(){
       for(Entry<String, Boolean> entry:filters.entrySet()){
          entry.setValue(true);
       }
    }
-   
+
    private boolean isFiltered(){
       boolean allOn = true;
       for(Boolean selected:filters.values()){
@@ -372,7 +407,7 @@ public class MessageSearchView extends ViewPart {
       }
       return !allOn;
    }
-   
+
    private boolean allOff(){
       boolean allOff = true;
       for(Boolean selected:filters.values()){
@@ -385,16 +420,18 @@ public class MessageSearchView extends ViewPart {
    }
 
    private void createMenus() {
-      IMenuManager rootMenuManager = getViewSite().getActionBars().getMenuManager();
-      rootMenuManager.setRemoveAllWhenShown(true);
-      rootMenuManager.addMenuListener(new IMenuListener() {
+      if (getViewSite() != null) {
+         IMenuManager rootMenuManager = getViewSite().getActionBars().getMenuManager();
+         rootMenuManager.setRemoveAllWhenShown(true);
+         rootMenuManager.addMenuListener(new IMenuListener() {
 
-         @Override
-         public void menuAboutToShow(IMenuManager mgr) {
-            fillMenu(mgr);
-         }
-      });
-      fillMenu(rootMenuManager);
+            @Override
+            public void menuAboutToShow(IMenuManager mgr) {
+               fillMenu(mgr);
+            }
+         });
+         fillMenu(rootMenuManager);
+      }
    }
 
    private void fillMenu(IMenuManager rootMenuManager) {
@@ -403,11 +440,12 @@ public class MessageSearchView extends ViewPart {
    }
 
    private void createToolbar() {
-      IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
-      toolbarManager.add(filterAction);
-      toolbarManager.add(expandAction);
-      toolbarManager.add(collapseAction);
-      
+      if (getViewSite() != null) {
+         IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+         toolbarManager.add(filterAction);
+         toolbarManager.add(expandAction);
+         toolbarManager.add(collapseAction);
+      }
    }
 
    /*
@@ -421,6 +459,35 @@ public class MessageSearchView extends ViewPart {
    @Override
    public void dispose() {
       super.dispose();
+   }
+
+   @Override
+   public void associatedClassSelected(String classname) {
+      classname = classname.substring(classname.lastIndexOf('.')+1);
+      searchText.setText(classname);
+      search(classname);
+   }
+
+   @Override
+   public String getAssociatedToolTip() {
+      return "Click to search for the selected message";
+   }
+
+   public static void main(String[] args) {
+      Display display = new Display ();
+      Shell shell = new Shell (display);
+      shell.setText ("Shell");
+      shell.setLayout(new FormLayout());
+      final MessageSearchView view = new MessageSearchView();
+      view.createPartControl(shell);
+
+      shell.pack();
+      shell.open ();
+      shell.setSize (600, 400);
+      while (!shell.isDisposed ()) {
+         if (!display.readAndDispatch ()) display.sleep ();
+      }
+      display.dispose ();
    }
 
 }
