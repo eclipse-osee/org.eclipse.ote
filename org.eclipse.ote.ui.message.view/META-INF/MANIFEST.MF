@@ -3,15 +3,21 @@ Bundle-ManifestVersion: 2
 Bundle-Name: View
 Bundle-SymbolicName: org.eclipse.ote.ui.message.view;singleton:=true
 Bundle-Version: 0.11.0.qualifier
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui;bundle-version="3.103.0"
+Require-Bundle: org.eclipse.ui;bundle-version="3.103.0",
+ org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.ui.plugin.util,
  org.eclipse.osee.framework.ui.plugin.xnavigate,
  org.eclipse.osee.framework.ui.swt,
+ org.eclipse.osee.ote.message,
+ org.eclipse.osee.ote.message.data,
+ org.eclipse.osee.ote.message.elements,
+ org.eclipse.osee.ote.message.enums,
  org.eclipse.ote.message.lookup,
- org.eclipse.ote.ui.message.util
+ org.eclipse.ote.ui.message.util,
+ org.osgi.service.event,
+ ote.model.ui.utility
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/MessageInputConsumerComponent.xml
 Export-Package: org.eclipse.ote.ui.message.view

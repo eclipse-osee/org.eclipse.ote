@@ -23,7 +23,7 @@ public class MessageNavigateViewItems implements IXNavigateContainer {
    @Override
    public List<XNavigateItem> getNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
-      items.add(new XNavigateItemAction(null, new MessageViewAction(), OteMessageViewImage.GLASSES, false));
+      items.add(new XNavigateItemAction(null, new MessageSearchViewAction(), OteMessageViewImage.GLASSES, false));
       return items;
    }
 

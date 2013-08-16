@@ -149,7 +149,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
             @Override
             public void run() {
                openInfo("Message Recorder",
-                  "Message recording file " + config.getFileName() + " is now ready for opening");
+                     "Message recording file " + config.getFileName() + " is now ready for opening");
             }
          });
       }
@@ -157,13 +157,13 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
       @Override
       public void onTransferException(final TransferConfig config, final Throwable t) {
          OseeLog.log(Activator.class, Level.SEVERE, "problems writing to recorder output file " + config.getFileName(),
-            t);
+               t);
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
                recordButton.setSelection(false);
                openInfo("Message Recorder",
-                  "An exception occurred while writing to recorder output file " + config.getFileName());
+                     "An exception occurred while writing to recorder output file " + config.getFileName());
             }
          });
       }
@@ -189,15 +189,15 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
                try {
                   saveWatchFile();
                   messageService.startRecording(recordingWizard.getFileName(),
-                     recordingWizard.getFilteredMessageRecordDetails()).addListener(recBtnListener);
+                        recordingWizard.getFilteredMessageRecordDetails()).addListener(recBtnListener);
                } catch (FileNotFoundException ex) {
                   MessageDialog.openError(Displays.getActiveShell(), "Recording Error",
-                     "Failed to open file for writing. " + "Make sure its not being used by another application");
+                        "Failed to open file for writing. " + "Make sure its not being used by another application");
                   recordButton.setSelection(false);
                } catch (Throwable ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, "Failed to start message recording", ex);
                   MessageDialog.openError(Displays.getActiveShell(), "Recording Error",
-                     "Exception ocurred while recording. see error log");
+                        "Exception ocurred while recording. see error log");
                   recordButton.setSelection(false);
                }
             } else {
@@ -244,9 +244,9 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    private Composite parentComposite;
    private WatchList watchList;
 
-private WatchViewMessageDefinitionProviderTracker watchViewMessageDefinitionProviderTracker;
+   private WatchViewMessageDefinitionProviderTracker watchViewMessageDefinitionProviderTracker;
 
-private MessageProviderVersion messageProviderVersion;
+   private MessageProviderVersion messageProviderVersion;
 
    public WatchView() {
       watchFile = OseeData.getFile("msgWatch.txt");
@@ -257,7 +257,6 @@ private MessageProviderVersion messageProviderVersion;
    @Override
    public void createPartControl(Composite parent) {
       final int numColumns = 4;
-
       parentComposite = parent;
 
       GridLayout layout = new GridLayout();
@@ -285,7 +284,7 @@ private MessageProviderVersion messageProviderVersion;
       recordButton.setEnabled(false);
 
       IExtension[] extensions =
-         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.ote.ui.message.ToolbarItem").getExtensions();
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.ote.ui.message.ToolbarItem").getExtensions();
       for (IExtension ext : extensions) {
          for (IConfigurationElement el : ext.getConfigurationElements()) {
             if (el.getName().equals("ToolbarItem")) {
@@ -301,20 +300,20 @@ private MessageProviderVersion messageProviderVersion;
 
                   Action action = clazz.newInstance();
                   ActionButton btn =
-                     new ActionButton(buttons, SWT.PUSH, action, btnLabel, el.getContributor().getName());
+                        new ActionButton(buttons, SWT.PUSH, action, btnLabel, el.getContributor().getName());
                   btn.setToolTipText(tooltip);
 
                   if (icon != null) {
                      URL url = bundle.getEntry(icon);
                      if (url == null) {
                         throw new OseeArgumentException("Invalid icon path [{%s}/%s]", el.getContributor().getName(),
-                           icon);
+                              icon);
                      } else {
                         ImageDescriptor desc = ImageDescriptor.createFromURL(url);
                         Image img = desc.createImage();
                         if (img == null) {
                            throw new OseeArgumentException("Unable to create Image from [{%s}/%s]",
-                              el.getContributor().getName(), icon);
+                                 el.getContributor().getName(), icon);
                         } else {
                            btn.setImage(img);
                         }
@@ -338,8 +337,8 @@ private MessageProviderVersion messageProviderVersion;
 
       // Create the tree treeViewer as a child of the composite parent
       treeViewer =
-         new MessageXViewer(comp,
-            SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.DOUBLE_BUFFERED);
+            new MessageXViewer(comp,
+                  SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.DOUBLE_BUFFERED);
       GridData layoutData = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL | GridData.FILL_BOTH);
       layoutData.horizontalSpan = numColumns;
       treeViewer.getControl().setLayoutData(layoutData);
@@ -352,6 +351,7 @@ private MessageProviderVersion messageProviderVersion;
       treeViewer.getTree().setLinesVisible(true);
 
       detailsBox = new DetailsBox(sashForm);
+      detailsBox.setMessageInfoSelectionListener(new MessageInfoSelectionHandler(this));
 
       sashForm.setWeights(new int[] {75, 25});
       // Add Listeners to the Tree
@@ -374,8 +374,8 @@ private MessageProviderVersion messageProviderVersion;
                   // throw if there is an error in the message jar
                   // (usually... )
                   final String msg =
-                     String.format("Problems occurred when trying to display details for %s: (See Error Log)",
-                        node.getName());
+                        String.format("Problems occurred when trying to display details for %s: (See Error Log)",
+                              node.getName());
                   OseeLog.log(Activator.class, Level.SEVERE, "Error while displaying details for " + node.getName(), t);
                   openInfo("Possible Message JAR Error", msg);
                }
@@ -425,9 +425,9 @@ private MessageProviderVersion messageProviderVersion;
                   loadWatchFile(mwi);
                }
             } else if (e.stateMask != SWT.CTRL && e.stateMask != SWT.ALT && e.keyCode == SWT.DEL){
-            	final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-                watchList.deleteSelection(selection);
-                refresh();
+               final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+               watchList.deleteSelection(selection);
+               refresh();
             }
          }
 
@@ -439,14 +439,14 @@ private MessageProviderVersion messageProviderVersion;
       int ops = DND.DROP_COPY | DND.DROP_MOVE;
       Transfer[] transfers = new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance()};
       treeViewer.addDropSupport(ops, transfers, new WatchViewDropAdapter(this));
-      
+
       watchViewMessageDefinitionProviderTracker = new WatchViewMessageDefinitionProviderTracker(FrameworkUtil.getBundle(getClass()).getBundleContext(), this);
       watchViewMessageDefinitionProviderTracker.open(true);
    }
 
    @Override
    public void dispose() {
-	  watchViewMessageDefinitionProviderTracker.close();
+      watchViewMessageDefinitionProviderTracker.close();
       if (detailsBox != null) {
          detailsBox.dispose();
       }
@@ -508,7 +508,7 @@ private MessageProviderVersion messageProviderVersion;
          @Override
          public void run() {
             if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-               "Delete All", "Delete All Watch Items?")) {
+                  "Delete All", "Delete All Watch Items?")) {
                watchList.deleteAll();
                refresh();
             }
@@ -676,8 +676,8 @@ private MessageProviderVersion messageProviderVersion;
 
    private boolean openProceedWithProcessing(final String message) {
       MessageDialog dialog =
-         new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Proceed?", null, message,
-            MessageDialog.QUESTION, new String[] {"Continue processing with next message", "End message processing"}, 0);
+            new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Proceed?", null, message,
+                  MessageDialog.QUESTION, new String[] {"Continue processing with next message", "End message processing"}, 0);
       return dialog.open() == Window.OK;
    }
 
@@ -689,8 +689,8 @@ private MessageProviderVersion messageProviderVersion;
       try {
          if (Benchmark.isBenchmarkingEnabled()) {
             OseeLog.logf(Activator.class, Level.INFO, "%s: # samples=%d, max=%d, min=%d, avg=%d", benchMark.getName(),
-               benchMark.getTotalSamples(), benchMark.getLongestSample(), benchMark.getShortestSample(),
-               benchMark.getAverage());
+                  benchMark.getTotalSamples(), benchMark.getLongestSample(), benchMark.getShortestSample(),
+                  benchMark.getAverage());
          }
       } catch (Throwable t) {
          OseeLog.log(Activator.class, Level.WARNING, "Exception during disconnect", t);
@@ -936,8 +936,7 @@ private MessageProviderVersion messageProviderVersion;
             public Object messageNode(MessageNode node) {
                if (selection.size() == 1) {
                   WatchedMessageNode msgNode = (WatchedMessageNode) node;
-                  mm.insertBefore(XViewer.MENU_GROUP_PRE, new WatchElementAction(WatchView.this,
-                     (WatchedMessageNode) node));
+                  mm.insertBefore(XViewer.MENU_GROUP_PRE, new WatchElementAction(WatchView.this, (WatchedMessageNode) node));
                   mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
                   mm.insertBefore(XViewer.MENU_GROUP_PRE, SetDataSourceMenu.createMenu(msgNode));
                   mm.insertBefore(XViewer.MENU_GROUP_PRE, SetMessageModeMenu.createMenu(msgNode));
@@ -998,12 +997,12 @@ private MessageProviderVersion messageProviderVersion;
    }
 
    private void setNoLibraryStatus() {
-	  if(!treeViewer.getTree().isDisposed()){
-		  treeViewer.getTree().setToolTipText("");
-	  }
-	  if(!statusTxt.isDisposed()){
-		  statusTxt.setText("no library detected");
-	  }
+      if(!treeViewer.getTree().isDisposed()){
+         treeViewer.getTree().setToolTipText("");
+      }
+      if(!statusTxt.isDisposed()){
+         statusTxt.setText("no library detected");
+      }
    }
 
    @Override
@@ -1038,38 +1037,41 @@ private MessageProviderVersion messageProviderVersion;
       });
    }
 
-   
-   
+
+
    public void addMessageDefinitionProvider(MessageDefinitionProvider provider) {
-	   messageProviderVersion.add(provider);	  
-	  Displays.ensureInDisplayThread(new Runnable() {
-		  @Override
-		  public void run() {
-			  try {
-				  statusTxt.setText("libraries loaded");
-				  statusTxt.setToolTipText(messageProviderVersion.getVersion());
-			  } catch (Exception ex) {
-				  OseeLog.log(Activator.class, Level.SEVERE, "exception while processing library", ex);
-			  }
-		  }
-	  });
+      messageProviderVersion.add(provider);
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               statusTxt.setText("libraries loaded");
+               statusTxt.setToolTipText(messageProviderVersion.getVersion());
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, "exception while processing library", ex);
+            }
+         }
+      });
    }
 
    public void removeMessageDefinitionProvider(MessageDefinitionProvider provider) {
-	  messageProviderVersion.remove(provider);
-	  Displays.ensureInDisplayThread(new Runnable() {
-		  @Override
-		  public void run() {
-			  if(messageProviderVersion.isAnyAvailable()){
-				  if(!statusTxt.isDisposed()){
-					  statusTxt.setText("libraries loaded");
-					  statusTxt.setToolTipText(messageProviderVersion.getVersion());
-				  }
-			  } else { 
-				  setNoLibraryStatus();
-			  } 
-		  }
-	  });
+      messageProviderVersion.remove(provider);
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if(messageProviderVersion.isAnyAvailable()){
+               if(!statusTxt.isDisposed()){
+                  statusTxt.setText("libraries loaded");
+                  statusTxt.setToolTipText(messageProviderVersion.getVersion());
+               }
+            } else {
+               setNoLibraryStatus();
+            }
+         }
+      });
    }
-   
+
+   WatchList getWatchList() {
+      return watchList;
+   }
 }
