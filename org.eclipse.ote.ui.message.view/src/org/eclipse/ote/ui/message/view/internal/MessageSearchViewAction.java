@@ -12,16 +12,16 @@ package org.eclipse.ote.ui.message.view.internal;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.ui.plugin.util.ViewPartUtil;
-import org.eclipse.ote.ui.message.view.MessageView;
+import org.eclipse.ote.ui.message.view.MessageSearchView;
 
-public class MessageViewAction extends Action {
+public class MessageSearchViewAction extends Action {
 
-   public MessageViewAction() {
-      super("Open Message View");
+   public MessageSearchViewAction() {
+      super("Open Message Search View");
    }
 
    @Override
    public void run() {
-      ViewPartUtil.openOrShowView(MessageView.VIEW_ID);
+      ViewPartUtil.openOrShowView(MessageSearchView.VIEW_ID);
    }
 }

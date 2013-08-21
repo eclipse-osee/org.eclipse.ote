@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ote.ui.message.view.internal;
+package org.eclipse.ote.ui.message.view.search;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ote.message.lookup.MessageInputItem;
 
-public class MessageViewContentProvider implements ITreeContentProvider {
+public class MessageSearchViewContentProvider implements ITreeContentProvider {
 
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {

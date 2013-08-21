@@ -1,19 +1,19 @@
 package org.eclipse.ote.io;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import org.eclipse.ote.io.internal.PoisonPill;
 
 public class DatagramChannelWorker {
    final static PoisonPill POISON_PILL = new PoisonPill();
-   private final LinkedBlockingQueue<DatagramChannelData> data;
+   private final ArrayBlockingQueue<DatagramChannelData> data;
    private final DatagramChannelRunnable runnable;
    private final String threadName;
    
    public DatagramChannelWorker(String threadName, DatagramChannelRunnable runnable){
       this.runnable = runnable;
       this.threadName = threadName;
-      this.data = new LinkedBlockingQueue<DatagramChannelData>();
+      this.data = new ArrayBlockingQueue<DatagramChannelData>(1000);
       
       runnable.setQueue(data);
    }
