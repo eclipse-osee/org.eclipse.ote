@@ -164,17 +164,22 @@ public class MessageInfoComposite extends Composite {
                MessageLookupResult result =  messageLookup.lookupClass(className);
                associatedMsgs = associationLookup.lookupAssociatedMessages(className);
                if (result != null) {
-                  labelMessage.setText(result.getClassName());
-                  labelMessage.setBackground(TEXT_BACKGROUND_COLOR);
-                  labelType.setText(result.getMessageType());
-                  labelPublishers.setText(toMessageCsv(result.getPublishers()));
-                  labelSubscribers.setText(toMessageCsv(result.getSubscribers()));
-                  labelAssociated.setText("");
-                  labelByteSize.setText(Integer.toString(result.getByteSize()));
-                  labelPhase.setText(result.getPhase());
-                  labelRate.setText(result.getRate());
-                  labelScheduled.setText(result.getScheduled());
-                  updateAssociated();
+                  try {
+                     labelMessage.setText(result.getClassName());
+                     labelMessage.setBackground(TEXT_BACKGROUND_COLOR);
+                     labelType.setText(result.getMessageType());
+                     labelPublishers.setText(toMessageCsv(result.getPublishers()));
+                     labelSubscribers.setText(toMessageCsv(result.getSubscribers()));
+                     labelAssociated.setText("");
+                     labelByteSize.setText(Integer.toString(result.getByteSize()));
+                     labelPhase.setText(result.getPhase());
+                     labelRate.setText(result.getRate());
+                     labelScheduled.setText(result.getScheduled());
+                     updateAssociated();
+                  }
+                  catch (Exception e) {
+                     setNotFound(className);
+                  }
                }
                else {
                   setNotFound(className);
