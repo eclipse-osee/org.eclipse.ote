@@ -29,7 +29,7 @@ import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.ArrayElement;
 import org.eclipse.osee.ote.message.elements.Element;
-import org.eclipse.ote.ui.message.OteMessageImage;
+import org.eclipse.ote.ui.message.internal.WatchImages;
 import org.eclipse.ote.ui.message.tree.AbstractTreeNode;
 import org.eclipse.ote.ui.message.tree.ElementNode;
 import org.eclipse.ote.ui.message.tree.INodeVisitor;
@@ -93,7 +93,7 @@ public class DetailsBox implements IRegistryEventListener {
    }
 
    public DetailsBox(Composite parent) {
-      hexImg = ImageManager.getImage(OteMessageImage.HEX);
+      hexImg = ImageManager.getImage(WatchImages.HEX);
       courier = new Font(parent.getDisplay(), "Courier", 10, SWT.NORMAL);
       /* Create Text box to display values of selected messages */
       infoFolder = new TabFolder(parent, SWT.BORDER);

@@ -13,11 +13,11 @@ package org.eclipse.ote.ui.message.watch.action;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.message.elements.Element;
-import org.eclipse.ote.ui.message.OteMessageImage;
+import org.eclipse.ote.ui.message.internal.WatchImages;
 import org.eclipse.swt.graphics.Image;
 
 public final class ElementLabelProvider extends LabelProvider {
-   private static final Image Img = ImageManager.getImage(OteMessageImage.PIPE);
+   private static final Image Img = ImageManager.getImage(WatchImages.PIPE);
 
    @Override
    public Image getImage(Object element) {

@@ -52,13 +52,13 @@ public class ElementColumn implements ISubscriptionListener {
    private String tip;
    private String verbosetext;
    private boolean duplicateName = false;
-	
+
    ElementColumn(TableViewer table, final int index, ElementPath path) {
       super();
       activeImg = null;
       inactive = Activator.getDefault().getImageRegistry().get("INACTIVE_PNG");
       duplicate = Activator.getDefault().getImageRegistry().get("DUPLICATE_PNG");
-      
+
       this.table = table;
       this.path = path;
       column = new TableViewerColumn(table, SWT.LEFT);
@@ -74,11 +74,11 @@ public class ElementColumn implements ISubscriptionListener {
       column.setLabelProvider(new ColumnLabelProvider() {
 
          @Override
-		public String getToolTipText(Object element) {
-			return tip;
-		}
+         public String getToolTipText(Object element) {
+            return tip;
+         }
 
-		@Override
+         @Override
          public String getText(Object element) {
             ElementUpdate update = (ElementUpdate) element;
             Object value = update.getValue(ElementColumn.this);
@@ -92,10 +92,10 @@ public class ElementColumn implements ISubscriptionListener {
             return update.isChanged(ElementColumn.this) ? Displays.getSystemColor(SWT.COLOR_GREEN) : null;
          }
 
-		@Override
-		public int getToolTipDisplayDelayTime(Object object) {
-			return 500;
-		}
+         @Override
+         public int getToolTipDisplayDelayTime(Object object) {
+            return 500;
+         }
 
       });
       tip = text;
@@ -125,13 +125,13 @@ public class ElementColumn implements ISubscriptionListener {
 
    public boolean update() {
       if(element != null){
-	      Object current = element.getValue();
-	      Object lastValue = lastValueReference.get();
-	      if (!current.equals(lastValue)) {
-	         lastValueReference.set(current);
-	         valueUpdatedFlag.set(true);
-	         return true;
-	      }
+         Object current = element.getValue();
+         Object lastValue = lastValueReference.get();
+         if (!current.equals(lastValue)) {
+            lastValueReference.set(current);
+            valueUpdatedFlag.set(true);
+            return true;
+         }
       }
       return false;
    }
@@ -144,11 +144,11 @@ public class ElementColumn implements ISubscriptionListener {
    public String getName() {
       return text;
    }
-   
+
    public String getElementText() {
       return text;
    }
-   
+
    public boolean isDuplicateName() {
       return duplicateName;
    }
@@ -170,9 +170,9 @@ public class ElementColumn implements ISubscriptionListener {
    }
 
    public boolean getAndClearUpdateState() {
-	   return valueUpdatedFlag.getAndSet(false);
+      return valueUpdatedFlag.getAndSet(false);
    }
-   
+
    @Override
    public void subscriptionActivated(IMessageSubscription subscription) {
    }
@@ -196,35 +196,35 @@ public class ElementColumn implements ISubscriptionListener {
 
    @Override
    public void subscriptionResolved(IMessageSubscription subscription) {
-	  
+
       element = (DiscreteElement<?>) subscription.getMessage().getElementByPath(path);
       Displays.ensureInDisplayThread(new Runnable() {
-		
 
 
-		@Override
-		public void run() {
-		   setToolTip();
-		}
-	   });
+
+         @Override
+         public void run() {
+            setToolTip();
+         }
+      });
       lastValueReference.set(element != null ? element.getValue() : UNKNOWN_VALUE);
    }
 
    @Override
    public void subscriptionUnresolved(IMessageSubscription subscription) {
-	  tip = "not found";
+      tip = "not found";
       element = null;
       lastValueReference.set(UNKNOWN_VALUE);
 
    }
-   
+
    private void setToolTip(){
       String tip = "";
       if (element == null) {
          tip = "The element " + getElementPath() + " does not exist on " + getMessageClassName();
       } else {
          tip = String.format("%s.%s\nByte Offset: %d\nMSB: %d\nLSB: %d",  getMessageName(getMessageClassName()), text, element.getByteOffset(), element.getMsb(),
-                  element.getLsb());
+               element.getLsb());
          if(duplicateName){
             tip = "Note: Duplicate name in view\n" + tip;
          }

@@ -66,8 +66,8 @@ import org.eclipse.osee.ote.message.tool.TransferConfig;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
-import org.eclipse.ote.ui.message.OteMessageImage;
 import org.eclipse.ote.ui.message.internal.Activator;
+import org.eclipse.ote.ui.message.internal.WatchImages;
 import org.eclipse.ote.ui.message.messageXViewer.MessageXViewer;
 import org.eclipse.ote.ui.message.tree.AbstractTreeNode;
 import org.eclipse.ote.ui.message.tree.ElementNode;
@@ -465,7 +465,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
             treeViewer.getTree().setRedraw(true);
          }
       };
-      expandAction.setImageDescriptor(OteMessageImage.EXPAND_STATE.createImageDescriptor());
+      expandAction.setImageDescriptor(WatchImages.EXPAND_STATE.createImageDescriptor());
       expandAction.setToolTipText("Expand All");
 
       Action showNameAction = new Action("Show Names", SWT.TOGGLE) {
@@ -475,7 +475,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
             treeViewer.refresh();
          }
       };
-      showNameAction.setImageDescriptor(OteMessageImage.SHOW_NAMES.createImageDescriptor());
+      showNameAction.setImageDescriptor(WatchImages.SHOW_NAMES.createImageDescriptor());
       showNameAction.setToolTipText("Show Message Names");
 
       Action collapseAction = new Action("Collapse All") {
@@ -487,7 +487,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
             treeViewer.getTree().setRedraw(true);
          }
       };
-      collapseAction.setImageDescriptor(OteMessageImage.COLLAPSE_STATE.createImageDescriptor());
+      collapseAction.setImageDescriptor(WatchImages.COLLAPSE_STATE.createImageDescriptor());
       collapseAction.setToolTipText("Collapse All");
 
       Action deleteAction = new Action("Delete") {
@@ -501,7 +501,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 
       deleteAction.setToolTipText("Delete");
 
-      deleteAction.setImageDescriptor(OteMessageImage.DELETE.createImageDescriptor());
+      deleteAction.setImageDescriptor(WatchImages.DELETE.createImageDescriptor());
 
       Action deleteAllAction = new Action("Delete All") {
 
@@ -515,7 +515,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
          }
       };
       deleteAllAction.setToolTipText("Delete All");
-      deleteAllAction.setImageDescriptor(OteMessageImage.DELETE_ALL.createImageDescriptor());
+      deleteAllAction.setImageDescriptor(WatchImages.DELETE_ALL.createImageDescriptor());
 
       Action refreshAction = new Action("Refresh") {
          @Override
@@ -524,7 +524,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
          }
       };
       refreshAction.setToolTipText("refresh");
-      refreshAction.setImageDescriptor(OteMessageImage.REFRESH.createImageDescriptor());
+      refreshAction.setImageDescriptor(WatchImages.REFRESH.createImageDescriptor());
 
       Action saveAction = new Action("Save Items") {
          private String saveFilePath = null;
@@ -556,7 +556,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
          }
       };
       saveAction.setToolTipText("Save Watch Items");
-      saveAction.setImageDescriptor(OteMessageImage.SAVE.createImageDescriptor());
+      saveAction.setImageDescriptor(WatchImages.SAVE.createImageDescriptor());
 
       Action loadAction = new Action("Load Items") {
          private String loadFilePath = null;
@@ -588,7 +588,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
          }
       };
       loadAction.setToolTipText("Load Watch Items");
-      loadAction.setImageDescriptor(OteMessageImage.OPEN.createImageDescriptor());
+      loadAction.setImageDescriptor(WatchImages.OPEN.createImageDescriptor());
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(showNameAction);
       toolbarManager.add(refreshAction);
@@ -1074,4 +1074,5 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    WatchList getWatchList() {
       return watchList;
    }
+
 }
