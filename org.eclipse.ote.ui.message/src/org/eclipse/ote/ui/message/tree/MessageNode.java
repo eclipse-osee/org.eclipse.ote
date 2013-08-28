@@ -13,12 +13,13 @@ package org.eclipse.ote.ui.message.tree;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
-import org.eclipse.ote.ui.message.OteMessageImage;
+import org.eclipse.ote.ui.message.internal.WatchImages;
 import org.eclipse.ote.ui.message.messageXViewer.MessageXViewerFactory;
 import org.eclipse.ote.ui.message.watch.ElementPath;
 import org.eclipse.swt.graphics.Image;
@@ -33,11 +34,11 @@ public class MessageNode extends AbstractTreeNode {
 
    private final Map<String, ElementNode> pathToElementNode = new HashMap<String, ElementNode>();
 
-   protected static final Image normalImg = ImageManager.getImage(OteMessageImage.GEAR);
+   protected static final Image normalImg = ImageManager.getImage(WatchImages.GEAR);
    @SuppressWarnings("unused")
-   private static final Image wireAIUImg = ImageManager.getImage(OteMessageImage.WIRE_AIU);
+   private static final Image wireAIUImg = ImageManager.getImage(WatchImages.WIRE_AIU);
    protected static final Image errorImg =
-      new OverlayImage(normalImg, ImageDescriptor.createFromImage(ImageManager.getImage(OteMessageImage.ERROR_SM)),
+      new OverlayImage(normalImg, ImageDescriptor.createFromImage(ImageManager.getImage(WatchImages.ERROR_SM)),
          Location.BOT_RIGHT).createImage();
    private final String shortenedMessageName;
    private final String packageName;

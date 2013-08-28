@@ -15,12 +15,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
-import org.eclipse.ote.ui.message.OteMessageImage;
+import org.eclipse.ote.ui.message.internal.WatchImages;
 import org.eclipse.ote.ui.message.messageXViewer.MessageXViewerFactory;
 import org.eclipse.ote.ui.message.watch.ElementPath;
 import org.eclipse.ote.ui.message.watch.recording.IElementPath;
@@ -38,9 +39,9 @@ public class ElementNode extends AbstractTreeNode implements IElementPath {
 
    private final Map<String, ElementNode> pathToElementNode = new HashMap<String, ElementNode>();
 
-   private static final Image normalImg = ImageManager.getImage(OteMessageImage.PIPE);
+   private static final Image normalImg = ImageManager.getImage(WatchImages.PIPE);
    private static final Image errorImg =
-      new OverlayImage(normalImg, ImageDescriptor.createFromImage(ImageManager.getImage(OteMessageImage.ERROR_SM)),
+      new OverlayImage(normalImg, ImageDescriptor.createFromImage(ImageManager.getImage(WatchImages.ERROR_SM)),
          Location.BOT_RIGHT).createImage();
    private MessageNode messageNode;
 

@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.ote.ui.message.OteMessageImage;
+import org.eclipse.ote.ui.message.internal.WatchImages;
 import org.eclipse.ote.ui.message.watch.MessageWatchAction;
 
 /**
@@ -27,7 +27,7 @@ public class MessageNavigateViewItems implements IXNavigateContainer {
    @Override
    public List<XNavigateItem> getNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
-      items.add(new XNavigateItemAction(null, new MessageWatchAction(), OteMessageImage.BINOCULARS, false));
+      items.add(new XNavigateItemAction(null, new MessageWatchAction(), WatchImages.BINOCULARS, false));
       return items;
    }
 

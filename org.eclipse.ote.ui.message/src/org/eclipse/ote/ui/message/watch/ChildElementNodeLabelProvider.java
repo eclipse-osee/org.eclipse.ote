@@ -15,15 +15,15 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.message.elements.Element;
 import org.eclipse.osee.ote.message.elements.RecordElement;
 import org.eclipse.osee.ote.message.elements.RecordMap;
-import org.eclipse.ote.ui.message.OteMessageImage;
+import org.eclipse.ote.ui.message.internal.WatchImages;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class ChildElementNodeLabelProvider extends LabelProvider {
-   private static final Image recordImg = ImageManager.getImage(OteMessageImage.DATABASE);
-   private static final Image elementImg = ImageManager.getImage(OteMessageImage.PIPE);
+   private static final Image recordImg = ImageManager.getImage(WatchImages.DATABASE);
+   private static final Image elementImg = ImageManager.getImage(WatchImages.PIPE);
 
    @Override
    public Image getImage(Object element) {
