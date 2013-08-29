@@ -33,6 +33,7 @@
 		<module>../org.eclipse.ote.statemachine.test</module>
 	
 	   <module>../org.eclipse.ote.message.lookup</module>
+		<module>../org.eclipse.ote.ui</module>
 		<module>../org.eclipse.ote.ui.message.util</module>
 		<module>../org.eclipse.ote.ui.eviewer</module>
 		<module>../org.eclipse.ote.ui.message</module>
