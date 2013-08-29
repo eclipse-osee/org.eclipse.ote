@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE OTE UI
+Bundle-SymbolicName: org.eclipse.ote.ui;singleton:=true
+Bundle-Version: 0.11.0.qualifier
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.ui.swt
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.eclipse.ote.ui.util
+Bundle-Vendor: Eclipse Open System Engineering Environment

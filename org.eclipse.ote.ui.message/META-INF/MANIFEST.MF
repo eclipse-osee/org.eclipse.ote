@@ -32,5 +32,5 @@ Import-Package: org.eclipse.osee.framework.core.exception,
  org.eclipse.ote.message.lookup,
  org.eclipse.ote.ui.message.util,
  org.eclipse.ote.ui.message.view,
- ote.model.ui.utility
+ org.eclipse.ote.ui.util
 Service-Component: OSGI-INF/*.xml

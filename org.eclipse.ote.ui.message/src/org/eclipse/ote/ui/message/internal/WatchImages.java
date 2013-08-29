@@ -2,10 +2,9 @@ package org.eclipse.ote.ui.message.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.ote.ui.util.IKeyedImageHelped;
+import org.eclipse.ote.ui.util.KeyedImageHelper;
 import org.eclipse.swt.graphics.Image;
-
-import ote.model.ui.utility.IKeyedImageHelped;
-import ote.model.ui.utility.KeyedImageHelper;
 
 public enum WatchImages implements KeyedImage, IKeyedImageHelped {
    PART_MARK("part_mark.png"),
