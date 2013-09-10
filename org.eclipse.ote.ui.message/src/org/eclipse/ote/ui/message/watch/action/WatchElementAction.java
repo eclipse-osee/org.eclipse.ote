@@ -12,6 +12,7 @@ package org.eclipse.ote.ui.message.watch.action;
 
 import java.util.Collection;
 import java.util.LinkedList;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.window.Window;
@@ -21,7 +22,7 @@ import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.elements.Element;
 import org.eclipse.osee.ote.message.elements.RecordElement;
-import org.eclipse.ote.ui.message.OteMessageImage;
+import org.eclipse.ote.ui.message.internal.WatchImages;
 import org.eclipse.ote.ui.message.tree.WatchedMessageNode;
 import org.eclipse.ote.ui.message.watch.AddWatchParameter;
 import org.eclipse.ote.ui.message.watch.ChildElementNodeContentProvider;
@@ -71,7 +72,7 @@ public class WatchElementAction extends Action {
                new ChildElementNodeContentProvider());
          dialog.setTitle(msgNode.getName());
 
-         dialog.setImage(ImageManager.getImage(OteMessageImage.GEAR));
+         dialog.setImage(ImageManager.getImage(WatchImages.GEAR));
          dialog.setEmptyListMessage("No matching message elements");
          dialog.setInput(msgNode);
          dialog.setMessage("Select elements to watch.");
@@ -95,7 +96,7 @@ public class WatchElementAction extends Action {
             new ElementListSelectionDialog(Displays.getActiveShell(), new ElementLabelProvider());
          dialog.setMultipleSelection(true);
          dialog.setTitle(msgNode.getName());
-         dialog.setImage(ImageManager.getImage(OteMessageImage.GEAR));
+         dialog.setImage(ImageManager.getImage(WatchImages.GEAR));
          dialog.setMessage("Select element to watch. (? matches any character, * matches any string)");
          dialog.setEmptySelectionMessage("No matching message elements");
          dialog.setElements(elements);

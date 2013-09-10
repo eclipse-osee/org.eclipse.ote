@@ -12,10 +12,9 @@ package org.eclipse.ote.ui.message.view;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.ote.ui.util.IKeyedImageHelped;
+import org.eclipse.ote.ui.util.KeyedImageHelper;
 import org.eclipse.swt.graphics.Image;
-
-import ote.model.ui.utility.IKeyedImageHelped;
-import ote.model.ui.utility.KeyedImageHelper;
 
 public enum OteMessageViewImage implements KeyedImage, IKeyedImageHelped {
    GLASSES("glasses.gif"),
