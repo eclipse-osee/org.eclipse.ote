@@ -230,6 +230,7 @@ public class WatchedMessageNode extends MessageNode {
 
       setMessageIcon(WatchImages.PART_TYPE_AI.getImage(),  WatchImages.PART_OUTLINE_ORANGE.getImage(), read, write, mark, bgc, new String[] {"WIRE_AIU"});
       setMessageIcon(WatchImages.PART_TYPE_AR.getImage(),  WatchImages.PART_OUTLINE_BROWN.getImage(), read, write, mark, bgc, new String[] {"ARINC"});
+      setMessageIcon(WatchImages.PART_TYPE_D.getImage(),  WatchImages.PART_OUTLINE_PURPLE2.getImage(), read, write, mark, bgc, new String[] {"DLIST"});
       setMessageIcon(WatchImages.PART_TYPE_E.getImage(),  WatchImages.PART_OUTLINE_GRAY.getImage(), read, write, mark, bgc, new String[] {"ETHERNET"});
       setMessageIcon(WatchImages.PART_TYPE_IG.getImage(),  WatchImages.PART_OUTLINE_GREEN.getImage(), read, write, mark, bgc, new String[] {"IGTTS_WIRE"});
       setMessageIcon(WatchImages.PART_TYPE_M.getImage(),  WatchImages.PART_OUTLINE_BLUE.getImage(), read, write, mark, bgc, new String[] {"MUX", "MUX_LM"});
