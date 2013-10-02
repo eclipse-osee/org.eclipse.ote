@@ -236,7 +236,7 @@ public class MessageSearchView extends ViewPart implements MessageInfoSelectionL
          @Override
          public IStatus run(IProgressMonitor monitor) {
             try {
-               String searchTxt = searchPattern;
+               String searchTxt = searchPattern.trim();
                if (searchPattern.equals("")) {
                   return new Status(IStatus.OK, PLUGIN_ID, "Empty Search String");
                }
