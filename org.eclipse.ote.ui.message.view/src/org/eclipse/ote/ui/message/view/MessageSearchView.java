@@ -289,27 +289,44 @@ public class MessageSearchView extends ViewPart implements MessageInfoSelectionL
       if(selection.isEmpty() || messageInputComponent.getMessageInputs().size() == 0){
          return null;
       }
+      List<MessageInputItem> selectedItems = getSelectedItems(selection);
+      boolean includesElements = false;
+      for (MessageInputItem item : selectedItems) {
+         if (item.getChildren().isEmpty()) {
+            includesElements = true;
+            break;
+         }
+      }
       final Menu previewMenu = new Menu(composite);
       for(final MessageInput messageInput: messageInputComponent.getMessageInputs()){
+         if (includesElements && messageInput.messagesOnly()) {
+            continue;
+         }
          MenuItem item = new MenuItem(previewMenu, SWT.CASCADE);
          item.setText("Add to " + messageInput.getLabel());
          item.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-               List<MessageInputItem> selectedItems = new ArrayList<MessageInputItem>();
-               @SuppressWarnings("rawtypes")
-               Iterator it = selection.iterator();
-               while(it.hasNext()){
-                  Object selectedItem = it.next();
-                  if(selectedItem instanceof MessageInputItem){
-                     selectedItems.add((MessageInputItem)selectedItem);
-                  }
-               }
+               List<MessageInputItem> selectedItems = getSelectedItems(selection);
                messageInput.add(selectedItems);
             }
+
          });
       }
       return previewMenu;
+   }
+
+   private List<MessageInputItem> getSelectedItems(final IStructuredSelection selection) {
+      List<MessageInputItem> selectedItems = new ArrayList<MessageInputItem>();
+      @SuppressWarnings("rawtypes")
+      Iterator it = selection.iterator();
+      while(it.hasNext()){
+         Object selectedItem = it.next();
+         if(selectedItem instanceof MessageInputItem){
+            selectedItems.add((MessageInputItem)selectedItem);
+         }
+      }
+      return selectedItems;
    }
 
    private void createActions() {

@@ -8,17 +8,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ote.message.lookup;
-
+package org.eclipse.ote.ui.message;
 import java.util.List;
 
-public interface MessageInput {
+import org.eclipse.ote.message.lookup.MessageInput;
+import org.eclipse.ote.message.lookup.MessageInputItem;
 
-   String getLabel();
 
-   boolean messagesOnly();
+public class MessageInputComponentAll implements MessageInput {
 
-   void add(List<MessageInputItem> items);
+   @Override
+   public String getLabel() {
+      return "Message Watch (All Elements)";
+   }
 
+   @Override
+   public void add(List<MessageInputItem> items) {
+      MessageInputUtil.add(items, true);
+   }
+
+   @Override
+   public boolean messagesOnly() {
+      return true;
+   }
 
 }
