@@ -127,6 +127,7 @@
 							<excludeFilterFile>${findbugs.filters.folder}/findbugs-exclude.xml</excludeFilterFile>
 							<maxHeap>1024</maxHeap>
 							<failOnError>false</failOnError>
+							<timeout>2400000</timeout>
 						</configuration>
 						<executions>
 							<execution>
