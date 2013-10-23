@@ -25,31 +25,36 @@ import org.eclipse.ui.PlatformUI;
 
 public class MessageInputComponent implements MessageInput {
 
-	@Override
-	public String getLabel() {
-		return "Element Viewer";
-	}
+   @Override
+   public String getLabel() {
+      return "Element Viewer";
+   }
 
-	@Override
-	public void add(List<MessageInputItem> items) {
-		try {
-			final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-			ElementViewer elementViewer;
-			elementViewer = (ElementViewer) page.showView(ElementViewer.VIEW_ID);
-			recursiveAdd(elementViewer, items);
-		} catch (PartInitException e) {
-			OseeLog.log(getClass(), Level.SEVERE, "Unable to add messages to MessageWatch", e);
-		}
-	}
-	
-	private void recursiveAdd(ElementViewer elementViewer, List<MessageInputItem> items){
-		for(MessageInputItem item:items){
-			Object[] obj = item.getElementPath();
-			if(obj != null){
-				elementViewer.addElement(new ElementPath(Arrays.asList(item.getElementPath())));
-			} 
-			recursiveAdd(elementViewer, item.getChildren());
-		}
-	}
+   @Override
+   public void add(List<MessageInputItem> items) {
+      try {
+         final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+         ElementViewer elementViewer;
+         elementViewer = (ElementViewer) page.showView(ElementViewer.VIEW_ID);
+         recursiveAdd(elementViewer, items);
+      } catch (PartInitException e) {
+         OseeLog.log(getClass(), Level.SEVERE, "Unable to add messages to MessageWatch", e);
+      }
+   }
+
+   private void recursiveAdd(ElementViewer elementViewer, List<MessageInputItem> items){
+      for(MessageInputItem item:items){
+         Object[] obj = item.getElementPath();
+         if(obj != null){
+            elementViewer.addElement(new ElementPath(Arrays.asList(item.getElementPath())));
+         }
+         recursiveAdd(elementViewer, item.getChildren());
+      }
+   }
+
+   @Override
+   public boolean messagesOnly() {
+      return false;
+   }
 
 }
