@@ -49,7 +49,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -306,14 +305,14 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
                   if (icon != null) {
                      URL url = bundle.getEntry(icon);
                      if (url == null) {
-                        throw new OseeArgumentException("Invalid icon path [{%s}/%s]", el.getContributor().getName(),
-                              icon);
+                        throw new IllegalArgumentException(String.format("Invalid icon path [{%s}/%s]", el.getContributor().getName(),
+                              icon));
                      } else {
                         ImageDescriptor desc = ImageDescriptor.createFromURL(url);
                         Image img = desc.createImage();
                         if (img == null) {
-                           throw new OseeArgumentException("Unable to create Image from [{%s}/%s]",
-                                 el.getContributor().getName(), icon);
+                           throw new IllegalArgumentException(String.format("Unable to create Image from [{%s}/%s]",
+                                 el.getContributor().getName(), icon));
                         } else {
                            btn.setImage(img);
                         }

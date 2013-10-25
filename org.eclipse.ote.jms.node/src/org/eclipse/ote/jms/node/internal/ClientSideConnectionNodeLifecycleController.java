@@ -15,7 +15,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
@@ -99,7 +98,7 @@ public final class ClientSideConnectionNodeLifecycleController implements ITestC
          ConnectionNode node = messageService.get(nodeInfo);
          registration =
                context.registerService(JmsConnectionNodeProvider.class.getName(), new ClientSideConnectionNodeProviderImpl(node), null);
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          OseeLog.log(getClass(), Level.SEVERE, ex);
       }
    }

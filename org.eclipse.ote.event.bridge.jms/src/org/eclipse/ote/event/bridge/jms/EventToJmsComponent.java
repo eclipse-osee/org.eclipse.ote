@@ -17,7 +17,6 @@ import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
@@ -87,7 +86,7 @@ public class EventToJmsComponent extends OseeMessagingListener implements EventH
                OteByteMessageUtil.setUUID(msg, MYID);
                connecitonNode.getConnectionNode().send(BridgeMessages.BYTE_MESSAGE, obj);
             }
-         } catch (OseeCoreException e) {
+         } catch (Exception e) {
             e.printStackTrace();
          }
       }
