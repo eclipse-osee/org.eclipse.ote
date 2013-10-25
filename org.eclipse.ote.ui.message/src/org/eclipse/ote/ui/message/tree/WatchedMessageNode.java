@@ -237,7 +237,7 @@ public class WatchedMessageNode extends MessageNode {
       setMessageIcon(WatchImages.PART_TYPE_P.getImage(),  WatchImages.PART_OUTLINE_PINK.getImage(), read, write, mark, bgc, new String[] {"PUB_SUB"});
       setMessageIcon(WatchImages.PART_TYPE_PA.getImage(),  WatchImages.PART_OUTLINE_PEACH.getImage(), read, write, mark, bgc, new String[] {"PATS_MUX", "WIRE_PATS"});
       setMessageIcon(WatchImages.PART_TYPE_S.getImage(),  WatchImages.PART_OUTLINE_PURPLE.getImage(), read, write, mark, bgc, new String[] {"SERIAL"});
-      setMessageIcon(WatchImages.PART_TYPE_W.getImage(),  WatchImages.PART_OUTLINE_YELLOW.getImage(), read, write, mark, bgc, new String[] {"WIRE_MP_DIRECT", "WIRE_DIO"});
+      setMessageIcon(WatchImages.PART_TYPE_W.getImage(),  WatchImages.PART_OUTLINE_YELLOW.getImage(), read, write, mark, bgc, new String[] {"WIRE_MP_DIRECT", "WIRE_DIO", "WIRE_ESDS"});
       setMessageIcon(WatchImages.PART_TYPE_UNK.getImage(), WatchImages.PART_OUTLINE_RED.getImage(), read, write, mark, bgc, new String[] {DEFAULT_ICON_TYPE});
    }
 
