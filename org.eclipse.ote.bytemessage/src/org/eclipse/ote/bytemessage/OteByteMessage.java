@@ -47,6 +47,7 @@ public class OteByteMessage extends Message<ITestEnvironmentMessageSystemAccesso
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       ObjectOutputStream oos = new ObjectOutputStream(bos);
       oos.writeObject(obj);
+      oos.flush();
       return bos.toByteArray();
    }
    
