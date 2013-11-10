@@ -6,7 +6,6 @@ Bundle-Version: 0.11.0.qualifier
 Bundle-Activator: org.eclipse.ote.ui.mux.MuxToolPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.osee.ote.message,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.framework.ui.swt,
