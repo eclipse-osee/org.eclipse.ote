@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ote.jms.node.internal;
 
-import java.rmi.RemoteException;
 import java.util.logging.Level;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.MessageService;
@@ -65,10 +63,8 @@ public final class ServerSideConnectionNodeProviderImpl implements JmsConnection
          NodeInfo info = testEnv.getBroker();
          ConnectionNode connection = messageService.get(info);
          return connection;
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          OseeLog.log(this.getClass(), Level.SEVERE, ex);
-      } catch (RemoteException e) {
-         OseeLog.log(this.getClass(), Level.SEVERE, e);
       }
       return null;
    }

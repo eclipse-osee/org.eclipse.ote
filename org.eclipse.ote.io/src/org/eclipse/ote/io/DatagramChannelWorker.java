@@ -21,6 +21,7 @@ public class DatagramChannelWorker {
    public void start(){
       Thread th = new Thread(runnable);
       th.setDaemon(true);
+      th.setPriority(Thread.MAX_PRIORITY);
       th.setName(threadName);
       th.start();
    }

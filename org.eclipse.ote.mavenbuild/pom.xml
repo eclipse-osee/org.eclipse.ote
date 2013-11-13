@@ -13,8 +13,8 @@
 		<build-alias>-DEV</build-alias>
 		<tycho-version>0.18.0</tycho-version>
 		<tychoExtrasVersion>0.18.0</tychoExtrasVersion>
-		<platform-version-name>juno</platform-version-name>
-		<orbit-version>R20120119162704</orbit-version>
+		<platform-version-name>kepler</platform-version-name>
+		<orbit-version>R20130517111416</orbit-version>
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
@@ -39,17 +39,17 @@
 
 	<repositories>
 		<repository>
-			<id>eclipse-site</id>
+			<id>eclipse</id>
 			<layout>p2</layout>
 			<url>${eclipse-site}</url>
 		</repository>
 		<repository>
-			<id>orbit-site</id>
+			<id>orbit</id>
 			<layout>p2</layout>
 			<url>${orbit-site}</url>
 		</repository>
 		<repository>
-			<id>nebula-site</id>
+			<id>nebula</id>
 			<layout>p2</layout>
 			<url>${nebula-site}</url>
 		</repository>
