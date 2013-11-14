@@ -221,9 +221,6 @@
   <rule ref="rulesets/naming.xml/SuspiciousHashcodeMethodName">
     <priority>3</priority>
   </rule>
-  <rule ref="rulesets/naming.xml/SuspiciousConstantFieldName">
-    <priority>3</priority>
-  </rule>
   <rule ref="rulesets/migrating.xml/ReplaceVectorWithList">
     <priority>3</priority>
   </rule>
