@@ -19,6 +19,7 @@
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
 		<nebula-site>http://download.eclipse.org/technology/nebula/snapshot</nebula-site>
+		<eclipse-ip-site>http://somelocallocation/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
 		
 		<maven-antrun-version>1.6</maven-antrun-version>
 		<ant-contrib-version>1.0b3</ant-contrib-version>
@@ -57,6 +58,11 @@
 			<id>osee</id>
 			<layout>p2</layout>
 			<url>${osee-site}</url>
+		</repository>
+		<repository>
+			<id>eclipse-ip</id>
+			<layout>p2</layout>
+			<url>${eclipse-ip-site}</url>
 		</repository>
 	</repositories>
 
