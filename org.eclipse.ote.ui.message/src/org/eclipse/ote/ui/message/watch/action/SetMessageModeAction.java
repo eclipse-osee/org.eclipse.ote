@@ -13,24 +13,28 @@ package org.eclipse.ote.ui.message.watch.action;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.eclipse.ote.ui.message.tree.WatchedMessageNode;
+import org.eclipse.ote.ui.message.watch.WatchView;
 
 /**
  * @author Ken J. Aguilar
  */
 public class SetMessageModeAction extends Action {
 
-   private final WatchedMessageNode node;
-   private final MessageMode mode;
+	private final WatchedMessageNode node;
+	private final MessageMode mode;
+	private final WatchView watchView;
 
-   public SetMessageModeAction(WatchedMessageNode node, MessageMode mode) {
-      super(mode.name());
-      this.node = node;
-      this.mode = mode;
-      setChecked(node.getSubscription().getMessageMode() == mode);
-   }
+	public SetMessageModeAction(WatchView watchView, WatchedMessageNode node, MessageMode mode) {
+		super(mode.name());
+		this.watchView = watchView;
+		this.node = node;
+		this.mode = mode;
+		setChecked(node.getSubscription().getMessageMode() == mode);
+	}
 
-   @Override
-   public void run() {
-      node.getSubscription().changeMessageMode(mode);
-   }
+	@Override
+	public void run() {
+		node.getSubscription().changeMessageMode(mode);
+		watchView.saveWatchFile();
+	}
 }
