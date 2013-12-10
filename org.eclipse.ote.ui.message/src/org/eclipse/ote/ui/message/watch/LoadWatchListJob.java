@@ -140,6 +140,13 @@ final class LoadWatchListJob extends Job {
 				} catch (NumberFormatException e) {
 					e.printStackTrace();
 				}				
+			} else if (line.startsWith("data type=")) {
+				try {
+					String type = line.substring(10);
+					watchListConfiguration.setDataType(message, type);
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				}				
 			} else {
 				break;
 			}

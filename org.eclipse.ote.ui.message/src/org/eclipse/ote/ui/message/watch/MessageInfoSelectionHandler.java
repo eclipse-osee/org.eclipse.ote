@@ -27,7 +27,7 @@ public class MessageInfoSelectionHandler implements MessageInfoSelectionListener
             try {
                WatchedMessageNode node = view.getWatchList().getMessageNode(className);
                if (node == null) {
-                  node = (WatchedMessageNode) view.getWatchList().createElements(className, new ArrayList<ElementPath>(), MessageMode.READER);
+                  node = (WatchedMessageNode) view.getWatchList().createElements(className, MessageMode.READER, new ArrayList<ElementPath>());
                }
                new WatchElementAction(view, node).run();
             } catch (Throwable th) {

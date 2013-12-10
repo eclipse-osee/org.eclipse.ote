@@ -98,6 +98,15 @@ public class AddWatchParameter {
 		parameter.setIsWriter(isWriter);
 	}
 	
+	public void setDataType(String messageName, String type) {
+		MessageParameter parameter = watchMap.get(messageName);
+		if (parameter == null) {
+			parameter = new MessageParameter(messageName);
+			watchMap.put(messageName, parameter);
+		}
+		parameter.setDataType(type);
+	}
+	
 	public void setValue(ElementPath path, String value) {
 		String messageName = path.getMessageName();
 		MessageParameter parameter = watchMap.get(messageName);

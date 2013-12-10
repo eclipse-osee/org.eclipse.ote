@@ -637,7 +637,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 					elements = new ArrayList<ElementPath>();
 				}
 				MessageMode mode = message.isWriter() ? MessageMode.WRITER : MessageMode.READER;
-				watchList.createElements(message.getMessageName(), elements, mode, message.getValueMap());
+				watchList.createElements(message.getMessageName(),message.getDataType(), mode, elements, message.getValueMap());
 			} catch (ClassNotFoundException ex1) {
 				if (openProceedWithProcessing("Could not find a class definition for " + message + "\n Do you wish to continue")) {
 					continue;
@@ -737,11 +737,15 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 				fw.write(msg.getMessageClassName());
 				fw.write('\n');
 				fw.write("isWriter=");
-				descendants.clear();
-				
 				boolean isWriter = msg.getSubscription().getMessageMode() == MessageMode.WRITER;
 				fw.write(Boolean.toString(isWriter));
 				fw.write('\n');
+				
+				fw.write("data type=");
+				fw.write(msg.getSubscription().getMemType().name());
+				fw.write('\n');
+				
+				descendants.clear();
 				msg.collectDescendants(descendants);
 				Map<ElementPath, String> map = msg.getRequestedValueMap();
 				

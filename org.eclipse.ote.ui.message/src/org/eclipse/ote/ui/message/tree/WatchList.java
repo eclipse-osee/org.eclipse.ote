@@ -100,15 +100,19 @@ public class WatchList implements ITreeContentProvider {
       }
    }
 
-   public WatchedMessageNode createElements(String message, Collection<ElementPath> elements, MessageMode mode) throws ClassNotFoundException, InstantiationException, IllegalAccessException, Exception {
-	   return createElements(message, elements, mode, null);
+   public WatchedMessageNode createElements(String message, MessageMode mode, Collection<ElementPath> elements) throws ClassNotFoundException, InstantiationException, IllegalAccessException, Exception {
+	   return createElements(message, null, mode, elements, null);
    }
 
-   public WatchedMessageNode createElements(String message, Collection<ElementPath> elements, MessageMode mode, Map<ElementPath, String> valueMap) throws ClassNotFoundException, InstantiationException, IllegalAccessException, Exception {
+   public WatchedMessageNode createElements(String message, String dataType, MessageMode mode, Collection<ElementPath> elements, Map<ElementPath, String> valueMap) throws ClassNotFoundException, InstantiationException, IllegalAccessException, Exception {
       boolean needToRegisterListener = false;
       WatchedMessageNode messageNode = (WatchedMessageNode) rootNode.getMessageByName(message);
       if (messageNode == null) {
-         messageNode = createMessageNode(message, mode);
+    	 if (dataType == null) {
+    		 messageNode = createMessageNode(message, mode);
+    	 } else {
+    		 messageNode = createMessageNode(message, mode, dataType);
+    	 }
          messageNode.setRequestedValueMap(valueMap);
          needToRegisterListener = true;
       }
@@ -217,7 +221,15 @@ public class WatchList implements ITreeContentProvider {
    }
 
    private WatchedMessageNode createMessageNode(String message, MessageMode mode) throws Exception {
-      IMessageSubscription subscription = service.subscribe(message, mode);
+	   IMessageSubscription subscription = service.subscribe(message, mode);
+	   WatchedMessageNode node = new WatchedMessageNode(subscription);
+	   rootNode.addChild(node);
+	   return node;
+   }
+   
+
+   private WatchedMessageNode createMessageNode(String message, MessageMode mode, String dataType) throws Exception {
+      IMessageSubscription subscription = service.subscribe(message, dataType, mode);
       WatchedMessageNode node = new WatchedMessageNode(subscription);
       rootNode.addChild(node);
       return node;

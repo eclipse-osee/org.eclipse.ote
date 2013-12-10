@@ -10,10 +10,12 @@ final class MessageParameter {
 	private final HashMap<ElementPath, String> valueMap = new HashMap<ElementPath, String>();
 	private final String messageName;
 	private boolean isWriter;
+	private String dataType;
 	
 	MessageParameter(String messageName) {
 		this.messageName = messageName;
 		this.isWriter = false;
+		dataType = null;
 	}
 	
 	public void addAll(Collection<ElementPath> paths) {
@@ -48,6 +50,14 @@ final class MessageParameter {
 
 	public HashMap<ElementPath, String> getValueMap() {
 		return valueMap;
+	}
+
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
 	}
 	
 	

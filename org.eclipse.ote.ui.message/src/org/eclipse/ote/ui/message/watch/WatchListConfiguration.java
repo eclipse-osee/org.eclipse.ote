@@ -11,7 +11,7 @@ final class WatchListConfiguration {
 	private final List<ElementPath> recHeaderElementsToAdd;
 	private final Set<String> recHeaderHex;
 	private final Set<String> recBodyHex;
-
+	
 	public WatchListConfiguration() {
 		recBodyElementsToAdd = new ArrayList<ElementPath>();
 		recHeaderElementsToAdd = new ArrayList<ElementPath>();
@@ -30,6 +30,10 @@ final class WatchListConfiguration {
 	
 	public void setIsWriter(String message, boolean isWriter) {
 		addWatchParameter.setIsWriter(message, isWriter);
+	}
+
+	public void setDataType(String message, String type) {
+		addWatchParameter.setDataType(message, type);
 	}
 
 	public List<ElementPath> getRecBodyElementsToAdd() {
