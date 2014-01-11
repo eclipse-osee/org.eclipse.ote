@@ -19,9 +19,9 @@ import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 import org.eclipse.osee.ote.core.framework.command.ITestCommandResult;
 import org.eclipse.osee.ote.core.framework.command.ITestContext;
 import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
+import org.eclipse.osee.ote.core.framework.command.RunTestsKeys;
 import org.eclipse.osee.ote.core.framework.command.TestCommandResult;
 import org.eclipse.osee.ote.message.IMessageTestContext;
-import org.eclipse.ote.commands.messages.RunTestsKeys;
 
 class RunTestsCommand implements ITestServerCommand, Serializable {
 
