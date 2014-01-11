@@ -3,11 +3,14 @@ package org.eclipse.ote.commands.server;
 import java.rmi.RemoteException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 import org.eclipse.osee.ote.core.framework.command.ITestCommandResult;
 import org.eclipse.osee.ote.core.framework.command.ITestContext;
+import org.eclipse.osee.ote.core.framework.command.TestCommandResult;
 
 class RunTestsHandle implements ICommandHandle {
    private final Future<ITestCommandResult> result;
@@ -34,7 +37,7 @@ class RunTestsHandle implements ICommandHandle {
    }
 
    @Override
-   public boolean cancelSingle(boolean mayInterruptIfRunning) throws RemoteException {
+   public boolean cancelSingle(boolean mayInterruptIfRunning) {
       if (command.isRunning()) {
          context.getRunManager().abort();
       }
@@ -43,30 +46,31 @@ class RunTestsHandle implements ICommandHandle {
    }
 
    @Override
-   public ITestCommandResult get() throws RemoteException {
+   public ITestCommandResult get() {
       try {
          return result.get();
       } catch (InterruptedException e) {
-         throw new RemoteException(String.format(
+         OseeLog.log(getClass(), Level.SEVERE, String.format(
                "Command [%s] encountered an error while trying to retrieve status.", command.toString()), e);
       } catch (ExecutionException e) {
-         throw new RemoteException(String.format(
+    	  OseeLog.log(getClass(), Level.SEVERE, String.format(
                "Command [%s] encountered an error while trying to retrieve status.", command.toString()), e);
       }
+      return TestCommandResult.FAIL;
    }
 
    @Override
-   public boolean isCancelled() throws RemoteException {
+   public boolean isCancelled() {
       return result.isCancelled();
    }
 
    @Override
-   public boolean isDone() throws RemoteException {
+   public boolean isDone() {
       return result.isDone();
    }
 
    @Override
-   public String getCommandKey() throws RemoteException {
+   public String getCommandKey() {
       return guid;
    }
 
