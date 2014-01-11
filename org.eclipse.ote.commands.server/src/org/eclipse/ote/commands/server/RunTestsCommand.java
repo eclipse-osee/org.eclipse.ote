@@ -67,7 +67,7 @@ class RunTestsCommand implements ITestServerCommand, Serializable {
       isRunning = true;
       IMessageTestContext msgContext = (IMessageTestContext) environment;
       this.environment = environment;
-      msgContext.resetScriptLoader(global.getArray(RunTestsKeys.classpath.name()));
+      msgContext.resetScriptLoader(null, global.getArray(RunTestsKeys.classpath.name()));
       for (IPropertyStore store : scripts) {
          if (cancel) {
             statusBoard.onTestComplete(store.get(RunTestsKeys.testClass.name()),
