@@ -17,6 +17,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.nebula.widgets.xviewer.XSubMenuManager;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.eclipse.ote.ui.message.tree.WatchedMessageNode;
+import org.eclipse.ote.ui.message.watch.WatchView;
 
 /**
  * @author Ken J. Aguilar
@@ -25,15 +26,18 @@ public class SetMessageModeMenu extends XSubMenuManager implements IMenuListener
    private final static String NAME = "Set Reader/Writer Buffer";
    private final WatchedMessageNode node;
 
-   public static IContributionItem createMenu(WatchedMessageNode node) {
+   private final WatchView watchView;
+   
+   public static IContributionItem createMenu(WatchView watchView, WatchedMessageNode node) {
       if (node.isEnabled() && node.getSubscription().isResolved()) {
-         return new SetMessageModeMenu(node);
+         return new SetMessageModeMenu(watchView, node);
       }
       return new ActionContributionItem(new DisabledAction(NAME));
    }
 
-   protected SetMessageModeMenu(WatchedMessageNode node) {
+   protected SetMessageModeMenu(WatchView watchView, WatchedMessageNode node) {
       super(NAME);
+      this.watchView = watchView;
       this.node = node;
       setRemoveAllWhenShown(true);
       addMenuListener(this);
@@ -42,7 +46,7 @@ public class SetMessageModeMenu extends XSubMenuManager implements IMenuListener
    @Override
    public void menuAboutToShow(IMenuManager manager) {
       for (MessageMode mode : MessageMode.values()) {
-         add(new SetMessageModeAction(node, mode));
+         add(new SetMessageModeAction(watchView, node, mode));
       }
 
    }

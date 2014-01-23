@@ -169,5 +169,9 @@ public class WatchedElementNode extends ElementNode {
       super.setParent(node);
       setResolved(getSubscription().isResolved());
    }
+   
+   public String getValue() {
+	   return value.toString();
+   }
 
 }
