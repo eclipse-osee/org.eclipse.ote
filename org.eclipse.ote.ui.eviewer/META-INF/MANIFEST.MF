@@ -18,5 +18,6 @@ Export-Package: org.eclipse.ote.ui.eviewer.view
 Import-Package: org.eclipse.osee.framework.jdk.core.persistence,
  org.eclipse.ote.io,
  org.eclipse.ote.message.lookup,
- org.eclipse.ote.ui.message.util
+ org.eclipse.ote.ui.message.util,
+ ote.server.message
 Service-Component: OSGI-INF/*.xml

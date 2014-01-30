@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.osee.ote.message.elements.Element;
 import org.eclipse.ote.ui.eviewer.Activator;
-import org.eclipse.ote.ui.eviewer.view.ElementColumn;
 import org.eclipse.ote.ui.eviewer.view.ElementContentProvider;
+import org.eclipse.ote.ui.eviewer.view.ViewerColumnElement;
 import org.eclipse.ote.ui.message.util.MessageElementSelectionDialog;
 import org.eclipse.ote.ui.message.util.MessageSelectionDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -46,11 +46,12 @@ public class AddHeaderElementAction extends Action {
    @Override
    public void run() {
       Shell shell = Displays.getActiveShell();
-      List<ElementColumn> cols = elementContentProvider.getColumns();
+      List<ViewerColumnElement> cols = elementContentProvider.getElementColumns();
       List<String> messageClassesToUse = new ArrayList<String>();
-      for(ElementColumn col:cols){
-         if(!messageClassesToUse.contains(col.getMessageClassName())){
-            messageClassesToUse.add(col.getMessageClassName());
+      for(ViewerColumnElement col:cols){
+         String messageClassName = col.getColumnElement().getMessageClassName();
+         if(!messageClassesToUse.contains(messageClassName)){
+            messageClassesToUse.add(messageClassName);
          }
       }
       MessageSelectionDialog msgSelectionDialog = new MessageSelectionDialog(shell, messageClassesToUse);
@@ -59,7 +60,7 @@ public class AddHeaderElementAction extends Action {
          String msgClassName = (String) result[0];
          try {
             MessageElementSelectionDialog msgElementSelectionDialog =
-               new MessageElementSelectionDialog(shell, msgClassName, true);
+                  new MessageElementSelectionDialog(shell, msgClassName, true);
             msgElementSelectionDialog.setMultipleSelection(true);
             msgElementSelectionDialog.setIgnoreCase(true);
             msgElementSelectionDialog.open();
@@ -76,7 +77,7 @@ public class AddHeaderElementAction extends Action {
          } catch (Exception ex) {
             OseeLog.log(AddHeaderElementAction.class, Level.SEVERE, "exception opening element selection dialog", ex);
             MessageDialog.openError(shell, "Exception",
-               "An exception has ocurred while trying to access the message elements. See Error Log for details");
+                  "An exception has ocurred while trying to access the message elements. See Error Log for details");
          }
       }
 

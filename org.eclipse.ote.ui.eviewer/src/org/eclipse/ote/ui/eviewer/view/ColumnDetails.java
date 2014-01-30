@@ -15,10 +15,10 @@ package org.eclipse.ote.ui.eviewer.view;
  */
 public class ColumnDetails {
 
-   private final ElementColumn column;
+   private final ViewerColumn column;
    private boolean active;
 
-   public ColumnDetails(ElementColumn column) {
+   public ColumnDetails(ViewerColumn column) {
       this.column = column;
       this.active = column.isActive();
    }
