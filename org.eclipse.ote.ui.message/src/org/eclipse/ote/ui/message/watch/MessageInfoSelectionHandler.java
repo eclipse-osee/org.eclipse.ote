@@ -5,6 +5,7 @@ import java.util.logging.Level;
 
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.eclipse.ote.ui.message.tree.WatchedMessageNode;
 import org.eclipse.ote.ui.message.view.MessageInfoSelectionListener;
 import org.eclipse.ote.ui.message.watch.action.WatchElementAction;
@@ -26,7 +27,7 @@ public class MessageInfoSelectionHandler implements MessageInfoSelectionListener
             try {
                WatchedMessageNode node = view.getWatchList().getMessageNode(className);
                if (node == null) {
-                  node = (WatchedMessageNode) view.getWatchList().createElements(className, new ArrayList<ElementPath>());
+                  node = (WatchedMessageNode) view.getWatchList().createElements(className, MessageMode.READER, new ArrayList<ElementPath>());
                }
                new WatchElementAction(view, node).run();
             } catch (Throwable th) {

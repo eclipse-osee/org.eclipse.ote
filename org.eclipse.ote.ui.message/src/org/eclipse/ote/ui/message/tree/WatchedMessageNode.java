@@ -47,9 +47,10 @@ public class WatchedMessageNode extends MessageNode {
    private final RecordingState recordingState = new RecordingState();
    private final IMessageSubscription subscription;
    private final AtomicLong numUpdates = new AtomicLong(0);
-   private long lastUpdateNumber = 0;
+   private volatile long lastUpdateNumber = -1;
 
-
+   private Map<ElementPath, String> valueMap;
+   
    public WatchedMessageNode(IMessageSubscription subscription) {
       super(subscription.getMessageClassName());
       this.subscription = subscription;
@@ -91,6 +92,7 @@ public class WatchedMessageNode extends MessageNode {
 
    public void clearUpdateCounter() {
       numUpdates.set(0);
+      lastUpdateNumber = -1l;
    }
 
    public void setResolved(boolean isResolved) {
@@ -190,7 +192,7 @@ public class WatchedMessageNode extends MessageNode {
       if (!isEnabled()) {
          return MessageNode.errorImg;
       }
-      boolean isWriter = getSubscription().getMessageMode() == MessageMode.WRITER;
+      boolean isWriter = subscription.getMessageMode() == MessageMode.WRITER;
       boolean hasOptions = getSubscription().getAvailableTypes().size() > 1;
       return getMessageIcon(getSubscription().getMemType().name(), isWriter, hasOptions);
    }
@@ -271,5 +273,12 @@ public class WatchedMessageNode extends MessageNode {
          gc.drawImage(layer, 0, 0);
       }
    }
-
+  
+   public void setRequestedValueMap(Map<ElementPath, String> valueMap) {
+	   this.valueMap = valueMap;
+   }
+   
+   public Map<ElementPath, String> getRequestedValueMap() {
+	   return valueMap;
+   }
 }

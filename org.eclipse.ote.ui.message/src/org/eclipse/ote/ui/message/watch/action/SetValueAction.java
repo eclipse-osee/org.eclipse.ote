@@ -12,6 +12,7 @@ package org.eclipse.ote.ui.message.watch.action;
 
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -29,6 +30,7 @@ import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.eclipse.ote.ui.message.internal.Activator;
 import org.eclipse.ote.ui.message.tree.ElementNode;
 import org.eclipse.ote.ui.message.tree.WatchedMessageNode;
+import org.eclipse.ote.ui.message.watch.WatchView;
 import org.eclipse.ui.dialogs.ListDialog;
 
 /**
@@ -37,9 +39,11 @@ import org.eclipse.ui.dialogs.ListDialog;
 public class SetValueAction extends Action {
    private final WatchedMessageNode msgNode;
    private final ElementNode node;
-
-   public SetValueAction(ElementNode node) {
+   private final WatchView watchView;
+   
+   public SetValueAction(WatchView watchView, ElementNode node) {
       super("Set Value");
+      this.watchView = watchView;
       this.node = node;
       msgNode = (WatchedMessageNode) node.getMessageNode();
       setEnabled(node.isEnabled() && msgNode.getSubscription().getMessageMode() == MessageMode.WRITER && msgNode.getSubscription().isActive());
@@ -138,6 +142,7 @@ public class SetValueAction extends Action {
             try {
                final String val = dialog.getValue();
                msgNode.getSubscription().setElementValue(path, val);
+               watchView.saveWatchFile();
             } catch (Exception ex) {
                OseeLog.logf(Activator.class, Level.SEVERE, ex, "Unable to set the %s element for the message %s",
                   element.getName(), msg.getName());

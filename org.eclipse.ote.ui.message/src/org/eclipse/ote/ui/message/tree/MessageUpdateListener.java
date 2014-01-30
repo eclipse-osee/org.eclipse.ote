@@ -10,15 +10,21 @@
  *******************************************************************************/
 package org.eclipse.ote.ui.message.tree;
 
+import java.nio.channels.IllegalSelectorException;
 import java.util.LinkedList;
+import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.client.msg.core.AbstractMessageListener;
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.message.MessageSystemException;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.enums.DataType;
+import org.eclipse.osee.ote.message.tool.MessageMode;
+import org.eclipse.ote.ui.message.watch.ElementPath;
 
 /**
  * @author Ken J. Aguilar
@@ -60,7 +66,23 @@ public class MessageUpdateListener extends AbstractMessageListener {
 
    @Override
    public void subscriptionActivated(IMessageSubscription subscription) {
-      update(node);
+      node.clearUpdateCounter();
+	  update(node);
+      if (node.getRequestedValueMap() != null && subscription.getMessageMode() == MessageMode.WRITER) {
+  		for (Entry<ElementPath, String> entry : node.getRequestedValueMap().entrySet()) {
+			try {
+				subscription.setElementValueNoSend(entry.getKey().getElementPath(), entry.getValue());
+			} catch (Exception e) {
+				OseeLog.log(getClass(), Level.SEVERE, "Could not set element " + entry.getKey().asString(), e);
+			}
+		}
+		try {
+			subscription.send();
+		} catch (Exception e) {
+			OseeLog.log(getClass(), Level.SEVERE, "Could not send " + subscription.getMessageClassName(), e);
+		}
+		node.setRequestedValueMap(null);
+      }
    }
 
    @Override
@@ -69,7 +91,7 @@ public class MessageUpdateListener extends AbstractMessageListener {
       LinkedList<AbstractTreeNode> list = new LinkedList<AbstractTreeNode>();
       list.add(node);
       node.collectDescendants(list);
-
+      OseeLog.log(getClass(), Level.WARNING, subscription.getMessageClassName() +" does  not exists", new IllegalSelectorException());
       for (AbstractTreeNode child : list) {
          child.setEnabled(false);
          child.setDisabledReason(reason);
