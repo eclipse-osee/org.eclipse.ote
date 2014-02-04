@@ -31,10 +31,12 @@ public class BundleUtility {
       url = bundle.getEntry(path);
       if(url == null && bundle instanceof BundleHost){
          BundleFragment[] fragments = ((BundleHost)bundle).getFragments();
-         for(BundleFragment fragment: fragments){
-            url = fragment.getEntry(path);
-            if(url != null){
-               break;
+         if(fragments != null){
+            for(BundleFragment fragment: fragments){
+               url = fragment.getEntry(path);
+               if(url != null){
+                  break;
+               }
             }
          }
       }
@@ -61,8 +63,10 @@ public class BundleUtility {
       entryPaths(bundle.getEntryPaths(folderPath), bundle, paths);
       if(bundle instanceof BundleHost){
          BundleFragment[] fragments = ((BundleHost)bundle).getFragments();
-         for(BundleFragment fragment: fragments){
-            entryPaths(fragment.getEntryPaths(folderPath), fragment, paths);
+         if(fragments != null){
+            for(BundleFragment fragment: fragments){
+               entryPaths(fragment.getEntryPaths(folderPath), fragment, paths);
+            }
          }
       }
    }
