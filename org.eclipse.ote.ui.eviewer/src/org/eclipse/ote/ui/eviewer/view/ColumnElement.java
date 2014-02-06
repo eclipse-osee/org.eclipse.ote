@@ -8,8 +8,6 @@ import org.eclipse.osee.ote.client.msg.core.ISubscriptionListener;
 import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.osee.ote.message.elements.DiscreteElement;
 
-import ote.server.message.LbaMessage;
-
 public class ColumnElement implements ISubscriptionListener {
    private ViewerColumnElement viewerColumn;
 
@@ -117,7 +115,7 @@ public class ColumnElement implements ISubscriptionListener {
    public long getMessageEnvTime() {
       long time = -1;
       try {
-         time = ((LbaMessage)element.getMessage()).getActiveDataSource().getTime();
+         time = element.getMessage().getActiveDataSource().getTime();
       } catch (Exception e) {
          e.printStackTrace();
       }
