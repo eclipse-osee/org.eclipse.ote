@@ -19,10 +19,10 @@ class ColumnSorter {
 
    private final HashMap<Integer, Integer> value;
 
-   private final Comparator<ElementColumn> comparator = new Comparator<ElementColumn>() {
+   private final Comparator<ViewerColumn> comparator = new Comparator<ViewerColumn>() {
 
       @Override
-      public int compare(ElementColumn o1, ElementColumn o2) {
+      public int compare(ViewerColumn o1, ViewerColumn o2) {
          Integer val1 = value.get(o1.getIndex());
          Integer val2 = value.get(o2.getIndex());
          if (val1 == null) {
@@ -44,7 +44,7 @@ class ColumnSorter {
       }
    }
 
-   public void sort(List<ElementColumn> columns) {
+   public void sort(List<ViewerColumn> columns) {
       Collections.sort(columns, comparator);
    }
 

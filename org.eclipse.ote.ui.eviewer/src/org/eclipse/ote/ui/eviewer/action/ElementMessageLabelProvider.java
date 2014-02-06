@@ -13,7 +13,7 @@ package org.eclipse.ote.ui.eviewer.action;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.ote.ui.eviewer.Activator;
-import org.eclipse.ote.ui.eviewer.view.ElementColumn;
+import org.eclipse.ote.ui.eviewer.view.ViewerColumn;
 import org.eclipse.swt.graphics.Image;
 
 final class ElementMessageLabelProvider extends LabelProvider {
@@ -22,11 +22,11 @@ final class ElementMessageLabelProvider extends LabelProvider {
 
 	@Override
 	public String getText(Object element) {
-		return ((ElementColumn) element).getVerboseName();
+		return ((ViewerColumn) element).getVerboseName();
 	}
 
 	@Override
 	public Image getImage(Object element) {
-		return ((ElementColumn) element).isActive() ? activeImg : inactive;
+		return ((ViewerColumn) element).isActive() ? activeImg : inactive;
 	}
 }
