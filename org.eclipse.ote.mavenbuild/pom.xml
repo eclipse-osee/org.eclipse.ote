@@ -18,7 +18,6 @@
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
-		<nebula-site>http://download.eclipse.org/technology/nebula/snapshot</nebula-site>
 		<eclipse-ip-site>http://somelocallocation/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
 		
 		<maven-antrun-version>1.6</maven-antrun-version>
@@ -48,11 +47,6 @@
 			<id>orbit</id>
 			<layout>p2</layout>
 			<url>${orbit-site}</url>
-		</repository>
-		<repository>
-			<id>nebula</id>
-			<layout>p2</layout>
-			<url>${nebula-site}</url>
 		</repository>
 		<repository>
 			<id>osee</id>
