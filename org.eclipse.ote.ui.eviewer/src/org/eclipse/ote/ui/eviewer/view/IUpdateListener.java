@@ -15,5 +15,5 @@ package org.eclipse.ote.ui.eviewer.view;
  * @author Ken J. Aguilar
  */
 public interface IUpdateListener {
-   void update(SubscriptionDetails details);
+   void update(SubscriptionDetails details, long envTime);
 }

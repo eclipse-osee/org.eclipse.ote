@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ote.ui.eviewer.Activator;
-import org.eclipse.ote.ui.eviewer.view.ElementColumn;
+import org.eclipse.ote.ui.eviewer.view.ViewerColumn;
 import org.eclipse.ote.ui.eviewer.view.ElementUpdate;
 
 /**
@@ -29,9 +29,9 @@ public class CopyToCsvFileJob extends Job {
 
    private final ElementUpdate[] updates;
    private final File file;
-   private final List<ElementColumn> elementColumns;
+   private final List<ViewerColumn> elementColumns;
 
-   public CopyToCsvFileJob(File file, List<ElementColumn> elementColumns, ElementUpdate[] updates) {
+   public CopyToCsvFileJob(File file, List<ViewerColumn> elementColumns, ElementUpdate[] updates) {
       super("Element Viewer Save to CSV");
       this.file = file;
       this.elementColumns = elementColumns;

@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.ote.ui.eviewer.view.ElementColumn;
+import org.eclipse.ote.ui.eviewer.view.ViewerColumn;
 import org.eclipse.ote.ui.eviewer.view.ElementUpdate;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -29,9 +29,9 @@ public class CopyToClipboardJob extends Job {
 
    private final ElementUpdate[] updates;
    private final Clipboard clipboard;
-   private final List<ElementColumn> elementColumns;
+   private final List<ViewerColumn> elementColumns;
 
-   public CopyToClipboardJob(Clipboard clipboard, List<ElementColumn> elementColumns, ElementUpdate[] updates) {
+   public CopyToClipboardJob(Clipboard clipboard, List<ViewerColumn> elementColumns, ElementUpdate[] updates) {
       super("Element Viewer Copy to Clipboard");
       this.clipboard = clipboard;
       this.elementColumns = elementColumns;
