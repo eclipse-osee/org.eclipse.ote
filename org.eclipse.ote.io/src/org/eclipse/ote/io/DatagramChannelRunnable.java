@@ -16,7 +16,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public abstract class DatagramChannelRunnable implements Runnable {
 
 	private ArrayBlockingQueue<DatagramChannelData> data;
-	private InetSocketAddress address;   
+	private ThreadLocal<DatagramChannel> classChannel;   
+
+	private InetSocketAddress address;
 
 	public DatagramChannelRunnable(InetSocketAddress address){
 		this.address = address;
@@ -31,9 +33,9 @@ public abstract class DatagramChannelRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		DatagramChannel channel = null; 
+	   DatagramChannel threadChannel = null; 
 		try {
-			channel = openAndInitializeDatagramChannel(address); 
+			threadChannel = openAndInitializeDatagramChannel(address); 
 			boolean keepRunning = true;
 			final List<DatagramChannelData> dataToSend = new ArrayList<DatagramChannelData>(32);
 			while(keepRunning){
@@ -57,17 +59,17 @@ public abstract class DatagramChannelRunnable implements Runnable {
 						}
 					}
 					if(keepRunning){
-						doSend(channel, dataToSend);
+						doSend(threadChannel, dataToSend);
 					}
 				} catch (ClosedByInterruptException ex){
 					OseeLog.log(getClass(), Level.SEVERE, "Error trying to send data", ex);
-					channel = openAndInitializeDatagramChannel(address);
+					threadChannel = openAndInitializeDatagramChannel(address);
 				} catch (AsynchronousCloseException ex){
 					OseeLog.log(getClass(), Level.SEVERE, "Error trying to send data", ex);
-					channel = openAndInitializeDatagramChannel(address);
+					threadChannel = openAndInitializeDatagramChannel(address);
 				} catch (ClosedChannelException ex){
 					OseeLog.log(getClass(), Level.SEVERE, "Error trying to send data", ex);
-					channel = openAndInitializeDatagramChannel(address);
+					threadChannel = openAndInitializeDatagramChannel(address);
 				} catch (IOException ex){
 					OseeLog.log(getClass(), Level.SEVERE, "Error trying to send data", ex);
 				} finally {
@@ -82,16 +84,41 @@ public abstract class DatagramChannelRunnable implements Runnable {
 			OseeLog.log(getClass(), Level.SEVERE, "Error opening DatagramChannel.  Ending DatagramChannelRunnable unexpectedly.", ex);
 		} finally{
 			try {
-				if (channel != null) {
-					channel.close();
+				if (threadChannel != null) {
+					threadChannel.close();
 				}
 			} catch (IOException e) {
 				OseeLog.log(getClass(), Level.SEVERE, "Error trying to send data", e);
 			}
 		}
 	}
-
+	
+	public final void send(DatagramChannelData datagramChannelData){
+	   if(classChannel == null){
+	      classChannel = new ThreadLocal<DatagramChannel>(){
+	         @Override
+	         protected DatagramChannel initialValue(){
+	            try {
+	               return openAndInitializeDatagramChannel(address);
+	            } catch (IOException ex) {
+	               OseeLog.log(getClass(), Level.SEVERE, "Error opening DatagramChannel.  Unable to send.", ex);
+	            }
+	            return null;
+	         }
+	      };
+	   }
+	   if(classChannel != null){
+	      try {
+            doSend(classChannel.get(), datagramChannelData);
+         } catch (IOException ex) {
+            OseeLog.log(getClass(), Level.SEVERE, "Failed to send UDP packet.", ex);
+         }
+	   }
+	}
+	
 	public abstract void doSend(DatagramChannel channel2, List<DatagramChannelData> dataToSend) throws ClosedChannelException, AsynchronousCloseException, ClosedByInterruptException, IOException;
+
+	public abstract void doSend(DatagramChannel channel2, DatagramChannelData datagramChannelData) throws IOException;
 
 	public abstract DatagramChannel openAndInitializeDatagramChannel(InetSocketAddress address) throws IOException;
 
