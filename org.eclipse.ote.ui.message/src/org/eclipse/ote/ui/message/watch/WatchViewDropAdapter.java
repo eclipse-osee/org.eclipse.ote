@@ -51,8 +51,9 @@ public class WatchViewDropAdapter implements DropTargetListener {
 					try {
 						String fileAsString = Lib.fileToString(realFile);
 						SignalStripper signalStripper = new SignalStripper();
-						String mwi = signalStripper.generateStringToWrite(fileAsString);
-						watchViewer.loadWatchFile(mwi);
+						AddWatchParameter watchParam = new AddWatchParameter();
+						signalStripper.generateStringToWrite(fileAsString, watchParam);
+						watchViewer.addWatchMessage(watchParam);
 					} catch (IOException e) {
 						OseeLog.log(WatchViewDropAdapter.class, Level.SEVERE, "Failed to read file from drag and drop into message watch.", e);
 					}

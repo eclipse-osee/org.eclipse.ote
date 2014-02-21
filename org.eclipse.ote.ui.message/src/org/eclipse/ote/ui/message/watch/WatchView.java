@@ -416,8 +416,9 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 					String data = (String) cb.getContents(transfer);
 					if (data != null) {
 						SignalStripper signalStripper = new SignalStripper();
-						String mwi = signalStripper.generateStringToWrite(data);
-						loadWatchFile(mwi);
+						AddWatchParameter param = new AddWatchParameter();
+						String mwi = signalStripper.generateStringToWrite(data, param);
+						addWatchMessage(param);
 					}
 				} else if (e.stateMask != SWT.CTRL && e.stateMask != SWT.ALT && e.keyCode == SWT.DEL){
 					final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();

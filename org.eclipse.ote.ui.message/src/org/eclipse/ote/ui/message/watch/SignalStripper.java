@@ -84,7 +84,7 @@ public class SignalStripper {
          System.out.println("Looking at script " + scriptFile.getName());
          
          String fileAsString = Lib.fileToString(scriptFile);
-         String mwiAsString = generateStringToWrite(fileAsString);
+         String mwiAsString = generateStringToWrite(fileAsString, null);
          if( mwiAsString != null )
             writeMwi(scriptFile, mwiAsString);
          else {
@@ -102,25 +102,28 @@ public class SignalStripper {
    /**
     * 
     * @param fileAsString
+    * @param watchParam 
     * @return String to use when writing an mwi file or null if something went wrong
     * @throws IOException
     */
-   public String generateStringToWrite(String fileAsString) {
+   public String generateStringToWrite(String fileAsString, AddWatchParameter watchParam) {
       HashCollection<String, String> fullyQualifiedMessageNameToElementListMap = getMessageClassToElementsNamesMap(fileAsString);
-      String mwiAsString = generateMwiAsString(fullyQualifiedMessageNameToElementListMap);
+      String mwiAsString = generateMwiAsString(fullyQualifiedMessageNameToElementListMap, watchParam);
       return mwiAsString;
    }
  
-   private String generateMwiAsString(HashCollection<String, String> fullyQualifiedMessageNameToElementListMap) {
+   private String generateMwiAsString(HashCollection<String, String> fullyQualifiedMessageNameToElementListMap, AddWatchParameter watchParam) {
       StringBuilder builder = new StringBuilder();
       for( String className : fullyQualifiedMessageNameToElementListMap.keySet())
       {
          Collection<String> elements = fullyQualifiedMessageNameToElementListMap.getValues(className);
          for(String element : elements)
          {
+            if(watchParam != null){
+               watchParam.addMessage(className, new ElementPath(className + "+" + element));
+            }
             builder.append(className).append("+").append(element).append("\n");
          }
-         
       }
       
       if( builder.length() == 0)
