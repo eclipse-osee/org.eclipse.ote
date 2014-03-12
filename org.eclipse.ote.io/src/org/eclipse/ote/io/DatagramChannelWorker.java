@@ -33,4 +33,9 @@ public class DatagramChannelWorker {
    public void submit(DatagramChannelData datagramChannelData) throws InterruptedException{
       data.put(datagramChannelData);
    }
+   
+   public void send(DatagramChannelData datagramChannelData){
+      runnable.send(datagramChannelData);
+      datagramChannelData.postProcess();
+   }
 }

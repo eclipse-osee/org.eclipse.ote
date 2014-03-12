@@ -19,13 +19,18 @@ public class BasicDatagramChannelRunnable extends DatagramChannelRunnable {
 	  int size = dataToSend.size();
       for(int i = 0; i < size; i++){
          DatagramChannelData data = dataToSend.get(i);
-         data.getByteBuffer().flip();
-         List<SocketAddress> addresses = data.getAddresses();
-         int innerSize = addresses.size();
-         for(int j = 0; j < innerSize; j++){
-            channel.send(data.getByteBuffer(), addresses.get(j));
-            data.getByteBuffer().rewind();
-         }
+         doSend(channel, data);
+      }
+   }
+   
+   @Override
+   public void doSend(DatagramChannel channel, DatagramChannelData data) throws IOException {
+      data.getByteBuffer().flip();
+      List<SocketAddress> addresses = data.getAddresses();
+      int innerSize = addresses.size();
+      for(int j = 0; j < innerSize; j++){
+         channel.send(data.getByteBuffer(), addresses.get(j));
+         data.getByteBuffer().rewind();
       }
    }
 
@@ -40,5 +45,6 @@ public class BasicDatagramChannelRunnable extends DatagramChannelRunnable {
       channel.configureBlocking(true);
       return channel;
    }
+
       
 }
