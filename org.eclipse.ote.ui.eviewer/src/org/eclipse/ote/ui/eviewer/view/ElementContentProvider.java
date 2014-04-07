@@ -215,6 +215,10 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          streamWriteLock.lock();
          if (streamToFileWriter != null) {
             int i;
+            streamToFileWriter.append(Long.toString(timeColumn.getLong()));
+            streamToFileWriter.append(',');
+            streamToFileWriter.append(Long.toString(timeDeltaColumn.getLong()));
+            streamToFileWriter.append(',');
             for (i = 0; i < viewerColumns.size() - 1; i++) {
                Object o = update.getValue(viewerColumns.get(i));
                if (o != null) {
@@ -410,9 +414,9 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
    }
 
    public synchronized void removeAll() {
+	  refresher.clearUpdates();
       disposeAllColumns();
       updateInternalFile();
-      refresher.clearUpdates();
    }
 
    private void disposeAllColumns() {
@@ -422,7 +426,20 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          details.dispose();
       }
       subscriptions.clear();
+      
+      for (ViewerColumn column : viewerColumns) {
+    	  if (column == timeColumn) {
+    		  continue;
+    	  }
+    	  if (column == timeDeltaColumn) {
+    		  continue;
+    	  }
+    	  column.getColumn().dispose();    	  
+      }
       viewerColumns.clear();
+      viewerColumns.add(timeColumn);
+      viewerColumns.add(timeDeltaColumn);
+      
    }
 
    public void toClipboard(Clipboard clipboard) {
@@ -464,6 +481,10 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
          streamToFileWriter = new PrintWriter(new FileOutputStream(file));
          int i;
+         streamToFileWriter.write(timeColumn.getName());
+         streamToFileWriter.write(',');
+         streamToFileWriter.write(timeDeltaColumn.getName());
+         streamToFileWriter.write(',');
          for (i = 0; i < viewerColumns.size() - 1; i++) {
             streamToFileWriter.write(viewerColumns.get(i).getName());
             streamToFileWriter.write(',');
