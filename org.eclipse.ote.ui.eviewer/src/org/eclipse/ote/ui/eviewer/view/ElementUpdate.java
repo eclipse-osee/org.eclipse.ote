@@ -88,6 +88,9 @@ public final class ElementUpdate {
 
    public Object getValue(ViewerColumn column) {
       Integer index = valueMap.get(column);
+      if (index >= values.length) {
+    	  return "invalid index " + index;
+      }
       return index != null ? values[index] : null;
    }
 
