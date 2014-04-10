@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.ote.ui.eviewer.view.ViewerColumn;
-import org.eclipse.ote.ui.eviewer.view.ElementUpdate;
+import org.eclipse.ote.ui.eviewer.view.RowUpdate;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -27,11 +27,11 @@ import org.eclipse.swt.dnd.Transfer;
  */
 public class CopyToClipboardJob extends Job {
 
-   private final ElementUpdate[] updates;
+   private final RowUpdate[] updates;
    private final Clipboard clipboard;
    private final List<ViewerColumn> elementColumns;
 
-   public CopyToClipboardJob(Clipboard clipboard, List<ViewerColumn> elementColumns, ElementUpdate[] updates) {
+   public CopyToClipboardJob(Clipboard clipboard, List<ViewerColumn> elementColumns, RowUpdate[] updates) {
       super("Element Viewer Copy to Clipboard");
       this.clipboard = clipboard;
       this.elementColumns = elementColumns;
@@ -51,7 +51,7 @@ public class CopyToClipboardJob extends Job {
          buffer.append(elementColumns.get(i).getName());
          buffer.append('\n');
 
-         for (ElementUpdate update : updates) {
+         for (RowUpdate update : updates) {
             if (monitor.isCanceled()) {
                sendToClipboard(buffer.toString());
                return Status.CANCEL_STATUS;

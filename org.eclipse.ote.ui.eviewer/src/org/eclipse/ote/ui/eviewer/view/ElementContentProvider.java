@@ -62,7 +62,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
    private HashMap<ViewerColumn, Integer> valueMap = new HashMap<ViewerColumn, Integer>();
 
-   private ElementUpdate last = null;
+   private RowUpdate last = null;
    private ReentrantLock streamWriteLock = new ReentrantLock();
    private volatile boolean acceptUpdates = true;
 
@@ -198,9 +198,9 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          }
          timeColumn.setLong(envTime);
 
-         final ElementUpdate update;
+         final RowUpdate update;
          if (last == null) {
-            update = new ElementUpdate(valueMap, viewerColumns);
+            update = new RowUpdate(valueMap, viewerColumns);
          } else {
             update = last.next(valueMap, viewerColumns);
          }
@@ -210,7 +210,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
       }
    }
 
-   private void writeToStream(ElementUpdate update) {
+   private void writeToStream(RowUpdate update) {
       try{
          streamWriteLock.lock();
          if (streamToFileWriter != null) {
@@ -427,19 +427,12 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
       }
       subscriptions.clear();
       
-      for (ViewerColumn column : viewerColumns) {
-    	  if (column == timeColumn) {
-    		  continue;
-    	  }
-    	  if (column == timeDeltaColumn) {
-    		  continue;
-    	  }
-    	  column.getColumn().dispose();    	  
-      }
+      elementColumns.clear();
+      
       viewerColumns.clear();
       viewerColumns.add(timeColumn);
       viewerColumns.add(timeDeltaColumn);
-      
+      viewer.refresh();
    }
 
    public void toClipboard(Clipboard clipboard) {
