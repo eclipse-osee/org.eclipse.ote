@@ -27,14 +27,14 @@ import org.eclipse.ote.io.CircularBuffer;
 public class ViewRefresher extends PeriodicDisplayTask {
 
    private final TableViewer viewer;
-   private ElementUpdate[] incomingUpdates = new ElementUpdate[2048];
+   private RowUpdate[] incomingUpdates = new RowUpdate[2048];
    
    private int incomingCount = 0;
    private boolean autoReveal = true;
    
    private ReentrantLock lock;
    private Condition clearIncomingUpdates;
-   private CircularBuffer<ElementUpdate> updatesNew;
+   private CircularBuffer<RowUpdate> updatesNew;
    private volatile boolean updateView = true;
    
    public ViewRefresher(TableViewer viewer, int limit) {
@@ -42,7 +42,7 @@ public class ViewRefresher extends PeriodicDisplayTask {
       lock = new ReentrantLock();
       clearIncomingUpdates = lock.newCondition();
       
-      updatesNew = new CircularBuffer<ElementUpdate>(limit);
+      updatesNew = new CircularBuffer<RowUpdate>(limit);
       
       this.viewer = viewer;
    }
@@ -55,7 +55,7 @@ public class ViewRefresher extends PeriodicDisplayTask {
          if (incomingCount == 0) {
             return;
          }
-         ElementUpdate[] overWritten = updatesNew.add(incomingUpdates, 0, incomingCount);
+         RowUpdate[] overWritten = updatesNew.add(incomingUpdates, 0, incomingCount);
          
          if(updateView){
             viewer.getTable().setRedraw(false);
@@ -83,7 +83,7 @@ public class ViewRefresher extends PeriodicDisplayTask {
       });
    }
 
-   public void addUpdate(ElementUpdate update) {
+   public void addUpdate(RowUpdate update) {
       try {
          lock.lock();
 
@@ -139,10 +139,10 @@ public class ViewRefresher extends PeriodicDisplayTask {
       }
    }
 
-   public ElementUpdate[] getUpdates() {
+   public RowUpdate[] getUpdates() {
       try{
          lock.lock();
-         return updatesNew.getCopy(ElementUpdate.class);
+         return updatesNew.getCopy(RowUpdate.class);
       }finally{
          lock.unlock();
       }

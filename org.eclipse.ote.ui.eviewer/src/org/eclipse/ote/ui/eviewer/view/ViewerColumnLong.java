@@ -47,7 +47,7 @@ public class ViewerColumnLong extends ViewerColumn {
          @Override
          public String getText(Object element) {
             try {
-               ElementUpdate update = (ElementUpdate) element;
+               RowUpdate update = (RowUpdate) element;
                Long value = (Long) update.getValue(ViewerColumnLong.this);
                return format.format(value);
             } catch (Exception e) {

@@ -20,18 +20,18 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ote.ui.eviewer.Activator;
 import org.eclipse.ote.ui.eviewer.view.ViewerColumn;
-import org.eclipse.ote.ui.eviewer.view.ElementUpdate;
+import org.eclipse.ote.ui.eviewer.view.RowUpdate;
 
 /**
  * @author b1529404
  */
 public class CopyToCsvFileJob extends Job {
 
-   private final ElementUpdate[] updates;
+   private final RowUpdate[] updates;
    private final File file;
    private final List<ViewerColumn> elementColumns;
 
-   public CopyToCsvFileJob(File file, List<ViewerColumn> elementColumns, ElementUpdate[] updates) {
+   public CopyToCsvFileJob(File file, List<ViewerColumn> elementColumns, RowUpdate[] updates) {
       super("Element Viewer Save to CSV");
       this.file = file;
       this.elementColumns = elementColumns;
@@ -52,7 +52,7 @@ public class CopyToCsvFileJob extends Job {
             writer.append(elementColumns.get(i).getName());
             writer.append('\n');
 
-            for (ElementUpdate update : updates) {
+            for (RowUpdate update : updates) {
                if (monitor.isCanceled()) {
                   writer.flush();
                   return Status.CANCEL_STATUS;

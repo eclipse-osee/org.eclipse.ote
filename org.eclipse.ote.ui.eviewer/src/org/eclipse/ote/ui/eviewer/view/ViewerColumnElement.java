@@ -46,14 +46,14 @@ public class ViewerColumnElement extends ViewerColumn {
 
          @Override
          public String getText(Object element) {
-            ElementUpdate update = (ElementUpdate) element;
+            RowUpdate update = (RowUpdate) element;
             Object value = update.getValue(ViewerColumnElement.this);
             return value != null ? value.toString().intern() : "?";
          }
 
          @Override
          public Color getBackground(Object element) {
-            ElementUpdate update = (ElementUpdate) element;
+            RowUpdate update = (RowUpdate) element;
             return update.isChanged(ViewerColumnElement.this) ? Displays.getSystemColor(SWT.COLOR_GREEN) : null;
          }
 
