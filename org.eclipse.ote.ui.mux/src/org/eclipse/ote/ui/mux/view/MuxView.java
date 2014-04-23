@@ -247,6 +247,7 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
 
    @Override
    public void onConnectionLost(IServiceConnector connector) {
+	  muxProbe = null;
       handleConnectionLostStatus();
    }
 

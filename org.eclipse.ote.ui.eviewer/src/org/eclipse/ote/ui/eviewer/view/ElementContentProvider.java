@@ -62,7 +62,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
    private HashMap<ViewerColumn, Integer> valueMap = new HashMap<ViewerColumn, Integer>();
 
-   private ElementUpdate last = null;
+   private RowUpdate last = null;
    private ReentrantLock streamWriteLock = new ReentrantLock();
    private volatile boolean acceptUpdates = true;
 
@@ -198,9 +198,9 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          }
          timeColumn.setLong(envTime);
 
-         final ElementUpdate update;
+         final RowUpdate update;
          if (last == null) {
-            update = new ElementUpdate(valueMap, viewerColumns);
+            update = new RowUpdate(valueMap, viewerColumns);
          } else {
             update = last.next(valueMap, viewerColumns);
          }
@@ -210,11 +210,15 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
       }
    }
 
-   private void writeToStream(ElementUpdate update) {
+   private void writeToStream(RowUpdate update) {
       try{
          streamWriteLock.lock();
          if (streamToFileWriter != null) {
             int i;
+            streamToFileWriter.append(Long.toString(timeColumn.getLong()));
+            streamToFileWriter.append(',');
+            streamToFileWriter.append(Long.toString(timeDeltaColumn.getLong()));
+            streamToFileWriter.append(',');
             for (i = 0; i < viewerColumns.size() - 1; i++) {
                Object o = update.getValue(viewerColumns.get(i));
                if (o != null) {
@@ -410,9 +414,9 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
    }
 
    public synchronized void removeAll() {
+	  refresher.clearUpdates();
       disposeAllColumns();
       updateInternalFile();
-      refresher.clearUpdates();
    }
 
    private void disposeAllColumns() {
@@ -422,7 +426,13 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          details.dispose();
       }
       subscriptions.clear();
+      
+      elementColumns.clear();
+      
       viewerColumns.clear();
+      viewerColumns.add(timeColumn);
+      viewerColumns.add(timeDeltaColumn);
+      viewer.refresh();
    }
 
    public void toClipboard(Clipboard clipboard) {
@@ -464,6 +474,10 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
          streamToFileWriter = new PrintWriter(new FileOutputStream(file));
          int i;
+         streamToFileWriter.write(timeColumn.getName());
+         streamToFileWriter.write(',');
+         streamToFileWriter.write(timeDeltaColumn.getName());
+         streamToFileWriter.write(',');
          for (i = 0; i < viewerColumns.size() - 1; i++) {
             streamToFileWriter.write(viewerColumns.get(i).getName());
             streamToFileWriter.write(',');

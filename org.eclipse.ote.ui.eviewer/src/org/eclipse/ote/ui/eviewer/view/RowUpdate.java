@@ -17,13 +17,13 @@ import java.util.List;
 /**
  * @author Ken J. Aguilar
  */
-public final class ElementUpdate {
+public final class RowUpdate {
    private final Object[] values;
    private final BitSet deltaSet;
    private final HashMap<ViewerColumn, Integer> valueMap;
    private long envTime;
 
-   ElementUpdate(HashMap<ViewerColumn, Integer> valueMap, List<ViewerColumn> allColumns) {
+   RowUpdate(HashMap<ViewerColumn, Integer> valueMap, List<ViewerColumn> allColumns) {
       this.valueMap = valueMap;
       int size = allColumns.size();
       values = new Object[size];
@@ -35,14 +35,14 @@ public final class ElementUpdate {
       }
    }
 
-   private ElementUpdate(Object[] values, BitSet deltaSet, HashMap<ViewerColumn, Integer> valueMap) {
+   private RowUpdate(Object[] values, BitSet deltaSet, HashMap<ViewerColumn, Integer> valueMap) {
       super();
       this.values = values;
       this.deltaSet = deltaSet;
       this.valueMap = valueMap;
    }
 
-   public ElementUpdate next(HashMap<ViewerColumn, Integer> valueMap, List<ViewerColumn> allColumns) {
+   public RowUpdate next(HashMap<ViewerColumn, Integer> valueMap, List<ViewerColumn> allColumns) {
       int size = allColumns.size();
       // if the value map is not equal then a change in the columns (ordering, adding, etc) has occurred
       if (valueMap == this.valueMap) {
@@ -65,7 +65,7 @@ public final class ElementUpdate {
                newValues[i] = col.getValue();
             }
          }
-         return new ElementUpdate(newValues, newDeltaSet, valueMap);
+         return new RowUpdate(newValues, newDeltaSet, valueMap);
       } else {
          Object[] newValues = new Object[size];
          BitSet newDeltaSet = new BitSet(size);
@@ -77,7 +77,7 @@ public final class ElementUpdate {
                newDeltaSet.set(i);
             }
          }
-         return new ElementUpdate(newValues, newDeltaSet, valueMap);
+         return new RowUpdate(newValues, newDeltaSet, valueMap);
       }
    }
 
@@ -88,6 +88,9 @@ public final class ElementUpdate {
 
    public Object getValue(ViewerColumn column) {
       Integer index = valueMap.get(column);
+      if (index >= values.length) {
+    	  return "invalid index " + index;
+      }
       return index != null ? values[index] : null;
    }
 
