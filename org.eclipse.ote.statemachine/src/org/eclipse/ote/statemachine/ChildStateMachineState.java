@@ -17,9 +17,13 @@ public abstract class ChildStateMachineState extends BaseState{
    private StateMachine stateMachine;
 
    public ChildStateMachineState(StateMachine sm){
-      stateMachine = new StateMachine(sm.getIdFactory(), getClass().getSimpleName());
+      stateMachine = new StateMachine(sm.getIdFactory(), getClass().getSimpleName(), sm.getRunInInputThread());
    }
- 
+   
+   public ChildStateMachineState(StateMachine sm, String name){
+      stateMachine = new StateMachine(sm.getIdFactory(), name, sm.getRunInInputThread());
+   }
+   
    public abstract void preRunStateMachine(BaseInput input);
    public abstract void postRunStateMachine(BaseInput input);
    
@@ -44,7 +48,7 @@ public abstract class ChildStateMachineState extends BaseState{
    
    void addToQueue(BaseInput input) throws Exception {
       stateMachine.addToQueue(input);
-      stateMachine.processInput();
+      stateMachine.processInput();           
    }
    
    public void setDefaultInitialState(BaseState initialState) {

@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.ote.statemachine;
 
-import org.eclipse.ote.statemachine.BaseInput;
-import org.eclipse.ote.statemachine.ChildStateMachineState;
-import org.eclipse.ote.statemachine.StateMachine;
 
 public class Hierarchy extends ChildStateMachineState {
 
+   private String name;
+
    public Hierarchy(StateMachine sm) {
       super(sm);
+   }
+   
+   public Hierarchy(StateMachine sm, String name) {
+      super(sm, name);
+      this.name = name;
    }
 
    @Override
@@ -35,6 +39,14 @@ public class Hierarchy extends ChildStateMachineState {
    public void postRunStateMachine(BaseInput input) {
       // TODO Auto-generated method stub
       
+   }
+   
+   public String toString(){
+      if(name != null){
+         return name;
+      } else {
+         return super.toString();
+      }
    }
 
 }

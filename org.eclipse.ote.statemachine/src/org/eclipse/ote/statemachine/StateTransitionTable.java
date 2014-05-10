@@ -36,7 +36,12 @@ class StateTransitionTable {
             if(currentstate.getId() < 0){
                throw new IllegalStateException("negative state id's are not allowed");
             }
-            return lookup.get(currentstate.getId());
+            BaseState state = lookup.get(currentstate.getId());
+            if(state == null){
+               return currentstate;
+            } else {
+               return state;
+            }
          }
       }
       return null;

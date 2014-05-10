@@ -10,16 +10,21 @@
  *******************************************************************************/
 package org.eclipse.ote.statemachine;
 
-import org.eclipse.ote.statemachine.BaseInput;
-import org.eclipse.ote.statemachine.StateMachine;
 
 public class Change extends BaseInput{
 
    private Object obj;
-
+   private String name;
+   
    public Change(StateMachine sm, Object obj){
       super(sm);
       this.obj = obj;
+   }
+   
+   public Change(StateMachine sm, Object obj, String name){
+      super(sm);
+      this.obj = obj;
+      this.name = name;
    }
    
    @Override
@@ -29,7 +34,11 @@ public class Change extends BaseInput{
    }
    
    public String toString(){
-      return this.obj.toString();
+      if(name != null){
+         return this.name;
+      } else {
+         return obj.toString();
+      }
    }
 
 }
