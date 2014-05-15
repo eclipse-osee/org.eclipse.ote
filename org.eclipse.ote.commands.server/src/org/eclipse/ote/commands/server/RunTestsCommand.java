@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Future;
 
-import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -52,12 +51,7 @@ class RunTestsCommand implements ITestServerCommand, Serializable {
    public ICommandHandle createCommandHandle(Future<ITestCommandResult> result, ITestContext context) throws ExportException {
       RunTestsHandle handle = new RunTestsHandle(result, context, this);
       handles.add(handle);
-      IServiceConnector connector = context.getConnector();
-      ICommandHandle toReturn = (ICommandHandle) connector.findExport(handle);
-      if (toReturn == null) {
-         toReturn = (ICommandHandle) connector.export(handle);
-      }
-      return toReturn;
+      return handle;
    }
 
    @Override
