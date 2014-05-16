@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ote.statemachine;
 
-import junit.framework.Assert;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class StateMachineTest {
@@ -227,6 +227,91 @@ public class StateMachineTest {
       parent.addToQueue(change);
       Assert.assertEquals(1, parent.queueSize());
       parent.processInput();
+      Assert.assertEquals(yellow, parent.getCurrentState());
+      parent.stop();
+   }
+   
+   @Test
+   public void hierarchyTestInThread() throws Exception{
+      StateMachine parent = new StateMachine("Stoplight", true);
+      
+      Green green = new Green("green");
+      Red red = new Red("red");
+      Yellow yellow = new Yellow("yellow");
+      Change change = new Change(parent, Object.class, "change");
+      Change internalExit = new Change(parent, Integer.class, "internalExit1");
+      Change internalExit2 = new Change(parent, Integer.class, "internalExit2");
+      
+      ChildStateMachineState child = new Hierarchy(parent, "child");
+      
+      //begin hier 2
+      ChildStateMachineState grandchild = new Hierarchy(parent, "grandchild");
+      Blue blud2 = new Blue("blud2");
+      Purple purple2 = new Purple(internalExit2, "purple2");
+      
+      grandchild.setDefaultInitialState(blud2);
+      grandchild.newTransition(blud2, change, purple2);
+      grandchild.newTransition(purple2, change, blud2);
+      //end hier 2
+      
+      // Begin hier 1
+      Blue blud = new Blue("blud");
+      Purple purple = new Purple(internalExit, "purple");
+
+      child.setDefaultInitialState(blud);
+      child.newTransition(grandchild, internalExit2, purple);
+      child.newTransition(blud, change, grandchild);
+      child.newTransition(purple, change, blud);
+      // end hier 1
+      
+      // begin master machine
+      parent.setDefaultInitialState(green);
+      parent.newTransition(green, change, yellow);
+      parent.newTransition(yellow, change, red);
+      parent.newTransition(red, change, child);
+      parent.newTransition(child, internalExit, green);
+      parent.initialize();
+      // end master machine
+      
+      parent.addToQueue(change);
+      parent.processUntilEmpty();
+      Assert.assertEquals(yellow, parent.getCurrentState());
+      
+      parent.addToQueue(change);
+      parent.processUntilEmpty();
+      Assert.assertEquals(red, parent.getCurrentState());
+      
+      parent.addToQueue(change);
+      parent.processUntilEmpty();
+      Assert.assertEquals(child, parent.getCurrentState());
+      Assert.assertEquals(blud, ((Hierarchy)child).getCurrentState());
+      
+      parent.addToQueue(change);
+      parent.processUntilEmpty();
+      Assert.assertEquals(child, parent.getCurrentState());
+      Assert.assertEquals(grandchild, ((Hierarchy)child).getCurrentState());
+      Assert.assertEquals(blud2, ((Hierarchy)grandchild).getCurrentState());
+      
+      parent.addToQueue(change);
+      parent.processUntilEmpty();
+      Assert.assertEquals(child, parent.getCurrentState());
+      Assert.assertEquals(grandchild, ((Hierarchy)child).getCurrentState());
+      Assert.assertEquals(purple2, ((Hierarchy)grandchild).getCurrentState());
+      
+      parent.addToQueue(change);
+      parent.processUntilEmpty();
+      Assert.assertEquals(child, parent.getCurrentState());
+      Assert.assertEquals(purple, ((Hierarchy)child).getCurrentState());
+      Assert.assertEquals(blud2, ((Hierarchy)grandchild).getCurrentState());
+      
+      parent.addToQueue(change);
+      parent.processUntilEmpty();
+      Assert.assertEquals(green, parent.getCurrentState());
+      Assert.assertEquals(blud2, ((Hierarchy)grandchild).getCurrentState());
+      Assert.assertEquals(blud, ((Hierarchy)child).getCurrentState());
+      
+      parent.addToQueue(change);
+      parent.processUntilEmpty();
       Assert.assertEquals(yellow, parent.getCurrentState());
       parent.stop();
    }

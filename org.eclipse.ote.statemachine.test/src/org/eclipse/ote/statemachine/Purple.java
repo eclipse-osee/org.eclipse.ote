@@ -10,15 +10,20 @@
  *******************************************************************************/
 package org.eclipse.ote.statemachine;
 
-import org.eclipse.ote.statemachine.BaseInput;
-import org.eclipse.ote.statemachine.BaseState;
 
 public class Purple  extends BaseState {
 
    private Change internalExit;
 
+   private String name;
+
    public Purple(Change internalExit) {
       this.internalExit = internalExit;
+   }
+   
+   public Purple(Change internalExit, String name) {
+      this.internalExit = internalExit;
+      this.name = name;
    }
 
    @Override
@@ -36,4 +41,11 @@ public class Purple  extends BaseState {
       internalExit.addToStateMachineQueue();
    }
 
+   public String toString(){
+      if(name != null){
+         return name;
+      } else {
+         return super.toString();
+      }
+   }
 }
