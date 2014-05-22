@@ -51,7 +51,25 @@ public class OteByteMessageUtil {
    public static UUID getUUID(OteByteMessage msg) {
       return new UUID(msg.getHeader().UUID_HIGH.getValue(), msg.getHeader().UUID_LOW.getValue());
    }
+   
+   public static UUID getUUID(byte[] data) {
+      long low = getLong(data, 74);
+      long high = getLong(data, 82);
+      return new UUID(high, low);
+   }
 
+   private static long getLong(byte[] data, int index){
+      return
+      (long)(0xff & data[index]) << 56  |
+      (long)(0xff & data[index+1]) << 48  |
+      (long)(0xff & data[index+2]) << 40  |
+      (long)(0xff & data[index+3]) << 32  |
+      (long)(0xff & data[index+4]) << 24  |
+      (long)(0xff & data[index+5]) << 16  |
+      (long)(0xff & data[index+6]) << 8   |
+      (long)(0xff & data[index+7]) << 0;
+   }
+   
    public static void setUUID(OteByteMessage msg, UUID id) {
       msg.getHeader().UUID_HIGH.setValue(id.getMostSignificantBits());
       msg.getHeader().UUID_LOW.setValue(id.getLeastSignificantBits());
