@@ -31,7 +31,7 @@ public class EventToJmsComponent extends OseeMessagingListener implements EventH
 
    private JmsConnectionNodeProvider connecitonNode;
    private EventAdmin eventAdmin;
-   private List<Event> eventQueue;
+   private final List<Event> eventQueue;
    private final UUID MYID;
 
    public EventToJmsComponent(){
@@ -80,9 +80,9 @@ public class EventToJmsComponent extends OseeMessagingListener implements EventH
       Object obj = event.getProperty("bytes");
       if(obj != null && obj instanceof byte[]){
          try {
-            OteByteMessage msg = new OteByteMessage((byte[])obj);
-            UUID id = OteByteMessageUtil.getUUID(msg);
+            UUID id = OteByteMessageUtil.getUUID((byte[])obj);
             if(!id.equals(MYID)){
+               OteByteMessage msg = new OteByteMessage((byte[])obj);
                OteByteMessageUtil.setUUID(msg, MYID);
                connecitonNode.getConnectionNode().send(BridgeMessages.BYTE_MESSAGE, obj);
             }
@@ -95,9 +95,9 @@ public class EventToJmsComponent extends OseeMessagingListener implements EventH
    @Override
    public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
       if(message instanceof byte[]){
-         OteByteMessage msg = new OteByteMessage((byte[])message);
-         UUID id = OteByteMessageUtil.getUUID(msg);
+         UUID id = OteByteMessageUtil.getUUID((byte[])message);
          if(!id.equals(MYID)){
+            OteByteMessage msg = new OteByteMessage((byte[])message);
             OteByteMessageUtil.setUUID(msg, MYID);
             Map<String, Object> data = new HashMap<String, Object>();
             data.put("bytes", msg.getData());
