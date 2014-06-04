@@ -39,30 +39,39 @@ public final class StateMachine {
    private BaseState defaultInitialState;
    private int nextStateId = 0;
    private boolean debug = false;
+   private final boolean runInInputThread;
    
    public StateMachine(String name){
-      this(new StateMachineIdFactory(), name);
+      this(new StateMachineIdFactory(), name, false);
    }
    
-   StateMachine(StateMachineIdFactory factory, String name){
+   public StateMachine(String name, boolean runInInputThread){
+      this(new StateMachineIdFactory(), name, runInInputThread);
+   }
+   
+   StateMachine(StateMachineIdFactory factory, String name, boolean runInInputThread){
       this.name = name;
       this.factory = factory;
       stateTransitionTable = new StateTransitionTable(50,50);
       queue = new LinkedBlockingQueue<BaseInput>();
       killInput = new KillInput(this);
+      this.runInInputThread = runInInputThread;
    }
    
-   BaseInput processInput() throws Exception{
+   BaseInput processInput() throws RuntimeException{
       BaseInput input = getInput();
-      if(input != killInput){
+      if(input != null && input != killInput){
          if(currentState == null){
-            throw new Exception("CurrentState is null, statemachine was not properly initialized.  Please ensure that if any child state machines were created and entry() was implemented that you call super.entry().");
+            throw new RuntimeException("CurrentState is null, statemachine was not properly initialized.  Please ensure that if any child state machines were created and entry() was implemented that you call super.entry().");
          }
          BaseState nextState = stateTransitionTable.getTransition(input, currentState);
          if(debug ) {
             System.out.println("======================"+name+"========================");
             System.out.println("INPUT: " + input.toString());
             System.out.println("CURRENTSTATE: " + currentState.toString());
+            if(nextState == null){
+               System.out.println("strange");
+            }
             System.out.println("NEXTSTATE: " + (nextState == null ? "" : nextState.toString()));
          }
          if(nextState != null){
@@ -73,27 +82,46 @@ public final class StateMachine {
                currentState = nextState;
             }
          }
+         if(debug ) {
+            System.out.println("DONE ======================"+name+"========================");
+            System.out.println("INPUT: " + input.toString());
+            System.out.println("CURRENTSTATE: " + currentState.toString());
+            
+         }
       }
       return input;
    }
    
    public void start(){
-      th = new Thread(new Runnable(){
-         @Override
-         public void run() {
-            BaseInput input = null;
-            currentState.entry();
-            while(input != killInput){
-               try{
-                  input = processInput();
-               } catch (Throwable th){
-                  th.printStackTrace();
+      currentState.entry();
+      if(!runInInputThread){
+         th = new Thread(new Runnable(){
+            @Override
+            public void run() {
+               BaseInput input = null;
+               while(input != killInput){
+                  try{
+                     input = processInput();
+                  } catch (Throwable th){
+                     th.printStackTrace();
+                  }
                }
             }
-         }
-      });
-      th.setName("StateMachine " + name);
-      th.start();
+         });
+         th.setName("StateMachine " + name);
+         th.start();
+      }
+   }
+   
+   public void processUntilEmpty(){
+      BaseInput input = null;
+      while((input = processInput()) != null){
+//         try{
+//            input = processInput();
+//         } catch (Throwable th){
+//            th.printStackTrace();
+//         }
+      }
    }
 
    public void setDefaultInitialState(BaseState initialState) {
@@ -120,8 +148,16 @@ public final class StateMachine {
       return currentState;
    }
 
-   private BaseInput getInput() throws InterruptedException {
-      return queue.take();
+   private BaseInput getInput() {
+      if(runInInputThread){
+         return queue.poll();
+      } else {
+         try {
+            return queue.take();
+         } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+         }
+      }
    }
    
    public void newTransition(BaseState state, BaseInput input, BaseState nextState) throws Exception{
@@ -191,6 +227,10 @@ public final class StateMachine {
 
    StateMachineIdFactory getIdFactory() {
       return this.factory;
+   }
+
+   boolean getRunInInputThread() {
+      return runInInputThread;
    }
       
 }

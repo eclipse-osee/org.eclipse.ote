@@ -10,11 +10,19 @@
  *******************************************************************************/
 package org.eclipse.ote.statemachine;
 
-import org.eclipse.ote.statemachine.BaseInput;
-import org.eclipse.ote.statemachine.BaseState;
 
 public class Red  extends BaseState {
 
+   private String name;
+
+   public Red(){
+      
+   }
+   
+   public Red(String name){
+      this.name = name;
+   }
+   
    @Override
    public void run(BaseInput intput) {
       
@@ -28,6 +36,14 @@ public class Red  extends BaseState {
    @Override
    public void exit() {
       
+   }
+   
+   public String toString(){
+      if(name != null){
+         return name;
+      } else {
+         return super.toString();
+      }
    }
 
 }
