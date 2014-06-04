@@ -239,6 +239,9 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
    public void clearAllUpdates() {
       refresher.clearUpdates();
+      for(ViewerColumnElement column:elementColumns){
+         column.getColumnElement().clearValue();
+      }
       last = null;
    }
 

@@ -11,7 +11,7 @@ import org.eclipse.osee.ote.message.elements.DiscreteElement;
 public class ColumnElement implements ISubscriptionListener {
    private ViewerColumnElement viewerColumn;
 
-   private static final String UNKNOWN_VALUE = "???";
+   private static final String UNKNOWN_VALUE = "?";
    private final String message;
    private final String verbosetext;
    private final ElementPath path;
@@ -24,7 +24,6 @@ public class ColumnElement implements ISubscriptionListener {
       this.path = path;
       message = path.getMessageClass();
       verbosetext = getMessageName(message) + "." + path.toString();
-
    }
 
    public ElementPath getElementPath() {
@@ -60,6 +59,10 @@ public class ColumnElement implements ISubscriptionListener {
       return lastValueReference.get();
    }
 
+   public void clearValue() {
+      lastValueReference.set(null);
+   }
+   
    public void setToolTip(){
       String tip = "";
       if (element == null) {
