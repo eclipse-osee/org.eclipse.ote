@@ -29,6 +29,12 @@ public class BundleUtility {
       URL url = null;
       Bundle bundle = findBundle(bundleSymbolicName);
       url = bundle.getEntry(path);
+      if(url == null){
+         url = bundle.getEntry("src/" + path);
+      }
+      if(url == null){
+         url = bundle.getEntry("bin/" + path);
+      }
       if(url == null && bundle instanceof BundleHost){
          BundleFragment[] fragments = ((BundleHost)bundle).getFragments();
          if(fragments != null){
@@ -42,6 +48,8 @@ public class BundleUtility {
       }
       return url;
    }
+   
+   
    
    /**
     * Finds all paths in a bundle under and including a given folder path.
