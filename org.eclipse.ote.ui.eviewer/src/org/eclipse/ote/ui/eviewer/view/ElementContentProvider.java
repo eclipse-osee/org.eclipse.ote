@@ -92,7 +92,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
    }
 
    @Override
-   public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+   public synchronized void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       this.viewer = (TableViewer) viewer;
       if (newInput != null) {
          if (oldInput != null) {
