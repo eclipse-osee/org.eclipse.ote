@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Future;
 
-import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -19,9 +18,9 @@ import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 import org.eclipse.osee.ote.core.framework.command.ITestCommandResult;
 import org.eclipse.osee.ote.core.framework.command.ITestContext;
 import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
+import org.eclipse.osee.ote.core.framework.command.RunTestsKeys;
 import org.eclipse.osee.ote.core.framework.command.TestCommandResult;
 import org.eclipse.osee.ote.message.IMessageTestContext;
-import org.eclipse.ote.commands.messages.RunTestsKeys;
 
 class RunTestsCommand implements ITestServerCommand, Serializable {
 
@@ -52,12 +51,7 @@ class RunTestsCommand implements ITestServerCommand, Serializable {
    public ICommandHandle createCommandHandle(Future<ITestCommandResult> result, ITestContext context) throws ExportException {
       RunTestsHandle handle = new RunTestsHandle(result, context, this);
       handles.add(handle);
-      IServiceConnector connector = context.getConnector();
-      ICommandHandle toReturn = (ICommandHandle) connector.findExport(handle);
-      if (toReturn == null) {
-         toReturn = (ICommandHandle) connector.export(handle);
-      }
-      return toReturn;
+      return handle;
    }
 
    @Override
@@ -67,7 +61,7 @@ class RunTestsCommand implements ITestServerCommand, Serializable {
       isRunning = true;
       IMessageTestContext msgContext = (IMessageTestContext) environment;
       this.environment = environment;
-      msgContext.resetScriptLoader(global.getArray(RunTestsKeys.classpath.name()));
+      msgContext.resetScriptLoader(null, global.getArray(RunTestsKeys.classpath.name()));
       for (IPropertyStore store : scripts) {
          if (cancel) {
             statusBoard.onTestComplete(store.get(RunTestsKeys.testClass.name()),
