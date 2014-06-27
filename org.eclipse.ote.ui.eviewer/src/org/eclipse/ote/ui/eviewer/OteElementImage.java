@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * @author Andrew M. Finkbeiner
  */
 public enum OteElementImage implements KeyedImage {
-   ELEMENT_VIEW("sample.gif");
+   ELEMENT_VIEW("element_viewer.gif");
 
    private final String fileName;
 

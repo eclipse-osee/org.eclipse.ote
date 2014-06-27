@@ -52,14 +52,14 @@ public class ServerSessionRequestTest {
       
       BundleDescription[] descs = new BundleDescription[126];
       for(int i = 0; i < descs.length; i++){
-         descs[i] = new BundleDescription(new URL("http://www.google.com"),new URL("http://www.google.com"), new Manifest(), false, new byte[8]);
+         descs[i] = new BundleDescription(new URL("http://www.google.com"),new URL("http://www.google.com"), new Manifest(), false, "");
       }
       request.setBundleConfiguration(descs);
       
       BundleDescription[] newdescs = request.getBundleConfiguration();
       
       Assert.assertEquals(descs.length, newdescs.length);
-      Assert.assertEquals(descs[1].getMd5Digest().length, newdescs[1].getMd5Digest().length);
+      Assert.assertEquals(descs[1].getMd5Digest(), newdescs[1].getMd5Digest());
       Assert.assertEquals(descs[1].getLocation(), newdescs[1].getLocation());
    }
 
@@ -78,7 +78,7 @@ public class ServerSessionRequestTest {
 
          BundleDescription[] descs = new BundleDescription[126];
          for(int i = 0; i < descs.length; i++){
-            descs[i] = new BundleDescription(new URL("http://www.google.com"),new URL("http://www.google.com"), new Manifest(), false, new byte[8]);
+            descs[i] = new BundleDescription(new URL("http://www.google.com"),new URL("http://www.google.com"), new Manifest(), false, "");
          }
          request.setBundleConfiguration(descs);
 
