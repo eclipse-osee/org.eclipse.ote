@@ -119,7 +119,7 @@ public class BundleUtility {
       return false;
    }
    
-   private static Bundle findBundle(String symbolicName){
+   public static Bundle findBundle(String symbolicName){
       Bundle[] bundles = FrameworkUtil.getBundle(BundleUtility.class).getBundleContext().getBundles();
       for(Bundle bundle:bundles){
          if(bundle.getSymbolicName().equals(symbolicName)){
@@ -139,7 +139,6 @@ public class BundleUtility {
     */
    public static List<URL> entriesToURLs(String bundleSymbolicName, List<String> entries) {
       List<URL> paths = new ArrayList<URL>();
-      Bundle bundle = findBundle(bundleSymbolicName);
       for(String path:entries){
           URL url = findEntry(bundleSymbolicName, path);
           if(url != null){
