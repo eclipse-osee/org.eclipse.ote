@@ -18,7 +18,6 @@
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
-		<eclipse-ip-site>http://somelocallocation/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
 		
 		<maven-antrun-version>1.6</maven-antrun-version>
 		<ant-contrib-version>1.0b3</ant-contrib-version>
@@ -33,7 +32,7 @@
 		<javadoc-version>2.8</javadoc-version>
 		<build-helper-maven-plugin-version>1.7</build-helper-maven-plugin-version>
 		<maven-resources-version>2.5</maven-resources-version>
-
+		<gitRepoRoot>file:../../../</gitRepoRoot>
 		
 	</properties>
 
@@ -53,14 +52,24 @@
 			<layout>p2</layout>
 			<url>${osee-site}</url>
 		</repository>
-		<repository>
-			<id>eclipse-ip</id>
-			<layout>p2</layout>
-			<url>${eclipse-ip-site}</url>
-		</repository>
 	</repositories>
 
 	<profiles>
+		<profile>
+			<id>org.eclipse.ip.p2</id>
+			<activation>
+				<property>
+					<name>org.eclipse.ip.p2</name>
+				</property>
+			</activation>
+			<repositories>
+				<repository>
+					<id>org.eclipse.ip.p2</id>
+					<layout>p2</layout>
+					<url>${org.eclipse.ip.p2}</url>
+				</repository>
+			</repositories>
+		</profile>
 		<profile>
 			<id>check-style</id>
 			<activation>
