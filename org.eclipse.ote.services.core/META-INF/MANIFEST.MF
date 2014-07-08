@@ -12,3 +12,5 @@ Import-Package: org.eclipse.core.runtime,
  org.osgi.framework;version="1.7.0"
 Export-Package: org.eclipse.ote.services.core
 Require-Bundle: org.eclipse.osgi
+Service-Component: OSGI-INF/*.xml
+
