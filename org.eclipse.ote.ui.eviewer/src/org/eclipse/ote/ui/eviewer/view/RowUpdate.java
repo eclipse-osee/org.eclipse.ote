@@ -59,7 +59,9 @@ public final class RowUpdate {
                   // even though a update flag is set, the value may have
                   // reverted to the same value of the last visual update
                   // which can happen in inactive columns
-                  newDeltaSet.set(i, !value.equals(values[i]));
+                  if(value != null){
+                     newDeltaSet.set(i, !value.equals(values[i]));
+                  }
                }
             } else {
                newValues[i] = col.getValue();
@@ -73,7 +75,7 @@ public final class RowUpdate {
             ViewerColumn col = allColumns.get(i);
             Object value = col.getValue();
             newValues[i] = value;
-            if (!value.equals(getValue(col))) {
+            if (value != null && !value.equals(getValue(col))) {
                newDeltaSet.set(i);
             }
          }
