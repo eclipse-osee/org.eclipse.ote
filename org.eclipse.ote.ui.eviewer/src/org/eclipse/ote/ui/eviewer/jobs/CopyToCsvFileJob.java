@@ -46,10 +46,10 @@ public class CopyToCsvFileJob extends Job {
          try {            
             int i;
             for (i = 0; i < elementColumns.size() - 1; i++) {
-               writer.append(elementColumns.get(i).getName());
+               writer.append(elementColumns.get(i).getVerboseName());
                writer.append(',');
             }
-            writer.append(elementColumns.get(i).getName());
+            writer.append(elementColumns.get(i).getVerboseName());
             writer.append('\n');
 
             for (RowUpdate update : updates) {
@@ -61,13 +61,13 @@ public class CopyToCsvFileJob extends Job {
                for (i = 0; i < elementColumns.size() - 1; i++) {
                   Object o = update.getValue(elementColumns.get(i));
                   if (o != null) {
-                     writer.append(o.toString());
+                     writer.append('"').append(o.toString()).append('"');
                   }
                   writer.append(',');
                }
                Object o = update.getValue(elementColumns.get(i));
                if (o != null) {
-                  writer.append(o.toString());
+                  writer.append('"').append(o.toString()).append('"');
                }
                writer.append('\n');
                monitor.worked(1);
