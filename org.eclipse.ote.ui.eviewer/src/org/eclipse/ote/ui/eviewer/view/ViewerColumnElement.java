@@ -76,8 +76,8 @@ public class ViewerColumnElement extends ViewerColumn {
    }
 
    @Override
-   public String getVerboseName() {
-      return columnElement.getVerboseName();
+   public String getVerboseName() {	   
+      return ColumnElement.getMessageName(columnElement.getMessageClassName()) + '.' + columnElement.getElementPath().toString();
    }
 
    public boolean isDuplicateName() {
