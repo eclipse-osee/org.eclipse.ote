@@ -215,20 +215,20 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          streamWriteLock.lock();
          if (streamToFileWriter != null) {
             int i;
-            streamToFileWriter.append(Long.toString(timeColumn.getLong()));
-            streamToFileWriter.append(',');
-            streamToFileWriter.append(Long.toString(timeDeltaColumn.getLong()));
-            streamToFileWriter.append(',');
+//            streamToFileWriter.append(Long.toString(timeColumn.getLong()));
+//            streamToFileWriter.append(',');
+//            streamToFileWriter.append(Long.toString(timeDeltaColumn.getLong()));
+//            streamToFileWriter.append(',');
             for (i = 0; i < viewerColumns.size() - 1; i++) {
                Object o = update.getValue(viewerColumns.get(i));
                if (o != null) {
-                  streamToFileWriter.append(o.toString());
+                  streamToFileWriter.append('"').append(o.toString()).append('"');
                }
                streamToFileWriter.append(',');
             }
             Object o = update.getValue(viewerColumns.get(i));
             if (o != null) {
-               streamToFileWriter.append(o.toString());
+               streamToFileWriter.append('"').append(o.toString()).append('"');
             }
             streamToFileWriter.append('\n');
          }
@@ -477,16 +477,17 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
          streamToFileWriter = new PrintWriter(new FileOutputStream(file));
          int i;
-         streamToFileWriter.write(timeColumn.getName());
-         streamToFileWriter.write(',');
-         streamToFileWriter.write(timeDeltaColumn.getName());
-         streamToFileWriter.write(',');
+//         streamToFileWriter.write(timeColumn.getName());
+//         streamToFileWriter.write(',');
+//         streamToFileWriter.write(timeDeltaColumn.getName());
+//         streamToFileWriter.write(',');
          for (i = 0; i < viewerColumns.size() - 1; i++) {
-            streamToFileWriter.write(viewerColumns.get(i).getName());
+            streamToFileWriter.write(viewerColumns.get(i).getVerboseName());
             streamToFileWriter.write(',');
          }
          if (viewerColumns.size() > 0) {
-            streamToFileWriter.write(viewerColumns.get(i).getName());
+        	
+            streamToFileWriter.write(viewerColumns.get(i).getVerboseName());
             streamToFileWriter.write('\n');
          }
 
