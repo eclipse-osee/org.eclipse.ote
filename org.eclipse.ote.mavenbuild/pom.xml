@@ -32,41 +32,22 @@
 		<javadoc-version>2.8</javadoc-version>
 		<build-helper-maven-plugin-version>1.7</build-helper-maven-plugin-version>
 		<maven-resources-version>2.5</maven-resources-version>
-		<gitRepoRoot>file:../../../</gitRepoRoot>
-		
+		<gitRepoRoot>file:../../../</gitRepoRoot>		
 	</properties>
-
-	<repositories>
-		<repository>
-			<id>eclipse</id>
-			<layout>p2</layout>
-			<url>${eclipse-site}</url>
-		</repository>
-		<repository>
-			<id>orbit</id>
-			<layout>p2</layout>
-			<url>${orbit-site}</url>
-		</repository>
-		<repository>
-			<id>osee</id>
-			<layout>p2</layout>
-			<url>${osee-site}</url>
-		</repository>
-	</repositories>
 
 	<profiles>
 		<profile>
-			<id>org.eclipse.ip.p2</id>
+			<id>ote.runtime.p2</id>
 			<activation>
 				<property>
-					<name>org.eclipse.ip.p2</name>
+					<name>ote.runtime.p2</name>
 				</property>
 			</activation>
 			<repositories>
 				<repository>
-					<id>org.eclipse.ip.p2</id>
+					<id>ote-runtime</id>
 					<layout>p2</layout>
-					<url>${org.eclipse.ip.p2}</url>
+					<url>${ote.runtime.p2}</url>
 				</repository>
 			</repositories>
 		</profile>
