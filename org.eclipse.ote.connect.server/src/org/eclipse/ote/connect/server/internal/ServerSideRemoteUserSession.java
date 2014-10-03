@@ -82,4 +82,10 @@ public class ServerSideRemoteUserSession implements IRemoteUserSession {
       System.out.println("ServerSideRemoteUserSession sendMessageToClient " + message.toString());
    }
 
+   @Override
+   public UUID getUserId() throws Exception {
+      System.out.println("ServerSideRemoteUserSession getUserId");
+      return UUID.randomUUID();
+   }
+
 }

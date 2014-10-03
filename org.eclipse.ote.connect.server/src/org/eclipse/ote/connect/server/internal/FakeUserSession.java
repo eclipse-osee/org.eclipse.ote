@@ -1,6 +1,7 @@
 package org.eclipse.ote.connect.server.internal;
 
 import java.rmi.RemoteException;
+import java.util.UUID;
 
 import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.IRemoteUserSession;
@@ -87,6 +88,13 @@ public class FakeUserSession implements IRemoteUserSession {
    public void sendMessageToClient(Message message) throws RemoteException {
       // TODO Auto-generated method stub
       System.out.println("sendMessageToClient");
+   }
+
+   @Override
+   public UUID getUserId() throws Exception {
+      // TODO Auto-generated method stub
+      System.out.println("get id");
+      return UUID.randomUUID();
    }
 
 }

@@ -25,6 +25,10 @@ import org.osgi.service.event.EventHandler;
 
 public class OteByteMessageUtil {
 
+   public final static String BYTE_KEY = "oteeventbytes";
+   
+   public final static String BYTE_KEY_2 = "bytes";
+   
    public static void sendEvent(OteByteMessage message) {
       EventAdmin eventAdmin = ServiceUtility.getService(EventAdmin.class);
       sendEvent(message, eventAdmin);
@@ -34,7 +38,7 @@ public class OteByteMessageUtil {
       message.getHeader().UUID_HIGH.setNoLog((long) 0x0);
       message.getHeader().UUID_LOW.setNoLog((long) 0x0);
       Map<String, Object> data = new HashMap<String, Object>();
-      data.put("bytes", message.getData());
+      data.put(BYTE_KEY, message.getData());
       Event newevent = new Event(message.getHeader().TOPIC.getValue(), data);
       eventAdmin.sendEvent(newevent);
    }
@@ -48,7 +52,7 @@ public class OteByteMessageUtil {
       message.getHeader().UUID_HIGH.setNoLog((long) 0x0);
       message.getHeader().UUID_LOW.setNoLog((long) 0x0);
       Map<String, Object> data = new HashMap<String, Object>();
-      data.put("bytes", message.getData());
+      data.put(BYTE_KEY, message.getData());
       Event newevent = new Event(message.getHeader().TOPIC.getValue(), data);
       eventAdmin.postEvent(newevent);
    }
@@ -81,20 +85,29 @@ public class OteByteMessageUtil {
    }
 
    public static OteByteMessage getOteByteMessage(Event event) {
-      Object obj = event.getProperty("bytes");
+      Object obj = event.getProperty(BYTE_KEY);
       if (obj != null && obj instanceof byte[]) {
          return new OteByteMessage((byte[]) obj);
+      } else {
+         obj = event.getProperty(BYTE_KEY_2);
+         if (obj != null && obj instanceof byte[]) {
+            return new OteByteMessage((byte[]) obj);
+         }
       }
       return null;
    }
    
    public static byte[] getBytes(Event event) {
-      Object obj = event.getProperty("bytes");
+      Object obj = event.getProperty(BYTE_KEY);
       if (obj != null && obj instanceof byte[]) {
          return (byte[]) obj;
       } else {
-         return null;
+         obj = event.getProperty(BYTE_KEY_2);
+         if (obj != null && obj instanceof byte[]) {
+            return (byte[]) obj;
+         }
       }
+      return null;
    }
 
    public static void putBytes(Event event, OteByteMessage signal) {

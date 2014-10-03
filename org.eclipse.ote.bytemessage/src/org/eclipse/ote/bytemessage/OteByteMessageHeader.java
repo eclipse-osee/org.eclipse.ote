@@ -20,7 +20,7 @@ import org.eclipse.osee.ote.message.elements.Element;
 import org.eclipse.osee.ote.message.elements.IntegerElement;
 import org.eclipse.osee.ote.message.elements.LongIntegerElement;
 import org.eclipse.osee.ote.message.elements.StringElement;
-import org.eclipse.osee.ote.remote.messages.SOCKET_ADDRESS_RECORD;
+import org.eclipse.osee.ote.message.event.SOCKET_ADDRESS_RECORD;
 
 public class OteByteMessageHeader implements IMessageHeader{
 
