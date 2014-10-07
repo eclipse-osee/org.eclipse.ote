@@ -18,12 +18,6 @@
 	<modules>
 	   <module>../org.eclipse.ote.bytemessage</module>
 	   <module>../org.eclipse.ote.bytemessage.test</module>
-	   <module>../org.eclipse.ote.commands.messages</module>
-	   <module>../org.eclipse.ote.commands.server</module>
-	   <module>../org.eclipse.ote.connect.messages</module>
-	   <module>../org.eclipse.ote.connect.messages.test</module>
-	   <module>../org.eclipse.ote.connect.server</module>
-	   <module>../org.eclipse.ote.connect.server.test</module>
 	   <module>../org.eclipse.ote.event.bridge.jms</module>
 		<module>../org.eclipse.ote.io</module>
 		<module>../org.eclipse.ote.io.test</module>
