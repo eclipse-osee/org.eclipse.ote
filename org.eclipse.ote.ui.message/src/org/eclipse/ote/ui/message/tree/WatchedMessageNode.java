@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
@@ -50,6 +51,7 @@ public class WatchedMessageNode extends MessageNode {
    private volatile long lastUpdateNumber = -1;
 
    private Map<ElementPath, String> valueMap;
+   private Set<DataType> availableTypes;
    
    public WatchedMessageNode(IMessageSubscription subscription) {
       super(subscription.getMessageClassName());
@@ -99,6 +101,9 @@ public class WatchedMessageNode extends MessageNode {
       for (ElementNode child : getChildren()) {
          WatchedElementNode elementNode = (WatchedElementNode) child;
          elementNode.setResolved(isResolved);
+      }
+      if(isResolved){
+         availableTypes = getSubscription().getAvailableTypes();
       }
    }
 
@@ -193,7 +198,7 @@ public class WatchedMessageNode extends MessageNode {
          return MessageNode.errorImg;
       }
       boolean isWriter = subscription.getMessageMode() == MessageMode.WRITER;
-      boolean hasOptions = getSubscription().getAvailableTypes().size() > 1;
+      boolean hasOptions = availableTypes != null && availableTypes.size() > 1;
       return getMessageIcon(getSubscription().getMemType().name(), isWriter, hasOptions);
    }
 
