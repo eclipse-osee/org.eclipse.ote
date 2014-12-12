@@ -39,6 +39,11 @@ public class OteByteMessageUtil {
       eventAdmin.sendEvent(newevent);
    }
    
+   public static void postEvent(OteByteMessage message) {
+      EventAdmin eventAdmin = ServiceUtility.getService(EventAdmin.class);
+      postEvent(message, eventAdmin);
+   }
+   
    public static void postEvent(OteByteMessage message, EventAdmin eventAdmin) {
       message.getHeader().UUID_HIGH.setNoLog((long) 0x0);
       message.getHeader().UUID_LOW.setNoLog((long) 0x0);
