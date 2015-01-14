@@ -177,7 +177,7 @@ public class MessageSearchView extends ViewPart implements MessageInfoSelectionL
       grp.setLayout(layout);
       Label l = new Label(grp, SWT.NULL);
       l.setText("Search:");
-      l.setToolTipText("Enter a search string.\n* is the wildcard.\nAn integer will search message ids.\n* will return all messages.\n** will return all messages that have elements.");
+      l.setToolTipText("Enter a search string.\n* is the wildcard.\nAn integer will search message ids.\n* will return all messages.\n** will return all messages that have elements.\nPUB:<SU>  SUB:<SU> to find who uses a message.");
 
       searchText = new Text(grp, SWT.SINGLE | SWT.BORDER);
       searchText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
