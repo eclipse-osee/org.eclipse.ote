@@ -35,6 +35,7 @@ import org.eclipse.ote.ui.message.tree.ElementNode;
 import org.eclipse.ote.ui.message.tree.INodeVisitor;
 import org.eclipse.ote.ui.message.tree.MessageNode;
 import org.eclipse.ote.ui.message.tree.RootNode;
+import org.eclipse.ote.ui.message.tree.WatchedElementNode;
 import org.eclipse.ote.ui.message.tree.WatchedMessageNode;
 import org.eclipse.ote.ui.message.view.MessageInfoComposite;
 import org.eclipse.ote.ui.message.view.MessageInfoSelectionListener;
@@ -45,6 +46,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -58,8 +60,8 @@ public class DetailsBox implements IRegistryEventListener {
    private static final String ELEMENT = "TabProvider";
    private static final String PAYLOAD_TXT = "\npayload:\n    0:  ";
    private static final String HEADER_TXT = "header:\n    0:  ";
-   private static int HEX_DUMP_BYTES_PER_ROW = 16;
-   private static int HEX_DUMP_CHARS_PER_BYTE = 3;
+   private static final int HEX_DUMP_BYTES_PER_ROW = 16;
+   private static final int HEX_DUMP_CHARS_PER_BYTE = 3;
 
    /**
     * number of characters that lead each row in the hex dump, these characters represent the byte offset indicator for
@@ -79,7 +81,7 @@ public class DetailsBox implements IRegistryEventListener {
    private final Font courier;
    private final Image hexImg;
    private final MessageInfoComposite databaseComposite;
-   private final StringBuilder strBuilder = new StringBuilder(8500);
+   private final StringBuilder strBuilder = new StringBuilder(1024*128);
    private TabItem selectedTab;
    private final HashMap<String, TabItem> detailsProviderMap = new HashMap<String, TabItem>();
    private AbstractTreeNode lastDatabaseNode;
@@ -157,11 +159,25 @@ public class DetailsBox implements IRegistryEventListener {
       }
    }
 
+   public void selectNode(AbstractTreeNode node) {
+      if (node instanceof WatchedElementNode) {
+         WatchedElementNode elementNode = (WatchedElementNode) node;
+         WatchedMessageNode msgNode = (WatchedMessageNode) elementNode.getMessageNode();
+         int offset = elementNode.getElement().getByteOffset() + elementNode.getElement().getMsb() / 8;
+         hexDumpTxt.setTopIndex(msgNode.getSubscription().getMessage().getHeaderSize() / HEX_DUMP_BYTES_PER_ROW + offset / HEX_DUMP_BYTES_PER_ROW + 2);
+      }
+      setDetailText(node);
+   }
    private void renderHex(AbstractTreeNode node) {
       if (!node.isEnabled()) {
          hexDumpTxt.setText(node.getName() + "\nDISABLED: " + node.getDisabledReason());
          return;
       }
+      Point selection = hexDumpTxt.getSelection();
+      int horizontalPixel = hexDumpTxt.getHorizontalPixel();
+      int verticalPixel = hexDumpTxt.getTopPixel();
+      int caret = hexDumpTxt.getCaretOffset();
+      hexDumpTxt.setRedraw(false);
       final INodeVisitor<Object> visitor = new INodeVisitor<Object>() {
          @Override
          public Object elementNode(final ElementNode node) {
@@ -175,17 +191,15 @@ public class DetailsBox implements IRegistryEventListener {
             if (msg.isDestroyed()) {
                return null;
             }
-            hexDumpTxt.setRedraw(false);
-            int payloadStart = printByteDump(msg);
 
-            Element e = msg.getElement(node.getElementPath().getElementPath());
+            int payloadStart = printByteDump(msg);
+            Element e = ((WatchedElementNode) node).getElement();
             if (e != null) {
                if (!e.isNonMappingElement()) {
                   MessageData data = msg.getActiveDataSource();
                   int headerSize = data.getMsgHeader() == null ? 0 : data.getMsgHeader().getHeaderSize();
                   if (e.getByteOffset() >= data.getCurrentLength() - headerSize) {
                      hexDumpTxt.setText("element outside of current message size");
-                     hexDumpTxt.setRedraw(true);
                      return null;
                   }
                   StyleRange range = new StyleRange();
@@ -201,19 +215,31 @@ public class DetailsBox implements IRegistryEventListener {
                   if(!(e instanceof ArrayElement)){
 
                      if (HEX_DUMP_PREFIX_CHARS + lineIndent + range.length >= HEX_DUMP_LINE_WIDTH) {
-                        int remaing = range.length - (HEX_DUMP_LINE_WIDTH - lineIndent - 9);
-                        StyleRange[] ranges = new StyleRange[remaing / HEX_DUMP_NON_PREFIX_CHAR + 2];
+                        int remaining = range.length - (HEX_DUMP_LINE_WIDTH - lineIndent - 9);
+                        int numberOfRanges =remaining / HEX_DUMP_NON_PREFIX_CHAR + 2;
+                        StyleRange[] existing = hexDumpTxt.getStyleRanges();
+                        final StyleRange[] ranges;
+                        
+                        if (existing.length != numberOfRanges) {
+                        	ranges = new StyleRange[numberOfRanges];                        	
+                        } else {
+                        	ranges = existing;
+                        }
+                        
                         ranges[0] = range;
-                        range.length -= remaing;
+                        range.length -= remaining;
                         int c = 1;
-                        while (remaing > 0) {
-                           StyleRange newRange = new StyleRange();
-                           ranges[c] = newRange;
+                        while (remaining > 0) {
+                        	StyleRange newRange = ranges[c];
+                        	if (newRange == null) {
+                        		newRange = new StyleRange();
+                        		ranges[c] = newRange;                        		
+                        	}
                            newRange.background = range.background;
                            newRange.foreground = range.foreground;
                            newRange.start = line + c * HEX_DUMP_LINE_WIDTH + payloadStart;
-                           newRange.length = remaing < HEX_DUMP_NON_PREFIX_CHAR ? remaing : HEX_DUMP_NON_PREFIX_CHAR;
-                           remaing -= newRange.length;
+                           newRange.length = remaining < HEX_DUMP_NON_PREFIX_CHAR ? remaining : HEX_DUMP_NON_PREFIX_CHAR;
+                           remaining -= newRange.length;
                            c++;
                         }
                         try{
@@ -229,8 +255,6 @@ public class DetailsBox implements IRegistryEventListener {
                         }
                      }
                   }
-                  hexDumpTxt.setTopIndex(msg.getHeaderSize() / HEX_DUMP_BYTES_PER_ROW + offset / HEX_DUMP_BYTES_PER_ROW + 2);
-                  hexDumpTxt.setRedraw(true);
                }
             }
 
@@ -242,10 +266,8 @@ public class DetailsBox implements IRegistryEventListener {
             WatchedMessageNode msgNode = (WatchedMessageNode) node;
             final Message<?, ?, ?> msg = msgNode.getSubscription().getMessage();
             if (msg != null && !msg.isDestroyed()) {
-               hexDumpTxt.setRedraw(false);
                printByteDump(msg);
                hexDumpTxt.setStyleRange(null);
-               hexDumpTxt.setRedraw(true);
             }
             return node;
          }
@@ -257,6 +279,17 @@ public class DetailsBox implements IRegistryEventListener {
 
       };
       node.visit(visitor);
+
+      hexDumpTxt.setCaretOffset(caret);
+      if (caret == selection.x) {
+    	  selection.x = selection.y;
+    	  selection.y = caret;
+      }
+      hexDumpTxt.setSelection(selection);
+      hexDumpTxt.setTopPixel(verticalPixel);
+      hexDumpTxt.setHorizontalPixel(horizontalPixel);
+      hexDumpTxt.setRedraw(true);
+
    }
 
    private void updateDatabaseInfo(AbstractTreeNode node) {
@@ -297,9 +330,6 @@ public class DetailsBox implements IRegistryEventListener {
     */
    private int printByteDump(Message<?, ?, ?> msg) {
       strBuilder.setLength(0);
-      int ypos = hexDumpTxt.getTopIndex();
-      int xpos = hexDumpTxt.getHorizontalIndex();
-      int cursorPos = hexDumpTxt.getCaretOffset();
       final byte[] data = msg.getData();
       int columnCount = 0;
       strBuilder.append(HEADER_TXT);
@@ -324,9 +354,6 @@ public class DetailsBox implements IRegistryEventListener {
       }
       strBuilder.append('\n');
       hexDumpTxt.setText(strBuilder.toString());
-      hexDumpTxt.setTopIndex(ypos);
-      hexDumpTxt.setHorizontalIndex(xpos);
-      hexDumpTxt.setCaretOffset(cursorPos);
       return payloadStart;
    }
 

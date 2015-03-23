@@ -174,4 +174,7 @@ public class WatchedElementNode extends ElementNode {
 	   return value.toString();
    }
 
+   public Element getElement() {
+      return element;
+   }
 }
