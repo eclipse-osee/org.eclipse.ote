@@ -364,9 +364,8 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 					if (lastNodeSelected != null) {
 						lastNodeSelected.setSelected(false);
 					}
-					node.setSelected(true);
 					try {
-						setDetailText(node);
+						selectNode(node);
 					} catch (ArrayIndexOutOfBoundsException t) {
 						// throw if there is an error in the message jar
 						// (usually... )
@@ -614,6 +613,11 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 	 */
 	public void setDetailText(final AbstractTreeNode node) {
 		detailsBox.setDetailText(node);
+	}
+	
+	public void selectNode(AbstractTreeNode node) {
+      node.setSelected(true);
+	   detailsBox.selectNode(node);
 	}
 
 	/**
