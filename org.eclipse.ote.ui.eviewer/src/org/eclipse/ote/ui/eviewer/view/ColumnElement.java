@@ -7,6 +7,7 @@ import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.client.msg.core.ISubscriptionListener;
 import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.osee.ote.message.elements.DiscreteElement;
+import org.eclipse.osee.ote.message.elements.Element;
 
 public class ColumnElement implements ISubscriptionListener {
    private ViewerColumnElement viewerColumn;
@@ -18,7 +19,8 @@ public class ColumnElement implements ISubscriptionListener {
    private DiscreteElement<?> element;
    private final AtomicReference<Object> lastValueReference = new AtomicReference<Object>(new Object());
    private final AtomicBoolean valueUpdatedFlag = new AtomicBoolean(false);
-
+   private boolean unsupportedType = false;
+   
    ColumnElement(ViewerColumnElement viewerColumn, ElementPath path) {
       this.viewerColumn = viewerColumn;
       this.path = path;
@@ -65,7 +67,9 @@ public class ColumnElement implements ISubscriptionListener {
    
    public void setToolTip(){
       String tip = "";
-      if (element == null) {
+      if (unsupportedType) {
+    	  tip = "This element type cannot be displayed";
+      } else if (element == null) {
          tip = "The element " + getElementPath() + " does not exist on " + getMessageClassName();
       } else {
          tip = String.format("%s.%s\nByte Offset: %d\nMSB: %d\nLSB: %d",  getMessageName(getMessageClassName()), path.toString(), element.getByteOffset(), element.getMsb(),
@@ -109,8 +113,14 @@ public class ColumnElement implements ISubscriptionListener {
 
    @Override
    public void subscriptionResolved(IMessageSubscription subscription) {
-
-      element = (DiscreteElement<?>) subscription.getMessage().getElementByPath(path);
+	   Element resolvedElement = subscription.getMessage().getElementByPath(path);
+	   if (!(resolvedElement instanceof DiscreteElement)) {
+		   unsupportedType = true;
+		   element = null;
+		   lastValueReference.set(UNKNOWN_VALUE);
+		   return;
+	   }
+      element = (DiscreteElement<?>) resolvedElement;
       setToolTip();
       lastValueReference.set(element != null ? element.getValue() : UNKNOWN_VALUE);
    }
