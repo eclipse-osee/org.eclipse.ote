@@ -69,7 +69,7 @@ public class OteByteMessageSceneriosTest {
          System.out.println(responseTime);
          Assert.assertEquals(666, response.getHeader().RESPONSE_ID.getValue().intValue());
          Assert.assertEquals("ote/response", response.getHeader().TOPIC.getValue());
-         Assert.assertTrue(responseTime > 95 && responseTime < 200);
+         Assert.assertTrue(String.format("responseTime[%d] expected > 95 && < 200", responseTime), responseTime > 95 && responseTime < 200);
       } finally {
          reg.unregister();
       }
@@ -88,7 +88,7 @@ public class OteByteMessageSceneriosTest {
          Assert.assertNull(response);
          long responseTime = System.currentTimeMillis() - current;
          System.out.println(responseTime);
-         Assert.assertTrue(responseTime > 150 && responseTime < 200);
+         Assert.assertTrue(String.format("responseTime[%d] expected > 150 && < 200", responseTime), responseTime > 150 && responseTime < 200);
 
       } finally {
          reg.unregister();
