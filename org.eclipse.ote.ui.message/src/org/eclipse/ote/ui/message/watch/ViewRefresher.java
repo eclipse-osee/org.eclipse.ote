@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.eclipse.ote.ui.message.tree.AbstractTreeNode;
 import org.eclipse.ote.ui.message.tree.MessageNode;
 import org.eclipse.ote.ui.message.tree.WatchList;
@@ -53,12 +54,14 @@ public class ViewRefresher implements Runnable {
    }
 
    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+   private volatile boolean writerIsPresent;
 
    private final Runnable task = new Runnable() {
 
       @Override
       public void run() {
-         if (view != null && !view.getTreeViewer().getTree().isDisposed()) {
+         if (viewIsAvailable()) {
+            view.setWriterPresent(writerIsPresent);
             if (selectedNode != null) {
                view.setDetailText(selectedNode);
             }
@@ -90,8 +93,14 @@ public class ViewRefresher implements Runnable {
       try {
          benchMark.startSample();
          deltas.clear();
+         writerIsPresent = false;
          for (MessageNode node : list.getMessages()) {
-            ((WatchedMessageNode) node).determineDeltas(deltas);
+            final WatchedMessageNode watchedNode = (WatchedMessageNode) node;
+            watchedNode.determineDeltas(deltas);
+            MessageMode messageMode = watchedNode.getSubscription().getMessageMode();
+            if( messageMode == MessageMode.WRITER) {
+               writerIsPresent = true;
+            }
          }
          Displays.pendInDisplayThread(task);
          benchMark.endSample();
@@ -99,6 +108,10 @@ public class ViewRefresher implements Runnable {
       } catch (Throwable th) {
          th.printStackTrace();
       }
+   }
+
+   private boolean viewIsAvailable() {
+      return view != null && !view.getTreeViewer().getTree().isDisposed();
    }
 
 }

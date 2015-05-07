@@ -14,15 +14,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -31,7 +27,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -57,6 +53,7 @@ import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
 import org.eclipse.ote.ui.message.internal.Activator;
+import org.eclipse.ote.ui.message.internal.SWTResourceManager;
 import org.eclipse.ote.ui.message.internal.WatchImages;
 import org.eclipse.ote.ui.message.messageXViewer.MessageXViewer;
 import org.eclipse.ote.ui.message.tree.AbstractTreeNode;
@@ -71,6 +68,7 @@ import org.eclipse.ote.ui.message.tree.WatchedMessageNode;
 import org.eclipse.ote.ui.message.util.ClientMessageServiceTracker;
 import org.eclipse.ote.ui.message.util.IOteMessageClientView;
 import org.eclipse.ote.ui.message.watch.action.ClearUpdatesAction;
+import org.eclipse.ote.ui.message.watch.action.ConvertWritersToReadersAction;
 import org.eclipse.ote.ui.message.watch.action.DeleteSelectionAction;
 import org.eclipse.ote.ui.message.watch.action.SendMessageAction;
 import org.eclipse.ote.ui.message.watch.action.SetDataSourceMenu;
@@ -80,6 +78,7 @@ import org.eclipse.ote.ui.message.watch.action.WatchElementAction;
 import org.eclipse.ote.ui.message.watch.action.ZeroizeElementAction;
 import org.eclipse.ote.ui.message.watch.action.ZeroizeMessageAction;
 import org.eclipse.ote.ui.message.watch.recording.RecordingWizard;
+import org.eclipse.ote.ui.message.watch.recording.xform.CsvTransform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.dnd.Clipboard;
@@ -95,7 +94,8 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -103,13 +103,15 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
 /**
@@ -238,6 +240,12 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 
 	private MessageProviderVersion messageProviderVersion;
 
+   protected boolean librariesLoaded;
+
+   private boolean writerIsPresent;
+
+   private ActionButton removeWritersBtn;
+
 	public WatchView() {
 		watchFile = OseeData.getFile("msgWatch.txt");
 		msgServiceTracker = new ClientMessageServiceTracker(Activator.getDefault().getBundle().getBundleContext(), this);
@@ -265,6 +273,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 		Widgets.positionGridItem(statusTxt, false, false, SWT.FILL, SWT.BEGINNING, 3);
 
 		Composite buttons = new Composite(parent, SWT.NONE);
+		GridDataFactory.swtDefaults().grab(true, false).span(numColumns, 1).applyTo(buttons);
 		buttons.setLayout(new RowLayout(SWT.HORIZONTAL));
 
 		recordButton = new Button(buttons, SWT.TOGGLE);
@@ -272,50 +281,16 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 		recordButton.setToolTipText("Record the messages and elements currently shown in Message Watch.");
 		recordButton.addSelectionListener(recBtnHandler);
 		recordButton.setEnabled(false);
+		
+		CsvTransform csvAction = new CsvTransform();
+		ActionButton btn = new ActionButton(buttons, SWT.PUSH, csvAction, "Csv Transform", VIEW_ID);
+		btn.setToolTipText("Transform the base CSV format.");
 
-		IExtension[] extensions =
-				Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.ote.ui.message.ToolbarItem").getExtensions();
-		for (IExtension ext : extensions) {
-			for (IConfigurationElement el : ext.getConfigurationElements()) {
-				if (el.getName().equals("ToolbarItem")) {
-					String actionClass = el.getAttribute("Action");
-					String icon = el.getAttribute("Icon");
-					String btnLabel = el.getAttribute("Label");
-					String tooltip = el.getAttribute("Tooltip");
-
-					Class<? extends Action> clazz;
-					try {
-						Bundle bundle = Platform.getBundle(el.getContributor().getName());
-						clazz = bundle.loadClass(actionClass).asSubclass(Action.class);
-
-						Action action = clazz.newInstance();
-						ActionButton btn =
-								new ActionButton(buttons, SWT.PUSH, action, btnLabel, el.getContributor().getName());
-						btn.setToolTipText(tooltip);
-
-						if (icon != null) {
-							URL url = bundle.getEntry(icon);
-							if (url == null) {
-								throw new IllegalArgumentException(String.format("Invalid icon path [{%s}/%s]", el.getContributor().getName(),
-										icon));
-							} else {
-								ImageDescriptor desc = ImageDescriptor.createFromURL(url);
-								Image img = desc.createImage();
-								if (img == null) {
-									throw new IllegalArgumentException(String.format("Unable to create Image from [{%s}/%s]",
-											el.getContributor().getName(), icon));
-								} else {
-									btn.setImage(img);
-								}
-							}
-						}
-					} catch (Exception ex) {
-						OseeLog.log(Activator.class, Level.SEVERE, ex);
-					}
-				}
-			}
-		}
-
+		ConvertWritersToReadersAction writerAction = new ConvertWritersToReadersAction(this);
+		removeWritersBtn = new ActionButton(buttons, SWT.PUSH, writerAction, "Remove writers", VIEW_ID);
+		removeWritersBtn.setToolTipText("Converts all writers to readers");
+		removeWritersBtn.setEnabled(false);
+		
 		final SashForm sashForm = new SashForm(parent, SWT.VERTICAL);
 		// sashForm.SASH_WIDTH = 1;
 		Widgets.positionGridItem(sashForm, true, true, SWT.FILL, SWT.FILL, numColumns);
@@ -430,6 +405,8 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 			public void keyReleased(KeyEvent e) {
 			}
 		});
+		
+		addSelectionBackgroundChanger(treeViewer);
 
 		int ops = DND.DROP_COPY | DND.DROP_MOVE;
 		Transfer[] transfers = new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance()};
@@ -443,6 +420,67 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 
 	}
 
+	/**
+	 * This code ensures that the Writer only background color is preserved when the row is selected. 
+	 * Otherwise, the selection would hide whether the message is a reader or a writer.
+	 * @param viewer
+	 */
+   private void addSelectionBackgroundChanger(final MessageXViewer viewer) {
+      viewer.getTree().addListener(SWT.EraseItem, new Listener() {
+         
+         @Override
+         public void handleEvent(Event event) {
+
+            Tree table =(Tree)event.widget;
+            TreeItem item =(TreeItem)event.item;
+            Object data = item.getData();
+            if( data instanceof WatchedMessageNode ) {
+               WatchedMessageNode watchedMessageNode = (WatchedMessageNode) data;
+               if( watchedMessageNode.getSubscription().getMessageMode() == MessageMode.READER){
+                  return;
+               }
+                  
+            } else {
+               return;
+            }
+            event.detail &= ~SWT.HOT;
+            
+            if ((event.detail & SWT.SELECTED) == 0) return; /// item not selected
+
+            int clientWidth = table.getClientArea().width;
+
+            GC gc = event.gc;               
+            Color oldForeground = gc.getForeground();
+            Color oldBackground = SWTResourceManager.getColor(202,225,255);
+
+            final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+            final AbstractTreeNode node = findElementMatching(selection, data);
+            Color background = node.getBackground();
+            if( background == null )
+               background = oldBackground;
+            
+            gc.setBackground(background);
+            gc.setForeground(oldForeground);              
+            gc.fillRectangle(0, event.y, clientWidth, event.height);
+
+            gc.setForeground(oldForeground);
+            gc.setBackground(oldBackground);
+            event.detail &= ~SWT.SELECTED;
+         }
+
+         private AbstractTreeNode findElementMatching(IStructuredSelection selection, Object data) {
+            Object[] array = selection.toArray();
+            for (int i = 0; i < array.length; i++) {
+               Object cur = array[i];
+               if( cur == data) {
+                  return (AbstractTreeNode) cur;
+               }
+            }
+            return (AbstractTreeNode) data;
+         }
+      });
+   }
+
 	@Override
 	public void dispose() {
 		watchViewMessageDefinitionProviderTracker.close();
@@ -451,6 +489,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 		}
 		msgServiceTracker.close();
 		Activator.getDefault().getOteClientService().removeConnectionListener(WatchView.this);
+		SWTResourceManager.dispose();
 		super.dispose();
 	}
 
@@ -916,7 +955,8 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 			@Override
 			public void run() {
 				try {
-					statusTxt.setText("libraries loaded");
+				   librariesLoaded = true;
+                   updateStatusLabel();
 					statusTxt.setToolTipText(messageProviderVersion.getVersion());
 				} catch (Exception ex) {
 					OseeLog.log(Activator.class, Level.SEVERE, "exception while processing library", ex);
@@ -932,8 +972,9 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 			public void run() {
 				if(messageProviderVersion.isAnyAvailable()){
 					if(!statusTxt.isDisposed()){
-						statusTxt.setText("libraries loaded");
-						statusTxt.setToolTipText(messageProviderVersion.getVersion());
+					   librariesLoaded = true;
+					   updateStatusLabel();
+					   statusTxt.setToolTipText(messageProviderVersion.getVersion());
 					}
 				} else {
 					setNoLibraryStatus();
@@ -941,9 +982,36 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 			}
 		});
 	}
+	
+	private void updateStatusLabel() {
+	   String text = "";
+	   if( librariesLoaded) {
+	      text = "libraries loaded";
+	   } else {
+	      text = Status.NO_TEST_MANAGER.asString();
+	   }
+	   
+	   if(writerIsPresent) {
+	      text += ", writers are present";
+	   } else {
+	      text += ", no writers present";
+	   }
+	   
+	   statusTxt.setText(text);
+	}
 
-	WatchList getWatchList() {
+	public WatchList getWatchList() {
 		return watchList;
 	}
+
+   public void setWriterPresent(boolean writerIsPresent) {
+      this.writerIsPresent = writerIsPresent;
+      updateStatusLabel();
+      updateWriterButton();
+   }
+
+   private void updateWriterButton() {
+      removeWritersBtn.setEnabled(writerIsPresent);
+   }
 
 }
