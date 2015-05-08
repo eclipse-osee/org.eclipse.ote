@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 import org.eclipse.ote.ui.message.internal.WatchImages;
 import org.eclipse.ote.ui.message.messageXViewer.MessageXViewerFactory;
 import org.eclipse.ote.ui.message.watch.ElementPath;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -107,7 +108,18 @@ public class MessageNode extends AbstractTreeNode {
       }
       return "";
    }
-
+   
+   @Override
+   public Color getBackground(XViewerColumn col) {
+      if (col == null) {
+         return null;
+      }
+      if (col.equals(MessageXViewerFactory.name)) {
+         return getBackground();
+      }
+      return null;
+   }
+   
    public ElementNode findChildElement(ElementPath element) {
       return pathToElementNode.get(element.asString());
    }
