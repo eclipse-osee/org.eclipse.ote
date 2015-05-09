@@ -29,6 +29,7 @@ import org.eclipse.ote.ui.message.internal.SWTResourceManager;
 import org.eclipse.ote.ui.message.internal.WatchImages;
 import org.eclipse.ote.ui.message.messageXViewer.MessageXViewerFactory;
 import org.eclipse.ote.ui.message.watch.ElementPath;
+import org.eclipse.ote.ui.message.watch.WatchView;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -201,7 +202,7 @@ public class WatchedMessageNode extends MessageNode {
       
       boolean isWriter = subscription.getMessageMode() == MessageMode.WRITER;
       if( isWriter) {
-         return SWTResourceManager.getColor(255,193,37); // Goldenrod
+         return SWTResourceManager.getColor(WatchView.COLOR_GOLDENROD);
       } 
       return null;
    }
