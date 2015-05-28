@@ -48,4 +48,5 @@ public class MessageViewLabelProvider extends LabelProvider {
       assert element instanceof AbstractTreeNode;
       return ((AbstractTreeNode) element).visit(nodeVisitor);
    }
+   
 }

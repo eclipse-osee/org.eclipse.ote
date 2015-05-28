@@ -60,5 +60,9 @@ public class ActionButton extends SelectionAdapter implements IExceptionableRunn
    public void setImage(Image img) {
       button.setImage(img);
    }
+   
+   public void setEnabled(boolean enabled) {
+      button.setEnabled(enabled);
+   }
 
 }

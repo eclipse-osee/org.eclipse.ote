@@ -53,6 +53,11 @@ public class MessageWatchLabelProvider extends XViewerLabelProvider {
    public String getColumnText(Object element, XViewerColumn col, int columnIndex) throws Exception {
       return ((AbstractTreeNode) element).getLabel(col);
    }
+   
+   @Override
+   public Color getBackground(Object element, XViewerColumn col, int columnIndex) {
+      return ((AbstractTreeNode) element).getBackground(col);
+   }
 
    @Override
    public Color getForeground(Object element, XViewerColumn col, int columnIndex) {

@@ -25,9 +25,11 @@ import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.message.commands.RecordCommand.MessageRecordDetails;
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.tool.MessageMode;
+import org.eclipse.ote.ui.message.internal.SWTResourceManager;
 import org.eclipse.ote.ui.message.internal.WatchImages;
 import org.eclipse.ote.ui.message.messageXViewer.MessageXViewerFactory;
 import org.eclipse.ote.ui.message.watch.ElementPath;
+import org.eclipse.ote.ui.message.watch.WatchView;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -190,6 +192,19 @@ public class WatchedMessageNode extends MessageNode {
    protected void dispose() {
       subscription.cancel();
       super.dispose();
+   }
+   
+   @Override
+   public Color getBackground() {
+      if (!isEnabled()) {
+         return null;
+      }
+      
+      boolean isWriter = subscription.getMessageMode() == MessageMode.WRITER;
+      if( isWriter) {
+         return SWTResourceManager.getColor(WatchView.COLOR_GOLDENROD);
+      } 
+      return null;
    }
 
    @Override

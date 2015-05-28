@@ -93,8 +93,6 @@ public class WatchList implements ITreeContentProvider {
          service = (IOteMessageService) newInput;
          viewRefresher.start();
       } else {
-//         deleteAll();
-//         rootNode = null;
          service = null;
          viewRefresher.stop();
       }

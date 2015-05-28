@@ -12,7 +12,9 @@ package org.eclipse.ote.ui.message.tree;
 
 import java.util.Collection;
 import java.util.Collections;
+
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
 public abstract class AbstractTreeNode {
@@ -173,16 +175,12 @@ public abstract class AbstractTreeNode {
 
    public abstract <T> T visit(INodeVisitor<T> visitor);
 
-   // public List<Object> getElementPath() {
-   // return elementPath;
-   // }
-
-   // public void addToPath(Object obj) {
-   // elementPath.add(obj);
-   // }
-
    public String getLabel(XViewerColumn columns) {
       return "";
+   }
+   
+   public Color getBackground(XViewerColumn col) {
+      return null;
    }
 
    public Image getImage() {
@@ -203,6 +201,13 @@ public abstract class AbstractTreeNode {
 
    public void setChecked(boolean checked) {
       this.isChecked = checked;
+   }
+
+   /**
+    * @return
+    */
+   public Color getBackground() {
+      return null;
    }
 
 }
