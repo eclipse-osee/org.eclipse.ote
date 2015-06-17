@@ -20,7 +20,7 @@ public class SWTUtil {
       try {
           Method setItemHeightMethod = table.getClass().getDeclaredMethod("setItemHeight", int.class);
           setItemHeightMethod.setAccessible(true);
-          setItemHeightMethod.invoke(table, table.getItemHeight()+5);
+          setItemHeightMethod.invoke(table, table.getItemHeight()+sizeIncrease);
       }
       catch (Exception e) {
          OseeLog.log(SWTUtil.class, Level.WARNING, e);
