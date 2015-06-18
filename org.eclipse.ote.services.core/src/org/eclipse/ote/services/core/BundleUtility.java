@@ -14,9 +14,16 @@ import org.eclipse.osgi.framework.internal.core.BundleHost;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.wiring.BundleRevision;
 
 public class BundleUtility {
 
+   
+   public static boolean isBundleFragment(Bundle bundle){
+      BundleRevision revision = bundle.adapt(BundleRevision.class);
+      return revision != null && (revision.getTypes() & BundleRevision.TYPE_FRAGMENT) != 0;
+   }
+   
    /**
     * Finds files in a bundle and return the URL to that file.  It also handles the case of files existing in fragments
     * but the symbolic name used is that of the host bundle. 

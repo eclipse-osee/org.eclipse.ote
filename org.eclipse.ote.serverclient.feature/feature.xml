@@ -31,13 +31,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ote.connect.messages"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.ote.event.bridge.jms"
          download-size="0"
          install-size="0"
@@ -60,13 +53,6 @@
 
    <plugin
          id="org.eclipse.ote.statemachine"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ote.commands.messages"
          download-size="0"
          install-size="0"
          version="0.0.0"
