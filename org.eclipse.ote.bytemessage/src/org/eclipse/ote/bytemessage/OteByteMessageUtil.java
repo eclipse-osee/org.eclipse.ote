@@ -26,12 +26,21 @@ import org.osgi.service.event.EventHandler;
 public class OteByteMessageUtil {
 
    public final static String BYTE_KEY = "oteeventbytes";
-   
+
    public final static String BYTE_KEY_2 = "bytes";
-   
+
    public static void sendEvent(OteByteMessage message) {
       EventAdmin eventAdmin = ServiceUtility.getService(EventAdmin.class);
       sendEvent(message, eventAdmin);
+   }
+
+   /**
+    * If reusing a message that has been transmitted previously,
+    * the TTL must be reset to enable transmission.
+    */
+   public static void sendEventResetTTL(OteByteMessage message) {
+      message.getHeader().TTL.setNoLog(0);
+      sendEvent(message);
    }
 
    public static void sendEvent(OteByteMessage message, EventAdmin eventAdmin) {
@@ -42,12 +51,12 @@ public class OteByteMessageUtil {
       Event newevent = new Event(message.getHeader().TOPIC.getValue(), data);
       eventAdmin.sendEvent(newevent);
    }
-   
+
    public static void postEvent(OteByteMessage message) {
       EventAdmin eventAdmin = ServiceUtility.getService(EventAdmin.class);
       postEvent(message, eventAdmin);
    }
-   
+
    public static void postEvent(OteByteMessage message, EventAdmin eventAdmin) {
       message.getHeader().UUID_HIGH.setNoLog((long) 0x0);
       message.getHeader().UUID_LOW.setNoLog((long) 0x0);
@@ -60,7 +69,7 @@ public class OteByteMessageUtil {
    public static UUID getUUID(OteByteMessage msg) {
       return new UUID(msg.getHeader().UUID_HIGH.getValue(), msg.getHeader().UUID_LOW.getValue());
    }
-   
+
    public static UUID getUUID(byte[] data) {
       long low = getLong(data, 74);
       long high = getLong(data, 82);
@@ -69,16 +78,16 @@ public class OteByteMessageUtil {
 
    private static long getLong(byte[] data, int index){
       return
-      (long)(0xff & data[index]) << 56  |
-      (long)(0xff & data[index+1]) << 48  |
-      (long)(0xff & data[index+2]) << 40  |
-      (long)(0xff & data[index+3]) << 32  |
-      (long)(0xff & data[index+4]) << 24  |
-      (long)(0xff & data[index+5]) << 16  |
-      (long)(0xff & data[index+6]) << 8   |
-      (long)(0xff & data[index+7]) << 0;
+            (long)(0xff & data[index]) << 56  |
+            (long)(0xff & data[index+1]) << 48  |
+            (long)(0xff & data[index+2]) << 40  |
+            (long)(0xff & data[index+3]) << 32  |
+            (long)(0xff & data[index+4]) << 24  |
+            (long)(0xff & data[index+5]) << 16  |
+            (long)(0xff & data[index+6]) << 8   |
+            (long)(0xff & data[index+7]) << 0;
    }
-   
+
    public static void setUUID(OteByteMessage msg, UUID id) {
       msg.getHeader().UUID_HIGH.setValue(id.getMostSignificantBits());
       msg.getHeader().UUID_LOW.setValue(id.getLeastSignificantBits());
@@ -96,7 +105,7 @@ public class OteByteMessageUtil {
       }
       return null;
    }
-   
+
    public static byte[] getBytes(Event event) {
       Object obj = event.getProperty(BYTE_KEY);
       if (obj != null && obj instanceof byte[]) {
@@ -119,7 +128,7 @@ public class OteByteMessageUtil {
       props.put("event.topics", topic);
       return ServiceUtility.getContext().registerService(EventHandler.class, handler, props);
    }
-   
+
    public static ServiceRegistration<EventHandler> subscribe(OteByteMessage signal, EventHandler eventHandler) {
       BundleContext context = ServiceUtility.getContext();
       if (context == null) {
