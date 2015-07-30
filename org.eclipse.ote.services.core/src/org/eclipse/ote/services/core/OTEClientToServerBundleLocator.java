@@ -159,7 +159,11 @@ public class OTEClientToServerBundleLocator implements OteBundleLocator {
          path = path.substring(0, path.length()-2);
       }
       if(path.startsWith("file:/")){
-         path = path.substring(6);
+         if(Lib.isWindows()){
+            path = path.substring(6);
+         } else {
+            path = path.substring(5);
+         }
       }
       return path;
    }
