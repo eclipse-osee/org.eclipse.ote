@@ -114,13 +114,7 @@ public final class StateMachine {
    }
    
    public void processUntilEmpty(){
-      BaseInput input = null;
-      while((input = processInput()) != null){
-//         try{
-//            input = processInput();
-//         } catch (Throwable th){
-//            th.printStackTrace();
-//         }
+      while(processInput() != null){
       }
    }
 

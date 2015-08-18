@@ -1,8 +1,7 @@
 package org.eclipse.ote.io;
 
-import junit.framework.Assert;
 
-import org.eclipse.ote.io.CircularBuffer;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class CircularBufferTest {

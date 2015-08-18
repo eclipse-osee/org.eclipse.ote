@@ -21,7 +21,6 @@ public final class RowUpdate {
    private final Object[] values;
    private final BitSet deltaSet;
    private final HashMap<ViewerColumn, Integer> valueMap;
-   private long envTime;
 
    RowUpdate(HashMap<ViewerColumn, Integer> valueMap, List<ViewerColumn> allColumns) {
       this.valueMap = valueMap;

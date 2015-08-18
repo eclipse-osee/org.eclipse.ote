@@ -391,9 +391,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
                TextTransfer transfer = TextTransfer.getInstance();
                String data = (String) cb.getContents(transfer);
                if (data != null) {
-                  SignalStripper signalStripper = new SignalStripper();
                   AddWatchParameter param = new AddWatchParameter();
-                  String mwi = signalStripper.generateStringToWrite(data, param);
                   addWatchMessage(param);
                }
             } else if (e.stateMask != SWT.CTRL && e.stateMask != SWT.ALT && e.keyCode == SWT.DEL){

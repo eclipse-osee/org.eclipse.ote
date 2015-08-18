@@ -41,7 +41,8 @@ public class SerializedClassMessage<T> extends OteByteMessage {
 		getDefaultMessageData().setNewBackingBuffer(newData);
 	}
 	
-	public T getObject() throws IOException, ClassNotFoundException{
+	@SuppressWarnings("unchecked")
+   public T getObject() throws IOException, ClassNotFoundException{
 		int offset = OBJECT.getByteOffset() + getHeaderSize();
 		ByteArrayInputStream bis = new ByteArrayInputStream(getData(), offset, getData().length - offset);
 		ObjectInputStream ois = new ObjectInputStream(bis);

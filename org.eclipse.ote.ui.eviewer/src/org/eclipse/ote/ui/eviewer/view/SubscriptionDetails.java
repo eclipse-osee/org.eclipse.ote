@@ -29,7 +29,6 @@ public class SubscriptionDetails implements ISubscriptionListener, IOSEEMessageL
    private Message<?, ?, ?> message;
 
    private final IUpdateListener listener;
-   @SuppressWarnings("unused")
 
    public SubscriptionDetails(IMessageSubscription subscription, IUpdateListener listener) {
       this.subscription = subscription;
