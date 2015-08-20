@@ -16,6 +16,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.wiring.BundleRevision;
 
+@SuppressWarnings("restriction")
 public class BundleUtility {
 
    
