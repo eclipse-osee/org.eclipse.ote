@@ -11,10 +11,11 @@
 package org.eclipse.ote.ui.eviewer.action;
 
 import java.util.logging.Level;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.ote.ui.eviewer.view.ElementViewer;
+import org.eclipse.ote.ui.eviewer.Constants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -32,7 +33,7 @@ public class EViewerAction extends Action {
    public void run() {
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       try {
-         page.showView(ElementViewer.VIEW_ID);
+         page.showView(Constants.VIEW_ID);
       } catch (PartInitException e) {
          OseeLog.log(EViewerAction.class, Level.SEVERE, "could not open Element Viewer", e);
          MessageDialog.openInformation(page.getWorkbenchWindow().getShell(), "Launch Error",

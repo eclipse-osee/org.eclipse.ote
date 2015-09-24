@@ -42,8 +42,7 @@ public class StreamToFileAction extends Action {
 			dialog.setText("Save CSV file");
 			String result = dialog.open();
 			if (result != null) {
-				elementViewer.startStreaming(null, result, false);
-
+				setChecked(elementViewer.startStreaming(null, result, false));
 			} else {
 				setChecked(false);
 			}

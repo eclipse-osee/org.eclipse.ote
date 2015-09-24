@@ -11,13 +11,14 @@
 package org.eclipse.ote.ui.eviewer.jobs;
 
 import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.ote.ui.eviewer.view.ViewerColumn;
 import org.eclipse.ote.ui.eviewer.view.RowUpdate;
+import org.eclipse.ote.ui.eviewer.view.ViewerColumn;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;

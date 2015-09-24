@@ -131,7 +131,6 @@ public class ColumnConfiguration {
          details.apply();
       }
       provider.determineConflicts();
-
    }
 
    private void notifyActiveStateChanged(Collection<ColumnDetails> changedColumns) {

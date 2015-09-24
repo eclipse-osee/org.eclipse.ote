@@ -17,6 +17,7 @@ import org.eclipse.ote.ui.eviewer.Activator;
 import org.eclipse.ote.ui.eviewer.view.ColumnConfiguration;
 import org.eclipse.ote.ui.eviewer.view.ColumnConfigurationDialog;
 import org.eclipse.ote.ui.eviewer.view.ElementContentProvider;
+import org.eclipse.ote.ui.eviewer.view.MessageDialogs;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
@@ -40,6 +41,10 @@ public class ConfigureColumnsAction extends Action {
       ColumnConfigurationDialog dialog = new ColumnConfigurationDialog(shell, configuration);
       if (dialog.open() == Window.OK) {
          configuration.apply(provider);
+         if (!provider.updateInternalFile()) {
+            MessageDialogs.saveColumnFileFail(shell);
+         }
+
       }
    }
 }

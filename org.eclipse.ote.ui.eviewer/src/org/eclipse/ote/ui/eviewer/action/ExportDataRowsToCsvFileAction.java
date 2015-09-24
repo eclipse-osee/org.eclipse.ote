@@ -11,10 +11,9 @@
 package org.eclipse.ote.ui.eviewer.action;
 
 import java.io.File;
-import java.io.IOException;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ote.ui.eviewer.view.ElementContentProvider;
 import org.eclipse.swt.SWT;
@@ -24,12 +23,13 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * @author Ken J. Aguilar
  */
-public class SaveCsvFileAction extends Action {
+public final class ExportDataRowsToCsvFileAction extends Action {
 
+   private static final String EXPORT_DATA_ROWS_TO_CSV = "Export Data Rows to CSV";
    private final ElementContentProvider elementContentProvider;
 
-   public SaveCsvFileAction(ElementContentProvider elementContentProvider) {
-      super("Save Data to CSV", IAction.AS_PUSH_BUTTON);
+   public ExportDataRowsToCsvFileAction(ElementContentProvider elementContentProvider) {
+      super(EXPORT_DATA_ROWS_TO_CSV, IAction.AS_PUSH_BUTTON);
       this.elementContentProvider = elementContentProvider;
    }
 
@@ -38,15 +38,11 @@ public class SaveCsvFileAction extends Action {
       Shell shell = Displays.getActiveShell();
       FileDialog dialog = new FileDialog(shell, SWT.SAVE);
       dialog.setFilterExtensions(new String[] {"*.csv"});
-      dialog.setText("Save CSV file");
+      dialog.setText(EXPORT_DATA_ROWS_TO_CSV);
+      dialog.setOverwrite(true);
       String result = dialog.open();
       if (result != null) {
-         File file = new File(result);
-         try {
-            elementContentProvider.toCsv(file);
-         } catch (IOException ex) {
-            MessageDialog.openError(shell, "Error", "Could not save file:\n" + file.getAbsolutePath());
-         }
+         elementContentProvider.toCsv(new File(result));
       }
    }
 

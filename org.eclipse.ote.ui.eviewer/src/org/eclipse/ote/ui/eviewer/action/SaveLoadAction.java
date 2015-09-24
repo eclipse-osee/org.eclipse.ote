@@ -17,6 +17,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.ote.ui.eviewer.Activator;
 import org.eclipse.ote.ui.eviewer.view.ElementContentProvider;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 
 /**
@@ -34,6 +35,14 @@ public class SaveLoadAction extends Action implements IMenuCreator {
       setMenuCreator(this);
    }
 
+
+
+   @Override
+   public void runWithEvent(Event event) {
+      SaveColumnsAction action = new SaveColumnsAction(elementContentProvider);
+      action.runWithEvent(event);
+   }
+
    @Override
    public void dispose() {
       if (menu != null) {
@@ -49,10 +58,10 @@ public class SaveLoadAction extends Action implements IMenuCreator {
          menu = null;
       }
       menu = new Menu(parent);
-      addAction(new SaveCsvFileAction(elementContentProvider));
-      addSeperator();
       addAction(new SaveColumnsAction(elementContentProvider));
       addAction(new LoadColumnsAction(elementContentProvider));
+      addSeperator();
+      addAction(new ExportDataRowsToCsvFileAction(elementContentProvider));
       return menu;
    }
 

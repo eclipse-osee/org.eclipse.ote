@@ -21,8 +21,7 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Ken J. Aguilar
  */
-@SuppressWarnings("rawtypes")
-public class ClientMessageServiceTracker extends ServiceTracker {
+public class ClientMessageServiceTracker extends ServiceTracker<IOteMessageService, IOteMessageService> {
 
    private final ElementViewer viewer;
 
@@ -32,10 +31,9 @@ public class ClientMessageServiceTracker extends ServiceTracker {
       this.viewer = viewer;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
-   public synchronized Object addingService(ServiceReference reference) {
-      IOteMessageService service = (IOteMessageService) super.addingService(reference);
+   public synchronized IOteMessageService addingService(ServiceReference<IOteMessageService> reference) {
+      IOteMessageService service = super.addingService(reference);
       try {
          viewer.serviceStarted(service);
       } catch (RuntimeException e) {
@@ -44,12 +42,10 @@ public class ClientMessageServiceTracker extends ServiceTracker {
       return service;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
-   public synchronized void removedService(ServiceReference reference, Object service) {
-      IOteMessageService oteMessageService = (IOteMessageService) service;
+   public synchronized void removedService(ServiceReference<IOteMessageService> reference, IOteMessageService service) {
       try {
-         viewer.serviceStopping(oteMessageService);
+         viewer.serviceStopping(service);
       } catch (RuntimeException e) {
          OseeLog.log(ClientMessageServiceTracker.class, Level.SEVERE,
             "exception while notifying viewer of service stop", e);

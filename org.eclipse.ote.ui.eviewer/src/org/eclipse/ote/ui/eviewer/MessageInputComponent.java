@@ -35,7 +35,7 @@ public class MessageInputComponent implements MessageInput {
       try {
          final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
          ElementViewer elementViewer;
-         elementViewer = (ElementViewer) page.showView(ElementViewer.VIEW_ID);
+         elementViewer = (ElementViewer) page.showView(Constants.VIEW_ID);
          recursiveAdd(elementViewer, items);
       } catch (PartInitException e) {
          OseeLog.log(getClass(), Level.SEVERE, "Unable to add messages to MessageWatch", e);
