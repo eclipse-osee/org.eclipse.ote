@@ -6,9 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,41 +43,7 @@ public final class ColumnFileParser {
        */
       SUCCESS;
    }
-
-
-
-   public static ParseResult superParse(File file) {
-      if (!file.exists() || file.isDirectory()) {
-         return new ParseResult(ParseCode.FILE_NOT_FOUND);
-      }
-      try {
-         Pattern pattern = Pattern.compile(COLUMN_PATTERN);
-         Scanner scanner = new Scanner(file);
-         try {
-            scanner.useDelimiter(",");
-            LinkedList<ColumnEntry> columEntries = new LinkedList<ColumnEntry>();
-            while (scanner.hasNext(pattern)) {
-               MatchResult result = scanner.match();
-               String path = result.group(1);
-               boolean isActive = "active".equals(result.group(3));
-
-               ColumnEntry entry = new ColumnEntry(ElementPath.decode(path), isActive);
-               columEntries.add(entry);
-            }
-            if (columEntries.size() == 0) {
-               // looks like after parsing and filtering out bad columns we have nothing valid left
-               return new ParseResult(ParseCode.FILE_HAS_NO_VALID_COLUMNS);
-            }
-            // success with at least one valid column entry
-            return new ParseResult(ParseCode.SUCCESS, columEntries);
-         } finally {
-            scanner.close();
-         }
-      } catch (Exception e) {
-         OseeLog.log(ColumnFileParser.class, Level.SEVERE, "Exception while processing column file " + file.getAbsolutePath(), e);
-         return new ParseResult(ParseCode.FILE_IO_EXCEPTION);
-      }
-   }
+   
    public static ParseResult parse(File file) {
       if (!file.exists() || file.isDirectory()) {
          return new ParseResult(ParseCode.FILE_NOT_FOUND);
@@ -129,14 +93,5 @@ public final class ColumnFileParser {
          paths.add(entry);
       }
       return paths;
-   }
-
-   public static void main(String[] args) {
-      ParseResult result = superParse(new File("C:\\Users\\b1529404\\Workspaces\\ah6_precompiled\\osee.data\\element_viewer_column_state.columns"));
-      if (result.getParseCode() == ParseCode.SUCCESS) {
-         
-      } else {
-         System.out.println("No match! " + result.getParseCode().name());
-      }
    }
 }
