@@ -11,6 +11,7 @@
 package org.eclipse.ote.ui.eviewer.action;
 
 import java.util.Collection;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;

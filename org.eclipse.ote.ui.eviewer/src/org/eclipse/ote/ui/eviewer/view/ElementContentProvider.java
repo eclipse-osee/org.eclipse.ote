@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ote.ui.eviewer.view;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,6 +33,7 @@ import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.ote.ui.eviewer.Activator;
+import org.eclipse.ote.ui.eviewer.Constants;
 import org.eclipse.ote.ui.eviewer.jobs.CopyToClipboardJob;
 import org.eclipse.ote.ui.eviewer.jobs.CopyToCsvFileJob;
 import org.eclipse.swt.SWT;
@@ -47,7 +45,6 @@ import org.eclipse.swt.widgets.Listener;
  * @author Ken J. Aguilar
  */
 public class ElementContentProvider implements Listener, IStructuredContentProvider, IUpdateListener {
-   private static final String INTERNAL_FILE_NAME = "element_viewer_column_state.csv";
    private final ArrayList<SubscriptionDetails> subscriptions = new ArrayList<SubscriptionDetails>(32);
    private TableViewer viewer;
    private IOteMessageService service;
@@ -345,11 +342,13 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
       viewer.getTable().setRedraw(true);
       updateInternalFile();
    }
-   private void updateInternalFile() {
+   public boolean updateInternalFile() {
       try {
-         saveColumnsToFile(OseeData.getFile(INTERNAL_FILE_NAME));
+         saveColumnsToFile(OseeData.getFile(Constants.INTERNAL_FILE_NAME));
+         return true;
       } catch (Exception e) {
          OseeLog.log(Activator.class, Level.SEVERE, "could not write columns", e);
+         return false;
       }
    }
    public synchronized void saveColumnsToFile(File file) throws FileNotFoundException, IOException {
@@ -376,21 +375,18 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
       }
    }
 
-   private void loadColumns(String[] columnNames) {
+   public void loadColumns(List<ColumnEntry> columnEntries) {
       LinkedList<ElementPath> columnsToAdd = new LinkedList<ElementPath>();
       HashSet<ElementPath> inactiveColumns = new HashSet<ElementPath>();
 
       viewer.getTable().setRedraw(false);
-      for (String name : columnNames) {
-         String[] parts = name.split("=");
-         ElementPath path = ElementPath.decode(parts[0]);
-         columnsToAdd.add(path);
-         if (parts.length > 1 && parts[1].equals("inactive")) {
-            inactiveColumns.add(path);
+      for (ColumnEntry entry : columnEntries) {
+         columnsToAdd.add(entry.getPath());
+         if (!entry.isActive()) {
+            inactiveColumns.add(entry.getPath());
          }
       }
       add(columnsToAdd, false);
-
 
       for (ViewerColumnElement column : elementColumns) {
          if (inactiveColumns.contains(column.getColumnElement().getElementPath())) {
@@ -399,21 +395,6 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
       }
       viewer.getTable().setRedraw(true);
       updateInternalFile();
-   }
-
-   public void loadColumnsFromFile(File file) throws FileNotFoundException, IOException {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-      try {
-         String line = reader.readLine();
-         if (line == null) {
-            // empty file
-            return;
-         }
-         String[] columnNames = line.split(",");
-         loadColumns(columnNames);
-      } finally {
-         reader.close();
-      }
    }
 
    public synchronized void removeAll() {
@@ -443,21 +424,9 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
       job.schedule();
    }
 
-   public void toCsv(File file) throws IOException {
+   public void toCsv(File file) {
       CopyToCsvFileJob job = new CopyToCsvFileJob(file, viewerColumns, refresher.getUpdates());
       job.schedule();
-   }
-
-   public void loadLastColumns() {
-      try {
-         File file = OseeData.getFile(INTERNAL_FILE_NAME);
-         if (file.isFile()) {
-            loadColumnsFromFile(file);
-         }
-
-      } catch (Exception e) {
-         OseeLog.log(Activator.class, Level.SEVERE, "could not read columns file", e);
-      }
    }
 
    public void streamToFile(File file) throws FileNotFoundException, IOException {
