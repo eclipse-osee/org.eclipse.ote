@@ -68,6 +68,8 @@ import org.eclipse.ui.part.ViewPart;
  */
 
 public class ElementViewer extends ViewPart {
+   public static final String VIEW_ID = "org.eclipse.ote.ui.eviewer.view.ElementViewer";
+
    private TableViewer viewer;
    private AddElementAction addElementAction;
    private AddHeaderElementAction addHeaderElementAction;
