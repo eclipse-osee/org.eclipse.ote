@@ -12,6 +12,7 @@ package org.eclipse.ote.ui.eviewer.view;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;

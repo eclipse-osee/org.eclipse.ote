@@ -11,7 +11,6 @@
 package org.eclipse.ote.ui.eviewer.view;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 
 import org.eclipse.jface.action.IMenuListener;
@@ -19,14 +18,15 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.ote.ui.eviewer.Activator;
 import org.eclipse.ote.ui.eviewer.ClientMessageServiceTracker;
+import org.eclipse.ote.ui.eviewer.Constants;
 import org.eclipse.ote.ui.eviewer.action.AddElementAction;
 import org.eclipse.ote.ui.eviewer.action.AddHeaderElementAction;
 import org.eclipse.ote.ui.eviewer.action.ClearAllUpdatesAction;
@@ -41,10 +41,12 @@ import org.eclipse.ote.ui.eviewer.action.ShowTimeAction;
 import org.eclipse.ote.ui.eviewer.action.ShowTimeDeltaAction;
 import org.eclipse.ote.ui.eviewer.action.StreamToFileAction;
 import org.eclipse.ote.ui.eviewer.action.ToggleAutoRevealAction;
+import org.eclipse.ote.ui.eviewer.view.ColumnFileParser.ParseCode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
@@ -67,6 +69,7 @@ import org.eclipse.ui.part.ViewPart;
 
 public class ElementViewer extends ViewPart {
    public static final String VIEW_ID = "org.eclipse.ote.ui.eviewer.view.ElementViewer";
+
    private TableViewer viewer;
    private AddElementAction addElementAction;
    private AddHeaderElementAction addHeaderElementAction;
@@ -202,62 +205,46 @@ public class ElementViewer extends ViewPart {
       viewer.getControl().setFocus();
    }
 
-
-   public void startStreaming(final String columnSetFile, final String fileName, final boolean disableRendering) {
-      final Display display = PlatformUI.getWorkbench().getDisplay();
-      Runnable task = new Runnable() {
-
-         @Override
-         public void run() {
-            if (columnSetFile != null) {
-               elementContentProvider.clearAllUpdates();
-               File file = new File(columnSetFile);
-               if (file.exists() && file.isFile()) {
-                  try {
-                     elementContentProvider.removeAll();
-                     elementContentProvider.loadColumnsFromFile(file);
-                  } catch (IOException ex) {
-                     MessageDialog.openError(
-                           Display.getCurrent().getActiveShell(),
-                           "Error",
-                           "Could not save file:\n"
-                                 + file.getAbsolutePath());
-                  }
-               } else {
-                  MessageDialog.openError(Display.getCurrent().getActiveShell(), "File Error", "The file " + file.getAbsolutePath() + " does not exist or is a directory");
-                  return;
-               }
-            }
-            File file = new File(fileName);
-            try {
-               elementContentProvider.streamToFile(file);
-            } catch (Exception e) {
-               OseeLog.log(Activator.class, Level.SEVERE,
-                     "Could not start streaming", e);
-               MessageDialog
-               .openError(display.getActiveShell(),
-                     "Stream Error",
-                     "Could not stream to file. See Error Log for details");
-               return;
-            }
-            streamToFileAction.setChecked(true);
-            configureColumnAction.setEnabled(false);
-            addElementAction.setEnabled(false);
-            addHeaderElementAction.setEnabled(false);
-            removeColumnAction.setEnabled(false);
-
-            elementContentProvider.setUpdateView(!disableRendering);
-
+   public boolean startStreaming(final String columnSetFile, final String fileName, final boolean disableRendering) {
+      final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+      if (columnSetFile != null) {
+         elementContentProvider.clearAllUpdates();
+         File file = new File(columnSetFile);
+         ParseResult parseResult = ColumnFileParser.parse(file);
+         switch (parseResult.getParseCode()) {
+            case SUCCESS: 
+               elementContentProvider.removeAll();
+               elementContentProvider.loadColumns(parseResult.getColumnEntries());                            
+               break;
+            case FILE_HAS_NO_VALID_COLUMNS: 
+               MessageDialogs.openColumnFileEmptyOrBad(shell);
+               return false;
+            case FILE_NOT_FOUND: 
+               MessageDialogs.openColumnFileNotFound(shell);
+               return false;
+            case FILE_IO_EXCEPTION:
+               MessageDialogs.openColumnFileIoError(shell);
+               return false;
          }
-      };
-      if (display.getThread() != Thread.currentThread()) {
-         display.syncExec(task);
-      } else {
-         task.run();
       }
-   }
+      File file = new File(fileName);
+      try {
+         elementContentProvider.streamToFile(file);
+      } catch (Exception e) {
+         OseeLog.log(Activator.class, Level.SEVERE,
+               "Could not start streaming", e);
+         MessageDialogs.openStreamError(shell);
+         return false;
+      }
+      streamToFileAction.setChecked(true);
+      configureColumnAction.setEnabled(false);
+      addElementAction.setEnabled(false);
+      addHeaderElementAction.setEnabled(false);
+      removeColumnAction.setEnabled(false);
 
-
+      elementContentProvider.setUpdateView(!disableRendering);
+      return true;
+   }  
 
    public void stopStreaming() {
       Displays.ensureInDisplayThread(new Runnable() {
@@ -299,8 +286,9 @@ public class ElementViewer extends ViewPart {
             addElementAction.setEnabled(true);
             addHeaderElementAction.setEnabled(true);
             viewer.setInput(service);
-            if (getViewSite().getSecondaryId() == null) {
-               elementContentProvider.loadLastColumns();
+            ParseResult result = ColumnFileParser.parse(OseeData.getFile(Constants.INTERNAL_FILE_NAME));
+            if (result.getParseCode() == ParseCode.SUCCESS) {
+               elementContentProvider.loadColumns(result.getColumnEntries());
             }
          }
 

@@ -12,9 +12,11 @@ package org.eclipse.ote.ui.eviewer.action;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.ote.ui.eviewer.Constants;
 import org.eclipse.ote.ui.eviewer.view.ElementContentProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -36,8 +38,11 @@ public class SaveColumnsAction extends Action {
    public void run() {
       Shell shell = Displays.getActiveShell();
       FileDialog dialog = new FileDialog(shell, SWT.SAVE);
-      dialog.setFilterExtensions(new String[] {"*.csv"});
+      dialog.setFilterExtensions(Constants.COLUMN_FILE_EXTENSIONS);
+      dialog.setFilterIndex(2);
       dialog.setText("Save Column file");
+      dialog.setFileName("elementviewer.columns");
+      dialog.setOverwrite(true);
       String result = dialog.open();
       if (result != null) {
          File file = new File(result);

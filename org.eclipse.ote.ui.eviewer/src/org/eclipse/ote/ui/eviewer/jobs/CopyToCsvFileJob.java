@@ -14,13 +14,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ote.ui.eviewer.Activator;
-import org.eclipse.ote.ui.eviewer.view.ViewerColumn;
 import org.eclipse.ote.ui.eviewer.view.RowUpdate;
+import org.eclipse.ote.ui.eviewer.view.ViewerColumn;
 
 /**
  * @author b1529404
