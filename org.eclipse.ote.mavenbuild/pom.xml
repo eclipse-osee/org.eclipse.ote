@@ -36,6 +36,21 @@
 	</properties>
 
 	<profiles>
+	    <profile>
+			<id>osee.ote.p2</id>
+			<activation>
+				<property>
+					<name>osee.ote.p2</name>
+				</property>
+			</activation>
+			<repositories>
+				<repository>
+					<id>osee-ote-site</id>
+					<layout>p2</layout>
+					<url>${osee.ote.p2}</url>
+				</repository>
+			</repositories>
+		</profile>
 		<profile>
 			<id>ote.runtime.p2</id>
 			<activation>

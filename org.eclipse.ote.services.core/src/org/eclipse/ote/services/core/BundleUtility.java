@@ -9,14 +9,11 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osgi.framework.internal.core.BundleFragment;
-import org.eclipse.osgi.framework.internal.core.BundleHost;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.wiring.BundleRevision;
 
-@SuppressWarnings("restriction")
 public class BundleUtility {
 
    
@@ -29,7 +26,7 @@ public class BundleUtility {
     * Finds files in a bundle and return the URL to that file.  It also handles the case of files existing in fragments
     * but the symbolic name used is that of the host bundle. 
     * 
-    * @param bundleSymbolicName
+    * @param bundleSymbolicName - If bundle fragment, use bundle fragment name.
     * @param path
     * @return URL or null if path was not found
     */
@@ -43,17 +40,6 @@ public class BundleUtility {
       if(url == null){
          url = bundle.getEntry("bin/" + path);
       }
-      if(url == null && bundle instanceof BundleHost){
-         BundleFragment[] fragments = ((BundleHost)bundle).getFragments();
-         if(fragments != null){
-            for(BundleFragment fragment: fragments){
-               url = fragment.getEntry(path);
-               if(url != null){
-                  break;
-               }
-            }
-         }
-      }
       return url;
    }
    
@@ -62,7 +48,7 @@ public class BundleUtility {
    /**
     * Finds all paths in a bundle under and including a given folder path.
     * 
-    * @param bundleSymbolicName
+    * @param bundleSymbolicName - If bundle fragment, use bundle fragment name.
     * @param path
     * @return URL or null if path was not found
     */
@@ -77,14 +63,6 @@ public class BundleUtility {
    private static void findSubEntries(Bundle bundle, Set<String> paths, String folderPath){
       bundle.getEntryPaths(folderPath);
       entryPaths(bundle.getEntryPaths(folderPath), bundle, paths);
-      if(bundle instanceof BundleHost){
-         BundleFragment[] fragments = ((BundleHost)bundle).getFragments();
-         if(fragments != null){
-            for(BundleFragment fragment: fragments){
-               entryPaths(fragment.getEntryPaths(folderPath), fragment, paths);
-            }
-         }
-      }
    }
    
    private static void entryPaths(Enumeration<String> enumEntries, Bundle bundle, Set<String> paths){
