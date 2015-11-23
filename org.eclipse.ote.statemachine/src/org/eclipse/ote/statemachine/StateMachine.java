@@ -38,13 +38,25 @@ public final class StateMachine {
    private StateMachineIdFactory factory;
    private BaseState defaultInitialState;
    private int nextStateId = 0;
-   private boolean debug = false;
+   private volatile boolean debug = false;
    private final boolean runInInputThread;
    
+   /**
+    * This constructor will have the inputs processed in another thread.  Often this is not
+    * what you want if you are already doing scheduling and would prefer that all inputs are 
+    * processed at your controlled rate.
+    *  
+    * @param name
+    */
    public StateMachine(String name){
       this(new StateMachineIdFactory(), name, false);
    }
    
+   /**
+    * 
+    * @param name
+    * @param runInInputThread - false to run in a seperate thread
+    */
    public StateMachine(String name, boolean runInInputThread){
       this(new StateMachineIdFactory(), name, runInInputThread);
    }
@@ -56,6 +68,10 @@ public final class StateMachine {
       queue = new LinkedBlockingQueue<BaseInput>();
       killInput = new KillInput(this);
       this.runInInputThread = runInInputThread;
+   }
+   
+   public void setDebugOutput(boolean debug){
+      this.debug = debug;
    }
    
    BaseInput processInput() throws RuntimeException{
