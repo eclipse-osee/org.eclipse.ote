@@ -45,7 +45,7 @@
 			</activation>
 			<repositories>
 				<repository>
-					<id>osee-ote-site</id>
+					<id>osee.ote.p2</id>
 					<layout>p2</layout>
 					<url>${osee.ote.p2}</url>
 				</repository>
