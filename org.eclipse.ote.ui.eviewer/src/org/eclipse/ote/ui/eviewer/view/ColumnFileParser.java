@@ -20,7 +20,7 @@ import org.eclipse.osee.ote.message.ElementPath;
  */
 public final class ColumnFileParser {
 
-   private static final String COLUMN_PATTERN = "([^\\+]+\\+(HEADER\\([^\\+]+\\)\\+)?[^\\+]+)=(active|inactive)";
+   private static final String COLUMN_PATTERN = "(.*)=(active|inactive)";
    public static enum ParseCode {
       /**
        * the file does not exist or is a directory
@@ -87,7 +87,7 @@ public final class ColumnFileParser {
             continue;
          }
          String path = matcher.group(1);
-         boolean isActive = "active".equals(matcher.group(3));
+         boolean isActive = "active".equals(matcher.group(2));
          
          ColumnEntry entry = new ColumnEntry(ElementPath.decode(path), isActive);
          paths.add(entry);
