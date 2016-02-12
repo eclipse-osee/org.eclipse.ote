@@ -162,7 +162,7 @@ public class OteByteMessageUtil {
       @Override
       public void handleEvent(Event arg0) {
          try{
-            message.setData(OteByteMessageUtil.getBytes(arg0));
+            message.getActiveDataSource().getMem().setData(OteByteMessageUtil.getBytes(arg0));
             listener.onDataAvailable(message);
          } catch (Throwable th){
             th.printStackTrace();
