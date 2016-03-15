@@ -159,8 +159,15 @@ public class MessageRecordDetailContentProvider implements ITreeContentProvider 
          if (o1 instanceof WatchedElementNode && o2 instanceof WatchedElementNode) {
             Integer int1 = ((WatchedElementNode) o1).getByteOffset();
             Integer int2 = ((WatchedElementNode) o2).getByteOffset();
-            if (int1 == null || int2 == null) {
-               return 0;
+            
+            if( int1 == null ) {
+               if( int2 == null ) {
+                  return 0;
+               } else {
+                  return -1;
+               }
+            } else if( int2 == null ) {
+               return 1;
             } else {
                int byte1 = int1.intValue();
                int byte2 = int2.intValue();
@@ -179,8 +186,14 @@ public class MessageRecordDetailContentProvider implements ITreeContentProvider 
          } else if (o1 instanceof HeaderElementNode && o2 instanceof HeaderElementNode) {
             Integer int1 = ((HeaderElementNode) o1).getByteOffset();
             Integer int2 = ((HeaderElementNode) o2).getByteOffset();
-            if (int1 == null || int2 == null) {
-               return 0;
+            if( int1 == null ) {
+               if( int2 == null ) {
+                  return 0;
+               } else {
+                  return -1;
+               }
+            } else if( int2 == null ) {
+               return 1;
             } else {
                int byte1 = int1.intValue();
                int byte2 = int2.intValue();
