@@ -14,7 +14,6 @@ import java.nio.channels.IllegalSelectorException;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;

@@ -11,8 +11,8 @@
 package org.eclipse.ote.ui.message.tree;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ote.ui.message.messageXViewer.MessageXViewer;
 import org.eclipse.swt.SWT;
