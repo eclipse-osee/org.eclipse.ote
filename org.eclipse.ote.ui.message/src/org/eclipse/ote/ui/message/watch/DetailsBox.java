@@ -344,7 +344,7 @@ public class DetailsBox implements IRegistryEventListener {
       strBuilder.append(PAYLOAD_TXT);
       int payloadStart = strBuilder.length();
       columnCount = 0;
-      for (int i = msg.getHeaderSize(); i < msg.getHeaderSize() + msg.getPayloadSize(); i++) {
+      for (int i = msg.getHeaderSize(); i < data.length; i++) {
          if (columnCount == HEX_DUMP_BYTES_PER_ROW) {
             strBuilder.append('\n').append(String.format("%5d:  ", i - msg.getHeaderSize()));
             columnCount = 0;
