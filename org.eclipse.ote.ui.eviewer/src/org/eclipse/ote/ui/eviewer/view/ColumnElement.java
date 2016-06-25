@@ -8,6 +8,8 @@ import org.eclipse.osee.ote.client.msg.core.ISubscriptionListener;
 import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.osee.ote.message.elements.DiscreteElement;
 import org.eclipse.osee.ote.message.elements.Element;
+import org.eclipse.osee.ote.message.elements.EnumeratedElement;
+import org.eclipse.osee.ote.message.elements.IEnumValue;
 
 public class ColumnElement implements ISubscriptionListener {
    private ViewerColumnElement viewerColumn;
@@ -20,6 +22,12 @@ public class ColumnElement implements ISubscriptionListener {
    private final AtomicReference<Object> lastValueReference = new AtomicReference<Object>(new Object());
    private final AtomicBoolean valueUpdatedFlag = new AtomicBoolean(false);
    private boolean unsupportedType = false;
+
+   private boolean isEnum = false;
+
+   private EnumeratedElement enumElement = null;
+
+   private String enumText = "";
    
    ColumnElement(ViewerColumnElement viewerColumn, ElementPath path) {
       this.viewerColumn = viewerColumn;
@@ -34,7 +42,12 @@ public class ColumnElement implements ISubscriptionListener {
 
    public boolean update() {
       if(element != null){
-         Object current = element.getValue();
+         Object current;
+         if(isEnum && viewerColumn.isEnumOutputNumber()){
+            current = enumElement.getIntValue();
+         } else {
+            current = element.getValue();
+         }
          Object lastValue = lastValueReference.get();
          if (!current.equals(lastValue)) {
             lastValueReference.set(current);
@@ -47,6 +60,10 @@ public class ColumnElement implements ISubscriptionListener {
 
    public String getVerboseName() {
       return verbosetext;
+   }
+   
+   public String getEnumText(){
+      return enumText;
    }
 
    public String getMessageClassName() {
@@ -83,6 +100,8 @@ public class ColumnElement implements ISubscriptionListener {
 
    public void dispose() {
       element = null;
+      isEnum = false;
+      enumElement = null;
       viewerColumn.getColumn().dispose();
    }
 
@@ -97,17 +116,23 @@ public class ColumnElement implements ISubscriptionListener {
    @Override
    public void subscriptionCanceled(IMessageSubscription subscription) {
       element = null;
+      isEnum = false;
+      enumElement = null;
    }
 
    @Override
    public void subscriptionInvalidated(IMessageSubscription subscription) {
       element = null;
+      isEnum = false;
+      enumElement = null;
       lastValueReference.set(UNKNOWN_VALUE);
    }
 
    @Override
    public void subscriptionNotSupported(IMessageSubscription subscription) {
       element = null;
+      isEnum = false;
+      enumElement = null;
       lastValueReference.set(UNKNOWN_VALUE);
    }
 
@@ -117,10 +142,24 @@ public class ColumnElement implements ISubscriptionListener {
 	   if (!(resolvedElement instanceof DiscreteElement)) {
 		   unsupportedType = true;
 		   element = null;
+		   isEnum = false;
+		   enumElement = null;
 		   lastValueReference.set(UNKNOWN_VALUE);
 		   return;
 	   }
       element = (DiscreteElement<?>) resolvedElement;
+      if(element instanceof EnumeratedElement){
+         enumElement = (EnumeratedElement)element;
+         isEnum = true;
+         enumText = "";
+         if(enumElement.getEnumValues().length > 10){
+            enumText = "too many enums to list";   
+         } else {
+            for(int i = 0; i < enumElement.getEnumValues().length; i++){
+               enumText = String.format("%s %s[%d]", enumText, enumElement.getEnumValues()[i].name(), ((IEnumValue)enumElement.getEnumValues()[i]).getIntValue());
+            }
+         }
+      }
       setToolTip();
       lastValueReference.set(element != null ? element.getValue() : UNKNOWN_VALUE);
    }
@@ -140,6 +179,8 @@ public class ColumnElement implements ISubscriptionListener {
    public void subscriptionUnresolved(IMessageSubscription subscription) {
       viewerColumn.setToolTip("Not Found");
       element = null;
+      enumElement = null;
+      isEnum = false;
       lastValueReference.set(UNKNOWN_VALUE);
 
    }
