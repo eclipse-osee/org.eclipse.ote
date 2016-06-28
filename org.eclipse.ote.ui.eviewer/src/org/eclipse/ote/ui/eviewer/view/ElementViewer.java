@@ -37,6 +37,7 @@ import org.eclipse.ote.ui.eviewer.action.PauseUpdatesAction;
 import org.eclipse.ote.ui.eviewer.action.RemoveColumnAction;
 import org.eclipse.ote.ui.eviewer.action.SaveLoadAction;
 import org.eclipse.ote.ui.eviewer.action.SetActiveColumnAction;
+import org.eclipse.ote.ui.eviewer.action.ShowEnumAsNumberAction;
 import org.eclipse.ote.ui.eviewer.action.ShowTimeAction;
 import org.eclipse.ote.ui.eviewer.action.ShowTimeDeltaAction;
 import org.eclipse.ote.ui.eviewer.action.StreamToFileAction;
@@ -86,6 +87,8 @@ public class ElementViewer extends ViewPart {
    private final ClientMessageServiceTracker tracker;
    private ShowTimeAction showTimeAction;
    private ShowTimeDeltaAction showTimeDeltaAction;
+
+   private ShowEnumAsNumberAction showEnumAsNumberAction;
 
    /**
     * The constructor.
@@ -159,6 +162,7 @@ public class ElementViewer extends ViewPart {
       manager.add(copyAction);
       manager.add(new Separator());
       manager.add(toggleAutoRevealAction);
+      manager.add(showEnumAsNumberAction);
       // Other plug-ins can contribute there actions here
       manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
@@ -169,6 +173,7 @@ public class ElementViewer extends ViewPart {
       manager.add(configureColumnAction);
       manager.add(clearAllUpdatesAction);
       manager.add(toggleAutoRevealAction);
+      manager.add(showEnumAsNumberAction);
       manager.add(saveLoadAction);
       manager.add(pauseUpdatesAction);
       manager.add(streamToFileAction);
@@ -191,6 +196,8 @@ public class ElementViewer extends ViewPart {
 
       showTimeAction = new ShowTimeAction(elementContentProvider);
       showTimeDeltaAction = new ShowTimeDeltaAction(elementContentProvider);
+      
+      showEnumAsNumberAction = new ShowEnumAsNumberAction(elementContentProvider, false);
    }
 
    private void hookDoubleClickAction() {

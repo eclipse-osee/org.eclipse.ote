@@ -17,6 +17,7 @@ public class ViewerColumnElement extends ViewerColumn {
 
    private ColumnElement columnElement;
    private boolean duplicateName = false;
+   private boolean isEnumOutputNumber = false;
 
 
    ViewerColumnElement(TableViewer table, int index, ElementPath path) {
@@ -77,9 +78,13 @@ public class ViewerColumnElement extends ViewerColumn {
 
    @Override
    public String getVerboseName() {	   
-      return ColumnElement.getMessageName(columnElement.getMessageClassName()) + '.' + columnElement.getElementPath().toString();
+      if(isEnumOutputNumber && columnElement.getEnumText().length() > 0){
+         return ColumnElement.getMessageName(columnElement.getMessageClassName()) + '.' + columnElement.getElementPath().toString() + " (" + columnElement.getEnumText()+ ")";
+      } else {
+         return ColumnElement.getMessageName(columnElement.getMessageClassName()) + '.' + columnElement.getElementPath().toString();
+      }
    }
-
+   
    public boolean isDuplicateName() {
       return duplicateName;
    }
@@ -99,6 +104,14 @@ public class ViewerColumnElement extends ViewerColumn {
    public void setActive(boolean active) {
       super.setActive(active);
       getColumn().setImage(active ? activeImg : inactive);
+   }
+
+   public boolean isEnumOutputNumber() {
+      return isEnumOutputNumber;
+   }
+   
+   public void setEnumOutputNumber(boolean isNumber){
+      isEnumOutputNumber = isNumber;
    }
 
 

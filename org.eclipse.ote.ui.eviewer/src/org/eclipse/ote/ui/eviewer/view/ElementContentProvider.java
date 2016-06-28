@@ -65,6 +65,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
    private ViewerColumnLong timeColumn;
    private ViewerColumnLong timeDeltaColumn;
+   private boolean showEnumAsNumber = false;
 
    public ElementContentProvider(int limit) {
       this.limit = limit;
@@ -342,6 +343,14 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
       viewer.getTable().setRedraw(true);
       updateInternalFile();
    }
+   
+   public void setEnumOutputNumber(boolean isNumber){
+      for(ViewerColumnElement col:elementColumns){
+         col.setEnumOutputNumber(isNumber);
+      }
+      this.showEnumAsNumber  = isNumber;
+   }
+   
    public boolean updateInternalFile() {
       try {
          saveColumnsToFile(OseeData.getFile(Constants.INTERNAL_FILE_NAME));
