@@ -593,7 +593,10 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
             final FileDialog dialog = new FileDialog(treeViewer.getTree().getShell(), SWT.SAVE);
             dialog.setFilterExtensions(new String[] {"*.mwi"});
             if (saveFilePath == null) {
-               saveFilePath = OseeData.getPath().toOSString();
+               saveFilePath = System.getProperty("user.home");
+               if(saveFilePath == null) {
+                  saveFilePath = OseeData.getPath().toOSString();
+               }
             }
             if (lastSaveFileName == null) {
                lastSaveFileName = "msgWatchItems.mwi";
