@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ote.ui.message.view;
+package org.eclipse.ote.ui.message.search;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;

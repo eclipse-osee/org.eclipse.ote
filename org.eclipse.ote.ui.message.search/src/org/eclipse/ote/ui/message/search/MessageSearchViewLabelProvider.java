@@ -8,13 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ote.ui.message.view.search;
+package org.eclipse.ote.ui.message.search;
 
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.ote.message.lookup.MessageInputItem;
-import org.eclipse.ote.ui.message.view.OteMessageViewImage;
 import org.eclipse.swt.graphics.Image;
 
 public class MessageSearchViewLabelProvider extends StyledCellLabelProvider {

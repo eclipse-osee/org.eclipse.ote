@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ote.ui.message.view;
+package org.eclipse.ote.ui.message.search;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -37,11 +36,9 @@ import org.eclipse.ote.message.lookup.MessageInput;
 import org.eclipse.ote.message.lookup.MessageInputItem;
 import org.eclipse.ote.message.lookup.MessageInputUtil;
 import org.eclipse.ote.message.lookup.MessageLookup;
+import org.eclipse.ote.ui.message.search.internal.MessageInputComponent;
+import org.eclipse.ote.ui.message.search.internal.MessageViewServiceUtility;
 import org.eclipse.ote.ui.message.util.CheckedSelectionDialog;
-import org.eclipse.ote.ui.message.view.internal.MessageInputComponent;
-import org.eclipse.ote.ui.message.view.internal.MessageViewServiceUtility;
-import org.eclipse.ote.ui.message.view.search.MessageSearchViewContentProvider;
-import org.eclipse.ote.ui.message.view.search.MessageSearchViewLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.MouseAdapter;
@@ -73,8 +70,8 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.part.ViewPart;
 
 public class MessageSearchView extends ViewPart implements MessageInfoSelectionListener {
-   public static final String VIEW_ID = "org.eclipse.ote.ui.message.view.MessageSearchView";
-   public static final String PLUGIN_ID = "org.eclipse.ote.ui.message.view";
+   public static final String VIEW_ID = "org.eclipse.ote.ui.message.search.MessageSearchView";
+   public static final String PLUGIN_ID = "org.eclipse.ote.ui.message.search";
    protected static final String SEARCHING_ALL_TYPES = "Current Filter:\nSearching All Message Types";
 
    private TreeViewer treeViewer;

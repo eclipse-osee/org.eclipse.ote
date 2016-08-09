@@ -26,11 +26,11 @@ Export-Package: org.eclipse.ote.ui.message,
  org.eclipse.ote.ui.message.watch
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.core.operation,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.ote.bytemessage,
  org.eclipse.ote.message.lookup,
+ org.eclipse.ote.ui.message.search,
  org.eclipse.ote.ui.message.util,
- org.eclipse.ote.ui.message.view,
  org.eclipse.ote.ui.util
 Service-Component: OSGI-INF/*.xml

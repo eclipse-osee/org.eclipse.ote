@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ote.ui.message.view.internal;
+package org.eclipse.ote.ui.message.search.internal;
 
 import java.util.logging.Level;
 

@@ -28,6 +28,8 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -43,6 +45,7 @@ import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
+import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.message.MessageDefinitionProvider;
 import org.eclipse.osee.ote.message.MessageProviderVersion;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystem;
@@ -365,6 +368,23 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
             }
          }
       });
+      
+      treeViewer.addDoubleClickListener(new IDoubleClickListener(){
+
+         @Override
+         public void doubleClick(DoubleClickEvent event) {
+            IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+            Object element = selection.getFirstElement();
+            if(element instanceof ElementNode) {
+               WatchedMessageNode messageNode = getWatchList().getMessageNode(((ElementNode) element).getMessageName());
+               IMessageSubscription subscription = messageNode.getSubscription();
+               if(subscription.getMessageMode() == MessageMode.WRITER) {
+                  ElementNode node = (ElementNode) element;
+                  SetValueAction act = new SetValueAction(WatchView.this, node);
+                  act.run();
+               }
+            }
+         }});
 
       // Create menu, toolbars, filters, sorters.
       createToolBar();
@@ -573,7 +593,10 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
             final FileDialog dialog = new FileDialog(treeViewer.getTree().getShell(), SWT.SAVE);
             dialog.setFilterExtensions(new String[] {"*.mwi"});
             if (saveFilePath == null) {
-               saveFilePath = OseeData.getPath().toOSString();
+               saveFilePath = System.getProperty("user.home");
+               if(saveFilePath == null) {
+                  saveFilePath = OseeData.getPath().toOSString();
+               }
             }
             if (lastSaveFileName == null) {
                lastSaveFileName = "msgWatchItems.mwi";

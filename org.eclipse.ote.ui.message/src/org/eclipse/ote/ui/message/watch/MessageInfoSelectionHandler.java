@@ -2,12 +2,11 @@ package org.eclipse.ote.ui.message.watch;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.message.tool.MessageMode;
+import org.eclipse.ote.ui.message.search.MessageInfoSelectionListener;
 import org.eclipse.ote.ui.message.tree.WatchedMessageNode;
-import org.eclipse.ote.ui.message.view.MessageInfoSelectionListener;
 import org.eclipse.ote.ui.message.watch.action.WatchElementAction;
 
 public class MessageInfoSelectionHandler implements MessageInfoSelectionListener {
