@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ote.ui.message.view.search;
+package org.eclipse.ote.ui.message.search;
 
 import java.util.List;
 

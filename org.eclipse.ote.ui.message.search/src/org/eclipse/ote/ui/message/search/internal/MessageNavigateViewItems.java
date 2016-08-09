@@ -8,15 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ote.ui.message.view.internal;
+package org.eclipse.ote.ui.message.search.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.ote.ui.message.view.OteMessageViewImage;
+import org.eclipse.ote.ui.message.search.OteMessageViewImage;
 
 public class MessageNavigateViewItems implements IXNavigateContainer {
 

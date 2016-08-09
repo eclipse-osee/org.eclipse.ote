@@ -10,7 +10,7 @@
 		<relativePath>../org.eclipse.ote.parent</relativePath>
 	</parent>
 
-	<artifactId>org.eclipse.ote.ui.message.view</artifactId>
+	<artifactId>org.eclipse.ote.ui.message.search</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>Eclipse OTE UI Message View (Incubation)</name>
 

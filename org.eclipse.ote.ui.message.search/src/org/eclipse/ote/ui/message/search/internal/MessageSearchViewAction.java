@@ -8,11 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ote.ui.message.view.internal;
+package org.eclipse.ote.ui.message.search.internal;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.ui.plugin.util.ViewPartUtil;
-import org.eclipse.ote.ui.message.view.MessageSearchView;
+import org.eclipse.ote.ui.message.search.MessageSearchView;
 
 public class MessageSearchViewAction extends Action {
 

@@ -1,9 +1,8 @@
-package org.eclipse.ote.ui.message.view;
+package org.eclipse.ote.ui.message.search;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -12,7 +11,7 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.ote.message.lookup.MessageAssociationLookup;
 import org.eclipse.ote.message.lookup.MessageLookup;
 import org.eclipse.ote.message.lookup.MessageLookupResult;
-import org.eclipse.ote.ui.message.view.internal.MessageViewServiceUtility;
+import org.eclipse.ote.ui.message.search.internal.MessageViewServiceUtility;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;

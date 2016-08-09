@@ -9,16 +9,16 @@
       <view
          allowMultiple="false"
          category="org.eclipse.ote.ui.messaging"
-         class="org.eclipse.ote.ui.message.view.MessageSearchView"
+         class="org.eclipse.ote.ui.message.search.MessageSearchView"
          icon="images/glasses.gif"
-         id="org.eclipse.ote.ui.message.view.MessageSearchView"
+         id="org.eclipse.ote.ui.message.search.MessageSearchView"
          name="Message Search"
          restorable="true">
       </view>
    </extension>
    <extension point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
       <XNavigateItem
-         classname="org.eclipse.ote.ui.message.view.internal.MessageNavigateViewItems"
+         classname="org.eclipse.ote.ui.message.search.internal.MessageNavigateViewItems"
          category="Messaging"
          viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
       </XNavigateItem>

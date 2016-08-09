@@ -1,4 +1,4 @@
-package org.eclipse.ote.ui.message.view;
+package org.eclipse.ote.ui.message.search;
 
 public interface MessageInfoSelectionListener {
    public void associatedClassSelected(String classname);
