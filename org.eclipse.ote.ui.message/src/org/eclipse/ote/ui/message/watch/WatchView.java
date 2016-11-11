@@ -695,37 +695,48 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    }
 
    public void addWatchMessage(final AddWatchParameter parameter) {
-      for (MessageParameter message : parameter.getMessageParameters()) {
-         Collection<ElementPath> elements = parameter.getMessageElements(message.getMessageName());
-         OseeLog.logf(Activator.class, Level.FINEST, "Watch request for message %s", message);
-         try {
-            if (elements == null) {
-               elements = new ArrayList<ElementPath>();
+      new Thread(new Runnable(){
+         @Override
+         public void run() {
+            for (MessageParameter message : parameter.getMessageParameters()) {
+               Collection<ElementPath> elements = parameter.getMessageElements(message.getMessageName());
+               OseeLog.logf(Activator.class, Level.FINEST, "Watch request for message %s", message);
+               try {
+                  if (elements == null) {
+                     elements = new ArrayList<ElementPath>();
+                  }
+                  MessageMode mode = message.isWriter() ? MessageMode.WRITER : MessageMode.READER;
+                  watchList.createElements(message.getMessageName(),message.getDataType(), mode, elements, message.getValueMap());
+               } catch (ClassNotFoundException ex1) {
+                  if (openProceedWithProcessing("Could not find a class definition for " + message + "\n Do you wish to continue")) {
+                     continue;
+                  } else {
+                     return;
+                  }
+               } catch (InstantiationException ex1) {
+                  if (openProceedWithProcessing("failed to instantiate " + message + "\n Do you wish to continue")) {
+                     continue;
+                  } else {
+                     return;
+                  }
+               } catch (Exception ex1) {
+                  OseeLog.log(Activator.class, Level.SEVERE, "failed to create message node", ex1);
+                  if (openProceedWithProcessing("Error processing " + message + ". See Error Log for details.\n Do you wish to continue")) {
+                     continue;
+                  } else {
+                     return;
+                  }
+               }
             }
-            MessageMode mode = message.isWriter() ? MessageMode.WRITER : MessageMode.READER;
-            watchList.createElements(message.getMessageName(),message.getDataType(), mode, elements, message.getValueMap());
-         } catch (ClassNotFoundException ex1) {
-            if (openProceedWithProcessing("Could not find a class definition for " + message + "\n Do you wish to continue")) {
-               continue;
-            } else {
-               return;
-            }
-         } catch (InstantiationException ex1) {
-            if (openProceedWithProcessing("failed to instantiate " + message + "\n Do you wish to continue")) {
-               continue;
-            } else {
-               return;
-            }
-         } catch (Exception ex1) {
-            OseeLog.log(Activator.class, Level.SEVERE, "failed to create message node", ex1);
-            if (openProceedWithProcessing("Error processing " + message + ". See Error Log for details.\n Do you wish to continue")) {
-               continue;
-            } else {
-               return;
-            }
+
+            Display.getDefault().asyncExec(new Runnable(){
+               @Override
+               public void run() {
+                  refresh();            
+               }
+            });
          }
-      }
-      refresh();
+      }).start();
    }
 
    public void refresh() {
