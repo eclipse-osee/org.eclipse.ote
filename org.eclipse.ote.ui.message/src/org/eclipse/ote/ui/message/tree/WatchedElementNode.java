@@ -12,8 +12,7 @@ package org.eclipse.ote.ui.message.tree;
 
 import java.util.Collection;
 import java.util.HashMap;
-
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;

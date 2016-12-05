@@ -12,7 +12,6 @@ package org.eclipse.ote.ui.message.watch;
 
 import java.io.IOException;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.dnd.DropTargetEvent;

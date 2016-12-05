@@ -12,7 +12,6 @@ package org.eclipse.ote.ui.message.watch.action;
 
 import java.util.Collection;
 import java.util.LinkedList;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.window.Window;

@@ -12,7 +12,6 @@ package org.eclipse.ote.ui.message.watch.action;
 
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
