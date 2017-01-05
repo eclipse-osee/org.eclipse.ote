@@ -11,7 +11,6 @@
 package org.eclipse.ote.ui.message.watch.action;
 
 import java.util.Collection;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.eclipse.ote.ui.message.tree.MessageNode;

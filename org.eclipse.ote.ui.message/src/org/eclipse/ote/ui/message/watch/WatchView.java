@@ -17,8 +17,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -169,6 +171,8 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    private IOteMessageService messageService = null;
 
    private final SelectionListener recBtnHandler = new SelectionListener() {
+      
+      ExecutorService executor = Executors.newSingleThreadExecutor();
 
       @Override
       public void widgetDefaultSelected(SelectionEvent e) {
@@ -179,35 +183,58 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
       public void widgetSelected(SelectionEvent e) {
          if (recordButton.getSelection()) {
 
-            RecordingWizard recordingWizard = new RecordingWizard(watchList);
+            final RecordingWizard recordingWizard = new RecordingWizard(watchList);
             final WizardDialog recdialog = new WizardDialog(Displays.getActiveShell(), recordingWizard);
             int recResult = recdialog.open();
             if (Window.OK == recResult) {
-               try {
-                  saveWatchFile();
-                  messageService.startRecording(recordingWizard.getFileName(),
-                                                recordingWizard.getFilteredMessageRecordDetails()).addListener(recBtnListener);
-               } catch (FileNotFoundException ex) {
-                  MessageDialog.openError(Displays.getActiveShell(), "Recording Error",
-                                          "Failed to open file for writing. " + "Make sure its not being used by another application");
-                  recordButton.setSelection(false);
-               } catch (Throwable ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, "Failed to start message recording", ex);
-                  MessageDialog.openError(Displays.getActiveShell(), "Recording Error",
-                        "Exception ocurred while recording. see error log");
-                  recordButton.setSelection(false);
-               }
+               executor.submit(new Runnable() {
+
+                  @Override
+                  public void run() {
+                     try {
+                        saveWatchFile();
+                        messageService.startRecording(recordingWizard.getFileName(),
+                              recordingWizard.getFilteredMessageRecordDetails()).addListener(recBtnListener);
+                     } catch (FileNotFoundException ex) {
+                        Display.getCurrent().asyncExec(new Runnable() {
+                           @Override
+                           public void run() {
+                              MessageDialog.openError(Displays.getActiveShell(), "Recording Error",
+                                    "Failed to open file for writing. " + "Make sure its not being used by another application");
+                              recordButton.setSelection(false);
+                           }
+                        });
+                     } catch (Throwable ex) {
+                        OseeLog.log(Activator.class, Level.SEVERE, "Failed to start message recording", ex);
+                        Display.getCurrent().asyncExec(new Runnable() {
+                           
+                           @Override
+                           public void run() {
+                              MessageDialog.openError(Displays.getActiveShell(), "Recording Error",
+                                    "Exception ocurred while recording. see error log");
+                              recordButton.setSelection(false);
+                           }
+                        });
+                     }
+                  }
+               });
             } else {
                recordButton.setSelection(false);
             }
          } else {
-            try {
-               messageService.stopRecording();
-            } catch (IOException ioe) {
-               OseeLog.log(Activator.class, Level.WARNING, "problem when attempting to stop recording", ioe);
-            } catch (Throwable t) {
-               OseeLog.log(Activator.class, Level.SEVERE, "problem when attempting to stop recording", t);
-            }
+            executor.submit(new Runnable() {
+
+               @Override
+               public void run() {
+                  try {
+                     messageService.stopRecording();
+                  } catch (IOException ioe) {
+                     OseeLog.log(Activator.class, Level.WARNING, "problem when attempting to stop recording", ioe);
+                  } catch (Throwable t) {
+                     OseeLog.log(Activator.class, Level.SEVERE, "problem when attempting to stop recording", t);
+                  }
+               }
+            });
          }
       }
    };
@@ -696,37 +723,48 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    }
 
    public void addWatchMessage(final AddWatchParameter parameter) {
-      for (MessageParameter message : parameter.getMessageParameters()) {
-         Collection<ElementPath> elements = parameter.getMessageElements(message.getMessageName());
-         OseeLog.logf(Activator.class, Level.FINEST, "Watch request for message %s", message);
-         try {
-            if (elements == null) {
-               elements = new ArrayList<ElementPath>();
+      new Thread(new Runnable(){
+         @Override
+         public void run() {
+            for (MessageParameter message : parameter.getMessageParameters()) {
+               Collection<ElementPath> elements = parameter.getMessageElements(message.getMessageName());
+               OseeLog.logf(Activator.class, Level.FINEST, "Watch request for message %s", message);
+               try {
+                  if (elements == null) {
+                     elements = new ArrayList<ElementPath>();
+                  }
+                  MessageMode mode = message.isWriter() ? MessageMode.WRITER : MessageMode.READER;
+                  watchList.createElements(message.getMessageName(),message.getDataType(), mode, elements, message.getValueMap());
+               } catch (ClassNotFoundException ex1) {
+                  if (openProceedWithProcessing("Could not find a class definition for " + message + "\n Do you wish to continue")) {
+                     continue;
+                  } else {
+                     return;
+                  }
+               } catch (InstantiationException ex1) {
+                  if (openProceedWithProcessing("failed to instantiate " + message + "\n Do you wish to continue")) {
+                     continue;
+                  } else {
+                     return;
+                  }
+               } catch (Exception ex1) {
+                  OseeLog.log(Activator.class, Level.SEVERE, "failed to create message node", ex1);
+                  if (openProceedWithProcessing("Error processing " + message + ". See Error Log for details.\n Do you wish to continue")) {
+                     continue;
+                  } else {
+                     return;
+                  }
+               }
             }
-            MessageMode mode = message.isWriter() ? MessageMode.WRITER : MessageMode.READER;
-            watchList.createElements(message.getMessageName(),message.getDataType(), mode, elements, message.getValueMap());
-         } catch (ClassNotFoundException ex1) {
-            if (openProceedWithProcessing("Could not find a class definition for " + message + "\n Do you wish to continue")) {
-               continue;
-            } else {
-               return;
-            }
-         } catch (InstantiationException ex1) {
-            if (openProceedWithProcessing("failed to instantiate " + message + "\n Do you wish to continue")) {
-               continue;
-            } else {
-               return;
-            }
-         } catch (Exception ex1) {
-            OseeLog.log(Activator.class, Level.SEVERE, "failed to create message node", ex1);
-            if (openProceedWithProcessing("Error processing " + message + ". See Error Log for details.\n Do you wish to continue")) {
-               continue;
-            } else {
-               return;
-            }
+
+            Display.getDefault().asyncExec(new Runnable(){
+               @Override
+               public void run() {
+                  refresh();            
+               }
+            });
          }
-      }
-      refresh();
+      }).start();
    }
 
    public void refresh() {
