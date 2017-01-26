@@ -12,8 +12,7 @@ package org.eclipse.ote.ui.message.tree;
 
 import java.util.Collection;
 import java.util.Collections;
-
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 

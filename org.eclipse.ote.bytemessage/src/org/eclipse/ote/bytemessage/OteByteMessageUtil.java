@@ -138,5 +138,37 @@ public class OteByteMessageUtil {
       props.put("event.topics", signal.getHeader().TOPIC.getValue());
       return context.registerService(EventHandler.class, eventHandler, props);
    }
+   
+   public static <T extends OteByteMessage> ServiceRegistration<EventHandler> subscribe(T signal, OteByteMessageListener<T> eventHandler) {
+      BundleContext context = ServiceUtility.getContext();
+      if (context == null) {
+         return null;
+      }
+      Hashtable<String, Object> props = new Hashtable<String, Object>();
+      props.put("event.topics", signal.getHeader().TOPIC.getValue());
+      return context.registerService(EventHandler.class, new EventHandlerForOteByteMessage<T>(signal, eventHandler), props);
+   }
+   
+   private static class EventHandlerForOteByteMessage<T extends OteByteMessage> implements EventHandler {
+
+      private final T message;
+      private OteByteMessageListener<T> listener;
+      
+      public EventHandlerForOteByteMessage(T message, OteByteMessageListener<T> listener){
+         this.message = message;
+         this.listener = listener;
+      }
+      
+      @Override
+      public void handleEvent(Event arg0) {
+         try{
+            message.getActiveDataSource().getMem().setData(OteByteMessageUtil.getBytes(arg0));
+            listener.onDataAvailable(message);
+         } catch (Throwable th){
+            th.printStackTrace();
+         }
+      }
+      
+   }
 
 }

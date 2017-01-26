@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ote.ui.message;
 import java.util.List;
-
 import org.eclipse.ote.message.lookup.MessageInput;
 import org.eclipse.ote.message.lookup.MessageInputItem;
 

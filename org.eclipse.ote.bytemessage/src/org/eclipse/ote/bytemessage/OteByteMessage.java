@@ -31,6 +31,10 @@ public class OteByteMessage extends Message<ITestEnvironmentMessageSystemAccesso
       setMemSource(OteByteMessageType.OTE_BYTE_MESSAGE);
    }
    
+   public OteByteMessage(String name, String topic, int defaultByteSize) {
+      this(name, topic, 1, defaultByteSize);
+   }
+   
    public OteByteMessage(byte[] bytedata) {
 	  super("holder", 0, 0, false, 0, 0);
 	  data = new OteByteMessageData(this, bytedata.length);

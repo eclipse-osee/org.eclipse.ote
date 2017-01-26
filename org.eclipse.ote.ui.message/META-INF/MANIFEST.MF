@@ -25,7 +25,8 @@ Export-Package: org.eclipse.ote.ui.message,
  org.eclipse.ote.ui.message.tree,
  org.eclipse.ote.ui.message.watch
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.osee.framework.core.exception,
+Import-Package: org.eclipse.nebula.widgets.xviewer.core.model,
+ org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.ote.bytemessage,
