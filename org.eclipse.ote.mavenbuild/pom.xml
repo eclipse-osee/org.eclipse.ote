@@ -11,8 +11,8 @@
 
 	<properties>
 		<build-alias>-DEV</build-alias>
-		<tycho-version>0.19.0</tycho-version>
-		<tychoExtrasVersion>0.19.0</tychoExtrasVersion>
+		<tycho-version>1.0.0</tycho-version>
+		<tychoExtrasVersion>1.0.0</tychoExtrasVersion>
 		<platform-version-name>kepler</platform-version-name>
 		<orbit-version>R20130517111416</orbit-version>
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
