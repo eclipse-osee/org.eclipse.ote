@@ -22,6 +22,7 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.eclipse.osee.ote.core.environment.console.ConsoleCommandManager;
 import org.eclipse.osee.ote.core.environment.console.ICommandManager;
+import org.eclipse.osee.ote.core.log.GCHelper;
 import org.eclipse.osee.ote.message.internal.MessageIoManagementStarter;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -50,6 +51,7 @@ public class Activator implements BundleActivator {
    @Override
    public void start(BundleContext context) throws Exception {
       activator = this;
+      GCHelper.installGCMonitoring();
       bundleContext = context;
       consoleCommandManager = new ConsoleCommandManager();
       if (OteProperties.isOteCmdConsoleEnabled()) {

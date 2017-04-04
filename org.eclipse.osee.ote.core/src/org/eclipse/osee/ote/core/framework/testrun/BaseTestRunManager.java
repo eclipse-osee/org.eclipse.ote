@@ -21,6 +21,7 @@ import org.eclipse.osee.ote.core.framework.IMethodResult;
 import org.eclipse.osee.ote.core.framework.MethodResultImpl;
 import org.eclipse.osee.ote.core.framework.ReturnCode;
 import org.eclipse.osee.ote.core.internal.Activator;
+import org.eclipse.osee.ote.core.log.GCHelper;
 
 public class BaseTestRunManager implements ITestRunManager {
 
@@ -61,6 +62,7 @@ public class BaseTestRunManager implements ITestRunManager {
          return result;
       }
       try {
+         GCHelper.enable(true);
          testRunThread = new TestRunThread(propertyStore, test, environment, listenerProvider, dataProvider);
          testRunThread.start();
          testRunThread.join();
@@ -71,6 +73,7 @@ public class BaseTestRunManager implements ITestRunManager {
          result = methodresult;
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       } finally {
+         GCHelper.enable(false);
          aborted = false;
          testRunThread = null;
       }

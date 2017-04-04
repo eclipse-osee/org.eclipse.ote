@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.core.log;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.ote.core.MethodFormatter;
@@ -24,6 +25,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
 import org.eclipse.osee.ote.core.log.record.AttentionRecord;
 import org.eclipse.osee.ote.core.log.record.DebugRecord;
+import org.eclipse.osee.ote.core.log.record.InfoRecord;
 import org.eclipse.osee.ote.core.log.record.RequirementRecord;
 import org.eclipse.osee.ote.core.log.record.SevereRecord;
 import org.eclipse.osee.ote.core.log.record.SupportRecord;
@@ -297,4 +299,25 @@ public class TestLogger extends Logger implements ITestLogger {
       }
       log(record);
    }
+
+   @Override
+   public void log(ITestEnvironmentAccessor source, Level level, String message, Throwable th) {
+      if(level.intValue() >= Level.SEVERE.intValue()){
+         SevereRecord severe = new SevereRecord(source, message, true);
+         severe.setThrown(th);
+         this.log(severe);
+      } else if (level.intValue() >= Level.WARNING.intValue()){
+         WarningRecord warn = new WarningRecord(source, message, true);
+         warn.setThrown(th);
+         this.log(warn);
+      } else if (level.intValue() >= Level.INFO.intValue()){
+         InfoRecord info = new InfoRecord(source, message, true);
+         info.setThrown(th);
+         this.log(info);
+      } else {
+         this.log(level, message, th);
+      }
+   }
+
+ 
 }

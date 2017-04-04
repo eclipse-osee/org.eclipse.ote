@@ -32,6 +32,8 @@ public interface ITestLogger {
    public void log(TestRecord record);
 
    public void log(Level level, String message, Throwable th);
+   
+   public void log(ITestEnvironmentAccessor source, Level level, String message, Throwable th);
 
    public void methodCalled(ITestEnvironmentAccessor source);
 
