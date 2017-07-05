@@ -7,6 +7,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.ui.swt
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.ote.ui.util
 Bundle-Vendor: Eclipse Open System Engineering Environment
