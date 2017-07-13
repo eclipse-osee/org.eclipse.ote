@@ -1,0 +1,373 @@
+import
+"platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
+artifactType "Test Case" extends "Test Unit" {
+   uuid 0x0000000000000052
+}
+
+artifactType "Test Support" extends "Test Unit" {
+   uuid 0x0000000000000053
+}
+
+artifactType "Test Run Disposition" extends "Artifact" {
+   uuid 0x0000000000000054
+   attribute "Disposition"
+}
+
+artifactType "Test Run" extends "Abstract Test Result" {
+   uuid 0x0000000000000055
+   attribute "Test Script GUID"
+   attribute "Test Script URL"
+   attribute "Outfile URL"
+   attribute "User Id"
+   attribute "Revision"
+   attribute "Modified Flag"
+   attribute "Last Author"
+   attribute "Last Modified Date"
+   attribute "OS Architecture"
+   attribute "OS Name"
+   attribute "OS Version"
+   attribute "OSEE Version"
+   attribute "OSEE Server Title"
+   attribute "OSEE Server Jar Version"
+   attribute "Processor ID"
+   attribute "Start Date"
+   attribute "End Date"
+   attribute "Elapsed Date"
+   attribute "Ran In Batch Mode"
+   attribute "Is Batch Mode Allowed"
+   attribute "Passed"
+   attribute "Failed"
+   attribute "Total Test Points"
+   attribute "Script Aborted"
+   attribute "Last Date Uploaded"
+   attribute "Qualification Level"
+   attribute "Build Id"
+   attribute "Checksum"
+   attribute "Extension"
+}
+
+attributeType "Outfile URL" extends StringAttribute {
+   uuid 0x1000000000000131
+   dataProvider org.eclipse.osee.ote.define.MappedAttributeDataProvider
+   min 1
+   max 1 description "Test Run Content"
+   defaultValue "\"\"" fileExtension "tmo"
+   mediaType "text/plain"
+}
+
+attributeType "Test Script URL" extends StringAttribute {
+   uuid 0x1000000000000132
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Url of the test script used"
+   mediaType "text/plain"
+}
+
+attributeType "Revision" extends StringAttribute {
+   uuid 0x1000000000000133
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Version"
+   mediaType "text/plain"
+}
+
+attributeType "Modified Flag" extends StringAttribute {
+   uuid 0x1000000000000134
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "File Modification Flag from Repository"
+   mediaType "text/plain"
+}
+
+attributeType "Last Author" extends StringAttribute {
+   uuid 0x1000000000000135
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider description "Last Author"
+   mediaType "text/plain"
+}
+
+attributeType "Last Modified Date" extends DateAttribute {
+   uuid 0x1000000000000136
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Last Modified"
+   mediaType "text/calendar"
+}
+
+attributeType "OS Architecture" extends StringAttribute {
+   uuid 0x1000000000000137
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider description "OS Architecture"
+   mediaType "text/plain"
+}
+
+attributeType "OS Name" extends StringAttribute {
+   uuid 0x1000000000000138
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "OS Name"
+   mediaType "text/plain"
+}
+
+attributeType "OS Version" extends StringAttribute {
+   uuid 0x1000000000000139
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "OS Version"
+   mediaType "text/plain"
+}
+
+attributeType "OSEE Version" extends StringAttribute {
+   uuid 0x100000000000013A
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "OSEE Version"
+   mediaType "text/plain"
+}
+
+attributeType "OSEE Server Title" extends StringAttribute {
+   uuid 0x100000000000013B
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "OSEE Server Title"
+   mediaType "text/plain"
+}
+
+attributeType "OSEE Server Jar Version" extends StringAttribute {
+   uuid 0x100000000000013C
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "OSEE Server Jar Version"
+   mediaType "text/plain"
+}
+
+attributeType "Processor ID" extends StringAttribute {
+   uuid 0x100000000000013D
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Processor ID"
+   mediaType "text/plain"
+}
+
+attributeType "Start Date" extends DateAttribute {
+   uuid 0x100000000000013E
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Start Date"
+   mediaType "text/calendar"
+}
+
+attributeType "End Date" extends DateAttribute {
+   uuid 0x100000000000013F
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Stop Date"
+   mediaType "text/calendar"
+}
+
+attributeType "Elapsed Date" extends StringAttribute {
+   uuid 0x1000000000000140
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Time Elapsed from the start to the end of the script"
+   mediaType "text/plain"
+}
+
+attributeType "Passed" extends IntegerAttribute {
+   uuid 0x1000000000000141
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1 description "Number of test points that passed"
+   defaultValue "0"
+   mediaType "text/plain"
+}
+
+attributeType "Failed" extends IntegerAttribute {
+   uuid 0x1000000000000142
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1 description "Number of test points that failed"
+   defaultValue "0"
+   mediaType "text/plain"
+}
+
+attributeType "Total Test Points" extends IntegerAttribute {
+   uuid 0x1000000000000143
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1 description "Total test points"
+   defaultValue "0"
+   mediaType "text/plain"
+}
+
+attributeType "Script Aborted" extends BooleanAttribute {
+   uuid 0x1000000000000144
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   taggerId DefaultAttributeTaggerProvider description "Test Abort status"
+   defaultValue "true"
+   mediaType "text/plain"
+}
+
+attributeType "Test Script GUID" extends StringAttribute {
+   uuid 0x1000000000000145
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Test Case GUID"
+   mediaType "text/plain"
+}
+
+attributeType "Ran In Batch Mode" extends BooleanAttribute {
+   uuid 0x1000000000000146
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1 description "Run was performed as part of a batch"
+   defaultValue "false"
+   mediaType "text/plain"
+}
+
+attributeType "Is Batch Mode Allowed" extends BooleanAttribute {
+   uuid 0x1000000000000147
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1 description "Whether Test Script is allowed to run as part of a batch"
+   defaultValue "true"
+   mediaType "text/plain"
+}
+
+attributeType "Last Date Uploaded" extends DateAttribute {
+   uuid 0x1000000000000148
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Last time outfile was uploaded"
+   mediaType "text/calendar"
+}
+
+attributeType "Qualification Level" extends StringAttribute {
+   uuid 0x1000000000000149
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider description "Qualification level"
+   defaultValue "DEVELOPMENT"
+   mediaType "text/plain"
+}
+
+attributeType "Build Id" extends StringAttribute {
+   uuid 0x100000000000014A
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider description "Build Id"
+   defaultValue "unknown"
+   mediaType "text/plain"
+}
+
+attributeType "Checksum" extends StringAttribute {
+   uuid 0x100000000000014B
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Test Case Checksum"
+   mediaType "text/plain"
+}
+
+attributeType "Disposition" extends StringAttribute {
+   uuid 0x100000000000014C
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Disposition"
+   mediaType "text/plain"
+}
+
+oseeEnumType "enum.test.run.status" {
+   uuid 0x3000000000000194
+   entry "Pass" entryGuid "CArJmMNCPUkt72j8fGgA"
+   entry "Fail" entryGuid "CArJmMOtrEWczci+BkwA"
+   entry "Aborted" entryGuid "CArJmMQc80VqSa4AWZAA"
+   entry "Exception" entryGuid "CArJmMSKtjAY7O+M4KwA"
+}
+
+attributeType "Test Status" extends EnumeratedAttribute {
+   uuid 0x100000000000014D
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "enum.test.run.status"
+   description "Test Status"
+   mediaType "text/plain"
+}
+
+attributeType "Test Pass" extends IntegerAttribute {
+   uuid 0x100000000000014E
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   defaultValue "0"
+   mediaType "text/plain"
+}
+
+attributeType "Test Fail" extends IntegerAttribute {
+   uuid 0x100000000000014F
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   defaultValue "0"
+   mediaType "text/plain"
+}
+
+attributeType "Version" extends StringAttribute {
+   uuid 0x1000000000000150
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Version"
+   mediaType "text/plain"
+}
+
+attributeType "Repository Type" extends StringAttribute {
+   uuid 0x1000000000000151
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Repository Type"
+   mediaType "text/plain"
+}
+
+attributeType "Modification Flag" extends StringAttribute {
+   uuid 0x1000000000000152
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "File Modification Flag from Repository"
+   mediaType "text/plain"
+}
+
+attributeType "Test Log" extends CompressedContentAttribute {
+   uuid 0x1000000000000153
+   dataProvider UriAttributeDataProvider
+   min 0
+   max 1 description "Compressed Data" fileExtension "txt"
+   mediaType "application/zip"
+}
+
+relationType "Test Case to Run Relation" {
+   uuid 0x2000000000000176
+   sideAName "Test Case"
+   sideAArtifactType "Test Case"
+   sideBName "Test Run"
+   sideBArtifactType "Test Run"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Uses" {
+   uuid 0x2000000000000177
+   sideAName "requirement"
+   sideAArtifactType "Requirement"
+   sideBName "Test Unit"
+   sideBArtifactType "Test Unit"
+   defaultOrderType Unordered
+   multiplicity MANY_TO_MANY
+}

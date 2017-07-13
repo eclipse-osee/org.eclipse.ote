@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="OutfileParser" name="OutfileParser" schema="schema/OutfileParser.exsd"/>
+   <extension
+         id="OseeTypesOTE"
+         name="OseeTypesOTE"
+         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
+      <OseeTypes
+            resource="support/OseeTypes_OTE.osee">
+      </OseeTypes>
+   </extension>
+   <extension
+         id="OteOutfileParser"
+         point="org.eclipse.osee.ote.define.OutfileParser">
+      <OutfileParser
+            classname="org.eclipse.osee.ote.define.parser.OteOutfileParser"
+            supportedExtensions="tmo">
+      </OutfileParser>
+   </extension>
+   <extension
+         id="MappedAttributeDataProvider"
+         name="name"
+         point="org.eclipse.osee.framework.skynet.core.AttributeDataProvider">
+      <BinaryAttributeDataProvider
+            class="org.eclipse.osee.ote.define.MappedAttributeDataProviderOld">
+      </BinaryAttributeDataProvider>
+   </extension>
+</plugin>
