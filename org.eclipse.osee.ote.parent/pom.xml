@@ -441,17 +441,6 @@
 				</repository>
 			</repositories>
 		</profile>
-		<profile>
-			<id>ote-help-test</id>
-			<activation>
-				<property>
-					<name>!skip-help-tests</name>
-				</property>
-			</activation>
-			<modules>
-				<module>../../plugins/org.eclipse.osee.ote.help.ui.test</module>
-			</modules>
-		</profile>
 	</profiles>
 
 </project>
