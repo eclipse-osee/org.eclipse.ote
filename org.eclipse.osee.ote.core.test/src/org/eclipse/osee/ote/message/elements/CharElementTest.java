@@ -11,8 +11,6 @@ import java.util.Arrays;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.data.MessageData;
-import org.eclipse.osee.ote.message.elements.CharElement;
-import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAccessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,7 +18,7 @@ import org.mockito.MockitoAnnotations;
 
 public class CharElementTest {
 
-   private class TestMessage extends Message<ITestEnvironmentMessageSystemAccessor, MessageData, TestMessage> {
+   public class TestMessage extends Message {
       public TestMessage(String name, int defaultByteSize, int defaultOffset, boolean isScheduled, int phase, double rate) {
          super(name, defaultByteSize, defaultOffset, isScheduled, phase, rate);
       }
