@@ -697,6 +697,19 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public MessageSystemListener getRemoveableListener() {
       return removableListenerHandler;
    }
+   
+   public void setListenerTrace(MessageListenerTrace listener) {
+      if(listenerHandler != null){
+         listenerHandler.setMessageListenerTrace(this, listener);
+      }
+   }
+   
+   public MessageListenerTrace clearListenerTrace() {
+      if(listenerHandler != null){
+         return listenerHandler.clearListenerTrace(this);
+      }
+      return null;
+   }
 
    public void addListener(IOSEEMessageListener listener) {
       listenerHandler.addListener(listener);
