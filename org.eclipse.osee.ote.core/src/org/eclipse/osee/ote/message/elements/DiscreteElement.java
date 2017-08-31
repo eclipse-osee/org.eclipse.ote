@@ -1360,13 +1360,13 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * <li><b>True </b> used to get a pass iff the item is in the list.</li>
     * <li><b>False </b> used to get a pass iff the item is not in the list.</li>
     * </ul>
-    * @param value The EnumBase object to check for.
+    * @param actual The EnumBase object to check for.
     * @param list The array of EnumBase objects to look through.
     * @return A CheckGroup object that describes all comparisons made and outcomes.
     */
-   private CheckGroup inList(ITestAccessor accessor, boolean isInList, T value, T[] list, long elapsedTime) {
+   private CheckGroup inList(ITestAccessor accessor, boolean isInList, T actual, T[] list, long elapsedTime) {
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
-         new MethodFormatter().add(isInList).add(value).add(list), this.getMessage());
+         new MethodFormatter().add(isInList).add(actual).add(list), this.getMessage());
       CheckGroup checkGroup;
       final String not = "Not ";
 
@@ -1375,18 +1375,18 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       if (isInList) {
          checkGroup = new CheckGroup(Operation.OR, this.getFullName()); // Pass if at least one item
          // matches
-         for (T val : list) {
+         for (T expected : list) {
             // Check if current item in the list matches.
-            checkGroup.add(new CheckPoint("List Item: " + i, value.toString(), val.toString(), val.equals(value),
+            checkGroup.add(new CheckPoint("List Item: " + i, expected.toString(), actual.toString(), expected.equals(actual),
                elapsedTime));
             i++;
          }
       } else {
          checkGroup = new CheckGroup(Operation.AND, this.getFullName()); // Pass iff none of the
          // items match
-         for (T val : list) {
-            checkGroup.add(new CheckPoint("List Item: " + i, not + value.toString(), val.toString(),
-               !val.equals(value), elapsedTime));
+         for (T expected : list) {
+            checkGroup.add(new CheckPoint("List Item: " + i, not + expected.toString(), actual.toString(), 
+               !expected.equals(actual), elapsedTime));
             i++;
          }
       }
