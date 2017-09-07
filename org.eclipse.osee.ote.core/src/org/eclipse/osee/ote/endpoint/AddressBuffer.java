@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 public class AddressBuffer {
    
-   private final ByteBuffer buffer;
+   private ByteBuffer buffer;
    private InetSocketAddress address;
    
    public AddressBuffer(){
@@ -14,6 +14,10 @@ public class AddressBuffer {
    
    public ByteBuffer getBuffer(){
       return buffer;
+   }
+   
+   public void setBytes(byte[] bytes) {
+      buffer = ByteBuffer.wrap(bytes);
    }
    
    public InetSocketAddress getAddress(){

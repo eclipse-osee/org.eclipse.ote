@@ -1,5 +1,6 @@
 package org.eclipse.osee.ote.endpoint;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.ClosedByInterruptException;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
+import java.util.zip.Deflater;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.collections.ObjectPool;
@@ -18,9 +19,15 @@ import org.eclipse.osee.ote.collections.ObjectPool;
 final class OteEndpointSendRunnable implements Runnable {
 
    private static final int SEND_BUFFER_SIZE = 1024 * 512;
+   /**
+    * This is the header for a ZIP file
+    */
+   public static final byte[] MAGIC_NUMBER = {0x04, 0x03, 0x4b, 0x50};
+   private static final int MAX_DGRAM_SIZE = 65500;
    
    private final ArrayBlockingQueue<AddressBuffer> toSend;
    private final ObjectPool<AddressBuffer> buffers;
+   private final Deflater compressor = new Deflater();
 
    private boolean debug = false;
 
@@ -28,6 +35,7 @@ final class OteEndpointSendRunnable implements Runnable {
       this.toSend = toSend;
       this.buffers = buffers;
       this.debug = debug;
+      compressor.setLevel(Deflater.BEST_SPEED);
    }
 
    @Override
@@ -64,6 +72,33 @@ final class OteEndpointSendRunnable implements Runnable {
                      keepRunning = false;
                      break;
                   }
+                  
+                  int bufSize = data.getBuffer().remaining();
+                  if(bufSize > MAX_DGRAM_SIZE) {
+                     compressor.reset();
+                     compressor.setInput(data.getBuffer().array(), 0, bufSize);
+                     compressor.finish();
+
+                     ByteArrayOutputStream bos = new ByteArrayOutputStream(bufSize);
+
+                     byte[] buf = new byte[1024];
+                     while (!compressor.finished()) {
+                       int count = compressor.deflate(buf);
+                       bos.write(buf, 0, count);
+                     }
+                     try {
+                        bos.close();
+                        byte[] dataBytes = new byte[bos.size() + 4];
+                        System.arraycopy(MAGIC_NUMBER, 0, dataBytes, 0, 4);
+                        System.arraycopy(bos.toByteArray(), 0, dataBytes, 4, bos.size());
+                        data.setBytes(dataBytes);
+                     }
+                     catch (IOException e) {
+                        OseeLog.log(getClass(), Level.SEVERE, "Error trying to compress data", e);
+                        continue;
+                     }
+                  }
+                  
                   threadChannel.send(data.getBuffer(), data.getAddress());
                }
             } catch (ClosedByInterruptException ex){

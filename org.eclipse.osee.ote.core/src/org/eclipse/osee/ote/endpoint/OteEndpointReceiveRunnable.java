@@ -1,5 +1,6 @@
 package org.eclipse.osee.ote.endpoint;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.BindException;
@@ -11,7 +12,8 @@ import java.nio.channels.DatagramChannel;
 import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.OTEException;
 import org.eclipse.osee.ote.message.event.OteEventMessage;
@@ -28,6 +30,8 @@ public class OteEndpointReceiveRunnable implements Runnable {
    private volatile boolean debugOutput = false;
    private Class<OteEndpointReceiveRunnable> logger = OteEndpointReceiveRunnable.class;
    private final InetSocketAddress address;
+   private static final int MAGIC_NUMBER = ByteBuffer.wrap(OteEndpointSendRunnable.MAGIC_NUMBER).getInt();
+   private final Inflater inflater = new Inflater();
    
    private CopyOnWriteArrayList<EndpointDataProcessor> dataProcessors = new CopyOnWriteArrayList<>();
 
@@ -99,6 +103,31 @@ public class OteEndpointReceiveRunnable implements Runnable {
    }
 
    private void processBuffer(ByteBuffer buffer) {
+      int magicNumber = 0;
+      if(buffer.remaining() > 4) {
+         magicNumber = buffer.getInt(0);
+      }
+      // compressed stream
+      if(magicNumber == MAGIC_NUMBER) {
+         inflater.reset();
+         inflater.setInput(buffer.array(), 4, buffer.remaining() - 4);
+         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(buffer.remaining() - 4);
+         byte[] tempBuf = new byte[1024];
+         try {
+            while (!inflater.finished()) {
+               int count = inflater.inflate(tempBuf);
+               outputStream.write(tempBuf, 0, count);
+            }
+            outputStream.close();
+            buffer = ByteBuffer.wrap(outputStream.toByteArray());
+         }
+         catch (DataFormatException e) {
+            OseeLog.log(getClass(), Level.SEVERE, e);
+         }
+         catch (IOException e) {
+            OseeLog.log(getClass(), Level.SEVERE, e);
+         }
+      }
       int typeId = buffer.getShort(0) & 0xFFFF;
       if(typeId == OteEventMessageHeader.MARKER_VALUE){
          byte[] data = new byte[buffer.remaining()];
