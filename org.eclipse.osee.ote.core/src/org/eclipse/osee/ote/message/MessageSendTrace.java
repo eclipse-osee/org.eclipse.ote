@@ -23,6 +23,7 @@ public class MessageSendTrace extends TimeTrace {
    private int maxFlag = Integer.MAX_VALUE;
    private ITestLogger logger = null;
    private TimeUnit timeUnit;
+   private double messageRate;
    
    /**
     * This version of the constructor will log results to the outfile.  
@@ -33,6 +34,7 @@ public class MessageSendTrace extends TimeTrace {
    @SuppressWarnings("rawtypes")
    public MessageSendTrace(TimeUnit timeUnit, Message message, ITestLogger logger) {
       this(timeUnit, message);
+      this.messageRate = message.getRate();
       this.logger = logger;
    }
    
@@ -70,7 +72,8 @@ public class MessageSendTrace extends TimeTrace {
       message.getDefaultMessageData().removeSendListener(sendTimer);
    }
    
-   public void printResults(){
+   @Override
+   public synchronized void printResults(){
       List<TimeEvent> events = get();
       int count = 0;
       int exceedanceCount = 0;
@@ -115,7 +118,7 @@ public class MessageSendTrace extends TimeTrace {
             }
          }
       }
-      String summaryMessage = String.format("%s: count[%d] avg[%f] min[%f] max[%f] units[%s] { exceedanceCount [%d] (%d) }", getName(), count, average, min, max, timeUnit.name(), exceedanceCount, maxFlag);
+      String summaryMessage = String.format("%s: rate(Hz)[%f] count[%d] avg[%f] min[%f] max[%f] units[%s] { exceedanceCount [%d] (%d) }", getName(), messageRate, count, average, min, max, timeUnit.name(), exceedanceCount, maxFlag);
       if(logger != null){
          logger.log(TestLevel.ATTENTION, summaryMessage, null);
       }

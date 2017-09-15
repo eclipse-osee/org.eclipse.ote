@@ -31,6 +31,7 @@ public class MessageSendPeriodTrace extends TimeTrace {
    private TimeUnit timeUnit;
    private int minError = Integer.MIN_VALUE;
    private int maxError = Integer.MAX_VALUE;
+   private double messageRate;
    
    /**
     * This version of the constructor will log results to the outfile.  
@@ -49,6 +50,7 @@ public class MessageSendPeriodTrace extends TimeTrace {
       super(String.format("MessageSendPeriodTrace[%s]", message.getMessageName()));
       this.timeUnit = timeUnit;
       this.message = message;
+      this.messageRate = message.getRate();
       sendTimer = new SendTimer(this);
    }
    
@@ -79,7 +81,8 @@ public class MessageSendPeriodTrace extends TimeTrace {
       message.getDefaultMessageData().removeSendListener(sendTimer);
    }
    
-   public void printResults(){
+   @Override
+   public synchronized void printResults(){
       List<TimeEvent> events = get();
       int count = 0;
       int exceedanceCount = 0;
@@ -121,7 +124,7 @@ public class MessageSendPeriodTrace extends TimeTrace {
             }
          }
       }
-      String summaryMessage = String.format("%s: count[%d] avg[%f] min[%f] max[%f] units[%s] { exceedanceCount [%d] (%d) }", getName(), count, average, min, max, timeUnit.name(), exceedanceCount, maxFlag);
+      String summaryMessage = String.format("%s: rate(Hz)[%f] count[%d] avg[%f] min[%f] max[%f] units[%s] { exceedanceCount [%d] (%d) }", getName(), messageRate, count, average, min, max, timeUnit.name(), exceedanceCount, maxFlag);
       if(logger != null){
          logger.log(TestLevel.ATTENTION, summaryMessage, null);
       }
@@ -143,6 +146,7 @@ public class MessageSendPeriodTrace extends TimeTrace {
 
       @Override
       public void onPostSend(MessageData messageData) {
+         // Intentionally empty block
       }
       
    }

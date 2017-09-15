@@ -30,6 +30,7 @@ public class MessageListenerTrace extends TimeTrace {
    private ITestLogger logger = null;
    private int maxAllListenerTime = Integer.MAX_VALUE;
    private int maxListenerTime = Integer.MAX_VALUE;
+   private double messageRate;
    
    /**
     * 
@@ -40,6 +41,7 @@ public class MessageListenerTrace extends TimeTrace {
    public MessageListenerTrace(TimeUnit timeUnit, Message message) {
       super(String.format("MessageListenerTrace[%s]", message.getName()));
       this.message = message;
+      this.messageRate = message.getRate();
       this.timeUnit = timeUnit;
    }
    
@@ -75,7 +77,8 @@ public class MessageListenerTrace extends TimeTrace {
       message.clearListenerTrace();
    }
 
-   public void printResults(){
+   @Override
+   public synchronized void printResults(){
       List<TimeEvent> events = get();
       int allCount = 0;
       int allexceedanceCount = 0;
@@ -160,8 +163,8 @@ public class MessageListenerTrace extends TimeTrace {
             }
          }
       }
-      String summaryMessage = String.format("%s: ALL count[%d] avg[%f] min[%f] max[%f] units[%s] { exceedanceCount [%d] (%d) }", getName(), allCount, allaverage, allmin, allmax, timeUnit.name(), allexceedanceCount, maxAllListenerTime);
-      String summaryMessage2 = String.format("%s: Listeners count[%d] avg[%f] min[%f] max[%f] units[%s] { exceedanceCount [%d] (%d) }", getName(), count, average, min, max, timeUnit.name(), exceedanceCount, maxListenerTime);
+      String summaryMessage = String.format("%s: rate(Hz)[%f] ALL count[%d] avg[%f] min[%f] max[%f] units[%s] { exceedanceCount [%d] (%d) }", getName(), messageRate, allCount, allaverage, allmin, allmax, timeUnit.name(), allexceedanceCount, maxAllListenerTime);
+      String summaryMessage2 = String.format("%s: rate(Hz)[%f] Listeners count[%d] avg[%f] min[%f] max[%f] units[%s] { exceedanceCount [%d] (%d) }", getName(), messageRate, count, average, min, max, timeUnit.name(), exceedanceCount, maxListenerTime);
       if(logger != null){
          logger.log(TestLevel.ATTENTION, summaryMessage, null);
          logger.log(TestLevel.ATTENTION, summaryMessage2, null);
