@@ -2,6 +2,9 @@ package org.eclipse.osee.ote.message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 
 /**
  * This is a class that has the base functionality to keep a list of {@link TimeEvent} objects.  This way 
@@ -17,7 +20,7 @@ public class TimeTrace {
    private volatile boolean isRunning;
 
    public TimeTrace(String name){
-      this.name = name;
+      this.name = String.format(this.getClass().getName() + "[%s]", name);
       events = new ArrayList<>();
    }
    

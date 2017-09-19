@@ -3,12 +3,18 @@ package org.eclipse.osee.ote.message;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
-import org.eclipse.osee.ote.core.log.TestLevel;
+import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
+import org.eclipse.osee.ote.message.data.MessageData;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
 
 /**
- * This class will time the listeners of a message.  Only one can be set on a message at a time.
+ * The {@code MessageListenerTrace} class will time the listeners of a message.  Only one can be set on a message at a time.
+ * <pre>
+ * This is measuring the timing of events that are occurring in the 
+ * {@link org.eclipse.osee.ote.message.listener.MessageSystemListener#onDataAvailable(MessageData, DataType) MessageSystemListener.onDataAvailable()}
+ * The ALL will measure the time from when the preNotify to the postNotify.
+ * The other one will measure the time from right before the inner onDataAvailable is called to right after.
  * 
  * <pre>
  * {@code
@@ -22,39 +28,29 @@ import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
  * @author Andrew M. Finkbeiner
  *
  */
-public class MessageListenerTrace extends TimeTrace {
+public class MessageListenerTrace extends MessageTimeTrace {
 
-   @SuppressWarnings("rawtypes")
-   private Message message;
-   private TimeUnit timeUnit;
-   private ITestLogger logger = null;
+   public final String TRACE_TYPE = "MessageListenerTrace";
    private int maxAllListenerTime = Integer.MAX_VALUE;
    private int maxListenerTime = Integer.MAX_VALUE;
-   private double messageRate;
+   private int listenerWaitTimeMs;
+
+   private MessageTraceOutput messageTraceOutput;
+   private MessageTraceOutput messageTraceOutputAll;
+   private MessageTraceLogger messageTraceLogger;
    
    /**
-    * 
+    * @param environment - the test environment.
     * @param timeUnit - determines the resolution of the timing that is measured.
     * @param message - the message to measure
+    * @param messageTraceLogger - logger to write output
     */
    @SuppressWarnings("rawtypes")
-   public MessageListenerTrace(TimeUnit timeUnit, Message message) {
-      super(String.format("MessageListenerTrace[%s]", message.getName()));
-      this.message = message;
-      this.messageRate = message.getRate();
-      this.timeUnit = timeUnit;
-   }
-   
-   /**
-    * 
-    * @param timeUnit - determines the resolution of the timing that is measured.
-    * @param message - the message to measure
-    * @param logger - output will be written to a logger if the value is not null
-    */
-   @SuppressWarnings("rawtypes")
-   public MessageListenerTrace(TimeUnit timeUnit, Message message, ITestLogger logger) {
-      this(timeUnit, message);
-      this.logger = logger;
+   public MessageListenerTrace(ITestEnvironmentAccessor environment, TimeUnit timeUnit, Message message, MessageTraceLogger messageTraceLogger) {
+      super(environment, message, timeUnit);
+      this.messageTraceOutput = new MessageTraceOutput();
+      this.messageTraceOutputAll = new MessageTraceOutput();
+      this.messageTraceLogger = messageTraceLogger;
    }
    
    public void setMaxAllListeners(int time){
@@ -68,13 +64,17 @@ public class MessageListenerTrace extends TimeTrace {
    @Override
    public void start(){
       super.start();
-      message.setListenerTrace(this);
+      getMessage().setListenerTrace(this);
    }
    
    @Override
    public void stop(){
       super.stop();
-      message.clearListenerTrace();
+      getMessage().clearListenerTrace();
+   }
+
+   public void setListenerWaitTimeMs(int listenerWaitTimeMs) {
+      this.listenerWaitTimeMs = listenerWaitTimeMs;
    }
 
    @Override
@@ -115,7 +115,7 @@ public class MessageListenerTrace extends TimeTrace {
             preNotify = null;
             postNotify = null;
             allCount++;
-            long currentTime = timeUnit.convert(nanoDiff, TimeUnit.NANOSECONDS);
+            long currentTime = getTimeUnit().convert(nanoDiff, TimeUnit.NANOSECONDS);
             
             if(currentTime >= 0){
                if(allmax < 0 || currentTime > allmax){
@@ -126,11 +126,8 @@ public class MessageListenerTrace extends TimeTrace {
                }
                if(currentTime > maxAllListenerTime){
                   allexceedanceCount++;
-                  String maxMessage = String.format("%s: count[%d] %d [%d (count)] [%s]", getName(), allCount, currentTime, allexceedanceCount, timeUnit.name());
+                  String maxMessage = String.format("%s: count[%d] %d [%d (count)] [%s]", getName(), allCount, currentTime, allexceedanceCount, getTimeUnit().name());
                   System.out.println(maxMessage);
-                  if(logger != null){
-                     logger.log(TestLevel.ATTENTION, maxMessage, null);
-                  }
                }
                allaverage = (((allCount-1) * allaverage) + currentTime)/allCount;
             }
@@ -142,7 +139,7 @@ public class MessageListenerTrace extends TimeTrace {
             preListener = null;
             postListener = null;
             count++;
-            long currentTime = timeUnit.convert(nanoDiff, TimeUnit.NANOSECONDS);
+            long currentTime = getTimeUnit().convert(nanoDiff, TimeUnit.NANOSECONDS);
             
             if(currentTime >= 0){
                if(max < 0 || currentTime > max){
@@ -153,24 +150,44 @@ public class MessageListenerTrace extends TimeTrace {
                }
                if(currentTime > maxListenerTime){
                   exceedanceCount++;
-                  String maxMessage = String.format("%s: %s: count[%d] %d [%d (count)] [%s]", getName(), listenerLabel, count, currentTime, exceedanceCount, timeUnit.name());
+                  String maxMessage = String.format("%s: %s: count[%d] %d [%d (count)] [%s]", getName(), listenerLabel, count, currentTime, exceedanceCount, getTimeUnit().name());
                   System.out.println(maxMessage);
-                  if(logger != null){
-                     logger.log(TestLevel.ATTENTION, maxMessage, null);
-                  }
                }
                average = (((count-1) * average) + currentTime)/count;
             }
          }
       }
-      String summaryMessage = String.format("%s: rate(Hz)[%f] ALL count[%d] avg[%f] min[%f] max[%f] units[%s] { exceedanceCount [%d] (%d) }", getName(), messageRate, allCount, allaverage, allmin, allmax, timeUnit.name(), allexceedanceCount, maxAllListenerTime);
-      String summaryMessage2 = String.format("%s: rate(Hz)[%f] Listeners count[%d] avg[%f] min[%f] max[%f] units[%s] { exceedanceCount [%d] (%d) }", getName(), messageRate, count, average, min, max, timeUnit.name(), exceedanceCount, maxListenerTime);
-      if(logger != null){
-         logger.log(TestLevel.ATTENTION, summaryMessage, null);
-         logger.log(TestLevel.ATTENTION, summaryMessage2, null);
+      
+      messageTraceOutputAll.setMessage(getMessage().getMessageName());
+      messageTraceOutputAll.setMessageRate(getMessageRate());
+      messageTraceOutputAll.setTimeUnit(getTimeUnit().name());
+      messageTraceOutputAll.setTraceType(TRACE_TYPE);
+      messageTraceOutputAll.setCount(allCount);
+      messageTraceOutputAll.setAverage(allaverage);
+      messageTraceOutputAll.setMin(allmin);
+      messageTraceOutputAll.setMax(allmax);
+      messageTraceOutputAll.setExceedanceCount(allexceedanceCount);
+      messageTraceOutputAll.setExceedanceThreshold(maxAllListenerTime);
+      messageTraceOutputAll.setListenerWaitTimeMs(listenerWaitTimeMs);
+      messageTraceOutputAll.setTestDurationSec(testDurationSec);
+
+      messageTraceOutput.setMessage(getMessage().getMessageName());
+      messageTraceOutput.setMessageRate(getMessageRate());
+      messageTraceOutput.setTimeUnit(getTimeUnit().name());
+      messageTraceOutput.setTraceType(TRACE_TYPE);
+      messageTraceOutput.setCount(count);
+      messageTraceOutput.setAverage(average);
+      messageTraceOutput.setMin(min);
+      messageTraceOutput.setMax(max);
+      messageTraceOutput.setExceedanceCount(exceedanceCount);
+      messageTraceOutput.setExceedanceThreshold(maxListenerTime);
+      messageTraceOutput.setListenerWaitTimeMs(listenerWaitTimeMs);
+      messageTraceOutput.setTestDurationSec(testDurationSec);
+      
+      messageTraceOutputAll.setExtraTraceOutput(messageTraceOutput);
+      if (messageTraceLogger != null){
+         messageTraceLogger.logMessageTraceOutput(messageTraceOutputAll);
       }
-      System.out.println(summaryMessage);
-      System.out.println(summaryMessage2);
    }
    
    public void addStartNotify() {
@@ -212,6 +229,4 @@ public class MessageListenerTrace extends TimeTrace {
       startListener,
       endListener
    }
-   
-
 }

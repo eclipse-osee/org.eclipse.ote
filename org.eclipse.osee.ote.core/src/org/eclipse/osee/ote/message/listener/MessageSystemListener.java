@@ -153,12 +153,12 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
    /**
     * Registers a listener for the message. If the listener will not respond quickly (for example, if the listener is
     * going to make RMI calls, or other network activites which it will wait for the remote side to respond), then it
-    * should identify itself as a slow listener by passing "false" for isFastListener. "Slow" listeners will be notified
-    * by a separate thread, thereby not forcing other listener notifications to be delayed, and subsequent messages from
-    * being processed.
+    * should identify itself as a slow listener by passing the SLOW enumeration for listenerSpeed. "Slow" listeners will be 
+    * notified by a separate thread, thereby not forcing other listener notifications to be delayed, and subsequent messages 
+    * from being processed.
     * 
     * @param listener - The listener to be added
-    * @param listenerSpeed -
+    * @param listenerSpeed - An enum that is either FAST/SLOW
     * @return Returns boolean success indication.
     */
    public boolean addListener(IOSEEMessageListener listener, SPEED listenerSpeed) {

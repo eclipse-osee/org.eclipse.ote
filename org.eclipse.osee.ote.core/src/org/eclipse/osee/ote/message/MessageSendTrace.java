@@ -3,8 +3,7 @@ package org.eclipse.osee.ote.message;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
-import org.eclipse.osee.ote.core.log.TestLevel;
+import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.data.MessageData;
 
 /**
@@ -15,35 +14,28 @@ import org.eclipse.osee.ote.message.data.MessageData;
  * @author Andrew M. Finkbeiner
  *
  */
-public class MessageSendTrace extends TimeTrace {
+public class MessageSendTrace extends MessageTimeTrace {
    
+   public final String TRACE_TYPE = "MessageSendTrace";
    private SendTimer sendTimer;
-   @SuppressWarnings("rawtypes")
-   private Message message;
+
    private int maxFlag = Integer.MAX_VALUE;
-   private ITestLogger logger = null;
-   private TimeUnit timeUnit;
-   private double messageRate;
+   
+   private MessageTraceOutput messageTraceOutput;
+   private MessageTraceLogger messageTraceLogger;
    
    /**
-    * This version of the constructor will log results to the outfile.  
-    * 
-    * @param message
-    * @param logger
+    * @param environment - the test environment.
+    * @param timeUnit - determines the resolution of the timing that is measured.
+    * @param message - the message to measure
+    * @param messageTraceLogger - logger to write output
     */
    @SuppressWarnings("rawtypes")
-   public MessageSendTrace(TimeUnit timeUnit, Message message, ITestLogger logger) {
-      this(timeUnit, message);
-      this.messageRate = message.getRate();
-      this.logger = logger;
-   }
-   
-   @SuppressWarnings("rawtypes")
-   public MessageSendTrace(TimeUnit timeUnit, Message message) {
-      super(String.format("MessageSendTrace[%s]", message.getMessageName()));
-      this.timeUnit = timeUnit;
-      this.message = message;
+   public MessageSendTrace(ITestEnvironmentAccessor environment, TimeUnit timeUnit, Message message, MessageTraceLogger messageTraceLogger) {
+      super(environment, message, timeUnit);
       sendTimer = new SendTimer(this);
+      this.messageTraceOutput = new MessageTraceOutput();
+      this.messageTraceLogger = messageTraceLogger;
    }
    
    /**
@@ -63,13 +55,13 @@ public class MessageSendTrace extends TimeTrace {
    @Override
    public void start(){
       super.start();
-      message.getDefaultMessageData().addSendListener(sendTimer);
+      getMessage().getDefaultMessageData().addSendListener(sendTimer);
    }
    
    @Override
    public void stop(){
       super.stop();
-      message.getDefaultMessageData().removeSendListener(sendTimer);
+      getMessage().getDefaultMessageData().removeSendListener(sendTimer);
    }
    
    @Override
@@ -97,7 +89,7 @@ public class MessageSendTrace extends TimeTrace {
             pre = null;
             post = null;
             count++;
-            long currentTime = timeUnit.convert(nanoDiff, TimeUnit.NANOSECONDS);
+            long currentTime = getTimeUnit().convert(nanoDiff, TimeUnit.NANOSECONDS);
             
             if(currentTime >= 0){
                if(max < 0 || currentTime > max){
@@ -108,21 +100,27 @@ public class MessageSendTrace extends TimeTrace {
                }
                if(currentTime > maxFlag){
                   exceedanceCount++;
-                  String maxMessage = String.format("%s: count[%d] %d [%d (count)] [%s]", getName(), count, currentTime, exceedanceCount, timeUnit.name());
+                  String maxMessage = String.format("%s: count[%d] %d [%d (count)] [%s]", getName(), count, currentTime, exceedanceCount, getTimeUnit().name());
                   System.out.println(maxMessage);
-                  if(logger != null){
-                     logger.log(TestLevel.ATTENTION, maxMessage, null);
-                  }
                }
                average = (((count-1) * average) + currentTime)/count;
             }
          }
       }
-      String summaryMessage = String.format("%s: rate(Hz)[%f] count[%d] avg[%f] min[%f] max[%f] units[%s] { exceedanceCount [%d] (%d) }", getName(), messageRate, count, average, min, max, timeUnit.name(), exceedanceCount, maxFlag);
-      if(logger != null){
-         logger.log(TestLevel.ATTENTION, summaryMessage, null);
+      messageTraceOutput.setMessage(getMessage().getMessageName());
+      messageTraceOutput.setMessageRate(getMessageRate());
+      messageTraceOutput.setTimeUnit(getTimeUnit().name());
+      messageTraceOutput.setTraceType(TRACE_TYPE);
+      messageTraceOutput.setCount(count);
+      messageTraceOutput.setAverage(average);
+      messageTraceOutput.setMin(min);
+      messageTraceOutput.setMax(max);
+      messageTraceOutput.setExceedanceCount(exceedanceCount);
+      messageTraceOutput.setExceedanceThreshold(maxFlag);
+      messageTraceOutput.setTestDurationSec(testDurationSec);
+      if (messageTraceLogger != null){
+         messageTraceLogger.logMessageTraceOutput(messageTraceOutput);
       }
-      System.out.println(summaryMessage);
    }
    
    private static class SendTimer implements IMessageSendListener {
@@ -160,5 +158,4 @@ public class MessageSendTrace extends TimeTrace {
       pre,
       post
    }
-   
 }
