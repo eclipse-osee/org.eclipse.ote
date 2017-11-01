@@ -166,7 +166,7 @@
 						<configuration>
 							<sourceEncoding>utf-8</sourceEncoding>
 							<minimumTokens>100</minimumTokens>
-							<targetJdk>1.6</targetJdk>
+							<targetJdk>1.8</targetJdk>
 							<format>xml</format>
 							<failOnViolation>${pmd.failOnErrors}</failOnViolation>
 							<outputDirectory>${pmd.reportPath}</outputDirectory>
@@ -420,8 +420,8 @@
 					<artifactId>tycho-compiler-plugin</artifactId>
 					<version>${tycho-version}</version>
 					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
+						<source>1.8</source>
+						<target>1.8</target>
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
@@ -480,7 +480,7 @@
 					<configuration>
 						<sourceEncoding>utf-8</sourceEncoding>
 						<minimumTokens>100</minimumTokens>
-						<targetJdk>1.5</targetJdk>
+						<targetJdk>1.8</targetJdk>
 						<format>xml</format>
 						<failOnViolation>false</failOnViolation>
 					</configuration>
