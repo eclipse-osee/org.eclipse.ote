@@ -6,6 +6,8 @@ import java.util.List;
 
 public final class BasicDatagramChannelDataFactory implements DatagramChannelDataFactory {
 
+   public static int DatagramByteBufferSize = 64000;
+   
    public BasicDatagramChannelDataFactory() {
    }
    
@@ -22,7 +24,7 @@ public final class BasicDatagramChannelDataFactory implements DatagramChannelDat
       
       DatagramChannelDataImpl(DatagramChannelDataPool pool){
          this.pool = pool;
-         buffer = ByteBuffer.allocateDirect(64000);
+         buffer = ByteBuffer.allocateDirect(DatagramByteBufferSize);
       }
       
       @Override
