@@ -6,7 +6,7 @@ import java.util.List;
 
 public final class BasicDatagramChannelDataFactory implements DatagramChannelDataFactory {
 
-   public static int DatagramByteBufferSize = 64000;
+   public static int DatagramByteBufferSize = 61248;
    
    public BasicDatagramChannelDataFactory() {
    }
