@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -213,10 +212,10 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          streamWriteLock.lock();
          if (streamToFileWriter != null) {
             int i;
-//            streamToFileWriter.append(Long.toString(timeColumn.getLong()));
-//            streamToFileWriter.append(',');
-//            streamToFileWriter.append(Long.toString(timeDeltaColumn.getLong()));
-//            streamToFileWriter.append(',');
+            //            streamToFileWriter.append(Long.toString(timeColumn.getLong()));
+            //            streamToFileWriter.append(',');
+            //            streamToFileWriter.append(Long.toString(timeDeltaColumn.getLong()));
+            //            streamToFileWriter.append(',');
             for (i = 0; i < viewerColumns.size() - 1; i++) {
                Object o = update.getValue(viewerColumns.get(i));
                if (o != null) {
@@ -343,14 +342,14 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
       viewer.getTable().setRedraw(true);
       updateInternalFile();
    }
-   
+
    public void setEnumOutputNumber(boolean isNumber){
       for(ViewerColumnElement col:elementColumns){
          col.setEnumOutputNumber(isNumber);
       }
       this.showEnumAsNumber  = isNumber;
    }
-   
+
    public boolean updateInternalFile() {
       try {
          saveColumnsToFile(OseeData.getFile(Constants.INTERNAL_FILE_NAME));
@@ -366,9 +365,11 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          if (viewerColumns.isEmpty()) {
             return;
          }
-         int i;
-         for (i = 0; i < elementColumns.size(); i++) {
-            ViewerColumnElement column = elementColumns.get(i);
+         int[] ordering = viewer.getTable().getColumnOrder();
+         for (int i = 0; i < elementColumns.size(); i++) {
+            // the indices for the actual ordering are 2 over from where you would expect (think 2-indexed instead of 0)
+            // but the elementColumns is a 0-indexed data structure.
+            ViewerColumnElement column = elementColumns.get((ordering[i+2] - 2));
             writer.write(column.getColumnElement().getElementPath().encode());
             writer.write('=');
             writer.write(column.isActive() ? "active" : "inactive");
@@ -378,10 +379,13 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
                writer.write('\n');
             }
          }
+
          writer.flush();
+
       } finally {
          writer.close();
       }
+
    }
 
    public void loadColumns(List<ColumnEntry> columnEntries) {
@@ -407,7 +411,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
    }
 
    public synchronized void removeAll() {
-	  refresher.clearUpdates();
+      refresher.clearUpdates();
       disposeAllColumns();
       updateInternalFile();
    }
@@ -419,9 +423,9 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          details.dispose();
       }
       subscriptions.clear();
-      
+
       elementColumns.clear();
-      
+
       viewerColumns.clear();
       viewerColumns.add(timeColumn);
       viewerColumns.add(timeDeltaColumn);
@@ -455,16 +459,16 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
          streamToFileWriter = new PrintWriter(new FileOutputStream(file));
          int i;
-//         streamToFileWriter.write(timeColumn.getName());
-//         streamToFileWriter.write(',');
-//         streamToFileWriter.write(timeDeltaColumn.getName());
-//         streamToFileWriter.write(',');
+         //         streamToFileWriter.write(timeColumn.getName());
+         //         streamToFileWriter.write(',');
+         //         streamToFileWriter.write(timeDeltaColumn.getName());
+         //         streamToFileWriter.write(',');
          for (i = 0; i < viewerColumns.size() - 1; i++) {
             streamToFileWriter.write(viewerColumns.get(i).getVerboseName());
             streamToFileWriter.write(',');
          }
          if (viewerColumns.size() > 0) {
-        	
+
             streamToFileWriter.write(viewerColumns.get(i).getVerboseName());
             streamToFileWriter.write('\n');
          }
