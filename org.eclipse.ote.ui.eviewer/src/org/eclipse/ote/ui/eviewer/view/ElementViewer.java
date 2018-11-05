@@ -12,7 +12,6 @@ package org.eclipse.ote.ui.eviewer.view;
 
 import java.io.File;
 import java.util.logging.Level;
-
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -38,6 +37,7 @@ import org.eclipse.ote.ui.eviewer.action.RemoveColumnAction;
 import org.eclipse.ote.ui.eviewer.action.SaveLoadAction;
 import org.eclipse.ote.ui.eviewer.action.SetActiveColumnAction;
 import org.eclipse.ote.ui.eviewer.action.ShowEnumAsNumberAction;
+import org.eclipse.ote.ui.eviewer.action.ShowElementsAsHexAction;
 import org.eclipse.ote.ui.eviewer.action.ShowTimeAction;
 import org.eclipse.ote.ui.eviewer.action.ShowTimeDeltaAction;
 import org.eclipse.ote.ui.eviewer.action.StreamToFileAction;
@@ -89,6 +89,8 @@ public class ElementViewer extends ViewPart {
    private ShowTimeDeltaAction showTimeDeltaAction;
 
    private ShowEnumAsNumberAction showEnumAsNumberAction;
+
+   private ShowElementsAsHexAction showNumbersAsHex;
 
    /**
     * The constructor.
@@ -163,6 +165,7 @@ public class ElementViewer extends ViewPart {
       manager.add(new Separator());
       manager.add(toggleAutoRevealAction);
       manager.add(showEnumAsNumberAction);
+      manager.add(showNumbersAsHex);
       // Other plug-ins can contribute there actions here
       manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
@@ -177,6 +180,7 @@ public class ElementViewer extends ViewPart {
       manager.add(saveLoadAction);
       manager.add(pauseUpdatesAction);
       manager.add(streamToFileAction);
+      manager.add(showNumbersAsHex);
       manager.add(new OpenNewElementViewer());
    }
 
@@ -198,6 +202,7 @@ public class ElementViewer extends ViewPart {
       showTimeDeltaAction = new ShowTimeDeltaAction(elementContentProvider);
       
       showEnumAsNumberAction = new ShowEnumAsNumberAction(elementContentProvider, false);
+      showNumbersAsHex = new ShowElementsAsHexAction(elementContentProvider, false);
    }
 
    private void hookDoubleClickAction() {

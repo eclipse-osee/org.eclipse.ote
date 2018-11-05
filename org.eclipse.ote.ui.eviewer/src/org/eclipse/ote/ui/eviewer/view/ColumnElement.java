@@ -2,7 +2,6 @@ package org.eclipse.ote.ui.eviewer.view;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.client.msg.core.ISubscriptionListener;
 import org.eclipse.osee.ote.message.ElementPath;
@@ -10,6 +9,9 @@ import org.eclipse.osee.ote.message.elements.DiscreteElement;
 import org.eclipse.osee.ote.message.elements.Element;
 import org.eclipse.osee.ote.message.elements.EnumeratedElement;
 import org.eclipse.osee.ote.message.elements.IEnumValue;
+import org.eclipse.ote.ui.eviewer.tohex.EnumToHex;
+import org.eclipse.ote.ui.eviewer.tohex.IToHex;
+import org.eclipse.ote.ui.eviewer.tohex.ToHexFactory;
 
 public class ColumnElement implements ISubscriptionListener {
    private ViewerColumnElement viewerColumn;
@@ -22,18 +24,23 @@ public class ColumnElement implements ISubscriptionListener {
    private final AtomicReference<Object> lastValueReference = new AtomicReference<Object>(new Object());
    private final AtomicBoolean valueUpdatedFlag = new AtomicBoolean(false);
    private boolean unsupportedType = false;
-
+   private String hexText = "";
+   private static ToHexFactory toHexFactory;
+   private IToHex toHex;
    private boolean isEnum = false;
 
    private EnumeratedElement enumElement = null;
 
    private String enumText = "";
-   
+
+   private EnumToHex enumtoHex;
+
    ColumnElement(ViewerColumnElement viewerColumn, ElementPath path) {
       this.viewerColumn = viewerColumn;
       this.path = path;
       message = path.getMessageClass();
       verbosetext = getMessageName(message) + "." + path.toString();
+      toHexFactory = new ToHexFactory();
    }
 
    public ElementPath getElementPath() {
@@ -45,6 +52,9 @@ public class ColumnElement implements ISubscriptionListener {
          Object current;
          if(isEnum && viewerColumn.isEnumOutputNumber()){
             current = enumElement.getIntValue();
+         } else if(viewerColumn.showNumbersAsHex()){
+            hexText = toHex.toHex(element);
+            current = hexText;
          } else {
             current = element.getValue();
          }
@@ -61,7 +71,7 @@ public class ColumnElement implements ISubscriptionListener {
    public String getVerboseName() {
       return verbosetext;
    }
-   
+
    public String getEnumText(){
       return enumText;
    }
@@ -81,16 +91,16 @@ public class ColumnElement implements ISubscriptionListener {
    public void clearValue() {
       lastValueReference.set(null);
    }
-   
+
    public void setToolTip(){
       String tip = "";
       if (unsupportedType) {
-    	  tip = "This element type cannot be displayed";
+         tip = "This element type cannot be displayed";
       } else if (element == null) {
          tip = "The element " + getElementPath() + " does not exist on " + getMessageClassName();
       } else {
          tip = String.format("%s.%s\nByte Offset: %d\nMSB: %d\nLSB: %d",  getMessageName(getMessageClassName()), path.toString(), element.getByteOffset(), element.getMsb(),
-               element.getLsb());
+            element.getLsb());
          if(viewerColumn.isDuplicateName()){
             tip = "Note: Duplicate name in view\n" + tip;
          }
@@ -138,16 +148,17 @@ public class ColumnElement implements ISubscriptionListener {
 
    @Override
    public void subscriptionResolved(IMessageSubscription subscription) {
-	   Element resolvedElement = subscription.getMessage().getElementByPath(path);
-	   if (!(resolvedElement instanceof DiscreteElement)) {
-		   unsupportedType = true;
-		   element = null;
-		   isEnum = false;
-		   enumElement = null;
-		   lastValueReference.set(UNKNOWN_VALUE);
-		   return;
-	   }
+      Element resolvedElement = subscription.getMessage().getElementByPath(path);
+      if (!(resolvedElement instanceof DiscreteElement)) {
+         unsupportedType = true;
+         element = null;
+         isEnum = false;
+         enumElement = null;
+         lastValueReference.set(UNKNOWN_VALUE);
+         return;
+      }
       element = (DiscreteElement<?>) resolvedElement;
+      toHex = toHexFactory.getHexConverter(element);
       if(element instanceof EnumeratedElement){
          enumElement = (EnumeratedElement)element;
          isEnum = true;
