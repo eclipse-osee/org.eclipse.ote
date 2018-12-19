@@ -8,6 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+/**
+ * @author Jonathon Fidiam
+ */
+
+
 package org.eclipse.ote.ui.eviewer.action;
 
 import org.eclipse.jface.action.Action;
@@ -15,17 +20,14 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.ote.ui.eviewer.Activator;
 import org.eclipse.ote.ui.eviewer.view.ElementContentProvider;
 
-/**
- * @author Jonathon Fidiam
- */
-public class ShowEnumAsNumberAction extends Action {
+public class ShowElementsAsHexAction extends Action{
 
    private final ElementContentProvider elementContentProvider;
 
-   public ShowEnumAsNumberAction(ElementContentProvider elementContentProvider, boolean isChecked) {
-      super("Show Enum As Number", IAction.AS_CHECK_BOX);
+   public ShowElementsAsHexAction(ElementContentProvider elementContentProvider, boolean isChecked) {
+      super("Show Elements as Hex", IAction.AS_CHECK_BOX);
       setImageDescriptor(Activator.getImageDescriptor("icons/NumberLetter.png"));
-      setToolTipText("Show Enum As Number");
+      setToolTipText("Show Elements as Hex");
       this.elementContentProvider = elementContentProvider;
       this.setChecked(isChecked);
       if(isChecked){
@@ -35,7 +37,6 @@ public class ShowEnumAsNumberAction extends Action {
 
    @Override
    public void run() {
-      elementContentProvider.setEnumOutputNumber(this.isChecked());
+      elementContentProvider.showNumbersAsHex(this.isChecked());
    }
-
 }

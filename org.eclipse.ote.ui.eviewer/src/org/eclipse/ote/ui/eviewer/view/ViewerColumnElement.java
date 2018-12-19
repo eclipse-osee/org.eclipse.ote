@@ -18,6 +18,7 @@ public class ViewerColumnElement extends ViewerColumn {
    private ColumnElement columnElement;
    private boolean duplicateName = false;
    private boolean isEnumOutputNumber = false;
+   private boolean showNumbersAsHex = false;
 
 
    ViewerColumnElement(TableViewer table, int index, ElementPath path) {
@@ -113,7 +114,12 @@ public class ViewerColumnElement extends ViewerColumn {
    public void setEnumOutputNumber(boolean isNumber){
       isEnumOutputNumber = isNumber;
    }
-
-
+   
+   public boolean showNumbersAsHex(){
+      return showNumbersAsHex;
+   }
+   public void setShowNumbersAsHex(boolean showNumbersAsHex) {
+      this.showNumbersAsHex = showNumbersAsHex;
+   }
 
 }

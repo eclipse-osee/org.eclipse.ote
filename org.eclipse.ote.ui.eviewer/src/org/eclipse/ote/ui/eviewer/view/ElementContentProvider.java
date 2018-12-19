@@ -52,8 +52,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
    private final int limit;
    private ViewRefresher refresher;
    private boolean autoReveal = true;
-
-
+   private boolean showNumbersAsHex = false;
    private volatile PrintWriter streamToFileWriter = null;
 
    private HashMap<ViewerColumn, Integer> valueMap = new HashMap<ViewerColumn, Integer>();
@@ -61,10 +60,9 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
    private RowUpdate last = null;
    private ReentrantLock streamWriteLock = new ReentrantLock();
    private volatile boolean acceptUpdates = true;
-
+   private boolean showEnumAsNumber = false;
    private ViewerColumnLong timeColumn;
    private ViewerColumnLong timeDeltaColumn;
-   private boolean showEnumAsNumber = false;
 
    public ElementContentProvider(int limit) {
       this.limit = limit;
@@ -348,6 +346,13 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          col.setEnumOutputNumber(isNumber);
       }
       this.showEnumAsNumber  = isNumber;
+   }
+
+   public void showNumbersAsHex(boolean showNumbersAsHex){
+      for(ViewerColumnElement col:elementColumns){
+         col.setShowNumbersAsHex(showNumbersAsHex);
+      }
+      this.showNumbersAsHex  = showNumbersAsHex;
    }
 
    public boolean updateInternalFile() {
