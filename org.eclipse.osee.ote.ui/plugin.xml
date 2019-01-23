@@ -12,7 +12,7 @@
             allowMultiple="false"
             category="osee.test.category"
             class="org.eclipse.osee.ote.ui.navigate.OteNavigateView"
-            icon="images/welcome_item3.gif"
+            icon="OSEE-INF/images/welcome_item3.gif"
             id="org.eclipse.osee.ote.ui.navigate.OteNavigateView"
             name="OTE Navigator"/>
    </extension>
@@ -31,7 +31,7 @@
       <perspective
             class="org.eclipse.osee.ote.ui.TestPerspective"
             fixed="false"
-            icon="images/welcome_item3.gif"
+            icon="OSEE-INF/images/welcome_item3.gif"
             id="org.eclipse.osee.ote.ui.TestPerspective"
             name="OSEE Test"/>
    </extension>

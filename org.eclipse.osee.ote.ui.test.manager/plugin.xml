@@ -25,7 +25,7 @@
       </category>
       <wizard
             name="Test Manager File"
-            icon="images/tm.gif"
+            icon="OSEE-INF/images/tm.gif"
             category="org.eclipse.osee.ote.ui.test.manager"
             class="org.eclipse.osee.ote.ui.test.manager.wizards.TestManagerNewWizard"
             id="org.eclipse.osee.ote.ui.test.manager.wizards.TestManagerNewWizard">
@@ -52,7 +52,7 @@
          <action
                enablesFor="+"
                label="Add to Test Manager"
-               icon="images/tm.gif"
+               icon="OSEE-INF/images/tm.gif"
                class="org.eclipse.osee.ote.ui.test.manager.actions.AddToTestManagerPopupAction"
                menubarPath="org.eclipse.osee.ote.ui/placeholder"
                id="org.eclipse.osee.ote.ui.test.manager.addtotestmanager">
@@ -63,7 +63,7 @@
              id="viewConf">
           <action
                 label="Add To Test Manager"
-                icon="images/tm.gif"
+                icon="OSEE-INF/images/tm.gif"
                 menubarPath="org.eclipse.osee.ote.ui.viewer/placeholder"
                 id="org.eclipse.osee.ote.ui.test.manager.actions.AddToTestManagerEditorAction"
                 class="org.eclipse.osee.ote.ui.test.manager.actions.AddToTestManagerEditorAction"/>

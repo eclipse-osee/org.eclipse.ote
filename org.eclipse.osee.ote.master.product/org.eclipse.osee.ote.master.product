@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="OteMasterProduct" uid="org.eclipse.osee.ote.master.product" id="org.eclipse.osee.ote.master.rest.OTEMasterServerProduct" application="org.eclipse.osee.ote.master.app" version="0.23.2.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="OteMasterProduct" uid="org.eclipse.osee.ote.master.product" id="org.eclipse.osee.ote.master.rest.OTEMasterServerProduct" application="org.eclipse.osee.ote.master.app" version="0.26.0.qualifier" useFeatures="true" includeLaunchers="true">
+
 
    <configIni use="default">
    </configIni>
@@ -20,6 +21,7 @@
 
    <windowImages/>
 
+
    <launcher>
       <solaris/>
       <win useIco="false">
@@ -27,16 +29,16 @@
       </win>
    </launcher>
 
+
    <vm>
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</windows>
    </vm>
+
 
    <plugins>
    </plugins>
 
    <features>
-      <feature id="org.eclipse.osee.x.core.external.feature"/>
-      <feature id="org.eclipse.osee.x.core.feature"/>
       <feature id="org.eclipse.osee.ote.master.feature"/>
       <feature id="org.eclipse.osee.ote.server.external.feature"/>
       <feature id="org.eclipse.osee.core.feature"/>
@@ -44,10 +46,14 @@
 
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
-      <plugin id="org.eclipse.equinox.cm" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.http.jetty" autoStart="true" startLevel="0" />
    </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
 
 </product>

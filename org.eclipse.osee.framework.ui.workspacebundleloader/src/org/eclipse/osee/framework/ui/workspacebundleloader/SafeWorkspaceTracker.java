@@ -13,14 +13,13 @@ package org.eclipse.osee.framework.ui.workspacebundleloader;
 import java.io.File;
 import java.net.URL;
 import java.util.logging.Level;
-
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.plugin.workspace.SafeWorkspaceAccess;
 import org.eclipse.osee.framework.ui.workspacebundleloader.internal.Activator;
 import org.eclipse.ui.IWorkbench;
@@ -65,9 +64,8 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          IWorkspace workspace = service.getWorkspace();
-         workspaceListener =
-            new JarChangeResourceListener<WorkspaceStarterNature>(WorkspaceStarterNature.NATURE_ID,
-               SafeWorkspaceTracker.this);
+         workspaceListener = new JarChangeResourceListener<WorkspaceStarterNature>(WorkspaceStarterNature.NATURE_ID,
+            SafeWorkspaceTracker.this);
          try {
             loadBundles(monitor);
          } catch (CoreException ex) {
@@ -137,10 +135,10 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
 
    @Override
    public boolean preShutdown(IWorkbench workbench, boolean forced) {
-      try{
+      try {
          bundleCoordinator.uninstallBundles();
-      } catch (Throwable th){
-            th.printStackTrace();
+      } catch (Throwable th) {
+         th.printStackTrace();
       }
       return true;
    }

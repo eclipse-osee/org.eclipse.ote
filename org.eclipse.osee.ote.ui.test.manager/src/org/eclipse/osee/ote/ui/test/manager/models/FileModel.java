@@ -60,17 +60,19 @@ public class FileModel {
    }
 
    /**
-    * @return Returns the iFile for the given local data {@link #rawFilename}.  You may still have to check if the file actually exists.
+    * @return Returns the iFile for the given local data {@link #rawFilename}. You may still have to check if the file
+    * actually exists.
     */
    public IFile getIFile() {
       if (iFile == null) {
          if (path.equals("")) {
             if (!rawFilename.equals("")) {
                iFile = AWorkspace.getIFile(rawFilename);
-               if(iFile == null){
-                  IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(org.eclipse.core.filesystem.URIUtil.toURI(rawFilename));
-                  if(files.length > 0){
-                     iFile = files[0];                     
+               if (iFile == null) {
+                  IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(
+                     org.eclipse.core.filesystem.URIUtil.toURI(rawFilename));
+                  if (files.length > 0) {
+                     iFile = files[0];
                   }
                }
             }
@@ -109,13 +111,14 @@ public class FileModel {
    public String getWorkspaceRelativePath() {
       IWorkspace ws = ResourcesPlugin.getWorkspace();
       IFile ifile = ws.getRoot().getFileForLocation(new Path(rawFilename));
-      if(ifile == null){
-         IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(org.eclipse.core.filesystem.URIUtil.toURI(rawFilename));
-         if(files.length > 0){
+      if (ifile == null) {
+         IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(
+            org.eclipse.core.filesystem.URIUtil.toURI(rawFilename));
+         if (files.length > 0) {
             ifile = files[0];
          }
       }
-      if (!ifile.exists()) {
+      if (ifile == null || !ifile.exists()) {
          return null;
       } else {
          return ifile.getFullPath().toString();
@@ -160,7 +163,7 @@ public class FileModel {
             IDE.openEditorOnFileStore(page, fileStore);
          } catch (PartInitException e) {
             e.printStackTrace();
-         }         
+         }
       }
    }
 

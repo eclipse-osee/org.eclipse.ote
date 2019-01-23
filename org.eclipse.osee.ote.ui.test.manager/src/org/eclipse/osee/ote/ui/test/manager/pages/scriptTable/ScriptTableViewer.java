@@ -27,8 +27,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -102,7 +102,7 @@ public class ScriptTableViewer {
 
    /**
     * Return the column names in a collection
-    * 
+    *
     * @return List containing column names
     */
    //   public List<String> getColumnNames() {
@@ -111,12 +111,13 @@ public class ScriptTableViewer {
    /**
     * Return the parent composite
     */
+
    //   public Control getControl() {
    //      return table.getParent();
    //   }
    /**
     * Get all tasks marked for run.
-    * 
+    *
     * @return Vector of ScriptTask to run
     */
    public List<ScriptTask> getRunTasks() {
@@ -132,7 +133,7 @@ public class ScriptTableViewer {
 
    /**
     * Get string of scripts and run selections for storage
-    * 
+    *
     * @return <script>-ISRUN-, <script>, <script>-ISRUN
     */
    public String getStorageString() {
@@ -170,7 +171,7 @@ public class ScriptTableViewer {
 
    /**
     * Set taskList from input list of scripts and run selections
-    * 
+    *
     * @param str <script>-ISRUN-, <script>, <script>-ISRUN
     */
    public void loadStorageString(String str) {
@@ -178,8 +179,8 @@ public class ScriptTableViewer {
       if (str != null) {
          if (str.equals("file:")) {
             File configFile = OseeData.getFile("tm.xml");
-            ILoadConfig loadConfig =
-               ConfigFactory.getInstance().getLoadConfigHandler(this.testManagerEditor.getPageManager().getScriptPage());
+            ILoadConfig loadConfig = ConfigFactory.getInstance().getLoadConfigHandler(
+               this.testManagerEditor.getPageManager().getScriptPage());
             try {
                loadConfig.loadConfiguration(configFile);
             } catch (Exception ex) {
@@ -201,8 +202,8 @@ public class ScriptTableViewer {
                      task.setRun(run);
                      taskList.addTask(task);
                   } catch (Exception ex) {
-                     OseeLog.logf(TestManagerPlugin.class, Level.SEVERE,
-                        ex, "Unable to add file [%s] to script view.", script);
+                     OseeLog.logf(TestManagerPlugin.class, Level.SEVERE, ex, "Unable to add file [%s] to script view.",
+                        script);
                   }
                }
             }
@@ -244,7 +245,7 @@ public class ScriptTableViewer {
 
    /**
     * Calls setRun() on all of the tasks in the table with runState.
-    * 
+    *
     * @param runState - the state to set all of the tasks's run value to
     */
    public void setAllTasksRun(boolean runState) {
@@ -280,7 +281,7 @@ public class ScriptTableViewer {
       final FileTransfer fileTransfer = FileTransfer.getInstance();
       final TextTransfer textTransfer = TextTransfer.getInstance();
       final ResourceTransfer resourceTransfer = ResourceTransfer.getInstance();
-      
+
       final Transfer types[] = new Transfer[] {fileTransfer, textTransfer, resourceTransfer};
       // Add Drag/Drop to Table
       DropTargetListener scriptDropTargetListener = new DropTargetAdapter() {
@@ -288,27 +289,26 @@ public class ScriptTableViewer {
          public void drop(DropTargetEvent event) {
             if (fileTransfer.isSupportedType(event.currentDataType)) {
                processDroppedFiles((String[]) event.data);
-            } else if(textTransfer.isSupportedType(event.currentDataType)) {
+            } else if (textTransfer.isSupportedType(event.currentDataType)) {
                processDroppedFiles((String[]) event.data);
-            } else if(resourceTransfer.isSupportedType(event.currentDataType)){
-               IResource[] resources = (IResource[])event.data;
+            } else if (resourceTransfer.isSupportedType(event.currentDataType)) {
+               IResource[] resources = (IResource[]) event.data;
                String[] asStrings = new String[resources.length];
-               for(int i = 0; i < resources.length; i++) {
+               for (int i = 0; i < resources.length; i++) {
                   asStrings[i] = resources[i].getLocation().toOSString();
                }
                processDroppedFiles(asStrings);
             }
          }
+
          @Override
-         public void dropAccept( DropTargetEvent event )
-         {
-             event.detail = DND.DROP_COPY;
+         public void dropAccept(DropTargetEvent event) {
+            event.detail = DND.DROP_COPY;
          }
-         
+
          @Override
-         public void dragEnter( DropTargetEvent event )
-         {
-             event.detail = DND.DROP_COPY;
+         public void dragEnter(DropTargetEvent event) {
+            event.detail = DND.DROP_COPY;
          }
       };
       // Setup drag/drop of files
@@ -463,8 +463,8 @@ public class ScriptTableViewer {
          if (toProcess.endsWith(".xml")) {
             batchDropHandler(new File(toProcess));
          } else {
-            if (toProcess.endsWith(".java") || toProcess.endsWith(".vxe") || !new File(toProcess).getName().matches(
-               ".*\\..*")) {
+            if (toProcess.endsWith(".java") || toProcess.endsWith(
+               ".vxe") || !new File(toProcess).getName().matches(".*\\..*")) {
                ScriptTask newTask = new ScriptTask(files[i], testManagerEditor.getAlternateOutputDir());
                if (!taskList.contains(newTask)) {
                   //                  newTask.computeExists();

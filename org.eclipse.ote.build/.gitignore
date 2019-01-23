@@ -1,0 +1,10 @@
+#Ignore all bin folders
+bin/
+target/
+#Ignore vi temporary files
+*~
+
+.settings/
+
+#ignore autogenned files
+*.log

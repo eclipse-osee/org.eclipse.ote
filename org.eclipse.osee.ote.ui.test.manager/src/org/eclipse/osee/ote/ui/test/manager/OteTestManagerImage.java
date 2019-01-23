@@ -68,7 +68,7 @@ public enum OteTestManagerImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(TestManagerPlugin.PLUGIN_ID, "images", fileName);
+      return ImageManager.createImageDescriptor(TestManagerPlugin.PLUGIN_ID, fileName);
    }
 
    @Override

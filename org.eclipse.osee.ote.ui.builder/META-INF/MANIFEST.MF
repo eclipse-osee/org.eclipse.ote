@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE Builder Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.ui.builder;singleton:=true
-Bundle-Version: 0.25.3.qualifier
+Bundle-Version: 0.26.0.qualifier
 Bundle-Activator: org.eclipse.osee.ote.ui.builder.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.resources,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.plugin.core.util

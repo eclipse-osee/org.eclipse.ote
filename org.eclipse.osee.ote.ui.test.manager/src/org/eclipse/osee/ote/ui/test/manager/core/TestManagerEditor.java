@@ -29,12 +29,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.osee.connection.service.IServiceConnector;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
@@ -116,7 +116,6 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    public void activateScriptsPage() {
       setActivePage(scriptPageIndex);
    }
-   
 
    public void addFile(String fullPath) {
       pageManager.getScriptPage().addFile(fullPath);
@@ -141,7 +140,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       if (getActivePage() != sourcePage) {
          pageSourceLoad();
       }
-      if(isDirty()){
+      if (isDirty()) {
          getEditor(sourcePage).doSave(monitor);
       }
       fileIsDirty = false;
@@ -168,7 +167,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
 
    protected void registerPage(int pageNumber, String pageName, boolean isScriptPage) {
       setPageText(pageNumber, pageName);
-      if(isScriptPage){
+      if (isScriptPage) {
          scriptPageIndex = pageNumber;
       }
    }
@@ -215,9 +214,8 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       String path = user.getURL().getPath();
       File file = new File(path + File.separator + "org.eclipse.osee.ote.ui.test.manager");
       file.mkdirs();
-      file =
-         new File(
-            path + File.separator + "org.eclipse.osee.ote.ui.test.manager" + File.separator + this.getClass().getName() + ".scriptConfig.xml");
+      file = new File(
+         path + File.separator + "org.eclipse.osee.ote.ui.test.manager" + File.separator + this.getClass().getName() + ".scriptConfig.xml");
       file.getParentFile().mkdirs();
       return file.getAbsolutePath();
    }
@@ -265,7 +263,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    /**
     * Retrieves the value for the key. See <code>storeValue</code>. If the key could not be found, an empty string is
     * returned.
-    * 
+    *
     * @param key The <code>QualifiedName</code> whose value is to be retrieved.
     * @return The value of key, or an empty string if the key does not exist.
     */
@@ -296,7 +294,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    /**
     * Stores the value for the key. The key should be one of the publicly available <code>QualifiedName</code>'s in
     * <code>this</code>.
-    * 
+    *
     * @param key The <code>QualifiedName</code> associated with the value to be stored
     * @param value What will be stored under the key.
     */
@@ -365,7 +363,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       reloadSourcePage = false;
       pageSourceCheck();
       restoreSettings();
-      
+
       // If parse errors, send to sourcePage and set error on page
       if (model.hasParseExceptions()) {
          if (sourceEditor == null) {
@@ -423,11 +421,13 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
             setActivePage(sourcePage);
             pageSourceCheck();
             MessageDialog.openError(getSite().getShell(), "Source Page Error",
-               "Error parsing Source page\n  "+model.getParseError());
+               "Error parsing Source page\n  " + model.getParseError());
             Pair<Integer, Integer> parseErrorRange = model.getParseErrorRange();
             sourceEditor.setHighlightRange(parseErrorRange.getFirst(), parseErrorRange.getSecond(), false);
-            sourceEditor.getSelectionProvider().setSelection(new TextSelection(parseErrorRange.getFirst(), parseErrorRange.getSecond()));
-         } catch (Throwable th) {}
+            sourceEditor.getSelectionProvider().setSelection(
+               new TextSelection(parseErrorRange.getFirst(), parseErrorRange.getSecond()));
+         } catch (Throwable th) {
+         }
       }
    }
 
@@ -442,7 +442,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
          }
       }
    }
-   
+
    void pageSourceCreate() {
       try {
          if (getEditorInput() instanceof IFileEditorInput) {
@@ -489,10 +489,10 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       InputStream inputStream = null;
       try {
          File file = OseeData.getFile("testManagerSettings.xml");
-         if(file.exists()){
-        	 inputStream = new FileInputStream(file);
-        	 getPropertyStore().load(inputStream);
-        	 pageManager.restore();
+         if (file.exists()) {
+            inputStream = new FileInputStream(file);
+            getPropertyStore().load(inputStream);
+            pageManager.restore();
          }
       } catch (Exception ex) {
          TestManagerPlugin.log(Level.WARNING, "Stored settings not available. Using defaults.", ex);
