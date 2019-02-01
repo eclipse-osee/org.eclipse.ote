@@ -10,7 +10,7 @@
          allowMultiple="false"
          category="org.eclipse.ote.ui.messaging"
          class="org.eclipse.ote.ui.message.search.MessageSearchView"
-         icon="images/glasses.gif"
+         icon="OSEE-INF/images/glasses.gif"
          id="org.eclipse.ote.ui.message.search.MessageSearchView"
          name="Message Search"
          restorable="true">

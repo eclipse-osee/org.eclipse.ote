@@ -14,7 +14,7 @@
 
       <view
          class="org.eclipse.ote.ui.message.watch.WatchView"
-         icon="images/binoculars.gif"
+         icon="OSEE-INF/images/binoculars.gif"
          category="org.eclipse.ote.ui.messaging"
          name="MessageWatch"
          id="org.eclipse.ote.ui.message.watch.WatchView"/>

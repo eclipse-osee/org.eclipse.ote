@@ -1,7 +1,6 @@
 package org.eclipse.ote.ui.util;
 
 import java.util.logging.Level;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -11,8 +10,8 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * Put an instance of this in your KeyedImage and reference its overridden methods as pass throughs.
- * Image files should go in <project>/images
+ * Put an instance of this in your KeyedImage and reference its overridden methods as pass throughs. Image files should
+ * go in <project>/images
  */
 public class KeyedImageHelper {
 
@@ -31,7 +30,7 @@ public class KeyedImageHelper {
    public ImageDescriptor createImageDescriptor() {
       ImageDescriptor imageDesc = null;
       try {
-         imageDesc = ImageManager.createImageDescriptor(plugin, "images", fileName);
+         imageDesc = ImageManager.createImageDescriptor(plugin, fileName);
       } catch (Throwable th) {
          try {
             imageDesc = new ImageDescriptor() {
@@ -66,6 +65,6 @@ public class KeyedImageHelper {
    }
 
    private String getPluginFilename() {
-      return "../"+plugin+"/images/"+fileName;
+      return "../" + plugin + "/images/" + fileName;
    }
 }

@@ -213,6 +213,14 @@
          version="0.0.0"/>
 
    <includes
+         id="org.eclipse.emf.common.source"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.common.ui.source"
+         version="0.0.0"/>
+
+   <includes
          id="org.eclipse.emf.codegen"
          version="0.0.0"/>
 
@@ -269,6 +277,10 @@
          version="0.0.0"/>
 
    <includes
+         id="org.eclipse.emf.ecore.source"
+         version="0.0.0"/>
+
+   <includes
          id="org.eclipse.emf.edit"
          version="0.0.0"/>
 
@@ -290,6 +302,22 @@
 
    <includes
          id="org.eclipse.emf.mapping.ui"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.transaction"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.workspace"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.validation"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.validation.ocl"
          version="0.0.0"/>
 
    <includes
@@ -386,6 +414,10 @@
 
    <includes
          id="org.eclipse.osee.server.legacy.feature.source"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.papyrus.sdk.feature"
          version="0.0.0"/>
 
    <includes
@@ -669,6 +701,34 @@
          version="0.0.0"/>
 
    <includes
+         id="org.eclipse.gmf"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.ocl"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.ocl.examples"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.ocl.ui"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.ocl.unified.core"
+         version="0.0.0"/>
+ 
+   <includes
+         id="org.eclipse.m2m.qvt.oml.sdk"
+         version="0.0.0"/>
+ 
+   <includes
+         id="org.eclipse.uml2.sdk"
+         version="0.0.0"/>
+       
+   <includes
          id="org.eclipse.mylyn.bugzilla_feature"
          version="0.0.0"/>
 
@@ -804,18 +864,6 @@
          id="org.eclipse.ecf.filetransfer.ssl.source.feature"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.emf.common.source"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.emf.common.ui.source"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.emf.ecore.source"
-         version="0.0.0"/>
-
    <requires>
       <import plugin="org.junit" version="4.11.0" match="equivalent"/>
    </requires>
@@ -862,35 +910,7 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.eclipse.emf.transaction"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.emf.validation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.emf.workspace"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.xtend"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.emf.mwe.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -904,13 +924,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.emf.mwe2.runtime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.concurrent"
          download-size="0"
          install-size="0"
@@ -918,7 +931,35 @@
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.gmf.runtime.notation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.gmf.runtime.notation.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.gmf.tooling.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.mylyn.commons.net"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.xwt"
          download-size="0"
          install-size="0"
          version="0.0.0"
