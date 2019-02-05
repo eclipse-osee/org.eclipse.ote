@@ -719,15 +719,15 @@
    <includes
          id="org.eclipse.ocl.unified.core"
          version="0.0.0"/>
- 
+
    <includes
          id="org.eclipse.m2m.qvt.oml.sdk"
          version="0.0.0"/>
- 
+
    <includes
          id="org.eclipse.uml2.sdk"
          version="0.0.0"/>
-       
+
    <includes
          id="org.eclipse.mylyn.bugzilla_feature"
          version="0.0.0"/>
@@ -1065,6 +1065,13 @@
 
    <plugin
          id="org.hamcrest.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="oracle.driver"
          download-size="0"
          install-size="0"
          version="0.0.0"
