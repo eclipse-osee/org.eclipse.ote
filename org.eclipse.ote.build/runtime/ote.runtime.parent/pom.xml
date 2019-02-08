@@ -23,14 +23,12 @@
       
       
     <!--
-    --> 
 	  <osee-client-site>https://msa-ci.msc.az.boeing.com/build-artifacts/01_osee_dev_bld_org.eclipse.osee/org.eclipse.osee/plugins/org.eclipse.osee.client.all.p2/target/repository/</osee-client-site>
-	  <!-- <ote-server-site>https://msa-ci.msc.az.boeing.com/build-artifacts/02_osee_nr_bld_lba.osee/lba.osee/plugins/lba.osee.server.ote.p2/target/repository/</ote-server-site> -->
 	  <osee-server-site>https://msa-ci.msc.az.boeing.com/build-artifacts/01_osee_dev_bld_org.eclipse.osee/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/</osee-server-site> 
+    --> 
 	  <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/</orbit-site>
 	  <eclipse-ip-site>https://msa-ci.msc.az.boeing.com/build-artifacts/00_osee_nr_bld_org.eclipse.ip/org.eclipse.ip/org.eclipse.ip.p2/target/repository/</eclipse-ip-site>
-	<!--
-	-->  
+
    </properties>
 
    <groupId>org.eclipse.ote.build</groupId>
@@ -48,25 +46,21 @@
 			<repository>
 				<id>osee-ide</id>
 				<layout>p2</layout>
-				<!-- <url>https://osee-build.msc.az.boeing.com/osee/sites/REL_CURRENT_SITES/lba_osee_master_site_mod/</url> -->
 				<url>${osee-client-site}</url>
 			</repository>
 			<repository>
 				<id>osee-server</id>
 				<layout>p2</layout>
-				<!-- <url>https://osee-build.msc.az.boeing.com/osee/sites/REL_CURRENT_SITES/lba_osee_ote_server_site/</url> -->
 				<url>${osee-server-site}</url>
 			</repository>
 			<repository>
 				<id>orbit</id>
 				<layout>p2</layout>
-				<!-- <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20130517111416/repository</url> -->
 				<url>${orbit-site}</url>
 			</repository>	
 			<repository>
 				<id>eclipse-ip</id>
 				<layout>p2</layout>
-				<!-- <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20130517111416/repository</url> -->
 				<url>${eclipse-ip-site}</url>
 			</repository>
 		
@@ -105,11 +99,6 @@
                <layout>p2</layout>
                <url>${local-mirrors-path}/wb/1.1.0/</url>
             </repository>
-          <!--   <repository>
-               <id>eclipse</id>
-               <layout>p2</layout>
-               <url>${eclipse-site}</url>
-            </repository> -->
 	</repositories>
 	
 </project>
