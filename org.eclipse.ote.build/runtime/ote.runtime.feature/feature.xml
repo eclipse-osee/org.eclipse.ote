@@ -409,6 +409,10 @@
          version="0.0.0"/>
 
    <includes
+         id="org.eclipse.osee.server.feature"
+         version="0.0.0"/>
+
+   <includes
          id="org.eclipse.osee.server.legacy.feature"
          version="0.0.0"/>
 
@@ -922,9 +926,16 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- 
+
    <plugin
          id="org.eclipse.emf.mwe.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.mwe2.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1072,13 +1083,6 @@
 
    <plugin
          id="org.hamcrest.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="oracle.driver"
          download-size="0"
          install-size="0"
          version="0.0.0"

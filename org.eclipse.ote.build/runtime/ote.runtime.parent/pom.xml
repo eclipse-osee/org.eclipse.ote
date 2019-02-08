@@ -26,7 +26,6 @@
     --> 
 	  <osee-client-site>https://msa-ci.msc.az.boeing.com/build-artifacts/01_osee_dev_bld_org.eclipse.osee/org.eclipse.osee/plugins/org.eclipse.osee.client.all.p2/target/repository/</osee-client-site>
 	  <!-- <ote-server-site>https://msa-ci.msc.az.boeing.com/build-artifacts/02_osee_nr_bld_lba.osee/lba.osee/plugins/lba.osee.server.ote.p2/target/repository/</ote-server-site> -->
-	  <lba-osee-master-site>https://osee-build.msc.az.boeing.com/osee/sites/DEV_ALPHA_CURRENT_SITES/</lba-osee-master-site> 
 	  <osee-server-site>https://msa-ci.msc.az.boeing.com/build-artifacts/01_osee_dev_bld_org.eclipse.osee/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/</osee-server-site> 
 	  <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/</orbit-site>
 	  <eclipse-ip-site>https://msa-ci.msc.az.boeing.com/build-artifacts/00_osee_nr_bld_org.eclipse.ip/org.eclipse.ip/org.eclipse.ip.p2/target/repository/</eclipse-ip-site>
@@ -57,11 +56,6 @@
 				<layout>p2</layout>
 				<!-- <url>https://osee-build.msc.az.boeing.com/osee/sites/REL_CURRENT_SITES/lba_osee_ote_server_site/</url> -->
 				<url>${osee-server-site}</url>
-			</repository>
-			<repository>
-				<id>lba-osee-master</id>
-				<layout>p2</layout>
-				<url>${lba-osee-master-site}</url>
 			</repository>
 			<repository>
 				<id>orbit</id>
