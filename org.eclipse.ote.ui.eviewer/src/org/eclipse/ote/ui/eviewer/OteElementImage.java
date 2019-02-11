@@ -28,7 +28,7 @@ public enum OteElementImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, "icons", fileName);
+      return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, fileName);
    }
 
    @Override

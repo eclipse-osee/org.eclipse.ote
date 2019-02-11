@@ -18,8 +18,8 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.osee.ote.message.ElementPath;
@@ -36,8 +36,8 @@ import org.eclipse.ote.ui.eviewer.action.PauseUpdatesAction;
 import org.eclipse.ote.ui.eviewer.action.RemoveColumnAction;
 import org.eclipse.ote.ui.eviewer.action.SaveLoadAction;
 import org.eclipse.ote.ui.eviewer.action.SetActiveColumnAction;
-import org.eclipse.ote.ui.eviewer.action.ShowEnumAsNumberAction;
 import org.eclipse.ote.ui.eviewer.action.ShowElementsAsHexAction;
+import org.eclipse.ote.ui.eviewer.action.ShowEnumAsNumberAction;
 import org.eclipse.ote.ui.eviewer.action.ShowTimeAction;
 import org.eclipse.ote.ui.eviewer.action.ShowTimeDeltaAction;
 import org.eclipse.ote.ui.eviewer.action.StreamToFileAction;
@@ -54,17 +54,13 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * This sample class demonstrates how to plug-in a new workbench view. The view
- * shows data obtained from the model. The sample creates a dummy model on the
- * fly, but a real implementation would connect to the model available either in
- * this or another plug-in (e.g. the workspace). The view is connected to the
- * model using a content provider.
+ * This sample class demonstrates how to plug-in a new workbench view. The view shows data obtained from the model. The
+ * sample creates a dummy model on the fly, but a real implementation would connect to the model available either in
+ * this or another plug-in (e.g. the workspace). The view is connected to the model using a content provider.
  * <p>
- * The view uses a label provider to define how model objects should be
- * presented in the view. Each view can present the same model objects using
- * different labels and icons, if needed. Alternatively, a single label provider
- * can be shared between views in order to ensure that objects of the same type
- * are presented in the same way everywhere.
+ * The view uses a label provider to define how model objects should be presented in the view. Each view can present the
+ * same model objects using different labels and icons, if needed. Alternatively, a single label provider can be shared
+ * between views in order to ensure that objects of the same type are presented in the same way everywhere.
  * <p>
  */
 
@@ -100,21 +96,19 @@ public class ElementViewer extends ViewPart {
    }
 
    /**
-    * This is a callback that will allow us to create the viewer and initialize
-    * it.
+    * This is a callback that will allow us to create the viewer and initialize it.
     */
    @Override
    public void createPartControl(Composite parent) {
 
-
-      viewer = new TableViewer(parent, SWT.DOUBLE_BUFFERED | SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+      viewer =
+         new TableViewer(parent, SWT.DOUBLE_BUFFERED | SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
       viewer.setUseHashlookup(true);
       viewer.setContentProvider(elementContentProvider);
       viewer.getTable().setHeaderVisible(true);
       viewer.getTable().setLinesVisible(true);
 
       //		viewer.setPreserveSelection(false);
-
 
       makeActions();
       hookContextMenu();
@@ -200,7 +194,7 @@ public class ElementViewer extends ViewPart {
 
       showTimeAction = new ShowTimeAction(elementContentProvider);
       showTimeDeltaAction = new ShowTimeDeltaAction(elementContentProvider);
-      
+
       showEnumAsNumberAction = new ShowEnumAsNumberAction(elementContentProvider, false);
       showNumbersAsHex = new ShowElementsAsHexAction(elementContentProvider, false);
    }
@@ -224,14 +218,14 @@ public class ElementViewer extends ViewPart {
          File file = new File(columnSetFile);
          ParseResult parseResult = ColumnFileParser.parse(file);
          switch (parseResult.getParseCode()) {
-            case SUCCESS: 
+            case SUCCESS:
                elementContentProvider.removeAll();
-               elementContentProvider.loadColumns(parseResult.getColumnEntries());                            
+               elementContentProvider.loadColumns(parseResult.getColumnEntries());
                break;
-            case FILE_HAS_NO_VALID_COLUMNS: 
+            case FILE_HAS_NO_VALID_COLUMNS:
                MessageDialogs.openColumnFileEmptyOrBad(shell);
                return false;
-            case FILE_NOT_FOUND: 
+            case FILE_NOT_FOUND:
                MessageDialogs.openColumnFileNotFound(shell);
                return false;
             case FILE_IO_EXCEPTION:
@@ -243,8 +237,7 @@ public class ElementViewer extends ViewPart {
       try {
          elementContentProvider.streamToFile(file);
       } catch (Exception e) {
-         OseeLog.log(Activator.class, Level.SEVERE,
-               "Could not start streaming", e);
+         OseeLog.log(Activator.class, Level.SEVERE, "Could not start streaming", e);
          MessageDialogs.openStreamError(shell);
          return false;
       }
@@ -256,7 +249,7 @@ public class ElementViewer extends ViewPart {
 
       elementContentProvider.setUpdateView(!disableRendering);
       return true;
-   }  
+   }
 
    public void stopStreaming() {
       Displays.ensureInDisplayThread(new Runnable() {
@@ -274,8 +267,7 @@ public class ElementViewer extends ViewPart {
                streamToFileAction.setChecked(false);
 
             } catch (Exception e) {
-               OseeLog.log(Activator.class, Level.SEVERE,
-                     "Erri while attempting to stop streaming", e);
+               OseeLog.log(Activator.class, Level.SEVERE, "Erri while attempting to stop streaming", e);
             }
          }
 
@@ -323,7 +315,7 @@ public class ElementViewer extends ViewPart {
 
    }
 
-   public void addElement(ElementPath elementPath){
+   public void addElement(ElementPath elementPath) {
       elementContentProvider.add(elementPath);
    }
 

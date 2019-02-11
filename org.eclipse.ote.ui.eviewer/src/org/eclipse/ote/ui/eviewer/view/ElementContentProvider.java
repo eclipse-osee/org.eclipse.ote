@@ -27,8 +27,8 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.osee.ote.message.ElementPath;
 import org.eclipse.ote.ui.eviewer.Activator;
@@ -58,7 +58,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
    private HashMap<ViewerColumn, Integer> valueMap = new HashMap<ViewerColumn, Integer>();
 
    private RowUpdate last = null;
-   private ReentrantLock streamWriteLock = new ReentrantLock();
+   private final ReentrantLock streamWriteLock = new ReentrantLock();
    private volatile boolean acceptUpdates = true;
    private boolean showEnumAsNumber = false;
    private ViewerColumnLong timeColumn;
@@ -82,7 +82,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
       disposeAllColumns();
    }
 
-   public void forceUpdate(){
+   public void forceUpdate() {
       refresher.forceUpdate();
    }
 
@@ -96,7 +96,8 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
          timeColumn = new ViewerColumnLong(this.viewer, viewerColumns.size(), "Env Time", "Test environment time (ms)");
          viewerColumns.add(timeColumn);
-         timeDeltaColumn = new ViewerColumnLong(this.viewer, viewerColumns.size(), "Time Delta", "Test environment time since previous update (ms)");
+         timeDeltaColumn = new ViewerColumnLong(this.viewer, viewerColumns.size(), "Time Delta",
+            "Test environment time since previous update (ms)");
          viewerColumns.add(timeDeltaColumn);
 
          service = (IOteMessageService) newInput;
@@ -182,8 +183,8 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
    }
 
    @Override
-   public  synchronized void update(SubscriptionDetails details, long envTime) {
-      if(acceptUpdates ){
+   public synchronized void update(SubscriptionDetails details, long envTime) {
+      if (acceptUpdates) {
          // TODO set the delta here before we change 'last'
          final long lastTime = timeColumn.getLong();
          if (lastTime != 0) {
@@ -206,7 +207,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
    }
 
    private void writeToStream(RowUpdate update) {
-      try{
+      try {
          streamWriteLock.lock();
          if (streamToFileWriter != null) {
             int i;
@@ -234,7 +235,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
 
    public void clearAllUpdates() {
       refresher.clearUpdates();
-      for(ViewerColumnElement column:elementColumns){
+      for (ViewerColumnElement column : elementColumns) {
          column.getColumnElement().clearValue();
       }
       last = null;
@@ -263,14 +264,14 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
    void determineConflicts() {
       Map<String, Boolean> conflicts = new HashMap<String, Boolean>();
       for (ViewerColumnElement column : elementColumns) {
-         if(conflicts.containsKey(column.getName())){
+         if (conflicts.containsKey(column.getName())) {
             conflicts.put(column.getName(), true);
          } else {
             conflicts.put(column.getName(), false);
          }
       }
       for (ViewerColumnElement column : elementColumns) {
-         if(conflicts.get(column.getName())){
+         if (conflicts.get(column.getName())) {
             column.setDuplicateName(true);
          } else {
             column.setDuplicateName(false);
@@ -341,18 +342,18 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
       updateInternalFile();
    }
 
-   public void setEnumOutputNumber(boolean isNumber){
-      for(ViewerColumnElement col:elementColumns){
+   public void setEnumOutputNumber(boolean isNumber) {
+      for (ViewerColumnElement col : elementColumns) {
          col.setEnumOutputNumber(isNumber);
       }
-      this.showEnumAsNumber  = isNumber;
+      this.showEnumAsNumber = isNumber;
    }
 
-   public void showNumbersAsHex(boolean showNumbersAsHex){
-      for(ViewerColumnElement col:elementColumns){
+   public void showNumbersAsHex(boolean showNumbersAsHex) {
+      for (ViewerColumnElement col : elementColumns) {
          col.setShowNumbersAsHex(showNumbersAsHex);
       }
-      this.showNumbersAsHex  = showNumbersAsHex;
+      this.showNumbersAsHex = showNumbersAsHex;
    }
 
    public boolean updateInternalFile() {
@@ -364,6 +365,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          return false;
       }
    }
+
    public synchronized void saveColumnsToFile(File file) throws FileNotFoundException, IOException {
       PrintWriter writer = new PrintWriter(new FileOutputStream(file));
       try {
@@ -374,11 +376,11 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
          for (int i = 0; i < elementColumns.size(); i++) {
             // the indices for the actual ordering are 2 over from where you would expect (think 2-indexed instead of 0)
             // but the elementColumns is a 0-indexed data structure.
-            ViewerColumnElement column = elementColumns.get((ordering[i+2] - 2));
+            ViewerColumnElement column = elementColumns.get((ordering[i + 2] - 2));
             writer.write(column.getColumnElement().getElementPath().encode());
             writer.write('=');
             writer.write(column.isActive() ? "active" : "inactive");
-            if (i != elementColumns.size()-1) {
+            if (i != elementColumns.size() - 1) {
                writer.write(',');
             } else {
                writer.write('\n');
@@ -448,7 +450,7 @@ public class ElementContentProvider implements Listener, IStructuredContentProvi
    }
 
    public void streamToFile(File file) throws FileNotFoundException, IOException {
-      try{
+      try {
          streamWriteLock.lock();
          if (streamToFileWriter != null) {
             // stop streaming

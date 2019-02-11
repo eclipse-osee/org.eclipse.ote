@@ -40,10 +40,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.connection.service.IServiceConnector;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
@@ -121,11 +121,11 @@ import org.osgi.framework.FrameworkUtil;
 
 /**
  * A view that allows the monitoring of messages and their associated elements
- * 
+ *
  * @author Ken J. Aguilar
  */
 public final class WatchView extends ViewPart implements ITestConnectionListener, IOteMessageClientView {
-   public static final RGB COLOR_GOLDENROD = new RGB(255,193,37);
+   public static final RGB COLOR_GOLDENROD = new RGB(255, 193, 37);
 
    private MessageXViewer treeViewer;
    private final ClientMessageServiceTracker msgServiceTracker;
@@ -147,7 +147,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
             @Override
             public void run() {
                openInfo("Message Recorder",
-                        "Message recording file " + config.getFileName() + " is now ready for opening");
+                  "Message recording file " + config.getFileName() + " is now ready for opening");
             }
          });
       }
@@ -155,13 +155,13 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
       @Override
       public void onTransferException(final TransferConfig config, final Throwable t) {
          OseeLog.log(Activator.class, Level.SEVERE, "problems writing to recorder output file " + config.getFileName(),
-                     t);
+            t);
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
                recordButton.setSelection(false);
                openInfo("Message Recorder",
-                        "An exception occurred while writing to recorder output file " + config.getFileName());
+                  "An exception occurred while writing to recorder output file " + config.getFileName());
             }
          });
       }
@@ -170,7 +170,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    private IOteMessageService messageService = null;
 
    private final SelectionListener recBtnHandler = new SelectionListener() {
-      
+
       ExecutorService executor = Executors.newSingleThreadExecutor();
 
       @Override
@@ -193,24 +193,24 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
                      try {
                         saveWatchFile();
                         messageService.startRecording(recordingWizard.getFileName(),
-                              recordingWizard.getFilteredMessageRecordDetails()).addListener(recBtnListener);
+                           recordingWizard.getFilteredMessageRecordDetails()).addListener(recBtnListener);
                      } catch (FileNotFoundException ex) {
                         Display.getCurrent().asyncExec(new Runnable() {
                            @Override
                            public void run() {
                               MessageDialog.openError(Displays.getActiveShell(), "Recording Error",
-                                    "Failed to open file for writing. " + "Make sure its not being used by another application");
+                                 "Failed to open file for writing. " + "Make sure its not being used by another application");
                               recordButton.setSelection(false);
                            }
                         });
                      } catch (Throwable ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, "Failed to start message recording", ex);
                         Display.getCurrent().asyncExec(new Runnable() {
-                           
+
                            @Override
                            public void run() {
                               MessageDialog.openError(Displays.getActiveShell(), "Recording Error",
-                                    "Exception ocurred while recording. see error log");
+                                 "Exception ocurred while recording. see error log");
                               recordButton.setSelection(false);
                            }
                         });
@@ -269,7 +269,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 
    private WatchViewMessageDefinitionProviderTracker watchViewMessageDefinitionProviderTracker;
 
-   private MessageProviderVersion messageProviderVersion;
+   private final MessageProviderVersion messageProviderVersion;
 
    protected boolean librariesLoaded;
 
@@ -332,9 +332,8 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
       comp.setLayoutData(gd);
 
       // Create the tree treeViewer as a child of the composite parent
-      treeViewer =
-            new MessageXViewer(comp,
-                               SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.DOUBLE_BUFFERED);
+      treeViewer = new MessageXViewer(comp,
+         SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.DOUBLE_BUFFERED);
       GridData layoutData = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL | GridData.FILL_BOTH);
       layoutData.horizontalSpan = numColumns;
       treeViewer.getControl().setLayoutData(layoutData);
@@ -375,9 +374,8 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
                } catch (ArrayIndexOutOfBoundsException t) {
                   // throw if there is an error in the message jar
                   // (usually... )
-                  final String msg =
-                        String.format("Problems occurred when trying to display details for %s: (See Error Log)",
-                                      node.getName());
+                  final String msg = String.format(
+                     "Problems occurred when trying to display details for %s: (See Error Log)", node.getName());
                   OseeLog.log(Activator.class, Level.SEVERE, "Error while displaying details for " + node.getName(), t);
                   openInfo("Possible Message JAR Error", msg);
                }
@@ -394,23 +392,24 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
             }
          }
       });
-      
-      treeViewer.addDoubleClickListener(new IDoubleClickListener(){
+
+      treeViewer.addDoubleClickListener(new IDoubleClickListener() {
 
          @Override
          public void doubleClick(DoubleClickEvent event) {
             IStructuredSelection selection = (IStructuredSelection) event.getSelection();
             Object element = selection.getFirstElement();
-            if(element instanceof ElementNode) {
+            if (element instanceof ElementNode) {
                WatchedMessageNode messageNode = getWatchList().getMessageNode(((ElementNode) element).getMessageName());
                IMessageSubscription subscription = messageNode.getSubscription();
-               if(subscription.getMessageMode() == MessageMode.WRITER) {
+               if (subscription.getMessageMode() == MessageMode.WRITER) {
                   ElementNode node = (ElementNode) element;
                   SetValueAction act = new SetValueAction(WatchView.this, node);
                   act.run();
                }
             }
-         }});
+         }
+      });
 
       // Create menu, toolbars, filters, sorters.
       createToolBar();
@@ -440,7 +439,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
                   AddWatchParameter param = new AddWatchParameter();
                   addWatchMessage(param);
                }
-            } else if (e.stateMask != SWT.CTRL && e.stateMask != SWT.ALT && e.keyCode == SWT.DEL){
+            } else if (e.stateMask != SWT.CTRL && e.stateMask != SWT.ALT && e.keyCode == SWT.DEL) {
                final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
                watchList.deleteSelection(selection);
                refresh();
@@ -458,7 +457,8 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
       Transfer[] transfers = new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance()};
       treeViewer.addDropSupport(ops, transfers, new WatchViewDropAdapter(this));
 
-      watchViewMessageDefinitionProviderTracker = new WatchViewMessageDefinitionProviderTracker(FrameworkUtil.getBundle(getClass()).getBundleContext(), this);
+      watchViewMessageDefinitionProviderTracker =
+         new WatchViewMessageDefinitionProviderTracker(FrameworkUtil.getBundle(getClass()).getBundleContext(), this);
       watchViewMessageDefinitionProviderTracker.open(true);
 
       clientService.addConnectionListener(this);
@@ -467,8 +467,9 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    }
 
    /**
-    * This code ensures that the Writer only background color is preserved when the row is selected. 
-    * Otherwise, the selection would hide whether the message is a reader or a writer.
+    * This code ensures that the Writer only background color is preserved when the row is selected. Otherwise, the
+    * selection would hide whether the message is a reader or a writer.
+    *
     * @param viewer
     */
    private void addSelectionBackgroundChanger(final MessageXViewer viewer) {
@@ -477,12 +478,12 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
          @Override
          public void handleEvent(Event event) {
 
-            Tree table =(Tree)event.widget;
-            TreeItem item =(TreeItem)event.item;
+            Tree table = (Tree) event.widget;
+            TreeItem item = (TreeItem) event.item;
             Object data = item.getData();
-            if( data instanceof WatchedMessageNode ) {
+            if (data instanceof WatchedMessageNode) {
                WatchedMessageNode watchedMessageNode = (WatchedMessageNode) data;
-               if( watchedMessageNode.getSubscription().getMessageMode() == MessageMode.READER){
+               if (watchedMessageNode.getSubscription().getMessageMode() == MessageMode.READER) {
                   return;
                }
 
@@ -491,22 +492,25 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
             }
             event.detail &= ~SWT.HOT;
 
-            if ((event.detail & SWT.SELECTED) == 0) return; /// item not selected
+            if ((event.detail & SWT.SELECTED) == 0) {
+               return; /// item not selected
+            }
 
             int clientWidth = table.getClientArea().width;
 
-            GC gc = event.gc;               
+            GC gc = event.gc;
             Color oldForeground = gc.getForeground();
             Color oldBackground = Displays.getColor(202,225,255);
 
             final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
             final AbstractTreeNode node = findElementMatching(selection, data);
             Color background = node.getBackground();
-            if( background == null )
+            if (background == null) {
                background = oldBackground;
+            }
 
             gc.setBackground(background);
-            gc.setForeground(oldForeground);              
+            gc.setForeground(oldForeground);
             gc.fillRectangle(0, event.y, clientWidth, event.height);
 
             gc.setForeground(oldForeground);
@@ -518,7 +522,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
             Object[] array = selection.toArray();
             for (int i = 0; i < array.length; i++) {
                Object cur = array[i];
-               if( cur == data) {
+               if (cur == data) {
                   return (AbstractTreeNode) cur;
                }
             }
@@ -591,8 +595,8 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 
          @Override
          public void run() {
-            if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                                          "Delete All", "Delete All Watch Items?")) {
+            if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete All",
+               "Delete All Watch Items?")) {
                watchList.deleteAll();
                refresh();
             }
@@ -620,7 +624,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
             dialog.setFilterExtensions(new String[] {"*.mwi"});
             if (saveFilePath == null) {
                saveFilePath = System.getProperty("user.home");
-               if(saveFilePath == null) {
+               if (saveFilePath == null) {
                   saveFilePath = OseeData.getPath().toOSString();
                }
             }
@@ -696,7 +700,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 
    /**
     * display details about specified node
-    * 
+    *
     * @param node node whose details will be displayed in the detail window of the GUI
     */
    public void setDetailText(final AbstractTreeNode node) {
@@ -722,7 +726,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    }
 
    public void addWatchMessage(final AddWatchParameter parameter) {
-      new Thread(new Runnable(){
+      new Thread(new Runnable() {
          @Override
          public void run() {
             for (MessageParameter message : parameter.getMessageParameters()) {
@@ -733,9 +737,11 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
                      elements = new ArrayList<ElementPath>();
                   }
                   MessageMode mode = message.isWriter() ? MessageMode.WRITER : MessageMode.READER;
-                  watchList.createElements(message.getMessageName(),message.getDataType(), mode, elements, message.getValueMap());
+                  watchList.createElements(message.getMessageName(), message.getDataType(), mode, elements,
+                     message.getValueMap());
                } catch (ClassNotFoundException ex1) {
-                  if (openProceedWithProcessing("Could not find a class definition for " + message + "\n Do you wish to continue")) {
+                  if (openProceedWithProcessing(
+                     "Could not find a class definition for " + message + "\n Do you wish to continue")) {
                      continue;
                   } else {
                      return;
@@ -748,7 +754,8 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
                   }
                } catch (Exception ex1) {
                   OseeLog.log(Activator.class, Level.SEVERE, "failed to create message node", ex1);
-                  if (openProceedWithProcessing("Error processing " + message + ". See Error Log for details.\n Do you wish to continue")) {
+                  if (openProceedWithProcessing(
+                     "Error processing " + message + ". See Error Log for details.\n Do you wish to continue")) {
                      continue;
                   } else {
                      return;
@@ -756,10 +763,10 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
                }
             }
 
-            Display.getDefault().asyncExec(new Runnable(){
+            Display.getDefault().asyncExec(new Runnable() {
                @Override
                public void run() {
-                  refresh();            
+                  refresh();
                }
             });
          }
@@ -779,9 +786,9 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    }
 
    private boolean openProceedWithProcessing(final String message) {
-      MessageDialog dialog =
-            new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Proceed?", null, message,
-                              MessageDialog.QUESTION, new String[] {"Continue processing with next message", "End message processing"}, 0);
+      MessageDialog dialog = new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+         "Proceed?", null, message, MessageDialog.QUESTION,
+         new String[] {"Continue processing with next message", "End message processing"}, 0);
       return dialog.open() == Window.OK;
    }
 
@@ -793,8 +800,8 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
       try {
          if (Benchmark.isBenchmarkingEnabled()) {
             OseeLog.logf(Activator.class, Level.INFO, "%s: # samples=%d, max=%d, min=%d, avg=%d", benchMark.getName(),
-                         benchMark.getTotalSamples(), benchMark.getLongestSample(), benchMark.getShortestSample(),
-                         benchMark.getAverage());
+               benchMark.getTotalSamples(), benchMark.getLongestSample(), benchMark.getShortestSample(),
+               benchMark.getAverage());
          }
       } catch (Throwable t) {
          OseeLog.log(Activator.class, Level.WARNING, "Exception during disconnect", t);
@@ -907,7 +914,8 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
             public Object messageNode(MessageNode node) {
                if (selection.size() == 1) {
                   WatchedMessageNode msgNode = (WatchedMessageNode) node;
-                  mm.insertBefore(XViewer.MENU_GROUP_PRE, new WatchElementAction(WatchView.this, (WatchedMessageNode) node));
+                  mm.insertBefore(XViewer.MENU_GROUP_PRE,
+                     new WatchElementAction(WatchView.this, (WatchedMessageNode) node));
                   mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
                   mm.insertBefore(XViewer.MENU_GROUP_PRE, SetDataSourceMenu.createMenu(msgNode));
                   mm.insertBefore(XViewer.MENU_GROUP_PRE, SetMessageModeMenu.createMenu(WatchView.this, msgNode));
@@ -967,10 +975,10 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    }
 
    private void setNoLibraryStatus() {
-      if(!treeViewer.getTree().isDisposed()){
+      if (!treeViewer.getTree().isDisposed()) {
          treeViewer.getTree().setToolTipText("");
       }
-      if(!statusTxt.isDisposed()){
+      if (!statusTxt.isDisposed()) {
          statusTxt.setText("no library detected");
       }
    }
@@ -1007,8 +1015,6 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
       });
    }
 
-
-
    public void addMessageDefinitionProvider(MessageDefinitionProvider provider) {
       messageProviderVersion.add(provider);
       Displays.ensureInDisplayThread(new Runnable() {
@@ -1030,8 +1036,8 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if(messageProviderVersion.isAnyAvailable()){
-               if(!statusTxt.isDisposed()){
+            if (messageProviderVersion.isAnyAvailable()) {
+               if (!statusTxt.isDisposed()) {
                   librariesLoaded = true;
                   updateStatusLabel();
                   statusTxt.setToolTipText(messageProviderVersion.getVersion());
@@ -1045,13 +1051,13 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 
    private void updateStatusLabel() {
       String text = "";
-      if( librariesLoaded) {
+      if (librariesLoaded) {
          text = "libraries loaded";
       } else {
          text = Status.NO_TEST_MANAGER.asString();
       }
 
-      if(writerIsPresent) {
+      if (writerIsPresent) {
          text += ", WRITERS ARE PRESENT";
          statusTxt.setBackground(Displays.getColor(WatchView.COLOR_GOLDENROD.red, WatchView.COLOR_GOLDENROD.green, WatchView.COLOR_GOLDENROD.blue));
       } else {
@@ -1068,7 +1074,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
    }
 
    public void setWriterPresent(boolean writerIsPresent) {
-      if( this.writerIsPresent != writerIsPresent ) {
+      if (this.writerIsPresent != writerIsPresent) {
          this.writerIsPresent = writerIsPresent;
          updateStatusLabel();
          updateWriterButton();

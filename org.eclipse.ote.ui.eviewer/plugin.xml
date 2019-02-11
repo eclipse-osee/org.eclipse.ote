@@ -12,7 +12,7 @@
             allowMultiple="true"
             category="org.eclipse.ote.ui.messaging"
             class="org.eclipse.ote.ui.eviewer.view.ElementViewer"
-            icon="icons/element_viewer.gif"
+            icon="OSEE-INF/images/element_viewer.gif"
             id="org.eclipse.ote.ui.eviewer.view.ElementViewer"
             name="Element Viewer"
             restorable="true">

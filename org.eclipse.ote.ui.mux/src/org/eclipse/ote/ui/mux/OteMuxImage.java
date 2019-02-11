@@ -28,7 +28,7 @@ public enum OteMuxImage implements KeyedImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(MuxToolPlugin.PLUGIN_ID, "icons", fileName);
+      return ImageManager.createImageDescriptor(MuxToolPlugin.PLUGIN_ID, fileName);
    }
 
    @Override

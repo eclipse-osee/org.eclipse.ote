@@ -18,8 +18,8 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.FileStoreCustomizations;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -27,22 +27,22 @@ import org.eclipse.osee.framework.plugin.core.util.OseeData;
 public class MessageXViewerFactory extends XViewerFactory {
 
    private static String VIEWER_NAMESPACE = "org.eclipse.osee.ote.message.MessageXViewer";
-   public static XViewerColumn name = new XViewerColumn("osee.message.name", "Name", 200, XViewerAlign.Left, true,
-      SortDataType.String, false, null);
-   public static XViewerColumn psUpdateCount = new XViewerColumn("osee.message.udpates", "Updates", 60, XViewerAlign.Left, true,
-      SortDataType.Integer, false, null);
-   public static XViewerColumn value = new XViewerColumn("osee.message.value", "Value", 100, XViewerAlign.Left, true,
-      SortDataType.String, false, null);
-   public static XViewerColumn byteOffset = new XViewerColumn("osee.message.offset", "Offset", 50, XViewerAlign.Left, true,
-      SortDataType.Integer, false, null);
-   public static XViewerColumn msb = new XViewerColumn("osee.message.msb", "MSB", 50, XViewerAlign.Left, true,
-      SortDataType.Integer, false, null);
-   public static XViewerColumn lsb = new XViewerColumn("osee.message.lsb", "LSB", 50, XViewerAlign.Left, true,
-      SortDataType.Integer, false, null);
-   public static XViewerColumn bitSize = new XViewerColumn("osee.message.bitSize", "Bit Size", 60, XViewerAlign.Left, true,
-      SortDataType.Integer, false, null);
-   public static XViewerColumn elementType = new XViewerColumn("osee.message.type", "Type", 100, XViewerAlign.Left, true,
-      SortDataType.String, false, null);
+   public static XViewerColumn name =
+      new XViewerColumn("osee.message.name", "Name", 200, XViewerAlign.Left, true, SortDataType.String, false, null);
+   public static XViewerColumn psUpdateCount = new XViewerColumn("osee.message.udpates", "Updates", 60,
+      XViewerAlign.Left, true, SortDataType.Integer, false, null);
+   public static XViewerColumn value =
+      new XViewerColumn("osee.message.value", "Value", 100, XViewerAlign.Left, true, SortDataType.String, false, null);
+   public static XViewerColumn byteOffset = new XViewerColumn("osee.message.offset", "Offset", 50, XViewerAlign.Left,
+      true, SortDataType.Integer, false, null);
+   public static XViewerColumn msb =
+      new XViewerColumn("osee.message.msb", "MSB", 50, XViewerAlign.Left, true, SortDataType.Integer, false, null);
+   public static XViewerColumn lsb =
+      new XViewerColumn("osee.message.lsb", "LSB", 50, XViewerAlign.Left, true, SortDataType.Integer, false, null);
+   public static XViewerColumn bitSize = new XViewerColumn("osee.message.bitSize", "Bit Size", 60, XViewerAlign.Left,
+      true, SortDataType.Integer, false, null);
+   public static XViewerColumn elementType =
+      new XViewerColumn("osee.message.type", "Type", 100, XViewerAlign.Left, true, SortDataType.String, false, null);
 
    private final FileStoreCustomizations propertyStoreCustomizations;
 
@@ -59,8 +59,8 @@ public class MessageXViewerFactory extends XViewerFactory {
          OseeLog.log(MessageXViewerFactory.class, Level.SEVERE, ex);
          folder = new File(System.getProperty("java.io.tmpdir"));
       }
-      propertyStoreCustomizations =
-         new FileStoreCustomizations(folder, "OteMessageWatch", ".xml", "DefaultMessageWatch.xml", defaultCustomDataXml);
+      propertyStoreCustomizations = new FileStoreCustomizations(folder, "OteMessageWatch", ".xml",
+         "DefaultMessageWatch.xml", defaultCustomDataXml);
       registerColumns(name, psUpdateCount, value, /* hex, */byteOffset, msb, lsb, bitSize, elementType);
    }
 
