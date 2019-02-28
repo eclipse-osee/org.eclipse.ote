@@ -64,11 +64,6 @@
 				<url>${eclipse-ip-site}</url>
 			</repository>
 		
-		   <repository>
-               <id>nebula</id>
-               <layout>p2</layout>
-               <url>${local-mirrors-path}/nebula/snapshot/</url>
-            </repository>
             <repository>
                <id>polarion</id>
                <layout>p2</layout>
