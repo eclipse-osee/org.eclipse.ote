@@ -401,26 +401,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.osee.orcs.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.orcs.feature.source"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.server.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.server.legacy.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.server.legacy.feature.source"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.papyrus.sdk.feature"
          version="0.0.0"/>
 
@@ -686,14 +666,6 @@
 
    <includes
          id="org.polarion.eclipse.team.svn.connector.svnkit18"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.core.server.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.core.server.feature.source"
          version="0.0.0"/>
 
    <includes
