@@ -9,7 +9,7 @@
             id="org.eclipse.ote.ui.messaging"/>
       <view
             name="MuxView"
-            icon="images/1553.gif"
+            icon="OSEE-INF/images/1553.gif"
             category="org.eclipse.ote.ui.messaging"
             class="org.eclipse.ote.ui.mux.view.MuxView"
             id="osee.test.muxTool.views.MuxView">
