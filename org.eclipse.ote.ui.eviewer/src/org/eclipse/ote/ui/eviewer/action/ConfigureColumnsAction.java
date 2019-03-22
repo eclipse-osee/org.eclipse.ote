@@ -30,7 +30,7 @@ public class ConfigureColumnsAction extends Action {
 
    public ConfigureColumnsAction(ElementContentProvider provider) {
       super("Configure Columns", IAction.AS_PUSH_BUTTON);
-      setImageDescriptor(Activator.getImageDescriptor("icons/table_config.gif"));
+      setImageDescriptor(Activator.getImageDescriptor("OSEE-INF/images/table_config.gif"));
       this.provider = provider;
    }
 

@@ -24,7 +24,7 @@ public class ClearAllUpdatesAction extends Action {
 
    public ClearAllUpdatesAction(ElementContentProvider elementContentProvider) {
       super("Clear All Updates", IAction.AS_PUSH_BUTTON);
-      setImageDescriptor(Activator.getImageDescriptor("icons/deleteAll.gif"));
+      setImageDescriptor(Activator.getImageDescriptor("OSEE-INF/images/deleteAll.gif"));
       this.elementContentProvider = elementContentProvider;
    }
 

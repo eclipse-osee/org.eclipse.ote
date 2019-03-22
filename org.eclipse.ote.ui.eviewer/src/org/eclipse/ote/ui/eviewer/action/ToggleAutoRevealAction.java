@@ -24,7 +24,7 @@ public class ToggleAutoRevealAction extends Action {
 
    public ToggleAutoRevealAction(ElementContentProvider elementContentProvider) {
       super("Auto Show Update", IAction.AS_CHECK_BOX);
-      setImageDescriptor(Activator.getImageDescriptor("icons/auto_scroll.png"));
+      setImageDescriptor(Activator.getImageDescriptor("OSEE-INF/images/auto_scroll.png"));
       this.elementContentProvider = elementContentProvider;
       setChecked(elementContentProvider.isAutoReveal());
    }

@@ -47,7 +47,7 @@ public class ColumnConfigurationDialog extends Dialog {
    public ColumnConfigurationDialog(Shell parentShell, ColumnConfiguration configuration) {
       super(parentShell);
       this.configuration = configuration;
-      shellIcon = Activator.getImageDescriptor("icons/table_config.gif").createImage();
+      shellIcon = Activator.getImageDescriptor("OSEE-INF/images/table_config.gif").createImage();
    }
 
    @Override

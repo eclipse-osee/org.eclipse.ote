@@ -24,7 +24,7 @@ public class ShowEnumAsNumberAction extends Action {
 
    public ShowEnumAsNumberAction(ElementContentProvider elementContentProvider, boolean isChecked) {
       super("Show Enum As Number", IAction.AS_CHECK_BOX);
-      setImageDescriptor(Activator.getImageDescriptor("icons/NumberLetter.png"));
+      setImageDescriptor(Activator.getImageDescriptor("OSEE-INF/images/NumberLetter.png"));
       setToolTipText("Show Enum As Number");
       this.elementContentProvider = elementContentProvider;
       this.setChecked(isChecked);

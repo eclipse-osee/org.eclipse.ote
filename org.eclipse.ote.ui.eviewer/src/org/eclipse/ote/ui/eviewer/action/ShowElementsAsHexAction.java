@@ -26,7 +26,7 @@ public class ShowElementsAsHexAction extends Action{
 
    public ShowElementsAsHexAction(ElementContentProvider elementContentProvider, boolean isChecked) {
       super("Show Elements as Hex", IAction.AS_CHECK_BOX);
-      setImageDescriptor(Activator.getImageDescriptor("icons/NumberLetter.png"));
+      setImageDescriptor(Activator.getImageDescriptor("OSEE-INF/images/NumberLetter.png"));
       setToolTipText("Show Elements as Hex");
       this.elementContentProvider = elementContentProvider;
       this.setChecked(isChecked);

@@ -40,7 +40,7 @@ public class AddHeaderElementAction extends Action {
    public AddHeaderElementAction(ElementContentProvider elementContentProvider) {
       super("Add Header Element", IAction.AS_PUSH_BUTTON);
       this.elementContentProvider = elementContentProvider;
-      setImageDescriptor(Activator.getImageDescriptor("icons/add.png"));
+      setImageDescriptor(Activator.getImageDescriptor("OSEE-INF/images/add.png"));
    }
 
    @Override

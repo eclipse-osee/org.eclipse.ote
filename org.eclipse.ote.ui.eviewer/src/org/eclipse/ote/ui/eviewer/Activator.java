@@ -61,9 +61,9 @@ public class Activator extends AbstractUIPlugin {
 
 	@Override
 	protected void initializeImageRegistry(ImageRegistry reg) {
-		reg.put("ACTIVE_PNG", getImageDescriptor("icons/active.png"));
-		reg.put("INACTIVE_PNG", getImageDescriptor("icons/inactive.png"));
-		reg.put("DUPLICATE_PNG", getImageDescriptor("icons/question_white.png"));
+		reg.put("ACTIVE_PNG", getImageDescriptor("OSEE-INF/images/active.png"));
+		reg.put("INACTIVE_PNG", getImageDescriptor("OSEE-INF/images/inactive.png"));
+		reg.put("DUPLICATE_PNG", getImageDescriptor("OSEE-INF/images/question_white.png"));
 	}
 
 	BundleContext getBundleContext() {

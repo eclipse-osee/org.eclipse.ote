@@ -37,7 +37,7 @@ public class AddElementAction extends Action {
    public AddElementAction(ElementContentProvider elementContentProvider) {
       super("Add Element", IAction.AS_PUSH_BUTTON);
       this.elementContentProvider = elementContentProvider;
-      setImageDescriptor(Activator.getImageDescriptor("icons/add.png"));
+      setImageDescriptor(Activator.getImageDescriptor("OSEE-INF/images/add.png"));
    }
 
    @Override

@@ -33,6 +33,6 @@ public enum OteElementImage implements KeyedImage {
 
    @Override
    public String getImageKey() {
-      return Activator.PLUGIN_ID + ".icons." + fileName;
+      return Activator.PLUGIN_ID + ".images." + fileName;
    }
 }

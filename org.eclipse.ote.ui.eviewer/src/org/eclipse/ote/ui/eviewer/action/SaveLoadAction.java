@@ -31,7 +31,7 @@ public class SaveLoadAction extends Action implements IMenuCreator {
    public SaveLoadAction(ElementContentProvider elementContentProvider) {
       super("Save/Load");
       this.elementContentProvider = elementContentProvider;
-      setImageDescriptor(Activator.getImageDescriptor("icons/save.gif"));
+      setImageDescriptor(Activator.getImageDescriptor("OSEE-INF/images/save.gif"));
       setMenuCreator(this);
    }
 

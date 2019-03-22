@@ -30,7 +30,7 @@ public class StreamToFileAction extends Action {
 	public StreamToFileAction(ElementViewer elementViewer) {
 		super("Stream To File", IAction.AS_CHECK_BOX);
 		this.elementViewer = elementViewer;
-		setImageDescriptor(Activator.getImageDescriptor("icons/stream.gif"));
+		setImageDescriptor(Activator.getImageDescriptor("OSEE-INF/images/stream.gif"));
 	}
 
 	@Override

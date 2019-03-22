@@ -26,7 +26,7 @@ public class OpenNewElementViewer extends Action {
 
    public OpenNewElementViewer() {
       super("Open New Element Viewer", IAction.AS_PUSH_BUTTON);
-      setImageDescriptor(Activator.getImageDescriptor("icons/sample.gif"));
+      setImageDescriptor(Activator.getImageDescriptor("OSEE-INF/images/sample.gif"));
    }
 
    @Override

@@ -24,7 +24,7 @@ public class PauseUpdatesAction extends Action {
 	public PauseUpdatesAction(ElementContentProvider elementContentProvider) {
 		super("Pause Updates", IAction.AS_CHECK_BOX);
 		this.elementContentProvider = elementContentProvider;
-		setImageDescriptor(Activator.getImageDescriptor("icons/pause.gif"));
+		setImageDescriptor(Activator.getImageDescriptor("OSEE-INF/images/pause.gif"));
 	}
 
 	@Override
