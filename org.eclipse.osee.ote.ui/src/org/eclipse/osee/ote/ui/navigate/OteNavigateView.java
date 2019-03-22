@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.ui.navigate;
 
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -20,8 +21,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.ote.ui.OteNavigateComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
@@ -34,7 +35,7 @@ import org.eclipse.ui.part.ViewPart;
 public class OteNavigateView extends ViewPart {
 
    public static final String VIEW_ID = "org.eclipse.osee.ote.ui.navigate.OteNavigateView";
-   private XNavigateComposite xNavComp;
+   private OteNavigateComposite xNavComp;
 
    @Override
    public void setFocus() {
@@ -48,7 +49,7 @@ public class OteNavigateView extends ViewPart {
     */
    @Override
    public void createPartControl(Composite parent) {
-      xNavComp = new XNavigateComposite(new OteNavigateViewItems(), parent, SWT.NONE);
+      xNavComp = new OteNavigateComposite(new OteNavigateViewItems(), parent, SWT.NONE);
 
       xNavComp.getFilteredTree().getViewer().setSorter(new OteNavigateViewerSorter());
 
