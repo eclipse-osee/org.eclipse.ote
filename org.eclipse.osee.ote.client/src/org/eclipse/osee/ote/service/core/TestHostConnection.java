@@ -30,18 +30,24 @@ class TestHostConnection {
    private final UUID sessionKey;
    private final IHostTestEnvironment host;
    private String serverId;
+   private final boolean isUnauthorizedUser;
 
-   TestHostConnection(IServiceConnector connector, IHostTestEnvironment host, ITestEnvironment connectEnvironment, UUID uuid) {
+   TestHostConnection(IServiceConnector connector, IHostTestEnvironment host, ITestEnvironment connectEnvironment, 
+         UUID uuid, boolean isUnauthorizedUser) {
       // intentionally package-private
-      if (connector == null) {
-         throw new NullPointerException("service connector cannot be null");
+
+      if (!isUnauthorizedUser) {
+         if (connector == null) {
+            throw new NullPointerException("service connector cannot be null");
+         }
+         if (connectEnvironment == null) {
+            throw new NullPointerException("test environment cannot be null");
+         }
+         if (uuid == null) {
+            throw new NullPointerException("session key cannot be null");
+         }
       }
-      if (connectEnvironment == null) {
-         throw new NullPointerException("test environment cannot be null");
-      }
-      if (uuid == null) {
-         throw new NullPointerException("session key cannot be null");
-      }
+      
       this.serviceConnector = connector;
       this.host = host;
       this.connectEnvironment = connectEnvironment;
@@ -51,6 +57,7 @@ class TestHostConnection {
       } catch (RemoteException e) {
     	  this.serverId = "";
       }
+      this.isUnauthorizedUser = isUnauthorizedUser;
    }
 
    /**
@@ -89,5 +96,9 @@ class TestHostConnection {
       // intentionally package-private
 
       host.disconnect(sessionKey);
+   }
+
+   public boolean isUnauthorizedUser() {
+      return isUnauthorizedUser;
    }
 }

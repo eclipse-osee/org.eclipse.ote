@@ -2,6 +2,7 @@ package org.eclipse.osee.ote.properties;
 
 public enum OtePropertiesCore implements OteProperties {
 
+   authorizedUser("ote.authorized.user"),
    batchFolderDays("ote.batchfolder.days"),
    brokerUriPort("ote.server.broker.uri.port"),
    endpointPort("ote.endpoint.port"),

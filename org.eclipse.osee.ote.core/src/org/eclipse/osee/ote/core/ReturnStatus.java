@@ -20,11 +20,13 @@ public class ReturnStatus implements Serializable {
    private static final long serialVersionUID = -7774073812320127561L;
 
    private final boolean status;
+   private final boolean unauthorizedUser;
    private final String message;
 
-   public ReturnStatus(String message, boolean status) {
+   public ReturnStatus(String message, boolean status, boolean unauthorizedUser) {
       this.status = status;
       this.message = message;
+      this.unauthorizedUser = unauthorizedUser;
    }
 
    public boolean getStatus() {
@@ -33,5 +35,9 @@ public class ReturnStatus implements Serializable {
 
    public String getMessage() {
       return message;
+   }
+   
+   public boolean isUnauthorizedUser() {
+      return unauthorizedUser;
    }
 }
