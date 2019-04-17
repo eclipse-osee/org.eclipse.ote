@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
+      <XNavigateItem
+            category="Connections"
+            classname="org.eclipse.ote.client.ui.core.ConnectionNavigatorItem"
+            viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
+      </XNavigateItem>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            class="org.eclipse.ote.client.ui.prompt.PromptView"
+            id="org.eclipse.ote.client.ui.prompt"
+            category="osee.test.category"
+            name="OTE Prompt"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
+            class="org.eclipse.ote.client.ui.PromptViewPreferencePage"
+            id="org.eclipse.ote.client.ui.PromptViewPreferencePage"
+            name="OTE Prompt View">
+      </page>
+   </extension>
+
+
+</plugin>

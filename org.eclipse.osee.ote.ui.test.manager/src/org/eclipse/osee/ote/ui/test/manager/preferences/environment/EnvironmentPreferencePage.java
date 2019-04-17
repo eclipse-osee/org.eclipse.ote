@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.TreeObject;
 import org.eclipse.osee.framework.jdk.core.type.TreeParent;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
+import org.eclipse.osee.ote.ui.test.manager.TestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -305,7 +305,7 @@ public class EnvironmentPreferencePage {
 
          @Override
          public Image getImage(Object obj) {
-            return ImageManager.getImage(OteTestManagerImage.ENVIRONMENT);
+            return ImageManager.getImage(TestManagerImage.ENVIRONMENT);
          }
 
          @Override

@@ -14,7 +14,7 @@ import java.io.File;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
+import org.eclipse.osee.ote.ui.test.manager.TestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.pages.ScriptPage;
@@ -53,7 +53,7 @@ public class SaveWidget {
 
       MenuItem saveAsMenuItem = new MenuItem(menu, SWT.PUSH);
       saveAsMenuItem.setText("SaveAs...");
-      saveAsMenuItem.setImage(ImageManager.getImage(OteTestManagerImage.SAVEAS_EDIT));
+      saveAsMenuItem.setImage(ImageManager.getImage(TestManagerImage.SAVEAS_EDIT));
       saveAsMenuItem.addSelectionListener(new SelectionListener() {
          @Override
          public void widgetDefaultSelected(SelectionEvent e) {
@@ -94,7 +94,7 @@ public class SaveWidget {
       });
 
       final ToolItem item = new ToolItem(toolBar, SWT.DROP_DOWN);
-      item.setImage(ImageManager.getImage(OteTestManagerImage.SAVE_EDIT));
+      item.setImage(ImageManager.getImage(TestManagerImage.SAVE_EDIT));
       item.setToolTipText("Saves current page configuration to file");
       item.addSelectionListener(new SelectionAdapter() {
          @Override

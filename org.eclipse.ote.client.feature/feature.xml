@@ -17,6 +17,41 @@
    </license>
 
    <plugin
+         id="org.eclipse.ote.client"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ote.client.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ote.test.manager"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ote.test.manager.uut.selector"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ote.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.ote.ui.eviewer"
          download-size="0"
          install-size="0"
@@ -31,6 +66,13 @@
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.ote.ui.message.search"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.ote.ui.message.util"
          download-size="0"
          install-size="0"
@@ -39,20 +81,6 @@
 
    <plugin
          id="org.eclipse.ote.ui.mux"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ote.ui.message.search"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ote.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

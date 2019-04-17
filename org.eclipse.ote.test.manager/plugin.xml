@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.ote.test.manager.editor.OteTestManagerEditor"
+            contributorClass="org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditorContributor"
+            default="false"
+            extensions="ote"
+            icon="OSEE-INF/images/tm.gif"
+            id="org.eclipse.ote.test.manager.editor.OteTestManagerEditor"
+            name="OTE Editor">
+      </editor>
+      <editor
+            class="org.eclipse.ote.test.manager.editor.OteTestManagerEditor"
+            contributorClass="org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditorContributor"
+            default="false"
+            extensions="ote"
+            icon="OSEE-INF/images/tm.gif"
+            id="org.eclipse.ote.test.manager.editor.OteTestManagerEditor"
+            name="OTE Editor">
+      </editor>
+   </extension>
+      <extension
+         id="org.eclipse.osee.ote.ui.test.manager.core.elementFactories"
+         name="TestManagerEditorInputFactory"
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditorInputFactory"
+            id="org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditorInputFactory"/>
+   </extension>
+<!--      <extension   COME BACK AND HANDLE THE OUTFILE STUFF LATER!!!
+            point="org.eclipse.osee.ote.ui.test.output.OutputTransform">
+         <Transform File="transforms/outputOteNormal.xsl"/>
+         <Transform File="transforms/TestPointsOnly.xsl"/>
+         <Transform File="transforms/outputFlat.xsl"/>
+         <Transform File="transforms/outputDebug.xsl"/>
+      </extension> -->
+      <extension
+            point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
+         <XNavigateItem classname="org.eclipse.ote.test.manager.navigate.TestManagerNavigateViewItems"
+         viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
+         </XNavigateItem>
+      </extension>
+         <extension
+         point="org.eclipse.osee.framework.ui.plugin.PropertyStoreControl">
+      <PropertyStoreControl
+            classname="org.eclipse.ote.test.manager.pages.DebugOptionContribution"
+            viewId="org.eclipse.osee.ote.ui.test.manager">
+      </PropertyStoreControl>
+   </extension>
+              <extension
+         point="org.eclipse.osee.framework.ui.plugin.PropertyStoreControl">
+      <PropertyStoreControl
+            classname="org.eclipse.ote.test.manager.pages.FormalTestAreaContribution"
+            viewId="org.eclipse.osee.ote.ui.test.manager">
+      </PropertyStoreControl>
+   </extension>
+              <extension
+         point="org.eclipse.osee.framework.ui.plugin.PropertyStoreControl">
+      <PropertyStoreControl
+            classname="org.eclipse.ote.test.manager.pages.UutConsoleOutput"
+            viewId="org.eclipse.osee.ote.ui.test.manager">
+      </PropertyStoreControl>
+   </extension>
+</plugin>

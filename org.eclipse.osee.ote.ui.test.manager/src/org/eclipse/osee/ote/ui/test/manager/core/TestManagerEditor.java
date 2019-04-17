@@ -42,7 +42,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
 import org.eclipse.osee.ote.ui.test.manager.ITestManagerFactory;
-import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
+import org.eclipse.osee.ote.ui.test.manager.TestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.pages.contributions.TestManagerStorageKeys;
 import org.eclipse.osee.ote.ui.test.manager.util.ClassServerInst;
@@ -68,7 +68,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  * </ul>
  */
 public abstract class TestManagerEditor extends MultiPageEditorPart implements ITestConnectionListener {
-   private static final Image errorImage = ImageManager.getImage(OteTestManagerImage.ERROR);
+   private static final Image errorImage = ImageManager.getImage(TestManagerImage.ERROR);
    public static final String namespace = "org.eclipse.osee.ote.ui.test.manager.editors.TestManagerEditor";
 
    public final QualifiedName clearCaseViewName = new QualifiedName(namespace, "CLEARCASEVIEW");

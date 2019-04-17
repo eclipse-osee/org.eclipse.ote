@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.service.ConnectionEvent;
-import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
+import org.eclipse.osee.ote.ui.test.manager.TestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.configuration.LoadWidget;
 import org.eclipse.osee.ote.ui.test.manager.configuration.SaveWidget;
 import org.eclipse.osee.ote.ui.test.manager.connection.ScriptManager;
@@ -189,7 +189,7 @@ public abstract class ScriptPage extends TestManagerPage {
       loadWidget.createToolItem(configToolBar);
 
       deleteButton = new ToolItem(configToolBar, SWT.PUSH | SWT.CENTER);
-      deleteButton.setImage(ImageManager.getImage(OteTestManagerImage.FILE_DELETE));
+      deleteButton.setImage(ImageManager.getImage(TestManagerImage.FILE_DELETE));
       deleteButton.setToolTipText("Deletes Selected (highlighted) Scripts");
       deleteButton.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -219,8 +219,8 @@ public abstract class ScriptPage extends TestManagerPage {
       ToolBar controlsToolBar = new ToolBar(coolBar, SWT.FLAT | SWT.HORIZONTAL);
 
       runButton = new ToolItem(controlsToolBar, SWT.PUSH | SWT.CENTER);
-      runButton.setImage(ImageManager.getImage(OteTestManagerImage.SEL_RUN_EXEC));
-      runButton.setDisabledImage(ImageManager.getImage(OteTestManagerImage.UNSEL_RUN_EXEC));
+      runButton.setImage(ImageManager.getImage(TestManagerImage.SEL_RUN_EXEC));
+      runButton.setDisabledImage(ImageManager.getImage(TestManagerImage.UNSEL_RUN_EXEC));
       runButton.setToolTipText("Runs the Checked Scripts");
       runButton.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -240,8 +240,8 @@ public abstract class ScriptPage extends TestManagerPage {
 
       // Create and configure the "Abort" button
       abortButton = new ToolItem(controlsToolBar, SWT.PUSH | SWT.CENTER);
-      abortButton.setImage(ImageManager.getImage(OteTestManagerImage.SEL_ABORT_STOP));
-      abortButton.setDisabledImage(ImageManager.getImage(OteTestManagerImage.UNSEL_ABORT_STOP));
+      abortButton.setImage(ImageManager.getImage(TestManagerImage.SEL_ABORT_STOP));
+      abortButton.setDisabledImage(ImageManager.getImage(TestManagerImage.UNSEL_ABORT_STOP));
       abortButton.setToolTipText("Abort Currently Running Script");
       abortButton.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -268,8 +268,8 @@ public abstract class ScriptPage extends TestManagerPage {
       abortButton.setEnabled(false);
 
       abortBatchButton = new ToolItem(controlsToolBar, SWT.PUSH | SWT.CENTER);
-      abortBatchButton.setImage(ImageManager.getImage(OteTestManagerImage.SEL_BATCH_ABORT_STOP));
-      abortBatchButton.setDisabledImage(ImageManager.getImage(OteTestManagerImage.UNSEL_BATCH_ABORT_STOP));
+      abortBatchButton.setImage(ImageManager.getImage(TestManagerImage.SEL_BATCH_ABORT_STOP));
+      abortBatchButton.setDisabledImage(ImageManager.getImage(TestManagerImage.UNSEL_BATCH_ABORT_STOP));
       abortBatchButton.setToolTipText("Abort Script Batch");
       abortBatchButton.addSelectionListener(new SelectionAdapter() {
          @Override

@@ -19,7 +19,7 @@ import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
  * @author Andrew M. Finkbeiner
  * @author Ryan Schmitt
  */
-public enum OteTestManagerImage implements KeyedImage {
+public enum TestManagerImage implements KeyedImage {
    ADD("add.gif"),
    ALERT_OBJ("alert_obj.gif"),
    CHECK("check.gif"),
@@ -62,7 +62,7 @@ public enum OteTestManagerImage implements KeyedImage {
 
    private final String fileName;
 
-   private OteTestManagerImage(String fileName) {
+   private TestManagerImage(String fileName) {
       this.fileName = fileName;
    }
 

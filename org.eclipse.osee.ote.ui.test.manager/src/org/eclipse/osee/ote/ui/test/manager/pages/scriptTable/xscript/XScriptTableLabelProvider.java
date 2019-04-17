@@ -19,7 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
+import org.eclipse.osee.ote.ui.test.manager.TestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask.ScriptStatusEnum;
@@ -27,23 +27,23 @@ import org.eclipse.swt.graphics.Image;
 
 public class XScriptTableLabelProvider extends XViewerLabelProvider {
    public static final OseeUiActivator plugin = TestManagerPlugin.getInstance();
-   private static Image checkedImage = ImageManager.getImage(OteTestManagerImage.CHECKBOX_ENABLED);
-   private static Image outputImage = ImageManager.getImage(OteTestManagerImage.CHECK);
+   private static Image checkedImage = ImageManager.getImage(TestManagerImage.CHECKBOX_ENABLED);
+   private static Image outputImage = ImageManager.getImage(TestManagerImage.CHECK);
    private static Map<ScriptStatusEnum, Image> statusImage = new HashMap<>();
-   private static Image uncheckedImage = ImageManager.getImage(OteTestManagerImage.CHECKBOX_DISABLED);
+   private static Image uncheckedImage = ImageManager.getImage(TestManagerImage.CHECKBOX_DISABLED);
 
    public XScriptTableLabelProvider(XScriptTable viewer) {
       super(viewer);
       if (statusImage.isEmpty()) {
-         statusImage.put(ScriptStatusEnum.NOT_CONNECTED, ImageManager.getImage(OteTestManagerImage.ALERT_OBJ));
-         statusImage.put(ScriptStatusEnum.READY, ImageManager.getImage(OteTestManagerImage.SCRIPT_READY_SM));
-         statusImage.put(ScriptStatusEnum.IN_QUEUE, ImageManager.getImage(OteTestManagerImage.SCRIPT_IN_QUEUE_SM));
-         statusImage.put(ScriptStatusEnum.RUNNING, ImageManager.getImage(OteTestManagerImage.SCRIPT_RUNNING));
-         statusImage.put(ScriptStatusEnum.COMPLETE, ImageManager.getImage(OteTestManagerImage.SCRIPT_COMPLETE_SM));
-         statusImage.put(ScriptStatusEnum.CANCELLED, ImageManager.getImage(OteTestManagerImage.SCRIPT_CANCELLED_SM));
-         statusImage.put(ScriptStatusEnum.CANCELLING, ImageManager.getImage(OteTestManagerImage.SCRIPT_CANCELLING_SM));
-         statusImage.put(ScriptStatusEnum.INVALID, ImageManager.getImage(OteTestManagerImage.ERROR_STACK));
-         statusImage.put(ScriptStatusEnum.INCOMPATIBLE, ImageManager.getImage(OteTestManagerImage.ERROR_STACK));
+         statusImage.put(ScriptStatusEnum.NOT_CONNECTED, ImageManager.getImage(TestManagerImage.ALERT_OBJ));
+         statusImage.put(ScriptStatusEnum.READY, ImageManager.getImage(TestManagerImage.SCRIPT_READY_SM));
+         statusImage.put(ScriptStatusEnum.IN_QUEUE, ImageManager.getImage(TestManagerImage.SCRIPT_IN_QUEUE_SM));
+         statusImage.put(ScriptStatusEnum.RUNNING, ImageManager.getImage(TestManagerImage.SCRIPT_RUNNING));
+         statusImage.put(ScriptStatusEnum.COMPLETE, ImageManager.getImage(TestManagerImage.SCRIPT_COMPLETE_SM));
+         statusImage.put(ScriptStatusEnum.CANCELLED, ImageManager.getImage(TestManagerImage.SCRIPT_CANCELLED_SM));
+         statusImage.put(ScriptStatusEnum.CANCELLING, ImageManager.getImage(TestManagerImage.SCRIPT_CANCELLING_SM));
+         statusImage.put(ScriptStatusEnum.INVALID, ImageManager.getImage(TestManagerImage.ERROR_STACK));
+         statusImage.put(ScriptStatusEnum.INCOMPATIBLE, ImageManager.getImage(TestManagerImage.ERROR_STACK));
       }
    };
 
