@@ -1,8 +1,13 @@
-/*
- * Created on Mar 22, 2019
+/*******************************************************************************
+ * Copyright (c) 2019 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ote.ui;
 
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -12,6 +17,9 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.swt.widgets.Composite;
 
+/**
+ * @author Andy Jury
+ */
 public class OteNavigateComposite extends XNavigateComposite {
 
    public OteNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style) {
