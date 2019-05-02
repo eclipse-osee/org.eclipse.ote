@@ -56,7 +56,7 @@ public class ClientSession extends AbstractRemoteSession {
    }
 
    @Override
-   public String getAddress() throws RemoteException {
+   public String getAddress() {
       return address.getHostAddress();
    }
 
@@ -101,7 +101,7 @@ public class ClientSession extends AbstractRemoteSession {
    }
 
    @Override
-   public void initiateInformationalPrompt(String message) throws RemoteException {
+   public void initiateInformationalPrompt(String message) {
       assert sessionDelegate != null : "delegate is null";
       try {
          sessionDelegate.handleInformationPrompt(message);
@@ -162,12 +162,12 @@ public class ClientSession extends AbstractRemoteSession {
     * closes this session
     */
    void close() {
-
+      // INTENTIONALLY EMPTY BLOCK
    }
 
    TestHostConnection connect(IServiceConnector connector, IHostTestEnvironment testHost, TestEnvironmentConfig config) throws Exception {
       // intentionally package-private
-      if (lock.tryLock(TIMEOUT, TimeUnit.MINUTES)) {
+       if (lock.tryLock(TIMEOUT, TimeUnit.MINUTES)) {
          try {
             IRemoteUserSession exportedSession = (IRemoteUserSession) connector.export(this);
             UUID id = UUID.randomUUID();
@@ -175,10 +175,12 @@ public class ClientSession extends AbstractRemoteSession {
             ConnectionRequestResult result = testHost.requestEnvironment(exportedSession, id, config);
             if (result != null && result.getStatus().getStatus()) {
                connector.setConnected(true);
-               return new TestHostConnection(connector, testHost, result.getEnvironment(), result.getSessionKey());
+               return new TestHostConnection(connector, testHost, result.getEnvironment(), result.getSessionKey(), false);
+            } else if (result != null && result.getStatus().isUnauthorizedUser()) {
+               return new TestHostConnection(null, testHost, null, null, true);
             } else {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error Connecting to the OTE Test Server.",
-                  new Exception(result.getStatus().getMessage()));
+                     new Exception(result.getStatus().getMessage()));
             }
             return null;
          } finally {

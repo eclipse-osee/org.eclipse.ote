@@ -28,15 +28,22 @@ public final class ConnectionEvent {
    private final UUID sessionKey;
    private final OteServiceProperties props;
    private final IHostTestEnvironment hostTestEnvironment;
+   private final boolean isUnauthorizedUser;
 
-   public ConnectionEvent(IHostTestEnvironment hostTestEnvironment, IServiceConnector connector, ITestEnvironment environment, UUID sessionKey) {
-      if (connector == null) {
-         throw new NullPointerException("connector cannot be null");
+   public ConnectionEvent(IHostTestEnvironment hostTestEnvironment, IServiceConnector connector, ITestEnvironment environment, 
+         UUID sessionKey, boolean isUnauthorizedUser) {
+      
+      if (!isUnauthorizedUser) {
+         if (connector == null) {
+            throw new NullPointerException("connector cannot be null");
+         }
       }
+      
       this.environment = environment;
       this.connector = connector;
       this.sessionKey = sessionKey;
       this.hostTestEnvironment = hostTestEnvironment;
+      this.isUnauthorizedUser = isUnauthorizedUser;
       props = new OteServiceProperties(connector);
    }
 
@@ -73,6 +80,10 @@ public final class ConnectionEvent {
 
    public IHostTestEnvironment getHostEnvironment() {
       return hostTestEnvironment;
+   }
+
+   public boolean isUnauthorizedUser() {
+      return isUnauthorizedUser;
    }
 
 }

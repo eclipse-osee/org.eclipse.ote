@@ -89,7 +89,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	}
 
 	@Override
-	public  ConnectionEvent connect(IHostTestEnvironment testHost, IEnvironmentConfigurer configurer, TestEnvironmentConfig config, IProgressMonitor monitor) throws IllegalArgumentException, TestSessionException {
+	public  ConnectionEvent connect(IHostTestEnvironment testHost, IEnvironmentConfigurer configurer, TestEnvironmentConfig config, IProgressMonitor monitor) throws IllegalArgumentException {
 		checkState();
 		final IServiceConnector connector;
 		final ClientSession localSession;
@@ -113,14 +113,20 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 			if(configurer.configure(testHost, new SubProgressMonitor(monitor, 95)) && !monitor.isCanceled()){
 			   testConnection = localSession.connect(connector, testHost, config);
 			   if (testConnection != null) {
-			      // success
-			      ConnectionEvent event = new ConnectionEvent(testHost, connector, testConnection.getConnectEnvironment(), testConnection.getSessionKey());
-			      listenerNotifier.notifyPostConnection(event);
-			      return event;
+			      if (testConnection.isUnauthorizedUser()) {
+			         ConnectionEvent event = new ConnectionEvent(null, null, null, null, true);
+			         testConnection = null; //Not really connected after this.
+                  return event;
+			      } else {
+			         // success
+			         ConnectionEvent event = new ConnectionEvent(testHost, connector, testConnection.getConnectEnvironment(), testConnection.getSessionKey(), false);
+			         listenerNotifier.notifyPostConnection(event);
+			         return event;
+			      }
 			   }
 			}
 		} catch (Exception e) {
-			Activator.log(Level.SEVERE, "failed to establish connection", e);
+		   Activator.log(Level.SEVERE, "failed to establish connection", e);
 			testConnection = null;
 		}
 		return null;
@@ -165,7 +171,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 			} else {
 				ConnectionEvent event =
 						new ConnectionEvent(this.getConnectedHost(), testConnection.getConnectedTestHost(), envirnonment,
-								testConnection.getSessionKey());
+								testConnection.getSessionKey(), false);
 				listenerNotifier.notifyDisconnect(event);
 				try {
 					session.disconnect(testConnection);
@@ -215,7 +221,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 					if (testConnection  != null) {
 						event = new ConnectionEvent(this.getConnectedHost(),
 								testConnection.getServiceConnector(), testConnection.getConnectEnvironment(),
-								testConnection.getSessionKey());
+								testConnection.getSessionKey(), false);
 					} else {
 						event = null;
 					}
@@ -347,6 +353,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 
 	@Override
 	public void onConnectionServiceStopped() {
+	   // INTENTIONALLY EMPTY BLOCK
 	}
 
 	@Override

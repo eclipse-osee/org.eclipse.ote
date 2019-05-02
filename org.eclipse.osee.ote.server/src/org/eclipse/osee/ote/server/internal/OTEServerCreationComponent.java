@@ -45,7 +45,14 @@ public class OTEServerCreationComponent {
             if (outfileLocation == null) {
                outfileLocation = OtePropertiesCore.javaIoTmpdir.getValue();
             }
-            String title = OtePropertiesCore.serverTitle.getValue();
+            
+            String title;
+            if (OtePropertiesCore.authorizedUser.getValue() != null) {
+               title = OtePropertiesCore.serverTitle.getValue() + "[AUTHORIZED USER:" + OtePropertiesCore.authorizedUser.getValue() + "]";
+            } else {
+               title = OtePropertiesCore.serverTitle.getValue();
+            }
+            
             String name = OtePropertiesCore.userName.getValue();
             String keepEnvAliveWithNoUsersStr = OtePropertiesCore.serverKeepalive.getValue();
             boolean keepEnvAliveWithNoUsers = true;

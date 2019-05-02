@@ -77,7 +77,7 @@ public class OteService implements IHostTestEnvironment {
       enhancedProperties.setProperty(HostServerProperties.owner.name(), OtePropertiesCore.userName.getValue());
       enhancedProperties.setProperty(HostServerProperties.id.name(), serviceID.toString());
       enhancedProperties.setProperty(HostServerProperties.isSim.name(), Boolean.toString(environmentCreation.isSimulated()));
-//      enhancedProperties.setProperty(HostServerProperties.activeMq.name(), environmentCreation.getBroker().getUri().toString());
+      //      enhancedProperties.setProperty(HostServerProperties.activeMq.name(), environmentCreation.getBroker().getUri().toString());
       try {
          String format = String.format("tcp://%s:%d", receiver.getLocalEndpoint().getAddress().getHostAddress(), receiver.getLocalEndpoint().getPort());
          if(OtePropertiesCore.httpPort.getValue() == null){
@@ -115,7 +115,7 @@ public class OteService implements IHostTestEnvironment {
 //   }
 
    @Override
-   public EnhancedProperties getProperties() throws RemoteException {
+   public EnhancedProperties getProperties() {
       return enhancedProperties;
    }
 
@@ -123,18 +123,39 @@ public class OteService implements IHostTestEnvironment {
    public ConnectionRequestResult requestEnvironment(IRemoteUserSession session, UUID sessionId, TestEnvironmentConfig config) throws RemoteException {
       try {
          OseeLog.log(OteService.class, Level.INFO,
-            "received request for test environment from user " + session.getUser().getName());
-         if (!isEnvironmentAvailable()) {
-            createEnvironment();
+               "received request for test environment from user " + session.getUser().getName());
+
+         if (isAuthorizedUser(session)) {
+            if (!isEnvironmentAvailable()) {
+               createEnvironment();
+            }
+            
+            oteSessions.add(sessionId, session);
+            updateDynamicInfo();
+            return new ConnectionRequestResult(remoteEnvironment, sessionId, new ReturnStatus("Success", true, false));
+         } 
+         else {
+            return new ConnectionRequestResult(null, null, new ReturnStatus("Failure", false, true));
          }
-         
-         oteSessions.add(sessionId, session);
-         updateDynamicInfo();
-         return new ConnectionRequestResult(remoteEnvironment, sessionId, new ReturnStatus("Success", true));
       } catch (Throwable ex) {
          OseeLog.log(OteService.class, Level.SEVERE,
             "Exception while requesting environment for user " + session.getUser().getName(), ex);
          throw new RemoteException("Exception while requesting environment for user ", ex);
+      }
+   }
+
+   private boolean isAuthorizedUser(IRemoteUserSession session) throws RemoteException {
+
+      if (OtePropertiesCore.authorizedUser.getValue() == null) {
+         return true;
+      } else {
+         String [] authorizedUsers = OtePropertiesCore.authorizedUser.getValue().split(",");
+         for (int i = 0; i < authorizedUsers.length; i++) {
+            if (authorizedUsers[i].equals(session.getUser().getName())) {
+               return true;
+            }
+         }
+         return false;
       }
    }
 
@@ -148,7 +169,7 @@ public class OteService implements IHostTestEnvironment {
       return remoteEnvironment != null;
    }
 
-   public void updateDynamicInfo() throws RemoteException {
+   public void updateDynamicInfo() {
       Collection<OSEEPerson1_4> userList = new LinkedList<>();
       StringBuilder sb = new StringBuilder();
       if (isEnvironmentAvailable()) {
@@ -176,11 +197,11 @@ public class OteService implements IHostTestEnvironment {
 //      }
    }
 
-   public ServiceID getServiceID() throws RemoteException {
+   public ServiceID getServiceID() {
       return serviceID;
    }
 
-   public void kill() throws RemoteException {
+   public void kill() {
       if(currentEnvironment != null){
          currentEnvironment.shutdown();
       }
@@ -191,7 +212,7 @@ public class OteService implements IHostTestEnvironment {
 //   }
 
    @Override
-   public void disconnect(UUID sessionId) throws RemoteException {
+   public void disconnect(UUID sessionId) {
       if (currentEnvironment != null) {
          oteSessions.remove(sessionId);
          updateDynamicInfo();
@@ -199,7 +220,7 @@ public class OteService implements IHostTestEnvironment {
    }
 
    @Override
-   public String getHttpURL() throws RemoteException {
+   public String getHttpURL() {
       return (String)enhancedProperties.getProperty("appServerURI");
    }
    
