@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.logging.ILoggerFilter;
 import org.eclipse.osee.framework.logging.ILoggerListener;

@@ -17,7 +17,7 @@ import java.util.logging.LogRecord;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.log.TestLevel;
 import org.w3c.dom.Document;

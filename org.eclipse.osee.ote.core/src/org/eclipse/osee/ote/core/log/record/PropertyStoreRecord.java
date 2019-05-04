@@ -17,8 +17,8 @@ import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 
 public class PropertyStoreRecord extends TestRecord {

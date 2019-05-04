@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ParentLogRecord extends LogRecord {
     private static final long serialVersionUID = 684361479587503820L;

@@ -13,7 +13,7 @@ package org.eclipse.osee.ote.core.testPoint;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.ote.core.XmlSupport;

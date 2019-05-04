@@ -16,7 +16,7 @@ import java.util.Collection;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.EnumBase;

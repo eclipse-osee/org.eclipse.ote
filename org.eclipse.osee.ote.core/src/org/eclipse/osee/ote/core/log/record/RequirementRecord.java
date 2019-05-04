@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.log.record;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.log.TestLevel;
 

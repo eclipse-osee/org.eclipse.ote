@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;

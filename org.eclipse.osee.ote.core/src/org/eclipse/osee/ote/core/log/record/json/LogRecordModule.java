@@ -3,17 +3,14 @@ package org.eclipse.osee.ote.core.log.record.json;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonSubTypes;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.map.module.SimpleModule;
-import org.eclipse.osee.ote.core.log.record.TestRecord;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class LogRecordModule extends SimpleModule {
 
 	public LogRecordModule() {
-		super("LogRecordModule", new Version(0, 0, 1, null));
+		super("LogRecordModule", new Version(0, 0, 1, "", "", ""));
 	}
 
 	@Override
@@ -23,6 +20,7 @@ public class LogRecordModule extends SimpleModule {
 
 	abstract class MixIn {
 		MixIn(@JsonProperty("Level") Level level, @JsonProperty("Message") String message) {
+		   // INTENTIONALLY EMPTY BLOCK
 		};
 
 		@JsonProperty

@@ -63,13 +63,12 @@ Require-Bundle: org.eclipse.osee.framework.jdk.core,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Activator: org.eclipse.osee.ote.core.internal.Activator
-Import-Package: javax.xml.parsers,
+Import-Package: com.fasterxml.jackson.annotation;version="2.9.2",
+ com.fasterxml.jackson.core;version="2.9.2",
+ com.fasterxml.jackson.databind;version="2.9.2",
+ com.fasterxml.jackson.databind.module;version="2.9.2",
+ javax.xml.parsers,
  org.apache.xml.serialize,
- org.codehaus.jackson;version="1.9.13",
- org.codehaus.jackson.annotate;version="1.9.13",
- org.codehaus.jackson.map;version="1.9.13",
- org.codehaus.jackson.map.annotate;version="1.9.13",
- org.codehaus.jackson.map.module;version="1.9.13",
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.util,

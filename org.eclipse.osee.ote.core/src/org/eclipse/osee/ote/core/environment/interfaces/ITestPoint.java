@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.environment.interfaces;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonSubTypes;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;

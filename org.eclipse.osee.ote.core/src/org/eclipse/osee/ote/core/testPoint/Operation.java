@@ -11,8 +11,8 @@
 package org.eclipse.osee.ote.core.testPoint;
 
 import javax.print.attribute.EnumSyntax;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.util.EnumBase;
 
 public class Operation extends EnumBase {

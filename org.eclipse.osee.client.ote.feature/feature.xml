@@ -68,10 +68,11 @@
       <import plugin="javax.wsdl"/>
       <import plugin="javax.validation" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="javax.annotation" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.codehaus.jackson.core"/>
-      <import plugin="org.codehaus.jackson.jaxrs"/>
-      <import plugin="org.codehaus.jackson.mapper"/>
-      <import plugin="org.codehaus.jackson.xc"/>
+      <import plugin="com.fasterxml.jackson.core.jackson-core" version="2.9.2" match="greaterOrEqual"/>
+      <import plugin="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2" match="greaterOrEqual" />
+      <import plugin="com.fasterxml.jackson.core.jackson-databind" version="2.9.2" match="greaterOrEqual" />     
+      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual" />     
+      <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.2" match="greaterOrEqual" />
       <import plugin="com.sun.xml.fastinfoset"/>
    </requires>
 

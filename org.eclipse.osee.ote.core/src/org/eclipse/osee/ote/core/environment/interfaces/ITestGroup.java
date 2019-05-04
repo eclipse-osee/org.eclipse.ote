@@ -12,8 +12,8 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 
 import java.util.ArrayList;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.RetryGroup;
 
