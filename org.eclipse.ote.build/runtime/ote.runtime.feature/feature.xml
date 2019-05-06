@@ -201,6 +201,14 @@
          version="0.0.0"/>
 
    <includes
+         id="org.eclipse.egit"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.egit.mylyn"
+         version="0.0.0"/>
+
+   <includes
          id="org.eclipse.emf"
          version="0.0.0"/>
 
@@ -366,6 +374,10 @@
 
    <includes
          id="org.eclipse.mylyn.discovery"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.mylyn.gerrit.feature"
          version="0.0.0"/>
 
    <includes
@@ -701,6 +713,22 @@
          version="0.0.0"/>
 
    <includes
+         id="org.eclipse.mylyn.commons"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.mylyn.commons.identity"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.mylyn.commons.notifications"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.mylyn.commons.repositories"
+         version="0.0.0"/>
+
+   <includes
          id="org.eclipse.mylyn.commons.repositories.http"
          version="0.0.0"/>
 
@@ -709,11 +737,31 @@
          version="0.0.0"/>
 
    <includes
+         id="org.eclipse.mylyn.discovery"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.mylyn.gerrit.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.mylyn.git"
+         version="0.0.0"/>
+
+   <includes
          id="org.eclipse.mylyn.hudson"
          version="0.0.0"/>
 
    <includes
          id="org.eclipse.mylyn.java_feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.mylyn.monitor"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.mylyn.reviews.feature"
          version="0.0.0"/>
 
    <includes
@@ -726,6 +774,10 @@
 
    <includes
          id="org.eclipse.mylyn.wikitext_feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.mylyn_feature"
          version="0.0.0"/>
 
    <includes
