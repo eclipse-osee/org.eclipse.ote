@@ -15,19 +15,21 @@
       <eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
       <mirrors-server>https://osee-build.msc.az.boeing.com</mirrors-server>
       <local-mirrors-path>${mirrors-server}/osee/sites/MIRRORS</local-mirrors-path>
+      <orbit-version>R20181128170323</orbit-version>
       <mylyn_version>3.16.0</mylyn_version>
-      <egit_version>4.0.0</egit_version>
+      <egit-version>4.4</egit-version>
       <subversive-version>1.0</subversive-version>
-		<polarion-version>3.0</polarion-version>
-		<xtext-version>2.0.0</xtext-version>
+      <polarion-version>3.0</polarion-version>
+      <xtext-version>2.0.0</xtext-version>
       
       
     <!--
 	  <osee-client-site>https://msa-ci.msc.az.boeing.com/build-artifacts/01_osee_dev_bld_org.eclipse.osee/org.eclipse.osee/plugins/org.eclipse.osee.client.all.p2/target/repository/</osee-client-site>
 	  <osee-server-site>https://msa-ci.msc.az.boeing.com/build-artifacts/01_osee_dev_bld_org.eclipse.osee/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/</osee-server-site> 
     --> 
-	  <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/</orbit-site>
+	  <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository/</orbit-site>
 	  <eclipse-ip-site>https://msa-ci.msc.az.boeing.com/build-artifacts/00_osee_nr_bld_org.eclipse.ip/org.eclipse.ip/org.eclipse.ip.p2/target/repository/</eclipse-ip-site>
+      <egit-site>http://download.eclipse.org/egit/updates</egit-site>
 
    </properties>
 
@@ -53,10 +55,11 @@
 				<layout>p2</layout>
 				<url>${osee-server-site}</url>
 			</repository>
+
 			<repository>
 				<id>orbit</id>
 				<layout>p2</layout>
-				<url>${orbit-site}</url>
+				<url>${local-mirrors-path}/orbit/${orbit-version}</url>
 			</repository>	
 			<repository>
 				<id>eclipse-ip</id>
@@ -93,6 +96,11 @@
                <id>wb-mirror</id>
                <layout>p2</layout>
                <url>${local-mirrors-path}/wb/1.1.0/</url>
+            </repository>
+            <repository> 
+            	<id>egit</id>
+            	<layout>p2</layout>
+            	<url>${egit-site}-${egit-version}</url>
             </repository>
 	</repositories>
 	
