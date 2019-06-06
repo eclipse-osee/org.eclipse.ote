@@ -17,10 +17,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -58,7 +58,6 @@ import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
 import org.eclipse.ote.ui.message.internal.Activator;
-import org.eclipse.ote.ui.message.internal.SWTResourceManager;
 import org.eclipse.ote.ui.message.internal.WatchImages;
 import org.eclipse.ote.ui.message.messageXViewer.MessageXViewer;
 import org.eclipse.ote.ui.message.tree.AbstractTreeNode;
@@ -498,7 +497,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 
             GC gc = event.gc;               
             Color oldForeground = gc.getForeground();
-            Color oldBackground = SWTResourceManager.getColor(202,225,255);
+            Color oldBackground = Displays.getColor(202,225,255);
 
             final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
             final AbstractTreeNode node = findElementMatching(selection, data);
@@ -536,7 +535,7 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
       }
       msgServiceTracker.close();
       Activator.getDefault().getOteClientService().removeConnectionListener(WatchView.this);
-      SWTResourceManager.dispose();
+      statusTxt.dispose();
       super.dispose();
    }
 
@@ -1054,10 +1053,10 @@ public final class WatchView extends ViewPart implements ITestConnectionListener
 
       if(writerIsPresent) {
          text += ", WRITERS ARE PRESENT";
-         statusTxt.setBackground(SWTResourceManager.getColor(COLOR_GOLDENROD));
+         statusTxt.setBackground(Displays.getColor(WatchView.COLOR_GOLDENROD.red, WatchView.COLOR_GOLDENROD.green, WatchView.COLOR_GOLDENROD.blue));
       } else {
          text += ", no writers present";
-         statusTxt.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_BACKGROUND));
+         statusTxt.setBackground(Displays.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
       }
 
       statusTxt.setText(text);
