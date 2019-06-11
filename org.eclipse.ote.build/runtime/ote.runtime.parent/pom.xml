@@ -13,7 +13,6 @@
    <properties>
       <platform-version-name>neon</platform-version-name>
       <eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
-      <mirrors-server>https://osee-build.msc.az.boeing.com</mirrors-server>
       <local-mirrors-path>${mirrors-server}/osee/sites/MIRRORS</local-mirrors-path>
       <orbit-version>R20181128170323</orbit-version>
       <mylyn_version>3.16.0</mylyn_version>
@@ -23,12 +22,7 @@
       <xtext-version>2.0.0</xtext-version>
       
       
-    <!--
-	  <osee-client-site>https://msa-ci.msc.az.boeing.com/build-artifacts/01_osee_dev_bld_org.eclipse.osee/org.eclipse.osee/plugins/org.eclipse.osee.client.all.p2/target/repository/</osee-client-site>
-	  <osee-server-site>https://msa-ci.msc.az.boeing.com/build-artifacts/01_osee_dev_bld_org.eclipse.osee/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/</osee-server-site> 
-    --> 
 	  <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository/</orbit-site>
-	  <eclipse-ip-site>https://msa-ci.msc.az.boeing.com/build-artifacts/00_osee_nr_bld_org.eclipse.ip/org.eclipse.ip/org.eclipse.ip.p2/target/repository/</eclipse-ip-site>
       <egit-site>http://download.eclipse.org/egit/updates</egit-site>
 
    </properties>
