@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE Test Manager UUT Selector Plug-in
 Bundle-SymbolicName: org.eclipse.ote.test.manager.uut.selector;singleton:=true
-Bundle-Version: 0.26.0.qualifier
+Bundle-Version: 0.11.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: The Boeing Company
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
