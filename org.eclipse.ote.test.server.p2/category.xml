@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.ote.test.server.feature_0.26.0.qualifier.jar" id="org.eclipse.ote.test.server.feature" version="0.26.0.qualifier">
+      <category name="OTE Test Server"/>
+   </feature>
+   <feature url="features/org.eclipse.ote.test.server.feature.source_0.26.0.qualifier.jar" id="org.eclipse.ote.test.server.feature.source" version="0.26.0.qualifier">
+      <category name="OTE Test Server"/>
+   </feature>
+   <feature url="features/org.eclipse.ote.test.server.external.feature_0.26.0.qualifier.jar" id="org.eclipse.ote.test.server.external.feature" version="0.26.0.qualifier">
+      <category name="OTE Test Server"/>
+   </feature>
+   <category-def name="OTE Test Server" label="OTE Test Server">
+      <description>
+         OTE Test Server p2 Site
+      </description>
+   </category-def>
+</site>

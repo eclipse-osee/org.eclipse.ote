@@ -1,0 +1,52 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.ote.test.server</groupId>
+		<artifactId>org.eclipse.ote.test.server.parent</artifactId>
+		<version>0.26.0-SNAPSHOT</version>
+		<relativePath>../org.eclipse.ote.test.server.parent</relativePath>
+	</parent>
+
+	<artifactId>org.eclipse.ote.test.server.external.feature</artifactId>
+	<packaging>eclipse-feature</packaging>
+	<name>OTE Test Server External Feature</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-source-feature-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<id>source-feature</id>
+						<goals>
+							<goal>source-feature</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<plugin id="org.apache.xerces" />
+								<plugin id="javax.xml" />
+								<plugin id="org.eclipse.jgit" />
+								<plugin id="javax.servlet" />
+								<plugin id="org.apache.xml.resolver" />
+								<plugin id="org.apache.xml.serializer" />
+								<plugin id="net.jini" />
+								<plugin id="jms.libraries" />
+								<plugin id="org.eclipse.osee.logback.config" />
+								<plugin id="org.apache.commons.codec" />
+								<plugin id="org.apache.cxf.core.config" />
+								<plugin id="ch.qos.logback.slf4j" />
+								<plugin id="javax.ws.rs" />
+								<plugin id="org.eclipse.equinox.console.ssh" />								
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

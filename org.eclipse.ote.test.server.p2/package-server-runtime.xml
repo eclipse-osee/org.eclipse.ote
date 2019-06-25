@@ -1,0 +1,209 @@
+<project name="Generates OTE Server Runtime Package" default="run">
+
+	<target name="setup">
+		<echo>Packaging Server Runtime</echo>
+		<echo>Output-Path: ${output-path}</echo>
+		<echo>P2-Content-Path: ${p2-content-path}</echo>
+		<echo>Output-Name: ${output-name}</echo>
+		<echo>Server-Path: ${server-path}</echo>
+		<echo>Script-Data-Path: ${script-data-path}</echo>
+		<echo />
+
+		<condition property="os-separator-exp" value="\\" else="/">
+			<os family="windows" />
+		</condition>
+
+		<mkdir dir="${server-path}" />
+
+		<property name="server-config-path" value="${server-path}/configuration" />
+		<property name="server-plugins-path" value="${server-path}/plugins" />
+		<property name="server-etc-path" value="${server-path}/etc" />
+
+		<mkdir dir="${server-config-path}" />
+		<mkdir dir="${server-plugins-path}" />
+
+		<copy todir="${server-plugins-path}">
+			<fileset dir="${p2-content-path}/plugins" excludes="**/*source_*.jar" />
+		</copy>
+
+		<copy todir="${server-path}">
+			<fileset dir="${p2-content-path}/" includes="*.txt" />
+		</copy>
+
+		<mkdir dir="${server-etc-path}" />
+		<copy todir="${server-etc-path}">
+			<fileset dir="${etc-content-path}" />
+		</copy>
+
+		<pathconvert property="launcherBundlePath" setonempty="false">
+			<path>
+				<fileset dir="${server-plugins-path}">
+					<include name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
+			</path>
+		</pathconvert>
+		<propertyregex property="equinox-launcher-jar" override="true" input="${launcherBundlePath}" regexp="[^${os-separator-exp}]+$" select="\0" casesensitive="false" />
+
+	</target>
+
+	<target name="generateConfig">
+		<generateConfigIni configPath="${server-config-path}" pluginsPath="${server-plugins-path}" />
+	</target>
+
+	<target name="pack">
+		<zip destfile="${output-path}/${output-name}.zip">
+			<fileset dir="${server-path}" />
+		</zip>
+	</target>
+
+	<target name="cleanup">
+		<delete dir="${server-path}" quiet="true" />
+	</target>
+
+	<!-- ////////////////////////////////////////////////////////////////////// -->
+	<!-- OSEE BASE EXTRA 											            -->
+	<!-- ////////////////////////////////////////////////////////////////////// -->
+
+	<target name="generateLaunchScripts">
+
+		<loadfile property="debugWinUnique" encoding="utf-8" failonerror="true" srcfile="${script-data-path}/win_debug_pre.txt" />
+
+
+		<generate.bat filepath="${server-path}/runWinSimpleServer.bat" serverfactory="org.eclipse.ote.simple.test.environment.SimpleTestEnvironmentStartupFactory" additionalVmArgs="-Dosee.log.default=WARNING" debug="" />
+
+		<generate.bat filepath="${server-path}/runDebugWinSimpleServer.bat" serverfactory="org.eclipse.ote.simple.test.environment.SimpleTestEnvironmentStartupFactory  %DEBUG_OPTIONS%" additionalVmArgs="-Dosee.log.default=WARNING" debug="${debugWinUnique}" />
+
+
+	</target>
+
+	<!-- *************************************************************** -->
+	<!--   MAIN RUN		                                                -->
+	<!-- *************************************************************** -->
+	<target name="run" depends="setup,generateConfig,generateLaunchScripts,pack" />
+
+	<!-- *************************************************************** -->
+	<!--   LAUNCH CONFIGS                                                -->
+	<!-- *************************************************************** -->
+	<macrodef name="generate.bat">
+		<attribute name="filepath" />
+		<attribute name="debug" />
+		<attribute name="serverFactory" />
+		<attribute name="additionalVmArgs" default=" " />
+		<sequential>
+			<echo file="@{filepath}" append="false">
+For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set date=%%a-%%b-%%c)
+
+set MYDATE=%date%
+set MYDIR=%USERPROFILE%/OTESERVER/ote%MYDATE%
+set INSTANCEAREA=%MYDIR%/workspace
+mkdir "%MYDIR%"
+
+set USER_NAME=%USERNAME%
+				
+set SERVER_TITLE=%1
+if [%1] == [] (
+   set SERVER_TITLE=OTE Server [%USER_NAME%]
+) ELSE (
+   for /f "tokens=1*" %%a in ("%*") do (
+      set USER_ARGS=%%b
+   )
+)
+
+set RESTPORT=8091
+
+@{debug}
+				
+echo SERVER_TITLE[%SERVER_TITLE% ]
+
+echo Starting TEST Service...
+set JAVA_MIN_HEAP_SIZE=-Xms128m
+set JAVA_MAX_HEAP_SIZE=-Xmx1024m	
+				
+java ^
+-Dote.id=STARTED_%MYDATE% ^
+-Dosgi.clean=true ^
+-Dosgi.instance.area="%INSTANCEAREA%" ^
+-Ddisable.org.osgi.service.http.port=%RESTPORT%  ^
+-Dote.master.uri=http:someUrlWhereTheMasterRestServerIsRunning:port ^
+-Duser.name="%USER_NAME%" ^
+-Dosee.ote.server.title="%SERVER_TITLE%" ^
+-Dosee.ote.station.name=%COMPUTERNAME% ^
+-Dsun.net.maxDatagramSockets=1000 ^
+-Dcm.config.uri="etc/ote.server.config.json" ^
+-Dlogback.configurationFile="etc/logback.xml" ^
+%USER_ARGS% ^
+-Dosee.ote.server.factory.class=@{serverFactory} ^
+@{additionalVmArgs} -jar plugins/${equinox-launcher-jar} -console -configuration "%MYDIR%"
+</echo>
+		</sequential>
+	</macrodef>
+
+
+	<!-- *************************************************************** -->
+	<!--   GENERATE CONFIG.INI                                           -->
+	<!-- *************************************************************** -->
+	<macrodef name="generateConfigIni">
+		<attribute name="configPath" />
+		<attribute name="pluginsPath" />
+		<sequential>
+			<echo file="@{configPath}/config.ini" append="false" message="osgi.bundles= \${line.separator}\${line.separator}" />
+
+			<pathconvert property="serverBundles" setonempty="false" pathsep=";">
+				<path>
+					<fileset dir="@{pluginsPath}">
+						<exclude name="org.eclipse.osgi_*.jar" />
+						<exclude name="org.eclipse.equinox.launcher_*.jar" />
+						<exclude name="*source_*.jar" />
+					</fileset>
+				</path>
+			</pathconvert>
+
+			<var name="isFirst" value="false" />
+			<for param="bundle" delimiter=";" list="${serverBundles}" trim="true">
+				<sequential>
+					<propertyregex override="yes" property="jarFilename" input="@{bundle}" regexp="[^${os-separator-exp}]+$" select="\0" />
+
+					<propertyregex property="projectName" override="true" input="${jarFilename}" regexp="(.*?)_" select="\1" casesensitive="false" />
+					<if>
+						<equals arg1="${isFirst}" arg2="true" />
+						<then>
+							<echo file="@{configPath}/config.ini" message=", \${line.separator}" append="true" />
+							<var name="isFirst" value="false" />
+						</then>
+					</if>
+
+					<if>
+						<equals arg1="${projectName}" arg2="com.google.guava" />
+						<then>
+							<echo file="@{configPath}/config.ini" message="${jarFilename}@start" append="true" />
+						</then>
+						<elseif>
+							<equals arg1="${projectName}" arg2="org.apache.cxf.core.config" />
+							<then>
+								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
+							</then>
+						</elseif>
+
+						<elseif>
+							<equals arg1="${projectName}" arg2="org.eclipse.osee.ote.io" />
+							<then>
+								<echo file="@{configPath}/config.ini" message="${projectName}@2:start" append="true" />
+							</then>
+						</elseif>
+						<else>
+							<echo file="@{configPath}/config.ini" message="${projectName}@start" append="true" />
+						</else>
+					</if>
+
+					<var name="isFirst" value="true" />
+				</sequential>
+			</for>
+			<echo file="@{configPath}/config.ini" append="true">
+osgi.noShutdown=true
+eclipse.ignoreApp=true
+equinox.ds.debug=true
+osee.log.default=INFO
+			</echo>
+		</sequential>
+	</macrodef>
+</project>

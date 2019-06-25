@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="OteTestServer" uid="ote.test.server.product" id="org.eclipse.osee.ote.core.server" application="org.eclipse.osee.ote.core.server" useFeatures="true" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-console
+      </programArgs>
+      <vmArgs>-Dote.id=STARTED_
+-Dote.master.uri=http://SomeUrl:SomePort
+-Duser.name=user
+-XX:MaxPermSize=384m
+-Dosee.ote.server.title=TestServer
+-Dosee.ote.server.factory.class=org.eclipse.ote.simple.test.environment.SimpleTestEnvironmentStartupFactory
+-Dosee.log.default=INFO
+-Dsun.net.maxDatagramSockets=1000
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.ote.test.server.feature"/>
+      <feature id="org.eclipse.ote.test.server.external.feature"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.equinox.cm" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http.jetty" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osee.jaxrs.server" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osee.ote.connection.service" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osee.ote.io" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.osee.ote.rest" autoStart="true" startLevel="0" />
+   </configurations>
+
+</product>

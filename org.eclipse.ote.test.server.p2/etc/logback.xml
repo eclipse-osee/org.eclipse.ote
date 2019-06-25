@@ -1,0 +1,42 @@
+<configuration debug="true">
+	<!-- See documentation at http://logback.qos.ch/manual/joran.html -->
+	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+		<resetJUL>true</resetJUL>
+	</contextListener>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+			by default -->
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+		<encoder>
+			<pattern>%-50(%d{yyyy-MM-dd HH:mm:ss.SSS} [%-18.-18thread]	[%-32.32logger{32}] %-5.-5level) - %msg%n</pattern>
+			<outputPatternAsHeader>true</outputPatternAsHeader>
+		</encoder>
+	</appender>
+	<!--
+	<appender name="OTEOUT" class="ote.server.logback.OteAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+	</appender>
+	-->
+
+	<!-- Configure OSEE log messages -->
+	<logger name="org.eclipse.osee" level="DEBUG" />
+	<logger name="org.eclipse.osee.framework.core.server" level="DEBUG" />
+
+	<!-- <logger name="org.eclipse.osee.orcs.db" level="DEBUG" /> -->
+	
+	<!-- WILL FILTER OUT THE JAVA UTIL LOGGER TOO -->
+	<logger name="org.apache.cxf.bus.blueprint.NamespaceHandlerRegisterer" level="WARN" />
+	<logger name="org.apache.activemq.broker.BrokerService" level="WARN" />
+	<logger name="org.apache.activemq.broker.BrokerService" level="WARN" />
+        <logger name="org.apache.cxf.phase.PhaseInterceptorChain" level="ERROR" />
+	<root level="debug">
+		<appender-ref ref="STDOUT" />
+	<!--	<appender-ref ref="OTEOUT" /> -->
+	</root>
+
+</configuration>

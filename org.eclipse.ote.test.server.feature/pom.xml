@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.ote.test.server</groupId>
+		<artifactId>org.eclipse.ote.test.server.parent</artifactId>
+		<version>0.26.0-SNAPSHOT</version>
+		<relativePath>../org.eclipse.ote.test.server.parent</relativePath>
+	</parent>
+
+	<artifactId>org.eclipse.ote.test.server.feature</artifactId>
+	<packaging>eclipse-feature</packaging>
+	<name>OTE Test Server Feature</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-source-feature-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<id>source-feature</id>
+						<goals>
+							<goal>source-feature</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<plugin id="net.jini" />
+								<plugin id="jms.libraries" />
+								<feature id="org.eclipse.osee.core.server.external.feature" />
+								<feature id="org.eclipse.osee.x.core.feature" />
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

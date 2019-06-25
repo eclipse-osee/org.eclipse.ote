@@ -1,0 +1,5 @@
+
+set PORTNO=8030
+
+set DEBUG_OPTIONS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=%PORTNO%
+set SERVER_TITLE=OTE Server [%USER_NAME%] {%PORTNO%}
