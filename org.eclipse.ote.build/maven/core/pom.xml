@@ -21,6 +21,21 @@
    </properties>
 
    <profiles>
+	    <profile>
+			<id>ote.p2</id>
+			<activation>
+				<property>
+					<name>ote.p2</name>
+				</property>
+			</activation>
+			<repositories>
+				<repository>
+					<id>ote.p2</id>
+					<layout>p2</layout>
+					<url>${ote.p2}</url>
+				</repository>
+			</repositories>
+		</profile>
     <profile>
 			<id>osee.ote.p2</id>
 			<activation>

@@ -22,7 +22,7 @@ https://wiki.eclipse.org/OSEE/OTE/Users_Guide
 -XX:MaxPermSize=512m 
 -Dote.master.uri=http://SomeUrl
 -Dequinox.ds.debug=true 
--Ddote.debug.precompiled.product.path=C:\Users\b1528444\Desktop\plugins
+-Ddote.debug.precompiled.product.path=C:\somePath
       </vmArgs>
       <vmArgsLin>-Djava.util.Arrays.useLegacyMergeSort=true -Dorg.eclipse.swt.internal.gtk.cairoGraphics=false
       </vmArgsLin>
@@ -40,7 +40,6 @@ https://wiki.eclipse.org/OSEE/OTE/Users_Guide
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>

@@ -10,7 +10,7 @@
 		<relativePath>../org.eclipse.ote.build/maven/core/</relativePath>
 	</parent>
 
-	<groupId>ote-ide</groupId>
+	<groupId>ote.ide</groupId>
 	<artifactId>org.eclipse.ote.simple.oteide.product.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>OTE IDE Product - Parent (Incubation)</name>

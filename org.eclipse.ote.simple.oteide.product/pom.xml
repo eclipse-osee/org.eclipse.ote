@@ -3,7 +3,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-<parent>
+	<parent>
 		<groupId>ote.ide</groupId>
 		<artifactId>org.eclipse.ote.simple.oteide.product.parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
@@ -143,7 +143,6 @@
 								</taskdef>
 
 								<ant antfile="iniWorkaround.xml" inheritRefs="true" />
-								<ant antfile="version.xml" inheritRefs="true" />
 							</target>
 						</configuration>
 						<goals>

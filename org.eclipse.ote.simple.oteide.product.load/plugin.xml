@@ -11,7 +11,7 @@
             description="OTE is the OSEE Test Environment." 
             name="OTE IDE">
         <property name="appName" value="OTE IDE" />
-        
+        <property name="preferenceCustomization" value="plugin_customization.ini" />
         <property
               name="aboutImage"
               value="icons/ote.bmp">
@@ -42,29 +42,4 @@
             class="org.eclipse.ote.simple.oteide.product.load.SetTitleBar">
       </startup>
    </extension>
-   <extension
-         id="ote_ide_product"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.eclipse.ui.ide.workbench"
-            name="OTE">
-         <property
-               name="windowImages"
-               value="/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp,/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp,/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp">
-         </property>
-         <property
-               name="aboutText"
-               value="OTE is the OSEE Test Environment.&#x0A;&#x0A;https://wiki.eclipse.org/OSEE/OTE/Users_Guide">
-         </property>
-         <property
-               name="aboutImage"
-               value="/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp">
-         </property>
-         <property
-               name="appName"
-               value="OTE">
-         </property>
-      </product>
-   </extension>
-   
 </plugin>
