@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="OTE IDE" uid="ote.ide" id="org.eclipse.ote.simple.oteide.product.load.ote_ide_product" application="org.eclipse.ui.ide.workbench" version="0.1.0.qualifier" useFeatures="true" includeLaunchers="true">
+
+   <aboutInfo>
+      <image path="/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp"/>
+      <text>
+         OTE is the OSEE Test Environment.
+
+https://wiki.eclipse.org/OSEE/OTE/Users_Guide
+      </text>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgsLin>--launcher.GTK_version 2
+      </programArgsLin>
+      <vmArgs>-Xmx2G 
+-XX:MaxPermSize=512m 
+-Dote.master.uri=http://SomeUrl
+-Dequinox.ds.debug=true 
+-Ddote.debug.precompiled.product.path=C:\Users\b1528444\Desktop\plugins
+      </vmArgs>
+      <vmArgsLin>-Djava.util.Arrays.useLegacyMergeSort=true -Dorg.eclipse.swt.internal.gtk.cairoGraphics=false
+      </vmArgsLin>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <windowImages i16="/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp" i32="/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp" i48="/org.eclipse.ote.simple.oteide.product.load/icons/ote.mp"/>
+
+   <splash
+      location="org.eclipse.ote.simple.oteide.product.load" />
+   <launcher name="ote">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="com.mountainminds.eclemma.feature"/>
+      <feature id="org.eclipse.cdt"/>
+      <feature id="org.eclipse.cdt.gdb"/>
+      <feature id="org.eclipse.cdt.gdb.source"/>
+      <feature id="org.eclipse.cdt.gnu.build"/>
+      <feature id="org.eclipse.cdt.gnu.build.source"/>
+      <feature id="org.eclipse.cdt.gnu.debug"/>
+      <feature id="org.eclipse.cdt.gnu.debug.source"/>
+      <feature id="org.eclipse.cdt.gnu.dsf"/>
+      <feature id="org.eclipse.cdt.gnu.dsf.source"/>
+      <feature id="org.eclipse.cdt.platform"/>
+      <feature id="org.eclipse.cdt.platform.source"/>
+      <feature id="org.eclipse.cdt.sdk"/>
+      <feature id="org.eclipse.e4.rcp"/>
+      <feature id="org.eclipse.e4.rcp.source"/>
+      <feature id="org.eclipse.egit"/>
+      <feature id="org.eclipse.emf.ecore"/>
+      <feature id="org.eclipse.emf.common"/>
+      <feature id="org.eclipse.jgit"/>
+      <feature id="org.eclipse.m2e.feature"/>
+      <feature id="org.eclipse.mylyn.commons"/>
+      <feature id="org.eclipse.mylyn.commons.identity"/>
+      <feature id="org.eclipse.mylyn.commons.notifications"/>
+      <feature id="org.eclipse.mylyn.commons.repositories"/>
+      <feature id="org.eclipse.mylyn.discovery"/>
+      <feature id="org.eclipse.mylyn.gerrit.feature"/>
+      <feature id="org.eclipse.mylyn.monitor"/>
+      <feature id="org.eclipse.mylyn.reviews.feature"/>
+      <feature id="org.eclipse.mylyn_feature"/>
+      <feature id="org.eclipse.nebula.widgets.xviewer.feature"/>
+      <feature id="org.eclipse.osee.client.ote.feature"/>
+      <feature id="org.eclipse.osee.client.ote.feature.source"/>
+      <feature id="org.eclipse.osee.core.ui.feature"/>
+      <feature id="org.eclipse.osee.core.ui.feature.source"/>
+      <feature id="org.eclipse.osee.core.feature"/>
+      <feature id="org.eclipse.osee.core.feature.source"/>
+      <feature id="org.eclipse.osee.external.feature"/>
+      <feature id="org.eclipse.osee.core.plugin.feature"/>
+      <feature id="org.eclipse.osee.core.plugin.feature.source"/>
+      <feature id="org.eclipse.platform"/>
+      <feature id="org.eclipse.platform.source"/>
+      <feature id="org.eclipse.sdk"/>
+      <feature id="org.eclipse.team.svn"/>
+      <feature id="org.polarion.eclipse.team.svn.connector"/>
+      <feature id="org.polarion.eclipse.team.svn.connector.svnkit18"/>
+      <feature id="org.eclipse.ote.simple.oteide.product.feature"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="4" />
+      <property name="org.eclipse.update.reconcile" value="false" />
+      <property name="osgi.instance.area.default" value="@user.home/workspaces/myarea" />
+   </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
+
+</product>
