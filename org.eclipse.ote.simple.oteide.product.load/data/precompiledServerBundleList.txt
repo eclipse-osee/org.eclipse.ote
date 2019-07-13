@@ -1,0 +1,7 @@
+org.eclipse.equinox.cm
+					org.eclipse.ote.bytemessage
+					org.eclipse.ote.io
+					org.eclipse.ote.message.lookup
+					org.eclipse.ote.services.core
+					org.eclipse.ote.statemachine
+			

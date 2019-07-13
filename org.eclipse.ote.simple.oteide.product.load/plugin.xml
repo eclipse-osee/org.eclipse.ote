@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   
+   <extension
+         id="ote_ide_product"
+         name="OTE" 
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ui.ide.workbench"
+            description="OTE is the OSEE Test Environment." 
+            name="OTE IDE">
+        <property name="appName" value="OTE IDE" />
+        
+        <property
+              name="aboutImage"
+              value="icons/ote.bmp">
+        </property>
+        <property
+              name="aboutText"
+              value="OTE is the OSEE Test Environment.&#x0A;&#x0A;https://wiki.eclipse.org/OSEE/OTE/Users_Guide">
+        </property>
+        <property
+              name="windowImages"
+              value="icons/ote.bmp,icons/ote.bmp,icons/ote.mp">
+        </property>
+        <property name="cssTheme" value="org.eclipse.e4.ui.css.theme.e4_default" />
+		<property name="applicationCSSResources" value="platform:/plugin/org.eclipse.platform/images/"/>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.splashHandlers">
+      <splashHandler
+            class="org.eclipse.ote.simple.oteide.product.load.splashHandlers.ExtensibleSplashHandler"
+            id="org.eclipse.ote.simple.oteide.product.load.splashHandlers.extensible">
+      </splashHandler>
+   </extension>
+   <extension
+         id="settitlebar"
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.eclipse.ote.simple.oteide.product.load.SetTitleBar">
+      </startup>
+   </extension>
+   <extension
+         id="ote_ide_product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ui.ide.workbench"
+            name="OTE">
+         <property
+               name="windowImages"
+               value="/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp,/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp,/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp">
+         </property>
+         <property
+               name="aboutText"
+               value="OTE is the OSEE Test Environment.&#x0A;&#x0A;https://wiki.eclipse.org/OSEE/OTE/Users_Guide">
+         </property>
+         <property
+               name="aboutImage"
+               value="/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp">
+         </property>
+         <property
+               name="appName"
+               value="OTE">
+         </property>
+      </product>
+   </extension>
+   
+</plugin>

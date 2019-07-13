@@ -1,0 +1,31 @@
+<project name="Contribute Extra Build Steps" default="bundleListCopy">
+
+   <property file="${user.home}/.ant-global.properties" />
+
+   <target name="bundleListCopy">
+      <antcall target="BundleListCopying">
+         <param name="preCompiledDest" value="${basedir}/data/" />
+      </antcall>
+   </target>
+
+   <!-- Copying the precompiledServerBundleList.txt from the precompiled Hudson build -->
+   <target name="BundleListCopying">
+   	<!-- make sure we have the terminating path seperator correct -->
+      <propertyregex property="p2_zip"
+                input="${ote.ide.p2}"
+                regexp="(.*[^\/])"
+                select="\1/../ide.zip"/>
+
+      <get src="${p2_zip}" dest="target/temp.zip" username="${ldap.uname}" password="${ldap.pw}"/>
+      <mkdir dir="${preCompiledDest}"/>
+   	<mkdir dir="target/tempUnzip"/>
+      <unzip src="target/temp.zip" dest="target/tempUnzip"/>
+      <delete file="target/temp.zip"/>
+
+      <copy file="target/tempUnzip/precompiledServerBundleList.txt"
+      		      tofile="${preCompiledDest}/precompiledServerBundleList.txt"
+      				overwrite="true" />
+
+   </target>
+
+</project>
