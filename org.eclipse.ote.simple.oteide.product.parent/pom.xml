@@ -20,6 +20,7 @@
 		<module>../org.eclipse.ote.simple.oteide.product.load</module>
 		<module>../org.eclipse.ote.simple.oteide.product.feature</module>
 		<module>../org.eclipse.ote.simple.oteide.product</module>
+		<module>../org.eclipse.ote.simple.test.environment</module>
 	</modules>
 
 	

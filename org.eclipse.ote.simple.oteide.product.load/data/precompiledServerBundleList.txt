@@ -3,5 +3,6 @@ org.eclipse.equinox.cm
 					org.eclipse.ote.io
 					org.eclipse.ote.message.lookup
 					org.eclipse.ote.services.core
+					org.eclipse.ote.simple.test.environment
 					org.eclipse.ote.statemachine
 			
