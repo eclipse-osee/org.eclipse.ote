@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OTE Simple Test Script
+Bundle-SymbolicName: org.eclipse.ote.simple.test.script
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.ote.simple.test.script
+Service-Component: OSGI-INF/*.xml
+Import-Package: org.eclipse.osee.framework.jdk.core.persistence,
+ org.eclipse.osee.ote.core,
+ org.eclipse.osee.ote.core.enums,
+ org.eclipse.osee.ote.core.environment.interfaces,
+ org.eclipse.osee.ote.core.environment.jini,
+ org.eclipse.osee.ote.message,
+ org.eclipse.ote.simple.test.environment
