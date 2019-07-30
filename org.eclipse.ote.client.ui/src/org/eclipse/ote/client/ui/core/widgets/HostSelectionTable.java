@@ -448,6 +448,13 @@ public class HostSelectionTable {
       doConnection(service, message, null, testHost, null);
    }
    
+   /**
+    * The class field copyImage is intentionally not disposed in this method.
+    * If dispose is called on it, it is then disposed in the shared registry
+    * that it is pulled from.
+    * Then the next time the HostSelectionTable gets instantiated within the 
+    * same OTE-IDE session, it will still be disposed and cause an exception.
+    */
    public void dispose() {
 	  try{
 		  monitorRestLookup.cancel(false);
@@ -455,7 +462,6 @@ public class HostSelectionTable {
 		  tracker.close();
 		  this.goldenRod.dispose();
 		  this.normalBackground.dispose();
-		  this.copyImage.dispose();
 		  this.downloadImage.dispose();
 		  this.bigFont.dispose();
 		  if (hostTable != null) {

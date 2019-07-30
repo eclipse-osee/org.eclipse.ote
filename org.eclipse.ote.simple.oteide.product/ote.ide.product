@@ -30,7 +30,7 @@ https://wiki.eclipse.org/OSEE/OTE/Users_Guide
       </vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp" i32="/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp" i48="/org.eclipse.ote.simple.oteide.product.load/icons/ote.mp"/>
+   <windowImages i16="/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp" i32="/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp" i48="/org.eclipse.ote.simple.oteide.product.load/icons/ote.bmp"/>
 
    <splash
       location="org.eclipse.ote.simple.oteide.product.load" />
@@ -40,6 +40,7 @@ https://wiki.eclipse.org/OSEE/OTE/Users_Guide
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
