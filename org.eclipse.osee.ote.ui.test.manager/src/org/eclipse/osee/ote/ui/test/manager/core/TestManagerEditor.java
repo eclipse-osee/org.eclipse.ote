@@ -71,9 +71,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    private static final Image errorImage = ImageManager.getImage(TestManagerImage.ERROR);
    public static final String namespace = "org.eclipse.osee.ote.ui.test.manager.editors.TestManagerEditor";
 
-   public final QualifiedName clearCaseViewName = new QualifiedName(namespace, "CLEARCASEVIEW");
    public final QualifiedName configFileName = new QualifiedName(namespace, "CONFIGFILENAME");
-   public final QualifiedName ofpQualName = new QualifiedName(namespace, "OFP");
    public final QualifiedName scriptsQualName = new QualifiedName(namespace, "SCRIPTS");
 
    private boolean fileIsDirty = false;

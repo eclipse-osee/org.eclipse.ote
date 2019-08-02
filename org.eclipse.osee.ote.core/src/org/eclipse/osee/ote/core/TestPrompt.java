@@ -23,7 +23,7 @@ public class TestPrompt implements Serializable {
    private static final long serialVersionUID = 5960067878239875110L;
    private final String prompt;
    private final boolean waitForResponse;
-   private final boolean ofpStep;
+   private final boolean uutStep;
    private final PromptResponseType type;
 
    public TestPrompt(String prompt) {
@@ -35,7 +35,7 @@ public class TestPrompt implements Serializable {
       this.prompt = XmlSupport.convertNonPrintableCharacers(prompt);
       this.waitForResponse =
          type == PromptResponseType.SCRIPT_PAUSE || type == PromptResponseType.PASS_FAIL || type == PromptResponseType.SCRIPT_STEP || type == PromptResponseType.USER_INPUT ? true : false;
-      this.ofpStep = type == PromptResponseType.SCRIPT_STEP ? true : false;
+      this.uutStep = type == PromptResponseType.SCRIPT_STEP ? true : false;
       this.type = type;
    }
 
@@ -52,10 +52,7 @@ public class TestPrompt implements Serializable {
       return this.prompt;
    }
 
-   /**
-    * @return Returns the ofpStep.
-    */
-   public boolean isOfpStep() {
-      return ofpStep;
+   public boolean isUutStep() {
+      return uutStep;
    }
 }

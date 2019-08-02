@@ -8,25 +8,34 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.core.enums;
+package org.eclipse.osee.ote.ui.output.tree.items;
 
 /**
  * @author Andrew M. Finkbeiner
+ * @author Andy Jury
  */
-public enum PromptResponseType {
-
-   NONE,
-   /**
-    * Wait for the a response from the user confirming that they have started the debug uut.
-    */
-   UUT_DEBUG_RESPONSE,
-   /**
-    * Pause script execution until a response is recieved from a client.
-    */
-   SCRIPT_PAUSE,
-   PASS_FAIL,
-   SCRIPT_STEP,
-   USER_INPUT,
-   YES_NO;
-
+public enum OutfileRowType {
+   unknown,
+   additionalinfo,
+   location,
+   testpoint,
+   stacktrace,
+   attention,
+   checkgroup,
+   checkpoint,
+   infogroup,
+   info,
+   log,
+   retrygroup,
+   scriptinit,
+   softkey,
+   Support,
+   testcase,
+   method,
+   executionstatus,
+   details,
+   uutinfo,
+   summary,
+   version,
+   versionentry
 }

@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OTE Output Plug-in (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.ote.ui.output;singleton:=true
+Bundle-Version: 0.26.0.qualifier
+Bundle-Activator: org.eclipse.osee.ote.ui.output.Activator
+Require-Bundle: org.eclipse.jface.text,
+ org.eclipse.ui.editors,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.views.properties.tabbed,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.framework.ui.plugin,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.ote.ui.markers,
+ org.eclipse.nebula.widgets.xviewer,
+ org.eclipse.osee.ote.core,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Plugin-Class: org.eclipse.osee.ote.ui.output.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.eclipse.nebula.widgets.xviewer.core.model,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.operation,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.ui.swt,
+ org.eclipse.osee.framework.ui.ws,
+ org.osgi.framework

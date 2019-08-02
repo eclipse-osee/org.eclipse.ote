@@ -37,10 +37,11 @@
 		<module>../org.eclipse.osee.ote.ui</module>
 		<module>../org.eclipse.osee.ote.ui.builder</module>
 		<module>../org.eclipse.osee.ote.ui.markers</module>
+		<module>../org.eclipse.osee.ote.ui.output</module>
+		<module>../org.eclipse.osee.ote.ui.test.manager</module>
 		<module>../org.eclipse.osee.ote.version</module>
 		<module>../org.eclipse.osee.ote.version.git</module>
 		<module>../org.eclipse.osee.ote.version.svn</module>
-		<module>../org.eclipse.osee.ote.ui.test.manager</module>
 		<module>../org.eclipse.osee.ote.feature</module>
 		<module>../org.eclipse.osee.client.ote.feature</module>
 		<module>../org.eclipse.osee.ote.p2</module>

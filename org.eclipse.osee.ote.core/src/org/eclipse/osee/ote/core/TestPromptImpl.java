@@ -140,7 +140,7 @@ class TestPromptImpl {
                         new AttentionRecord(environment,
                               PromptResponseType.SCRIPT_STEP.name() + " : " + prompt.toString(), true);
                   break;
-               case OFP_DEBUG_RESPONSE:
+               case UUT_DEBUG_RESPONSE:
                   returnValue = "";
                   testRecord = null;
                   break;

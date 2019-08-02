@@ -8,25 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.core.enums;
+package org.eclipse.osee.ote.ui.output.editors;
+
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Andrew M. Finkbeiner
+ * @author Andy Jury
  */
-public enum PromptResponseType {
+public interface IResultSummaryItem {
+   Image getImage();
 
-   NONE,
-   /**
-    * Wait for the a response from the user confirming that they have started the debug uut.
-    */
-   UUT_DEBUG_RESPONSE,
-   /**
-    * Pause script execution until a response is recieved from a client.
-    */
-   SCRIPT_PAUSE,
-   PASS_FAIL,
-   SCRIPT_STEP,
-   USER_INPUT,
-   YES_NO;
+   String getTitle();
 
+   String getDescription();
 }

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.osee.ote.ui.output.editors.OteOutput"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            extensions="tmo"
+            id="org.eclipse.osee.ote.output.editor.editors.OteOutput"
+            name="Ote Output Editor">
+      </editor>
+   </extension>
+
+<extension id="errorMarker"  name="OTE Test Failure"
+          point="org.eclipse.core.resources.markers">
+       <super type="org.eclipse.core.resources.problemmarker"> </super>
+       <super type="org.eclipse.core.resources.textmarker">    </super>
+    </extension>
+   
+
+<!-- this changes the marker image in the editor marker bar  -->
+    <extension point="org.eclipse.ui.editors.annotationTypes">
+       <type markerType="org.eclipse.osee.ote.ui.output.errorMarker"
+             name="org.eclipse.osee.ote.ui.output.errorMarkerAnnotation">
+       </type>       
+    </extension>
+
+    <extension
+          point="org.eclipse.ui.editors.markerAnnotationSpecification">
+       <specification
+             annotationType="org.eclipse.osee.ote.ui.output.errorMarkerAnnotation"
+             icon="images/red_bug.gif"
+             textPreferenceKey="errorAppIndication"
+             textPreferenceValue="true"
+             overviewRulerPreferenceKey="errorAppIndicationInOverviewRuler"
+             overviewRulerPreferenceValue="true"
+             verticalRulerPreferenceKey="errorAppIndicationInVerticalRuler"
+             verticalRulerPreferenceValue="true"
+             highlightPreferenceKey="errorAppHighlighting"
+             highlightPreferenceValue="false"
+             colorPreferenceKey="errorAppIndicationColor"
+             colorPreferenceValue="255,149,149"
+             presentationLayer="3"
+             symbolicIcon="error"
+             showInNextPrevDropdownToolbarAction="false"
+             includeOnPreferencePage="true"
+			 isGoToPreviousNavigationTargetKey="iserrorAppGoToPreviousNavigationTarget"
+             label="OTE Test Failure"
+			 showInNextPrevDropdownToolbarActionKey="showerrorAppInNextPrevDropdownToolbarAction"
+		  	 isGoToNextNavigationTargetKey="iserrorAppRecordGoToNextNavigationTarget">
+       </specification>
+      
+        
+    </extension>
+
+
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
+            class="org.eclipse.osee.ote.ui.output.preferences.OutputPreferencePage"
+            id="org.eclipse.osee.ote.ui.output.PreferencePage"
+            name="OTE Output Viewer"/>
+   </extension>
+
+</plugin>

@@ -76,9 +76,6 @@ public class SaveScriptPage implements ISaveConfig, ScriptPageConstants, Xmlizab
 
    private Element miscellaneousInfoToXml(Document doc) {
       Element node = doc.createElement(ScriptPageConstants.SERVICES_ENTRY);
-      // TODO add preferred host
-      // TODO add ofp
-      // TODO add view if unit test config
 
       return node;
    }

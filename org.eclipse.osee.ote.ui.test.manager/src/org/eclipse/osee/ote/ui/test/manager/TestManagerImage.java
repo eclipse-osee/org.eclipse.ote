@@ -33,7 +33,6 @@ public enum TestManagerImage implements KeyedImage {
    FILE_DELETE("file_delete.gif"),
    FLDR_OBJ("fldr_obj.gif"),
    LOAD_CONFIG("loadConfig.gif"),
-   OFP("ofp.gif"),
    PROJECT_SET_IMAGE("import_wiz.gif"),
    SAVE_EDIT("save_edit.gif"),
    SAVEAS_EDIT("saveas_edit.gif"),

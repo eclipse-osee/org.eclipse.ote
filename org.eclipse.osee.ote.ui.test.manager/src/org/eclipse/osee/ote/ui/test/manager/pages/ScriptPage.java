@@ -124,13 +124,6 @@ public abstract class ScriptPage extends TestManagerPage {
       return coolBar;
    }
 
-   public String getOFP() {
-      if (hostConnectLabel == null) {
-         return "";
-      }
-      return hostConnectLabel.getText();
-   }
-
    @Override
    public String getPageName() {
       return pageName;

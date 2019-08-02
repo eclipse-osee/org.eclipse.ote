@@ -13,42 +13,30 @@ package org.eclipse.osee.ote.core.framework.saxparse.elements;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class OfpErrorEntryData {
+public class UutErrorEntryData {
 
    private final String nodeId;
    private final String count;
    private final String severity;
    private final String version;
 
-   /**
-    * @return the nodeId
-    */
    public String getNodeId() {
       return nodeId;
    }
 
-   /**
-    * @return the count
-    */
    public String getCount() {
       return count;
    }
 
-   /**
-    * @return the severity
-    */
    public String getSeverity() {
       return severity;
    }
 
-   /**
-    * @return the version
-    */
    public String getVersion() {
       return version;
    }
 
-   OfpErrorEntryData(String nodeId, String count, String severity, String version) {
+   UutErrorEntryData(String nodeId, String count, String severity, String version) {
       this.nodeId = nodeId;
       this.count = count;
       this.severity = severity;

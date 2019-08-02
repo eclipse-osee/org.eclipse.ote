@@ -14,7 +14,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.IScriptControl;
 
 public class ScriptControl implements IScriptControl {
 
-   private volatile boolean isOfpPaused = false;
+   private volatile boolean isUutPaused = false;
    private volatile boolean isScriptPaused = false;
    private volatile boolean isScriptReady = false;
 
@@ -28,7 +28,7 @@ public class ScriptControl implements IScriptControl {
 
    @Override
    public boolean isExecutionUnitPaused() {
-      return isOfpPaused;
+      return isUutPaused;
    }
 
    @Override
@@ -47,7 +47,7 @@ public class ScriptControl implements IScriptControl {
 
    @Override
    public void setExecutionUnitPause(boolean pause) {
-      isOfpPaused = pause;
+      isUutPaused = pause;
    }
 
    @Override

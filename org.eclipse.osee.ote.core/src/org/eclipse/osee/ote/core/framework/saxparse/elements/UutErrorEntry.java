@@ -16,15 +16,16 @@ import org.xml.sax.Attributes;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class OfpLoggingInfo extends ElementHandlers {
+public class UutErrorEntry extends ElementHandlers {
 
-   public OfpLoggingInfo() {
-      super("OfpLoggingInfo");
+   public UutErrorEntry() {
+      super("UutErrorEntry");
    }
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
-      return null;
+      return new UutErrorEntryData(attributes.getValue("NODE_ID"), attributes.getValue("count"),
+         attributes.getValue("severity"), attributes.getValue("version"));
    }
 
 }
