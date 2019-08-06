@@ -218,7 +218,10 @@ public class BaseOutfileTreeItem implements IOutfileTreeItem {
 
    @Override
    public int hashCode() {
-     return key.hashCode(); 
+      if (key != null) {
+         return key.hashCode(); 
+      } 
+      return super.hashCode();
    }
    
    public boolean equals(BaseOutfileTreeItem item) {
