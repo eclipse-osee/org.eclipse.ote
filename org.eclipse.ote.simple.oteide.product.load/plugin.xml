@@ -22,7 +22,7 @@
         </property>
         <property
               name="windowImages"
-              value="icons/ote.bmp,icons/ote.bmp,icons/ote.mp">
+              value="icons/ote.bmp,icons/ote.bmp,icons/ote.bmp">
         </property>
         <property name="cssTheme" value="org.eclipse.e4.ui.css.theme.e4_default" />
 		<property name="applicationCSSResources" value="platform:/plugin/org.eclipse.platform/images/"/>

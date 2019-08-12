@@ -11,11 +11,14 @@
 package org.eclipse.osee.ote.ui.test.manager.pages;
 
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -53,10 +56,9 @@ public abstract class ScriptPage extends TestManagerPage {
 
    private static final String NOT_CONNECTED = "<< NOT_CONNECTED >>";
    private static final int ABORT_BTN_TIMER = 5000;
-   
+
    public enum UpdateableLabel {
-      HOSTLABEL,
-      CONFIGPATHLABEL;
+      HOSTLABEL, CONFIGPATHLABEL;
    }
 
    public static final OseeUiActivator plugin = TestManagerPlugin.getInstance();
@@ -72,6 +74,7 @@ public abstract class ScriptPage extends TestManagerPage {
    private ScriptTableViewer scriptTable;
    private StatusWindowWidget statusWindow;
    private final TestManagerEditor testManagerEditor;
+   private ProgramButtonProviderService programButtonProviderService;
 
    public ScriptPage(Composite parent, int style, TestManagerEditor parentTestManager) {
       super(parent, style, parentTestManager);
@@ -101,11 +104,45 @@ public abstract class ScriptPage extends TestManagerPage {
       createScriptTableSection(sashForm);
       createStatusWindow(sashForm);
 
-      sashForm.setWeights(new int[] {8, 2});
+      sashForm.setWeights(new int[] { 8, 2 });
       setMinSize(0, 0);
-      
+
       // TODO: Change to use OteHelpContext
       HelpUtil.setHelp(this, "test_manager_scripts_page", "org.eclipse.osee.framework.help.ui");
+
+      // Consume any program-specific ProgramButtonService that may have been
+      // through OSGI, and if so, get the additional program-specific buttons
+      // from the subscriber.
+      programButtonProviderService = OsgiUtil.getService(IProgramButtonProvider.class,
+            ProgramButtonProviderService.class);
+      for (IProgramButtonProvider provider : programButtonProviderService.getProgramButtonProviders()) {
+         provider.getProgramButtons(coolBar, statusWindow);
+      }
+
+      // Example: As above, but to be moved to the appropriate class/location.
+      ILibraryLinkerProviderService libraryLinkerProviderService = OsgiUtil.getService(ILibraryLinkerProvider.class, LibraryLinkerProviderService.class);
+      for (ILibraryLinkerProvider provider : libraryLinkerProviderService.getLibraryLinkerProviders()) {
+         provider.getLibraryLinkers();
+      }
+
+      // Example: As above, but to be moved to the appropriate class/location.
+      ILaunchAndKillProviderService launchAndKillProviderService = OsgiUtil.getService(ILaunchAndKillProvider.class, LaunchAndKillProviderService.class);
+
+      // Example to launch and kill processes:
+      for (ILaunchAndKillProvider provider : launchAndKillProviderService.getLaunchAndKillProviders()) {
+         Collection<ILaunchAndKill> launchers = provider.getLaunchers();
+         Collection<ILaunchAndKill> killers = provider.getKillers();
+         for (ILaunchAndKill launcher : launchers) {
+            Process launchProcess; // To access Process methods
+            //launchProcess = launcher.executeProcess(); // Launches the process
+            break;
+         }
+         for (ILaunchAndKill killer : killers) {
+            Process killProcess; // To access Process methods
+            //killProcess = killer.executeProcess(); // Kills the process
+            break;
+         }
+      }
    }
 
    public void loadStorageString() {
@@ -150,7 +187,7 @@ public abstract class ScriptPage extends TestManagerPage {
       AWorkbench.getDisplay().asyncExec(new Runnable() {
          @Override
          public void run() {
-            if(runButton.isDisposed()){
+            if (runButton.isDisposed()) {
                return;
             }
             if (running) {
@@ -302,11 +339,12 @@ public abstract class ScriptPage extends TestManagerPage {
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       scriptTable = new ScriptTableViewer(composite, this.getTestManager());
-      //      scriptTable.addDisposeListener(new DisposeListener() {
-      //         public void widgetDisposed(DisposeEvent e) {
-      //            testManagerEditor.storeValue(testManagerEditor.scriptsQualName, scriptTable.getStorageString());
-      //         }
-      //      });
+      // scriptTable.addDisposeListener(new DisposeListener() {
+      // public void widgetDisposed(DisposeEvent e) {
+      // testManagerEditor.storeValue(testManagerEditor.scriptsQualName,
+      // scriptTable.getStorageString());
+      // }
+      // });
 
    }
 
@@ -314,7 +352,7 @@ public abstract class ScriptPage extends TestManagerPage {
       statusWindow = new StatusWindowWidget(parent);
 
       statusWindow.setLabelAndValue(UpdateableLabel.HOSTLABEL.name(), "Selected Host", NOT_CONNECTED, SWT.BOLD,
-         SWT.COLOR_DARK_RED);
+            SWT.COLOR_DARK_RED);
 
       String selectedFile = testManagerEditor.loadValue(testManagerEditor.configFileName);
       if (!Strings.isValid(selectedFile)) {
@@ -373,7 +411,6 @@ public abstract class ScriptPage extends TestManagerPage {
    }
 
    private class EnabledAbortsTimer extends TimerTask {
-
       @Override
       public void run() {
          Displays.ensureInDisplayThread(new Runnable() {
@@ -389,9 +426,7 @@ public abstract class ScriptPage extends TestManagerPage {
                }
             }
          });
-
       }
-
    }
 
    @Override
@@ -419,7 +454,7 @@ public abstract class ScriptPage extends TestManagerPage {
             abortBatchButton.setEnabled(false);
             scriptTable.onConnectionChanged(true);
             statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(), event.getProperties().getStation(), SWT.BOLD,
-               SWT.COLOR_DARK_GREEN);
+                  SWT.COLOR_DARK_GREEN);
             statusWindow.refresh();
          }
 
