@@ -321,10 +321,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.epp.mpc"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.gef"
          version="0.0.0"/>
 
@@ -677,10 +673,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.gmf"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.ocl"
          version="0.0.0"/>
 
@@ -694,14 +686,6 @@
 
    <includes
          id="org.eclipse.ocl.unified.core"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.m2m.qvt.oml.sdk"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.uml2.sdk"
          version="0.0.0"/>
 
    <includes
@@ -1069,6 +1053,34 @@
 
    <plugin
          id="net.bytebuddy.byte-buddy-agent"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.sun.jna"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.sun.jna.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.sun.jna.platform"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.sun.jna.platform.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
