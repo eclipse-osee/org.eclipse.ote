@@ -552,11 +552,6 @@ public class UnitTestAccessor implements ITestEnvironmentMessageSystemAccessor, 
    }
 
    @Override
-   public void abortTestScript(Throwable t) {
-
-   }
-
-   @Override
    public boolean addTask(final EnvironmentTask task) {
       timerCtrl.addTask(task, null);
       return true;

@@ -21,8 +21,6 @@ import org.eclipse.osee.ote.core.environment.EnvironmentTask;
 public interface ITestEnvironmentAccessor {
    void abortTestScript();
 
-   void abortTestScript(Throwable t);
-
    boolean addTask(EnvironmentTask task);
 
    void associateObject(Class<?> c, Object obj);

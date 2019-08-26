@@ -578,12 +578,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       getRunManager().abort();
    }
 
-   @Override
-   @Deprecated
-   public void abortTestScript(Throwable t) {
-      getRunManager().abort(t, false);
-   }
-
 //   public void setOteNodeInfo(NodeInfo oteEmbeddedBroker) {
 //      this.oteEmbeddedBroker = oteEmbeddedBroker;
 //   }

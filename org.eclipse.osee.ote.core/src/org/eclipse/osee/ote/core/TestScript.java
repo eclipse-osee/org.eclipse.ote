@@ -202,6 +202,10 @@ public abstract class TestScript implements ITimeout {
       printFailToConsole = OteProperties.isPrintFailToConsoleEnabled();
    }
 
+   public void abortTestScript() {
+      environment.abortTestScript();
+   }
+
    public void abort() {
       OseeLog.log(TestEnvironment.class, Level.SEVERE, "Aborting script", new Exception());
       aborted = true;

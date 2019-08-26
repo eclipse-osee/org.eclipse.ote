@@ -444,11 +444,6 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
    public void setTestScript(TestScript script) {
       throw new IllegalStateException("Why are you calling this one?!?!?!?");
    }
-
-   @Override
-   public void abortTestScript(Throwable t) {
-      testScript.get().abortDueToThrowable(t);
-   }
    
    @JsonProperty
    public List<RequirementRecord> getTraceability() {

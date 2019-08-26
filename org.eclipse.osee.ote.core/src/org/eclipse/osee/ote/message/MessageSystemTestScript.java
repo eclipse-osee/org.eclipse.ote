@@ -115,10 +115,6 @@ public abstract class MessageSystemTestScript extends TestScript implements ITes
    //   public EnvironmentType getEnvironmentType() {
    //      return msgSysEnvironment.getEnvironmentType();
    //   }
-   @Override
-   public void abortTestScript() {
-      msgSysEnvironment.abortTestScript();
-   }
 
    @Override
    public boolean addTask(EnvironmentTask task) {
