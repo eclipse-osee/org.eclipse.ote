@@ -41,4 +41,3 @@ Export-Package: org.eclipse.ote.simple.test.environment,
  org.eclipse.ote.simple.test.environment.listener,
  org.eclipse.ote.simple.test.environment.outfile,
  org.eclipse.ote.simple.test.environment.outfile.xml
-Service-Component: OSGI-INF/*.xml
