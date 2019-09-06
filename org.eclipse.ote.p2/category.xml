@@ -18,6 +18,18 @@
    <feature url="features/org.eclipse.ote.server.feature.source_0.11.0.qualifier.jar" id="org.eclipse.ote.server.feature.source" version="0.11.0.qualifier">
       <category name="org.eclipse.ote"/>
    </feature>
+   <feature url="features/org.eclipse.osee.client.ote.feature_0.26.0.qualifier.jar" id="org.eclipse.osee.client.ote.feature" version="0.26.0.qualifier">
+      <category name="org.eclipse.ote"/>
+   </feature>
+   <feature url="features/org.eclipse.osee.client.ote.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.client.ote.feature.source" version="0.26.0.qualifier">
+      <category name="org.eclipse.ote"/>
+   </feature>
+   <feature url="features/org.eclipse.osee.ote.feature_0.26.0.qualifier.jar" id="org.eclipse.osee.ote.feature" version="0.26.0.qualifier">
+      <category name="org.eclipse.ote"/>
+   </feature>
+   <feature url="features/org.eclipse.osee.ote.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.ote.feature.source" version="0.26.0.qualifier">
+      <category name="org.eclipse.ote"/>
+   </feature>
    
    <category-def name="org.eclipse.ote" label="Eclipse OTE Features">
       <description>
