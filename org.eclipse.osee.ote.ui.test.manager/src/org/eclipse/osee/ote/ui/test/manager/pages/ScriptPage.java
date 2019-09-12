@@ -18,6 +18,7 @@ import java.util.logging.Level;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -75,10 +76,14 @@ public abstract class ScriptPage extends TestManagerPage {
    private StatusWindowWidget statusWindow;
    private final TestManagerEditor testManagerEditor;
    private ProgramButtonProviderService programButtonProviderService;
+   private ILaunchAndKillProviderService launchAndKillProviderService;
+   private ExecutorAdmin executorAdmin;
 
    public ScriptPage(Composite parent, int style, TestManagerEditor parentTestManager) {
       super(parent, style, parentTestManager);
       this.testManagerEditor = parentTestManager;
+      launchAndKillProviderService = OsgiUtil.getService(ILaunchAndKillProvider.class, LaunchAndKillProviderService.class);
+      executorAdmin = OsgiUtil.getService(ExecutorAdmin.class, ExecutorAdmin.class);
    }
 
    public void addFile(String fullPath) {
@@ -124,9 +129,6 @@ public abstract class ScriptPage extends TestManagerPage {
       for (ILibraryLinkerProvider provider : libraryLinkerProviderService.getLibraryLinkerProviders()) {
          provider.getLibraryLinkers();
       }
-
-      // Example: As above, but to be moved to the appropriate class/location.
-      ILaunchAndKillProviderService launchAndKillProviderService = OsgiUtil.getService(ILaunchAndKillProvider.class, LaunchAndKillProviderService.class);
 
       // Example to launch and kill processes:
       for (ILaunchAndKillProvider provider : launchAndKillProviderService.getLaunchAndKillProviders()) {
@@ -456,12 +458,19 @@ public abstract class ScriptPage extends TestManagerPage {
             statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(), event.getProperties().getStation(), SWT.BOLD,
                   SWT.COLOR_DARK_GREEN);
             statusWindow.refresh();
+            
          }
-
       });
+  
+      executorAdmin.submit("Launch DTE", new Runnable() {
+         @Override
+         public void run() {
+            executeLaunchProviders();
+         }
+      });
+
       return result;
    }
-
    @Override
    public boolean onDisconnect(ConnectionEvent event) {
       boolean result = getScriptManager().disconnect(event);
@@ -474,6 +483,14 @@ public abstract class ScriptPage extends TestManagerPage {
             scriptTable.onConnectionChanged(false);
             statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(), NOT_CONNECTED, SWT.BOLD, SWT.COLOR_DARK_RED);
             statusWindow.refresh();
+            
+            executorAdmin.submit("Kill DTE", new Runnable() {
+               @Override
+               public void run() {
+                  executeKillProviders();
+               }
+            });
+
          }
       });
       return result;
@@ -491,9 +508,37 @@ public abstract class ScriptPage extends TestManagerPage {
             scriptTable.onConnectionChanged(false);
             statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(), NOT_CONNECTED, SWT.BOLD, SWT.COLOR_DARK_RED);
             statusWindow.refresh();
+            
+            executorAdmin.submit("Kill DTE", new Runnable() {
+               @Override
+               public void run() {
+                  executeKillProviders();
+               }
+            });
+
          }
       });
       return result;
+   }
+   
+   private void executeLaunchProviders() {
+      for (ILaunchAndKillProvider provider : launchAndKillProviderService.getLaunchAndKillProviders()) {
+         Collection<ILaunchAndKill> launchers = provider.getLaunchers();
+         for (ILaunchAndKill launcher : launchers) {
+            Process launchProcess = launcher.executeProcess(); 
+            break;
+         }
+      }
+   }
+   
+   private void executeKillProviders() {
+      for (ILaunchAndKillProvider provider : launchAndKillProviderService.getLaunchAndKillProviders()) {
+         Collection<ILaunchAndKill> killers = provider.getKillers();
+         for (ILaunchAndKill killer : killers) {
+            Process killProcess = killer.executeProcess(); 
+            break;
+         }
+      }
    }
 
    public abstract ScriptManager getScriptManager();
