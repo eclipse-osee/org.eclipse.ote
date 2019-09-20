@@ -462,7 +462,7 @@ public abstract class ScriptPage extends TestManagerPage {
          }
       });
   
-      executorAdmin.submit("Launch DTE", new Runnable() {
+      executorAdmin.submit("Launch Providers", new Runnable() {
          @Override
          public void run() {
             executeLaunchProviders();
@@ -484,7 +484,7 @@ public abstract class ScriptPage extends TestManagerPage {
             statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(), NOT_CONNECTED, SWT.BOLD, SWT.COLOR_DARK_RED);
             statusWindow.refresh();
             
-            executorAdmin.submit("Kill DTE", new Runnable() {
+            executorAdmin.submit("Kill Providers", new Runnable() {
                @Override
                public void run() {
                   executeKillProviders();
@@ -509,7 +509,7 @@ public abstract class ScriptPage extends TestManagerPage {
             statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(), NOT_CONNECTED, SWT.BOLD, SWT.COLOR_DARK_RED);
             statusWindow.refresh();
             
-            executorAdmin.submit("Kill DTE", new Runnable() {
+            executorAdmin.submit("Kill Providers", new Runnable() {
                @Override
                public void run() {
                   executeKillProviders();
