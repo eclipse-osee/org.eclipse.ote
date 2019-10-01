@@ -12,6 +12,8 @@ package org.eclipse.osee.ote.core.test_manager.interfaces;
 
 import java.util.Collection;
 
+import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
+
 /**
  * @author Dominic Guss
  */
@@ -20,4 +22,6 @@ public interface ILaunchAndKillProvider {
    Collection<ILaunchAndKill> getLaunchers();
 
    Collection<ILaunchAndKill> getKillers();
+   
+   void setExecutorAdmin(ExecutorAdmin executorAdmin);
 }

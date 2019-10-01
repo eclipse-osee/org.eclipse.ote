@@ -24,6 +24,7 @@ import org.osgi.framework.FrameworkUtil;
 public class LaunchAndKillProviderService implements ILaunchAndKillProviderService {
 
    private final Collection<ILaunchAndKillProvider> launchAndKillProviders = new ArrayList<>();
+   private ExecutorAdmin executorAdmin;
 
    public LaunchAndKillProviderService() {
       // Register the service
@@ -34,10 +35,21 @@ public class LaunchAndKillProviderService implements ILaunchAndKillProviderServi
    @Override
    public void addLaunchAndKillProvider(ILaunchAndKillProvider launchAndKillProvider) {
       launchAndKillProviders.add(launchAndKillProvider);
+      launchAndKillProvider.setExecutorAdmin(this.executorAdmin);
    }
 
    @Override
    public Collection<ILaunchAndKillProvider> getLaunchAndKillProviders() {
       return launchAndKillProviders;
+   }
+
+   @Override
+   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
+      this.executorAdmin = executorAdmin;
+   }
+
+   @Override
+   public ExecutorAdmin getExecutorAdmin() {
+      return executorAdmin;
    }
 }

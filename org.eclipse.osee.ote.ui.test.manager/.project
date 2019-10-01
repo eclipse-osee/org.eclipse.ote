@@ -3,6 +3,7 @@
 	<name>org.eclipse.osee.ote.ui.test.manager</name>
 	<comment></comment>
 	<projects>
+		<project>com.sun.jna</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
