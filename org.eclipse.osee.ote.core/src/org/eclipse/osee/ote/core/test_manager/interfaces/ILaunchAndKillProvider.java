@@ -8,16 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.ui.test.manager.pages;
+package org.eclipse.osee.ote.core.test_manager.interfaces;
 
 import java.util.Collection;
 
 /**
  * @author Dominic Guss
  */
-public interface ILibraryLinkerProviderService {
+public interface ILaunchAndKillProvider {
 
-   void addLibraryLinkerProvider(ILibraryLinkerProvider libraryLinkerProvider);
+   Collection<ILaunchAndKill> getLaunchers();
 
-   Collection<ILibraryLinkerProvider> getLibraryLinkerProviders();
+   Collection<ILaunchAndKill> getKillers();
 }

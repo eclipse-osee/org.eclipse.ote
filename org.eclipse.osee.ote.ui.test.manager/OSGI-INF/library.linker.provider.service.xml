@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="true">
-   <implementation class="org.eclipse.osee.ote.ui.test.manager.pages.LibraryLinkerProviderService"/>
-   <reference bind="addLibraryLinkerProvider" cardinality="0..n" interface="org.eclipse.osee.ote.ui.test.manager.pages.ILibraryLinkerProvider" name="ILibraryLinkerProvider" policy="dynamic"/>
-</scr:component>

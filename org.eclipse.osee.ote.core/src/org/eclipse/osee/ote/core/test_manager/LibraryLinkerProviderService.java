@@ -8,11 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.ui.test.manager.pages;
+package org.eclipse.osee.ote.core.test_manager;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.osee.ote.core.test_manager.interfaces.ILibraryLinkerProvider;
+import org.eclipse.osee.ote.core.test_manager.interfaces.ILibraryLinkerProviderService;
 import org.osgi.framework.FrameworkUtil;
 
 /**

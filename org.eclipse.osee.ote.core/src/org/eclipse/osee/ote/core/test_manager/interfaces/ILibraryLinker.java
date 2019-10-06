@@ -8,16 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.ui.test.manager.pages;
+package org.eclipse.osee.ote.core.test_manager.interfaces;
 
 /**
  * @author Dominic Guss
  */
-public interface ILaunchAndKill {
+public interface ILibraryLinker {
 
-   String getLaunchOrKillName();
+   String getLinkerName();
 
-   void setLaunchOrKillName(String name);
-
-   Process executeProcess();
+   void setLinkerName(String name);
 }

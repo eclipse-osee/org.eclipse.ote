@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="true">
+   <implementation class="org.eclipse.osee.ote.core.test_manager.LaunchAndKillProviderService"/>
+   <reference bind="addLaunchAndKillProvider" cardinality="0..n" interface="org.eclipse.osee.ote.core.test_manager.interfaces.ILaunchAndKillProvider" name="ILaunchAndKillProvider" policy="dynamic"/>
+   <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.framework.core.executor.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
+</scr:component>

@@ -28,6 +28,13 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.ote.core.test_manager.LaunchAndKillProviderService;
+import org.eclipse.osee.ote.core.test_manager.LibraryLinkerProviderService;
+import org.eclipse.osee.ote.core.test_manager.interfaces.ILaunchAndKill;
+import org.eclipse.osee.ote.core.test_manager.interfaces.ILaunchAndKillProvider;
+import org.eclipse.osee.ote.core.test_manager.interfaces.ILaunchAndKillProviderService;
+import org.eclipse.osee.ote.core.test_manager.interfaces.ILibraryLinkerProvider;
+import org.eclipse.osee.ote.core.test_manager.interfaces.ILibraryLinkerProviderService;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.TestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.configuration.LoadWidget;
@@ -137,7 +144,9 @@ public abstract class ScriptPage extends TestManagerPage {
          for (ILaunchAndKill launcher : launchers) {
             Process launchProcess; // To access Process methods
             //launchProcess = launcher.executeProcess(); // Launches the process
-            break;
+           //launcher.setExecutorAdmin(launchAndKillProviderService.getExecutorAdmin());
+           //launcher.executeProcess();
+           //break;
          }
          for (ILaunchAndKill killer : killers) {
             Process killProcess; // To access Process methods
