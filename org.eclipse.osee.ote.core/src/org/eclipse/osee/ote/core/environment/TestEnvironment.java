@@ -15,7 +15,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.rmi.Remote;
@@ -92,21 +91,13 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    @Deprecated
    private final List<IScriptSetupEvent> scriptSetupListeners = new ArrayList<>();
 
-//   private OteServerSideEndprointRecieve oteServerSideEndpointRecieve;
-//   private OteServerSideEndpointSender oteServerSideEndpointSender;
-//   private final ServiceTracker messagingServiceTracker;
-
    private volatile boolean isShutdown = false;
-//   private NodeInfo oteEmbeddedBroker;
    private ServiceRegistration<TestEnvironmentInterface> myRegistration;
+
+   private UutApi uutApi;
 
    protected TestEnvironment(IEnvironmentFactory factory) {
       GCHelper.getGCHelper().addRefWatch(this);
-//      try {
-//         oteEmbeddedBroker = new NodeInfo("OTEEmbeddedBroker", new URI("vm://localhost?broker.persistent=false"));
-//      } catch (URISyntaxException ex) {
-//         OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
-//      }
       this.factory = factory;
       this.testStation = factory.getTestStation();
       this.runtimeManager = factory.getRuntimeManager();
@@ -115,7 +106,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       this.associatedObjects = new HashMap<>(100);
       this.batchMode = OteProperties.isOseeOteInBatchModeEnabled();
 
-//      messagingServiceTracker = setupOteMessagingSenderAndReceiver();
    }
 
    public void init(IServiceConnector connector) {
@@ -134,19 +124,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       props.setProperty("owner", OtePropertiesCore.userName.getValue());
       connector = new LocalConnector(this, Integer.toString(this.getUniqueId()), props);
    }
-
-//   private ServiceTracker setupOteMessagingSenderAndReceiver() {
-//      oteServerSideEndpointRecieve = new OteServerSideEndprointRecieve();
-//      oteServerSideEndpointSender = new OteServerSideEndpointSender(this);
-//      BundleContext context = Platform.getBundle("org.eclipse.osee.ote.core").getBundleContext();
-//      return getServiceTracker(MessagingGateway.class.getName(), new OteEnvironmentTrackerCustomizer(context,
-//            oteServerSideEndpointRecieve, oteServerSideEndpointSender,
-//            OteServerSideEndpointSender.OTE_SERVER_SIDE_SEND_PROTOCOL));
-//   }
-//
-//   public void sendMessageToServer(Message message) {
-//      oteServerSideEndpointRecieve.recievedMessage(message);
-//   }
 
    public ServiceTracker getServiceTracker(String clazz, ServiceTrackerCustomizer customizer) {
       return Activator.getInstance().getServiceTracker(clazz, customizer);
@@ -329,8 +306,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
          this.associatedObjects.clear();// get rid of all models and support
       }
 
-//      messagingServiceTracker.close();
-
       OseeLog.log(TestEnvironment.class, Level.FINE, "shutting down environment");
       factory.getTimerControl().cancelTimers();
       stop();
@@ -357,17 +332,17 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       } catch (IOException ex) {
          throw new Exception("Error in directory setup. " + outfileDir, ex);
       }
-      if(myRegistration != null){
+      if (myRegistration != null) {
          myRegistration.unregister();
       }
       myRegistration = FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(TestEnvironmentInterface.class, this, null);
    }
 
    protected void stop() {
-      try{
+      try {
          myRegistration.unregister();
-      } catch (IllegalStateException ex){
-         //ignore if it's already unregistered
+      } catch (IllegalStateException ex) {
+         // ignore if it's already unregistered
       }
    }
 
@@ -445,7 +420,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    @Deprecated
    /**
-    * alerts the environment of an exception. The environment will take any necessary actions and alert any interested
+    * alerts the environment of an exception. The environment will take any
+    * necessary actions and alert any interested
     * entities of the problem. Any runing test script will be terminated
     * 
     */
@@ -455,7 +431,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    @Deprecated
    /**
-    * @param abortScript true will cause the currently running script to abort
+    * @param abortScript
+    *           true will cause the currently running script to abort
     */
    public void handleException(Throwable t, Level logLevel, boolean abortScript) {
       handleException(t, "An exception has occurred in the environment", logLevel, abortScript);
@@ -463,12 +440,16 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    @Deprecated
    /**
-    * alerts the environment of an exception. The environment will take any necessary actions and alert any interested
+    * alerts the environment of an exception. The environment will take any
+    * necessary actions and alert any interested
     * entities of the problem
     * 
-    * @param t the exception
-    * @param logLevel the severity of the exception. Specifing a Level.OFF will
-    * @param abortScript cause the exception to not be logged
+    * @param t
+    *           the exception
+    * @param logLevel
+    *           the severity of the exception. Specifing a Level.OFF will
+    * @param abortScript
+    *           cause the exception to not be logged
     */
    public void handleException(Throwable t, String message, Level logLevel, boolean abortScript) {
       if (logLevel != Level.OFF) {
@@ -499,7 +480,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    @Override
    @Deprecated
    /**
-    * marks the script as ready as well as clears any objects that are associated with the environment.
+    * marks the script as ready as well as clears any objects that are
+    * associated with the environment.
     */
    public synchronized void onScriptSetup() {
 
@@ -578,11 +560,12 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       getRunManager().abort();
    }
 
-//   public void setOteNodeInfo(NodeInfo oteEmbeddedBroker) {
-//      this.oteEmbeddedBroker = oteEmbeddedBroker;
-//   }
-//
-//   public NodeInfo getOteNodeInfo() {
-//      return oteEmbeddedBroker;
-//   }
+   public UutApi getUutApi() {
+      return uutApi;
+   }
+
+   public void setUutApi(UutApi uutApi) {
+      this.uutApi = uutApi;
+   }
+
 }
