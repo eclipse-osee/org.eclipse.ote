@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.LocalConnector;
 import org.eclipse.osee.framework.jdk.core.reportdata.ReportDataListener;
@@ -554,6 +553,17 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return getRunManager().getCurrentScript();
    }
 
+   /**
+    * Causes current thread to wait until another thread invokes the {@link java.lang.Object#notify()}method or the
+    * {@link java.lang.Object#notifyAll()}method for this object.
+    * 
+    * @param milliseconds
+    * @throws InterruptedException
+    */
+   public void testWait(int milliseconds) throws InterruptedException {
+      getRunManager().getCurrentScript().testWait(milliseconds);
+   }
+   
    @Override
    @Deprecated
    public void abortTestScript() {
