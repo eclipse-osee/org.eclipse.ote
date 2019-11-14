@@ -22,6 +22,7 @@
 		<module>../org.eclipse.ote.io</module>
 		<module>../org.eclipse.ote.io.test</module>
 	   <module>../org.eclipse.ote.services.core</module>
+        <module>../org.eclipse.ote.simple.test.environment</module>
 		<module>../org.eclipse.ote.statemachine</module>
 		<module>../org.eclipse.ote.statemachine.test</module>
 	

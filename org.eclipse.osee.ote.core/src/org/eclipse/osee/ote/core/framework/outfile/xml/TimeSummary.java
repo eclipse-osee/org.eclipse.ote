@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.ote.simple.test.environment.outfile.xml;
+package org.eclipse.osee.ote.core.framework.outfile.xml;
 
 import java.util.Date;
 

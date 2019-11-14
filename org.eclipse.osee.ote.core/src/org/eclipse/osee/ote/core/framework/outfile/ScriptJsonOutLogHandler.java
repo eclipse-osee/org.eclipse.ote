@@ -9,8 +9,16 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.ote.simple.test.environment.outfile;
+package org.eclipse.osee.ote.core.framework.outfile;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,36 +35,26 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
+import org.eclipse.osee.ote.core.framework.outfile.xml.TestPointResults;
+import org.eclipse.osee.ote.core.framework.outfile.xml.TimeSummary;
 import org.eclipse.osee.ote.core.log.record.ScriptResultRecord;
 import org.eclipse.osee.ote.core.log.record.TestPointRecord;
 import org.eclipse.osee.ote.core.log.record.json.LogRecordModule;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
 import org.eclipse.osee.ote.core.testPoint.Operation;
-import org.eclipse.ote.simple.test.environment.outfile.xml.TestPointResults;
-import org.eclipse.ote.simple.test.environment.outfile.xml.TimeSummary;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 
 /**
  * @author Andy Jury
  */
 public class ScriptJsonOutLogHandler extends Handler {
-   private Map<String, Object> minimum = new HashMap<String, Object>();
+   private final Map<String, Object> minimum = new HashMap<String, Object>();
    private final ObjectMapper mapper = new ObjectMapper();
-   private File outfile;
+   private final File outfile;
    private ZipOutputStream zip;
-   private String distrStatement;
+   private final String distrStatement;
 
    public ScriptJsonOutLogHandler(final File outFile, final String distributionStatement) {
       super();
@@ -119,7 +117,8 @@ public class ScriptJsonOutLogHandler extends Handler {
 
    private void handleTestPoint(ITestPoint testPoint, List<Object> testPoints, int number, String groupName, boolean overallPass, String levelNum) {
       if (testPoint instanceof CheckPoint) {
-         Map<String, Object> point = convertCheckPoint((CheckPoint) testPoint, number, groupName, overallPass, levelNum);
+         Map<String, Object> point =
+            convertCheckPoint((CheckPoint) testPoint, number, groupName, overallPass, levelNum);
          testPoints.add(point);
       } else if (testPoint instanceof CheckGroup) {
          CheckGroup group = (CheckGroup) testPoint;

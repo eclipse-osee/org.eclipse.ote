@@ -11,13 +11,11 @@
 
 package org.eclipse.ote.simple.test.environment;
 
-import java.io.IOException;
 import java.util.Hashtable;
-
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 import org.eclipse.osee.ote.server.TestEnvironmentFactory;
-import org.eclipse.ote.simple.test.environment.internal.Activator;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Andy Jury
@@ -25,13 +23,12 @@ import org.eclipse.ote.simple.test.environment.internal.Activator;
 public class SimpleTestEnvironmentStartupFactory implements TestEnvironmentFactory {
 
    @Override
-   public MessageSystemTestEnvironment createEnvironment(IRuntimeLibraryManager runtimeLibraryManager) throws IOException {
+   public MessageSystemTestEnvironment createEnvironment(IRuntimeLibraryManager runtimeLibraryManager) {
 
       SimpleTestEnvironment env = new SimpleTestEnvironment(runtimeLibraryManager);
 
-      Activator.getDefault().getBundle().getBundleContext().registerService(new String[] { SimpleTestEnvironment.class.getName() },
-            env,
-            new Hashtable<String, Object>());
+      FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(
+         new String[] {SimpleTestEnvironment.class.getName()}, env, new Hashtable<String, Object>());
       return env;
    }
 

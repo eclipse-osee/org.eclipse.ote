@@ -10,16 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -90,7 +88,7 @@ import org.w3c.dom.Element;
  * 		</ul>
  * }
  * </code>
- * 
+ *
  * @see org.eclipse.osee.ote.core.TestScript
  * @author Ryan D. Brooks
  * @author Robert A. Fisher
@@ -105,23 +103,14 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
    public int number;
    protected List<RequirementRecord> traceability = new ArrayList<>();
 
-   /**
-    * TestCase Constructor.
-    */
    public TestCase(TestScript testScript) {
       this(testScript, false);
    }
 
-   /**
-    * TestCase Constructor.
-    */
    public TestCase(TestScript testScript, boolean standAlone) {
       this(testScript, standAlone, true);
    }
 
-   /**
-    * TestCase Constructor.
-    */
    protected TestCase(TestScript testScript, boolean standAlone, boolean addToRunList) {
       super();
       this.testDescription = new TestDescriptionRecord(testScript.getTestEnvironment());
@@ -134,25 +123,9 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       GCHelper.getGCHelper().addRefWatch(this);
    }
 
-   public TestCase(ITestEnvironmentAccessor accessor) {
-      this.testDescription = new TestDescriptionRecord(accessor);
-
-      // TODO we have two different traceability tags here.... we need to combine these or get rid
-      // of them all together since define and the artifact framework specifies traceability
-      // this.tracability = new ArrayList();
-      this.traceability = new ArrayList<>();
-
-      this.standAlone = false;
-      ;
-      this.number = 1;
-      this.testScript = null;
-      this.environment = accessor;
-
-   }
-
    /**
     * Called by baseDoTestCase(). This is implemented by the tester's in each test case in the test script.
-    * 
+    *
     * @param environment The Test environment.
     */
    public abstract void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) throws InterruptedException;
@@ -172,10 +145,10 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       }
       XMLStreamWriterUtil.writeElement(writer, "Name", name);
    }
-   
+
    @JsonProperty
    public String getName() {
-       return this.getClass().getName();
+      return this.getClass().getName();
    }
 
    public void writeTracability(XMLStreamWriter writer) throws XMLStreamException {
@@ -193,9 +166,9 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       }
       return Jaxp.createElement(doc, "Name", name);
    }
-   
+
    public String getTestCaseClassName() {
-	   return this.getClass().getName();
+      return this.getClass().getName();
    }
 
    public TestCase getTestCase() {
@@ -250,7 +223,8 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
    }
 
    public void promptPassFail(String message) throws InterruptedException {
-      getTestScript().getLogger().methodCalled(getTestScript().getTestEnvironment(), new MethodFormatter().add(message));
+      getTestScript().getLogger().methodCalled(getTestScript().getTestEnvironment(),
+         new MethodFormatter().add(message));
 
       getTestScript().promptPassFail(message);
 
@@ -271,7 +245,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
 
    /**
     * Logs the results of a test point.
-    * 
+    *
     * @param passed boolean T/F
     * @param expected The expected information
     * @param actual The actual information
@@ -310,7 +284,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
 
    /**
     * Starts running the test case. Calls doTestCase(), which is implemented by the tester in each test case.
-    * 
+    *
     * @param environment The Test Enviornment.
     */
    public void baseDoTestCase(ITestEnvironmentAccessor environment) throws InterruptedException {
@@ -444,13 +418,13 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
    public void setTestScript(TestScript script) {
       throw new IllegalStateException("Why are you calling this one?!?!?!?");
    }
-   
+
    @JsonProperty
    public List<RequirementRecord> getTraceability() {
-       if (traceability.isEmpty()) {
-           return null;
-       } else {
-           return traceability;
-       }
+      if (traceability.isEmpty()) {
+         return null;
+      } else {
+         return traceability;
+      }
    }
 }

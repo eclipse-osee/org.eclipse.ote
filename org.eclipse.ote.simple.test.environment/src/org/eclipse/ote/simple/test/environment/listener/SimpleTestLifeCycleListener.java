@@ -13,7 +13,6 @@ package org.eclipse.ote.simple.test.environment.listener;
 
 import java.util.Date;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.OteLevel;
@@ -24,10 +23,10 @@ import org.eclipse.osee.ote.core.framework.ITestLifecycleListener;
 import org.eclipse.osee.ote.core.framework.MethodResultImpl;
 import org.eclipse.osee.ote.core.framework.ReturnCode;
 import org.eclipse.osee.ote.core.framework.event.IEventData;
+import org.eclipse.osee.ote.core.framework.outfile.xml.SystemInfo;
+import org.eclipse.osee.ote.core.framework.outfile.xml.TestPointResults;
+import org.eclipse.osee.ote.core.framework.outfile.xml.TimeSummary;
 import org.eclipse.ote.simple.test.environment.SimpleTestEnvironment;
-import org.eclipse.ote.simple.test.environment.outfile.xml.SystemInfo;
-import org.eclipse.ote.simple.test.environment.outfile.xml.TestPointResults;
-import org.eclipse.ote.simple.test.environment.outfile.xml.TimeSummary;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -54,8 +53,7 @@ public final class SimpleTestLifeCycleListener implements ITestLifecycleListener
    }
 
    /**
-    * The contract we're assuming is that preDispose is too late for messaging
-    * to still be done after the conclusion of
+    * The contract we're assuming is that preDispose is too late for messaging to still be done after the conclusion of
     * the script running. To do that use postRun from ITestRunListener.
     */
 
@@ -73,9 +71,9 @@ public final class SimpleTestLifeCycleListener implements ITestLifecycleListener
 
          eventData.getTest().getLogger().log(eventData.getTest().getScriptResultRecord());
 
-         OseeLog.log(SimpleTestEnvironment.class, OteLevel.TEST_EVENT, String.format("%s Pass[%d] Fail[%d] Aborted[%b]",
-               eventData.getTest().getClass().getSimpleName(), eventData.getTest().getPasses(),
-               eventData.getTest().getFails(), eventData.getTest().isAborted()));
+         OseeLog.log(SimpleTestEnvironment.class, OteLevel.TEST_EVENT,
+            String.format("%s Pass[%d] Fail[%d] Aborted[%b]", eventData.getTest().getClass().getSimpleName(),
+               eventData.getTest().getPasses(), eventData.getTest().getFails(), eventData.getTest().isAborted()));
 
          env.onScriptComplete();
       } catch (InterruptedException ex) {

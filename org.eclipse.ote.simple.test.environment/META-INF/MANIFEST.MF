@@ -1,9 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE Simple Test Environment
-Bundle-SymbolicName: org.eclipse.ote.simple.test.environment
+Bundle-SymbolicName: org.eclipse.ote.simple.test.environment;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.eclipse.ote.simple.test.environment.internal.Activator
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -27,6 +26,8 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.ote.core.framework,
  org.eclipse.osee.ote.core.framework.command,
  org.eclipse.osee.ote.core.framework.event,
+ org.eclipse.osee.ote.core.framework.outfile,
+ org.eclipse.osee.ote.core.framework.outfile.xml,
  org.eclipse.osee.ote.core.framework.testrun,
  org.eclipse.osee.ote.core.log,
  org.eclipse.osee.ote.core.log.record,
@@ -38,6 +39,4 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.ote.server,
  org.eclipse.ote.services.core
 Export-Package: org.eclipse.ote.simple.test.environment,
- org.eclipse.ote.simple.test.environment.listener,
- org.eclipse.ote.simple.test.environment.outfile,
- org.eclipse.ote.simple.test.environment.outfile.xml
+ org.eclipse.ote.simple.test.environment.listener

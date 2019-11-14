@@ -26,11 +26,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
 import org.eclipse.osee.ote.core.framework.IRunManager;
+import org.eclipse.osee.ote.core.framework.outfile.ScriptJsonOutLogHandler;
+import org.eclipse.osee.ote.core.framework.outfile.ScriptStreamOutLogHandler;
 import org.eclipse.osee.ote.core.framework.testrun.ITestResultCollector;
 import org.eclipse.osee.ote.core.log.record.PropertyStoreRecord;
 import org.eclipse.osee.ote.core.log.record.TestRecord;
-import org.eclipse.ote.simple.test.environment.outfile.ScriptJsonOutLogHandler;
-import org.eclipse.ote.simple.test.environment.outfile.ScriptStreamOutLogHandler;
 
 /**
  * @author Andy Jury
