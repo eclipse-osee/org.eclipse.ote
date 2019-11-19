@@ -12,8 +12,6 @@
 package org.eclipse.ote.simple.test.environment.listener;
 
 import java.util.List;
-import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.OteLevel;
@@ -67,11 +65,7 @@ public class SimpleGCListener implements ITestLifecycleListener {
       List<Object> tests = GCHelper.getGCHelper().getInstancesOfType(TestScript.class);
       if (tests.size() > 2) {
          String message = buildMemoryLeakString(tests, test);
-         try {
-            test.prompt(message);
-         } catch (InterruptedException ex) {
-            OseeLog.log(SimpleGCListener.class, Level.SEVERE, "Failed to send prompt data back to client.\n" + message);
-         }
+         test.prompt(message);
       }
    }
 

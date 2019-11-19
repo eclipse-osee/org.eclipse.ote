@@ -42,7 +42,7 @@ public class SimpleTestScript extends TestScript {
          super(parent, false, false);
       }
 
-      public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) throws InterruptedException {
+      public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
          prompt("In the LocalSetupTestCase");
       }
    }
@@ -59,7 +59,7 @@ public class SimpleTestScript extends TestScript {
          super(parent);
       }
 
-      public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) throws InterruptedException {
+      public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
          prompt("In TestCase1");
          promptPause("In TestCase1");
          promptPassFail("Pass/Fail?");
@@ -73,7 +73,7 @@ public class SimpleTestScript extends TestScript {
          super(parent);
       }
 
-      public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) throws InterruptedException {
+      public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
          prompt("In TestCase2");
          promptPause("In TestCase2");
          promptPassFail("Pass/Fail?");

@@ -2,8 +2,8 @@ package org.eclipse.osee.ote.core;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.ote.core.enums.PromptResponseType;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.framework.prompt.InformationalPrompt;
@@ -27,7 +27,7 @@ class TestPromptImpl {
    }
 
    
-   public String prompt(final TestPrompt prompt, final TestEnvironment environment, final TestScript test) throws InterruptedException {
+   public String prompt(final TestPrompt prompt, final TestEnvironment environment, final TestScript test) {
 
       if (environment.isInBatchMode()) {
          promptInitWorker.execute(new Runnable() {
@@ -154,12 +154,9 @@ class TestPromptImpl {
                test.getLogger().log(testRecord);
             }
             return returnValue;
-         } catch (InterruptedException e) {
-            throw new InterruptedException();
-         } catch (Exception e) {
-            // what
+         } catch (Exception ex) {
+            throw OseeCoreException.wrap(ex);
          }
-         return "";
       }
 
    }

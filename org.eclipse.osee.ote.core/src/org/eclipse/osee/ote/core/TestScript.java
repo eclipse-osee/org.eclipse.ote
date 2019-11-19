@@ -19,9 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.ILoggerFilter;
 import org.eclipse.osee.framework.logging.ILoggerListener;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -40,6 +39,7 @@ import org.eclipse.osee.ote.core.framework.testrun.ITestRunListener;
 import org.eclipse.osee.ote.core.framework.testrun.ITestRunListenerProvider;
 import org.eclipse.osee.ote.core.log.ITestPointTally;
 import org.eclipse.osee.ote.core.log.record.ScriptResultRecord;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * TestScript is the abstract base class for all test scripts. This class provides the interfaces necessary to allow a
@@ -279,21 +279,21 @@ public abstract class TestScript implements ITimeout {
       return isMpLevel;
    }
 
-   public String prompt(final TestPrompt prompt) throws InterruptedException {
+   public String prompt(final TestPrompt prompt) {
       return promptImpl.prompt(prompt, environment, this);
    }
 
    /**
     * This method will display a null prompt to the console.
     */
-   public void prompt() throws InterruptedException {
+   public void prompt() {
       getTestScript().prompt(new TestPrompt(null, PromptResponseType.NONE));
    }
 
    /**
     * This method will display the message input to the console.
     */
-   public void prompt(String message) throws InterruptedException {
+   public void prompt(String message) {
       getTestScript().prompt(new TestPrompt(message, PromptResponseType.NONE));
    }
 
@@ -301,7 +301,7 @@ public abstract class TestScript implements ITimeout {
     * This method will display the message input to the console. It will also prompt the user with a dialog box to input
     * whether the condition passed or failed.
     */
-   public void promptPassFail(String message) throws InterruptedException {
+   public void promptPassFail(String message) {
       getTestScript().prompt(new TestPrompt(message, PromptResponseType.PASS_FAIL));
    }
 
@@ -309,28 +309,28 @@ public abstract class TestScript implements ITimeout {
     * This method will display the message input to the console. It also pauses the script running, and will prompt the
     * user with a dialog box to continue on with the running of the script.
     */
-   public void promptPause(String message) throws InterruptedException {
+   public void promptPause(String message) {
       prompt(new TestPrompt(message, PromptResponseType.SCRIPT_PAUSE));
    }
 
-   public void pauseScriptOnFail(int testPoint) throws InterruptedException{
+   public void pauseScriptOnFail(int testPoint) {
       if (shouldPauseOnFail){
          promptPause("Test point " + testPoint + " failed.\n");
       }
    }
    
-   public void pauseScriptOnFail(int testPoint, String name, String expected, String actual, String stackTrace) throws InterruptedException{
+   public void pauseScriptOnFail(int testPoint, String name, String expected, String actual, String stackTrace) {
       if (shouldPauseOnFail){
          promptPause("TP " + testPoint + ": " + name + "\nExpected: " + expected + "\nActual:      " + actual + "\n\n" + stackTrace );
       }
    }
    
-   public void printFailure(int testPoint) throws InterruptedException{
+   public void printFailure(int testPoint) {
       if (printFailToConsole){
          prompt("Test point " + testPoint + " failed.\n");
       }
    }
-   public void printFailure(int testPoint, String name, String expected, String actual, String stackTrace) throws InterruptedException{
+   public void printFailure(int testPoint, String name, String expected, String actual, String stackTrace) {
       if (printFailToConsole){
          prompt("TP " + testPoint + ": " + name + "\nExpected: " + expected + "\nActual:      " + actual + "\n\n" + stackTrace );
       }
@@ -390,23 +390,33 @@ public abstract class TestScript implements ITimeout {
     * Causes current thread to wait until another thread invokes the {@link java.lang.Object#notify()}method or the
     * {@link java.lang.Object#notifyAll()}method for this object.
     */
-   public synchronized void testWait(int milliseconds) throws InterruptedException {
+   public synchronized void testWait(int milliseconds) {
       if (milliseconds < 2) {
          return;
       }
       environment.getLogger().methodCalled(this.environment, new MethodFormatter().add(milliseconds));
       environment.setTimerFor(this, milliseconds);
-      wait();
+      try {
+         wait();
+      }
+      catch (InterruptedException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
       this.getTestEnvironment().getScriptCtrl().lock();
       environment.getLogger().methodEnded(this.environment);
    }
 
-   public synchronized void testWaitNoLog(int milliseconds) throws InterruptedException {
+   public synchronized void testWaitNoLog(int milliseconds) {
       if (milliseconds < 2) {
          return;
       }
       environment.setTimerFor(this, milliseconds);
-      wait();
+      try {
+         wait();
+      }
+      catch (InterruptedException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
       this.getTestEnvironment().getScriptCtrl().lock();
    }
 
@@ -417,7 +427,7 @@ public abstract class TestScript implements ITimeout {
     * 
     * @param ms Milliseconds to wait for.
     */
-   public synchronized void testWaitWithInfo(int ms) throws InterruptedException {
+   public synchronized void testWaitWithInfo(int ms)  {
       int mult = 0;
       if (ms > 999) {
          prompt(new TestPrompt("\tWaiting for " + ms / 1000.0 + " seconds."));

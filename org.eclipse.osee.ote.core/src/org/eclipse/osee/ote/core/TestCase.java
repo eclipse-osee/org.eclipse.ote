@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +39,7 @@ import org.eclipse.osee.ote.core.log.record.TestDescriptionRecord;
 import org.eclipse.osee.ote.core.log.record.TestRecord;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * TestCase is the abstract base class for all test cases. This class provides the interfaces necessary for a TestCase
@@ -128,7 +128,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
     *
     * @param environment The Test environment.
     */
-   public abstract void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) throws InterruptedException;
+   public abstract void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger);
 
    public Element getTastCaseNumberXml(Document doc) {
       return Jaxp.createElement(doc, "Number", String.valueOf(number));
@@ -214,15 +214,15 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       return standAlone;
    }
 
-   public void prompt() throws InterruptedException {
+   public void prompt() {
       getTestScript().prompt();
    }
 
-   public void prompt(String message) throws InterruptedException {
+   public void prompt(String message) {
       getTestScript().prompt(new TestPrompt(message, PromptResponseType.NONE));
    }
 
-   public void promptPassFail(String message) throws InterruptedException {
+   public void promptPassFail(String message) {
       getTestScript().getLogger().methodCalled(getTestScript().getTestEnvironment(),
          new MethodFormatter().add(message));
 
@@ -231,15 +231,15 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       getTestScript().getLogger().methodEnded(getTestScript().getTestEnvironment());
    }
 
-   public void promptPause(String message) throws InterruptedException {
+   public void promptPause(String message) {
       getTestScript().promptPause(message);
    }
 
-   public void promptStep(String message) throws InterruptedException {
+   public void promptStep(String message) {
       getTestScript().prompt(new TestPrompt(message, PromptResponseType.SCRIPT_STEP));
    }
 
-   public String promptInput(String message) throws InterruptedException {
+   public String promptInput(String message) {
       return getTestScript().prompt(new TestPrompt(message, PromptResponseType.USER_INPUT));
    }
 
@@ -287,7 +287,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
     *
     * @param environment The Test Enviornment.
     */
-   public void baseDoTestCase(ITestEnvironmentAccessor environment) throws InterruptedException {
+   public void baseDoTestCase(ITestEnvironmentAccessor environment) {
       this.logger = environment.getLogger();
 
       logger.testCaseBegan(this); // This is required for valid outfile.

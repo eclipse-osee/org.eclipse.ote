@@ -99,7 +99,7 @@ public abstract class MessageSystemTestScript extends TestScript implements ITes
    }
 
    @Override
-   public final void onScriptComplete() throws InterruptedException {
+   public final void onScriptComplete() throws InterruptedException{
       msgSysEnvironment.onScriptComplete();
    }
 

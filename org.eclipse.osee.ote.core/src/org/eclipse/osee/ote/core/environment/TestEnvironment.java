@@ -560,7 +560,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
     * @param milliseconds
     * @throws InterruptedException
     */
-   public void testWait(int milliseconds) throws InterruptedException {
+   public void testWait(int milliseconds) {
       getRunManager().getCurrentScript().testWait(milliseconds);
    }
    
