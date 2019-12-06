@@ -38,7 +38,9 @@ import org.eclipse.osee.ote.OseeLogStatusCallback;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.OseeTestThread;
 import org.eclipse.osee.ote.core.OteProperties;
+import org.eclipse.osee.ote.core.TestPrompt;
 import org.eclipse.osee.ote.core.TestScript;
+import org.eclipse.osee.ote.core.enums.PromptResponseType;
 import org.eclipse.osee.ote.core.environment.interfaces.IAssociatedObjectListener;
 import org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer;
 import org.eclipse.osee.ote.core.environment.interfaces.IEnvironmentFactory;
@@ -578,4 +580,28 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       this.uutApi = uutApi;
    }
 
+   public void prompt() {
+      getRunManager().getCurrentScript().prompt();
+   }
+   
+   public void prompt(String message) {
+      getRunManager().getCurrentScript().prompt(new TestPrompt(message, PromptResponseType.NONE));
+   }
+   
+   public void promptPassFail(String message) {
+      getRunManager().getCurrentScript().promptPassFail(message);
+   }
+   
+   public void promptPause(String message) {
+      getRunManager().getCurrentScript().promptPause(message);
+   }
+   
+   public void promptStep(String message) {
+      getRunManager().getCurrentScript().prompt(new TestPrompt(message, PromptResponseType.SCRIPT_STEP));
+   }
+   
+   public String promptInput(String message) {
+      return getRunManager().getCurrentScript().prompt(new TestPrompt(message, PromptResponseType.USER_INPUT));
+   }
+   
 }
