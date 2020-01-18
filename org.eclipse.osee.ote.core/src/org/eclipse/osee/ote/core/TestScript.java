@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -39,6 +41,8 @@ import org.eclipse.osee.ote.core.framework.testrun.ITestRunListener;
 import org.eclipse.osee.ote.core.framework.testrun.ITestRunListenerProvider;
 import org.eclipse.osee.ote.core.log.ITestPointTally;
 import org.eclipse.osee.ote.core.log.record.ScriptResultRecord;
+import org.junit.Ignore;
+import org.junit.Test;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -244,11 +248,25 @@ public abstract class TestScript implements ITimeout {
     * @return reference to arrayList testCases.
     */
    public/* TestCase */List<TestCase> getTestCases() {
+      if (testCases.isEmpty()) { //Assuming using new junit annotations
+         Class<? extends TestScript> clazz = getClass();
+         final List<Method> allMethods = new ArrayList<Method>(Arrays.asList(clazz.getDeclaredMethods()));
+         for (Method method : allMethods) {
+            if (method.isAnnotationPresent(Test.class) && !method.isAnnotationPresent(Ignore.class)){
+               addMethodAsTestCase(method);
+            }
+         }
+      }
+      
       ArrayList<TestCase> testCaseList = new ArrayList<>();
       testCaseList.add(getSetupTestCase());
       testCaseList.addAll(testCases);
       testCaseList.add(getTearDownTestCase());
       return testCaseList;
+   }
+
+   protected void addMethodAsTestCase(Method method){
+      // Intended to be overridden by subclasses
    }
 
    public ITestEnvironmentAccessor getTestEnvironment() {
