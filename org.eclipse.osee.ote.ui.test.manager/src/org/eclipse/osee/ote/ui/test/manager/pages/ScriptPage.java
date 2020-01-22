@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
@@ -29,12 +28,9 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.core.test_manager.LaunchAndKillProviderService;
-import org.eclipse.osee.ote.core.test_manager.LibraryLinkerProviderService;
 import org.eclipse.osee.ote.core.test_manager.interfaces.ILaunchAndKill;
 import org.eclipse.osee.ote.core.test_manager.interfaces.ILaunchAndKillProvider;
 import org.eclipse.osee.ote.core.test_manager.interfaces.ILaunchAndKillProviderService;
-import org.eclipse.osee.ote.core.test_manager.interfaces.ILibraryLinkerProvider;
-import org.eclipse.osee.ote.core.test_manager.interfaces.ILibraryLinkerProviderService;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.TestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.configuration.LoadWidget;
@@ -129,12 +125,6 @@ public abstract class ScriptPage extends TestManagerPage {
             ProgramButtonProviderService.class);
       for (IProgramButtonProvider provider : programButtonProviderService.getProgramButtonProviders()) {
          provider.getProgramButtons(coolBar, statusWindow);
-      }
-
-      // Example: As above, but to be moved to the appropriate class/location.
-      ILibraryLinkerProviderService libraryLinkerProviderService = OsgiUtil.getService(ILibraryLinkerProvider.class, LibraryLinkerProviderService.class);
-      for (ILibraryLinkerProvider provider : libraryLinkerProviderService.getLibraryLinkerProviders()) {
-         provider.getLibraryLinkers();
       }
 
       // Example to launch and kill processes:
