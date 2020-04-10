@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,6 @@ import org.eclipse.osee.ote.core.log.record.TestDescriptionRecord;
 import org.eclipse.osee.ote.core.log.record.TestRecord;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * TestCase is the abstract base class for all test cases. This class provides the interfaces necessary for a TestCase

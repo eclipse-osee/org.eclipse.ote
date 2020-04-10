@@ -10,15 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
@@ -26,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.ILoggerFilter;
 import org.eclipse.osee.framework.logging.ILoggerListener;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ote.core.annotations.Order;
 import org.eclipse.osee.ote.core.enums.PromptResponseType;
 import org.eclipse.osee.ote.core.enums.ScriptTypeEnum;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -43,7 +46,6 @@ import org.eclipse.osee.ote.core.log.ITestPointTally;
 import org.eclipse.osee.ote.core.log.record.ScriptResultRecord;
 import org.junit.Ignore;
 import org.junit.Test;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * TestScript is the abstract base class for all test scripts. This class provides the interfaces necessary to allow a
@@ -85,7 +87,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * 		<ul style="list-style: none">
  * <li>		super (environment, connection, [batchability, true or false]);
  * <li>
- * <li>		</code><i>Place construction for <b>LRU Models</b>,<b>Messages</b>, and <b>Support</b> classes here.</i><code>
+ * <li>		</code><i>Place construction for <b>LRU Models</b>,<b>Messages</b>, and <b>Support</b> classes
+ * here.</i><code>
  * <li>
  * <li>		</code><i>Construct all test cases here. The base TestCase constructor will automatically add
  * <li>itself to the run list of the TestScript.</i><code>
@@ -108,7 +111,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * <li>		</code><i>Provides the runtime code for initialization.</i><code>
  * <li>		public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
  * 			<ul style="list-style: none">
- * <li>			</code><i>Place any necessary setup code here and it will be run prior to any of the test cases.</i><code>
+ * <li>			</code><i>Place any necessary setup code here and it will be run prior to any of the test
+ * cases.</i><code>
  * 			</ul>
  * <li>		}
  * 		</ul>
@@ -172,8 +176,7 @@ public abstract class TestScript implements ITimeout {
    private Throwable rootCause;
    private volatile boolean timedOut;
    private volatile boolean aborted = false;
-   private final ArrayList<IScriptCompleteListener> scriptCompleteListeners =
-      new ArrayList<IScriptCompleteListener>(32);
+   private final ArrayList<IScriptCompleteListener> scriptCompleteListeners = new ArrayList<>(32);
 
    private final ScriptResultRecord scriptResultRecord;
    private int pass;
@@ -250,14 +253,23 @@ public abstract class TestScript implements ITimeout {
    public/* TestCase */List<TestCase> getTestCases() {
       if (testCases.isEmpty()) { //Assuming using new junit annotations
          Class<? extends TestScript> clazz = getClass();
-         final List<Method> allMethods = new ArrayList<Method>(Arrays.asList(clazz.getDeclaredMethods()));
+         Method[] allMethods = clazz.getDeclaredMethods();
+         Map<Integer, Method> map = new TreeMap<>();
+
          for (Method method : allMethods) {
-            if (method.isAnnotationPresent(Test.class) && !method.isAnnotationPresent(Ignore.class)){
-               addMethodAsTestCase(method);
+            if (method.isAnnotationPresent(Test.class) && !method.isAnnotationPresent(Ignore.class)) {
+               try {
+                  map.put(method.getAnnotation(Order.class).value(), method);
+               } catch (Exception ex) {
+                  OseeCoreException.wrap(ex);
+               }
             }
          }
+         for (Method method : map.values()) {
+            addMethodAsTestCase(method);
+         }
       }
-      
+
       ArrayList<TestCase> testCaseList = new ArrayList<>();
       testCaseList.add(getSetupTestCase());
       testCaseList.addAll(testCases);
@@ -265,7 +277,7 @@ public abstract class TestScript implements ITimeout {
       return testCaseList;
    }
 
-   protected void addMethodAsTestCase(Method method){
+   protected void addMethodAsTestCase(Method method) {
       // Intended to be overridden by subclasses
    }
 
@@ -332,30 +344,34 @@ public abstract class TestScript implements ITimeout {
    }
 
    public void pauseScriptOnFail(int testPoint) {
-      if (shouldPauseOnFail){
+      if (shouldPauseOnFail) {
          promptPause("Test point " + testPoint + " failed.\n");
       }
    }
-   
+
    public void pauseScriptOnFail(int testPoint, String name, String expected, String actual, String stackTrace) {
-      if (shouldPauseOnFail){
-         promptPause("TP " + testPoint + ": " + name + "\nExpected: " + expected + "\nActual:      " + actual + "\n\n" + stackTrace );
+      if (shouldPauseOnFail) {
+         promptPause(
+            "TP " + testPoint + ": " + name + "\nExpected: " + expected + "\nActual:      " + actual + "\n\n" + stackTrace);
       }
    }
-   
+
    public void printFailure(int testPoint) {
-      if (printFailToConsole){
+      if (printFailToConsole) {
          prompt("Test point " + testPoint + " failed.\n");
       }
    }
+
    public void printFailure(int testPoint, String name, String expected, String actual, String stackTrace) {
-      if (printFailToConsole){
-         prompt("TP " + testPoint + ": " + name + "\nExpected: " + expected + "\nActual:      " + actual + "\n\n" + stackTrace );
+      if (printFailToConsole) {
+         prompt(
+            "TP " + testPoint + ": " + name + "\nExpected: " + expected + "\nActual:      " + actual + "\n\n" + stackTrace);
       }
    }
-   
+
    /**
-    * Do not use this method from tests instead use {@link #logTestPoint(boolean, String, String, String)}. Takes result of test point and updates the total test point tally.
+    * Do not use this method from tests instead use {@link #logTestPoint(boolean, String, String, String)}. Takes result
+    * of test point and updates the total test point tally.
     * 
     * @return total number of test points completed as an int.
     */
@@ -368,9 +384,9 @@ public abstract class TestScript implements ITimeout {
    }
 
    public void addScriptSummary(XmlizableStream xml) {
-	   scriptResultRecord.addChildElement((XmlizableStream) xml);
+      scriptResultRecord.addChildElement(xml);
    }
-   
+
    /**
     * Add a single test case to selective run list.
     */
@@ -416,8 +432,7 @@ public abstract class TestScript implements ITimeout {
       environment.setTimerFor(this, milliseconds);
       try {
          wait();
-      }
-      catch (InterruptedException ex) {
+      } catch (InterruptedException ex) {
          throw OseeCoreException.wrap(ex);
       }
       this.getTestEnvironment().getScriptCtrl().lock();
@@ -431,8 +446,7 @@ public abstract class TestScript implements ITimeout {
       environment.setTimerFor(this, milliseconds);
       try {
          wait();
-      }
-      catch (InterruptedException ex) {
+      } catch (InterruptedException ex) {
          throw OseeCoreException.wrap(ex);
       }
       this.getTestEnvironment().getScriptCtrl().lock();
@@ -445,7 +459,7 @@ public abstract class TestScript implements ITimeout {
     * 
     * @param ms Milliseconds to wait for.
     */
-   public synchronized void testWaitWithInfo(int ms)  {
+   public synchronized void testWaitWithInfo(int ms) {
       int mult = 0;
       if (ms > 999) {
          prompt(new TestPrompt("\tWaiting for " + ms / 1000.0 + " seconds."));
@@ -506,8 +520,8 @@ public abstract class TestScript implements ITimeout {
     * @param actual
     */
    public void logTestPoint(boolean isPassed, String testPointName, String expected, String actual) {
-      this.getLogger().testpoint(this.getTestEnvironment(), this, this.getTestCase(), isPassed, testPointName,
-         expected, actual);
+      this.getLogger().testpoint(this.getTestEnvironment(), this, this.getTestCase(), isPassed, testPointName, expected,
+         actual);
    }
 
    @Override
@@ -540,7 +554,6 @@ public abstract class TestScript implements ITimeout {
 
    /**
     * Do not use this method from tests instead use {@link #logTestPoint(boolean, String, String, String)}.
-    * 
     */
    public void __addTestPoint(boolean pass) {
       if (pass) {
@@ -583,7 +596,7 @@ public abstract class TestScript implements ITimeout {
    }
 
    public static Collection<Class<? extends TestScript>> getInstances() {
-      return new HashSet<Class<? extends TestScript>>(instances);
+      return new HashSet<>(instances);
    }
 
    public void disposeTest() {
@@ -612,9 +625,8 @@ public abstract class TestScript implements ITimeout {
 
    public boolean addTestRunListener(ITestRunListener listener) {
       if (listenerProvider == null) {
-         String message =
-            String.format("Could not add run listener %s since listener provider is null.",
-               listener.getClass().getName());
+         String message = String.format("Could not add run listener %s since listener provider is null.",
+            listener.getClass().getName());
          OseeLog.log(getClass(), Level.WARNING, message, new Exception());
          return false;
       }
@@ -623,9 +635,8 @@ public abstract class TestScript implements ITimeout {
 
    public boolean removeTestRunListener(ITestRunListener listener) {
       if (listenerProvider == null) {
-         String message =
-            String.format("Could not remove run listener %s since listener provider is null.",
-               listener.getClass().getName());
+         String message = String.format("Could not remove run listener %s since listener provider is null.",
+            listener.getClass().getName());
          OseeLog.log(getClass(), Level.WARNING, message, new Exception());
          return false;
       }
