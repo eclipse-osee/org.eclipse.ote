@@ -60,9 +60,11 @@ public abstract class ScriptPage extends TestManagerPage {
 
    private static final String NOT_CONNECTED = "<< NOT_CONNECTED >>";
    private static final int ABORT_BTN_TIMER = 5000;
+   private static final boolean KEEP_LAUNCHER_PROCESS_ALIVE = false;
 
    public enum UpdateableLabel {
-      HOSTLABEL, CONFIGPATHLABEL;
+      HOSTLABEL,
+      CONFIGPATHLABEL;
    }
 
    public static final OseeUiActivator plugin = TestManagerPlugin.getInstance();
@@ -81,11 +83,13 @@ public abstract class ScriptPage extends TestManagerPage {
    private ProgramButtonProviderService programButtonProviderService;
    private ILaunchAndKillProviderService launchAndKillProviderService;
    private ExecutorAdmin executorAdmin;
+   private Process launcherProcess;
 
    public ScriptPage(Composite parent, int style, TestManagerEditor parentTestManager) {
       super(parent, style, parentTestManager);
       this.testManagerEditor = parentTestManager;
-      launchAndKillProviderService = OsgiUtil.getService(ILaunchAndKillProvider.class, LaunchAndKillProviderService.class);
+      launchAndKillProviderService =
+         OsgiUtil.getService(ILaunchAndKillProvider.class, LaunchAndKillProviderService.class);
       executorAdmin = OsgiUtil.getService(ExecutorAdmin.class, ExecutorAdmin.class);
    }
 
@@ -112,7 +116,7 @@ public abstract class ScriptPage extends TestManagerPage {
       createScriptTableSection(sashForm);
       createStatusWindow(sashForm);
 
-      sashForm.setWeights(new int[] { 8, 2 });
+      sashForm.setWeights(new int[] {8, 2});
       setMinSize(0, 0);
 
       // TODO: Change to use OteHelpContext
@@ -121,28 +125,10 @@ public abstract class ScriptPage extends TestManagerPage {
       // Consume any program-specific ProgramButtonService that may have been
       // through OSGI, and if so, get the additional program-specific buttons
       // from the subscriber.
-      programButtonProviderService = OsgiUtil.getService(IProgramButtonProvider.class,
-            ProgramButtonProviderService.class);
+      programButtonProviderService =
+         OsgiUtil.getService(IProgramButtonProvider.class, ProgramButtonProviderService.class);
       for (IProgramButtonProvider provider : programButtonProviderService.getProgramButtonProviders()) {
          provider.getProgramButtons(coolBar, statusWindow);
-      }
-
-      // Example to launch and kill processes:
-      for (ILaunchAndKillProvider provider : launchAndKillProviderService.getLaunchAndKillProviders()) {
-         Collection<ILaunchAndKill> launchers = provider.getLaunchers();
-         Collection<ILaunchAndKill> killers = provider.getKillers();
-         for (ILaunchAndKill launcher : launchers) {
-            Process launchProcess; // To access Process methods
-            //launchProcess = launcher.executeProcess(); // Launches the process
-           //launcher.setExecutorAdmin(launchAndKillProviderService.getExecutorAdmin());
-           //launcher.executeProcess();
-           //break;
-         }
-         for (ILaunchAndKill killer : killers) {
-            Process killProcess; // To access Process methods
-            //killProcess = killer.executeProcess(); // Kills the process
-            break;
-         }
       }
    }
 
@@ -353,7 +339,7 @@ public abstract class ScriptPage extends TestManagerPage {
       statusWindow = new StatusWindowWidget(parent);
 
       statusWindow.setLabelAndValue(UpdateableLabel.HOSTLABEL.name(), "Selected Host", NOT_CONNECTED, SWT.BOLD,
-            SWT.COLOR_DARK_RED);
+         SWT.COLOR_DARK_RED);
 
       String selectedFile = testManagerEditor.loadValue(testManagerEditor.configFileName);
       if (!Strings.isValid(selectedFile)) {
@@ -455,12 +441,12 @@ public abstract class ScriptPage extends TestManagerPage {
             abortBatchButton.setEnabled(false);
             scriptTable.onConnectionChanged(true);
             statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(), event.getProperties().getStation(), SWT.BOLD,
-                  SWT.COLOR_DARK_GREEN);
+               SWT.COLOR_DARK_GREEN);
             statusWindow.refresh();
-            
+
          }
       });
-  
+
       executorAdmin.submit("Launch Providers", new Runnable() {
          @Override
          public void run() {
@@ -470,6 +456,7 @@ public abstract class ScriptPage extends TestManagerPage {
 
       return result;
    }
+
    @Override
    public boolean onDisconnect(ConnectionEvent event) {
       boolean result = getScriptManager().disconnect(event);
@@ -482,7 +469,7 @@ public abstract class ScriptPage extends TestManagerPage {
             scriptTable.onConnectionChanged(false);
             statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(), NOT_CONNECTED, SWT.BOLD, SWT.COLOR_DARK_RED);
             statusWindow.refresh();
-            
+
             executorAdmin.submit("Kill Providers", new Runnable() {
                @Override
                public void run() {
@@ -507,7 +494,7 @@ public abstract class ScriptPage extends TestManagerPage {
             scriptTable.onConnectionChanged(false);
             statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(), NOT_CONNECTED, SWT.BOLD, SWT.COLOR_DARK_RED);
             statusWindow.refresh();
-            
+
             executorAdmin.submit("Kill Providers", new Runnable() {
                @Override
                public void run() {
@@ -519,23 +506,29 @@ public abstract class ScriptPage extends TestManagerPage {
       });
       return result;
    }
-   
+
    private void executeLaunchProviders() {
       for (ILaunchAndKillProvider provider : launchAndKillProviderService.getLaunchAndKillProviders()) {
          Collection<ILaunchAndKill> launchers = provider.getLaunchers();
          for (ILaunchAndKill launcher : launchers) {
-            Process launchProcess = launcher.executeProcess(); 
-            break;
+            if (launcherProcess != null && launcherProcess.isAlive()) {
+               continue;
+            } else {
+               launcherProcess = launcher.executeProcess(); // Not a solution for multiple launchers. There is only one currently.
+            }
          }
       }
    }
-   
+
    private void executeKillProviders() {
       for (ILaunchAndKillProvider provider : launchAndKillProviderService.getLaunchAndKillProviders()) {
          Collection<ILaunchAndKill> killers = provider.getKillers();
          for (ILaunchAndKill killer : killers) {
-            Process killProcess = killer.executeProcess(); 
-            break;
+            if (KEEP_LAUNCHER_PROCESS_ALIVE) {
+               continue;
+            } else {
+               killer.executeProcess();
+            }
          }
       }
    }
