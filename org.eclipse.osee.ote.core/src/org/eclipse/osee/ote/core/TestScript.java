@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
@@ -73,79 +74,79 @@ import org.junit.Test;
  * <code>
  * public class SampleScript extends TestCase {
  * <ul style="list-style: none">
- * <li>	</code><i>Place declarations for <b>LRU Models</b>,<b>Messages</b>, and <b>Support</b> classes here.</i><code>
+ * <li>  </code><i>Place declarations for <b>LRU Models</b>,<b>Messages</b>, and <b>Support</b> classes here.</i><code>
  * <li>
- * <li>	</code><i>This constructor is necessary for instantiating the TestScript object to get data!</i><code>
- * <li>	SampleScript () {
- * 		<ul style="list-style: none">
- * <li>		this (null,null);
- * 		</ul>
- * <li>	}
+ * <li>  </code><i>This constructor is necessary for instantiating the TestScript object to get data!</i><code>
+ * <li>  SampleScript () {
+ *       <ul style="list-style: none">
+ * <li>     this (null,null);
+ *       </ul>
+ * <li>  }
  * <li>
- * <li>	</code><i>This constructor is used at runtime.</i><code>
- * <li>	SampleScript (TestEnvironment environment, TestEnvironmentController connection) {
- * 		<ul style="list-style: none">
- * <li>		super (environment, connection, [batchability, true or false]);
+ * <li>  </code><i>This constructor is used at runtime.</i><code>
+ * <li>  SampleScript (TestEnvironment environment, TestEnvironmentController connection) {
+ *       <ul style="list-style: none">
+ * <li>     super (environment, connection, [batchability, true or false]);
  * <li>
- * <li>		</code><i>Place construction for <b>LRU Models</b>,<b>Messages</b>, and <b>Support</b> classes
+ * <li>     </code><i>Place construction for <b>LRU Models</b>,<b>Messages</b>, and <b>Support</b> classes
  * here.</i><code>
  * <li>
- * <li>		</code><i>Construct all test cases here. The base TestCase constructor will automatically add
+ * <li>     </code><i>Construct all test cases here. The base TestCase constructor will automatically add
  * <li>itself to the run list of the TestScript.</i><code>
- * <li>		new OipCase(this);
- * <li>		</code><i>...</i><code>
- * 		</ul>
- * <li>	}
+ * <li>     new OipCase(this);
+ * <li>     </code><i>...</i><code>
+ *       </ul>
+ * <li>  }
  * <li>
- * <li>	</code><i>This inner class defines the setup for the script and must be present.</i><code>
- * <li>	private class LocalSetupTestCase extends SetupTestCase {
- * 		<ul style="list-style: none">
- * 	<li>
- * 	<li>		</code><i>Allows the setup to add itself to the runlist.</i><code>
- * 	<li>		protected LocalSetupTestCase(TestScript parent) {
- * 			<ul style="list-style: none">
- * <li>      	super(parent);
- * 			</ul>
- * <li>		}
+ * <li>  </code><i>This inner class defines the setup for the script and must be present.</i><code>
+ * <li>  private class LocalSetupTestCase extends SetupTestCase {
+ *       <ul style="list-style: none">
+ *    <li>
+ *    <li>     </code><i>Allows the setup to add itself to the runlist.</i><code>
+ *    <li>     protected LocalSetupTestCase(TestScript parent) {
+ *          <ul style="list-style: none">
+ * <li>        super(parent);
+ *          </ul>
+ * <li>     }
  * <li>
- * <li>		</code><i>Provides the runtime code for initialization.</i><code>
- * <li>		public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
- * 			<ul style="list-style: none">
- * <li>			</code><i>Place any necessary setup code here and it will be run prior to any of the test
+ * <li>     </code><i>Provides the runtime code for initialization.</i><code>
+ * <li>     public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
+ *          <ul style="list-style: none">
+ * <li>        </code><i>Place any necessary setup code here and it will be run prior to any of the test
  * cases.</i><code>
- * 			</ul>
- * <li>		}
- * 		</ul>
- * <li>	}
- * <li>	<br>
- * <li>	</code><i>Place all of the test cases here. These will be inner classes that extend </i>
+ *          </ul>
+ * <li>     }
+ *       </ul>
+ * <li>  }
+ * <li>  <br>
+ * <li>  </code><i>Place all of the test cases here. These will be inner classes that extend </i>
  * {@link org.eclipse.osee.ote.core.TestCase TestCase}<i>.
  * <li><b>NOTE:</b>All of these inner classes must be instantiated in the constructor for the TestScript object. If an
  * inner class is not instantiated then it will <b>not</b> be run, and information within the class will not be
  * available when the TestScript is instantiated for data retrieval.</i><code>
- * <li>	public class OipCase extends TestCase {
- * 		<ul style="list-style: none">
- * <li>		public OipCase(TestScript parent) {
- * 			<ul style="list-style: none">
- * <li>			</code><i>Use <b>one</b> of the following constructors based on if this TestCase is standalone</i><code>
- * <li>			super(parent);</code> <i>Standalone defaulted to <b>false</b></i><code>
- * <li>			super(parent, true);</code><i>Standalone explicitly set to <b>true</b></i><code>
+ * <li>  public class OipCase extends TestCase {
+ *       <ul style="list-style: none">
+ * <li>     public OipCase(TestScript parent) {
+ *          <ul style="list-style: none">
+ * <li>        </code><i>Use <b>one</b> of the following constructors based on if this TestCase is standalone</i><code>
+ * <li>        super(parent);</code> <i>Standalone defaulted to <b>false</b></i><code>
+ * <li>        super(parent, true);</code><i>Standalone explicitly set to <b>true</b></i><code>
  * <li>
- * <li>			</code><i>All requirements tested in the test case should be noted here with the </i>
+ * <li>        </code><i>All requirements tested in the test case should be noted here with the </i>
  * <code>{@link org.eclipse.osee.ote.core.TestCase#addTracability(String) addTracability}</code><i> method.</i> <code>
- * 			</ul>
- * <li>		}
+ *          </ul>
+ * <li>     }
  * <li>
- * <li>		</code><i><b>Note:</b>It is very important that </i><code>doTestCase</code><i> always has the </i>
+ * <li>     </code><i><b>Note:</b>It is very important that </i><code>doTestCase</code><i> always has the </i>
  * <code>throws InterrupedException</code><i> in the method declaration. The ability to abort a script relies on this
  * statement, and without it many calls would have to be wrapped with a try/catch block.</i><code>
- * <li>		public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) throws InterruptedException {
- * 			<ul style="list-style: none">
- * <li>			</code><i>Place all of the runtime code for the test case here.</i><code>
- * 			</ul>
- * <li>		}
- * 		</ul>
- * <li>	}
+ * <li>     public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) throws InterruptedException {
+ *          <ul style="list-style: none">
+ * <li>        </code><i>Place all of the runtime code for the test case here.</i><code>
+ *          </ul>
+ * <li>     }
+ *       </ul>
+ * <li>  }
  * </ul>
  * }
  * </code> <br>
@@ -254,20 +255,30 @@ public abstract class TestScript implements ITimeout {
       if (testCases.isEmpty()) { //Assuming using new junit annotations
          Class<? extends TestScript> clazz = getClass();
          Method[] allMethods = clazz.getDeclaredMethods();
-         Map<Integer, Method> map = new TreeMap<>();
+         Map<Integer, Method> methodTree = new TreeMap<>();
+         Vector<Method> unsortedMethods = new Vector<>();
 
          for (Method method : allMethods) {
             if (method.isAnnotationPresent(Test.class) && !method.isAnnotationPresent(Ignore.class)) {
-               try {
-                  map.put(method.getAnnotation(Order.class).value(), method);
-               } catch (Exception ex) {
-                  OseeCoreException.wrap(ex);
+               if (method.isAnnotationPresent(Order.class)) {
+                  try {
+                     methodTree.put(method.getAnnotation(Order.class).value(), method);
+                  } catch (Exception ex) {
+                     OseeCoreException.wrap(ex);
+                  }
+               } else {
+                  try {
+                     unsortedMethods.add(method);
+                  } catch (Exception ex) {
+                     OseeCoreException.wrap(ex);
+                  }
                }
             }
          }
-         for (Method method : map.values()) {
-            addMethodAsTestCase(method);
-         }
+         //Add ordered methods to be tested first
+         methodTree.forEach((i, m) -> addMethodAsTestCase(m));
+         //Add unordered methods to be tested after ordered ones are tested
+         unsortedMethods.forEach((n) -> addMethodAsTestCase(n));
       }
 
       ArrayList<TestCase> testCaseList = new ArrayList<>();
@@ -411,9 +422,7 @@ public abstract class TestScript implements ITimeout {
     * Sets the script initializer.
     */
    public void setScriptInitializer(IScriptInitializer scriptInitializer) {
-
       this.scriptInitializer = scriptInitializer;
-
    }
 
    public IScriptInitializer getScriptInitializer() {
@@ -564,7 +573,6 @@ public abstract class TestScript implements ITimeout {
    }
 
    private class ScriptLoggingListener implements ILoggerListener {
-
       ILoggerFilter filter = new TestScriptLogFilter();
 
       public ILoggerFilter getFilter() {
