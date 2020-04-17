@@ -37,44 +37,45 @@ import org.eclipse.ui.IStartup;
  */
 public class PersistPreferences implements IStartup {
 
-   private final Map<String, String> buggedNamespace = new HashMap<String, String>();
+	private final Map<String, String> buggedNamespace = new HashMap<String, String>();
 
-   @Override
-   public void earlyStartup() {
+	@Override
+	public void earlyStartup() {
+		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		// Value indicates only in cases when starting from a new workspace
+		if (projects.length < 1) {
+			// Insert any relevant bugged namespaces:
+			buggedNamespace.put("org.eclipse.jdt.ui", "sp_cleanup");
+			final Iterator<Entry<String, String>> it = buggedNamespace.entrySet().iterator();
 
-      IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-      if (projects.length < 1) { // Ensure preferences are utilized in buggedNamespace on new workspace creation
-         // Insert any relevant bugged namespaces:
-         buggedNamespace.put("org.eclipse.jdt.ui", "sp_cleanup");
-         final Iterator<Entry<String, String>> it = buggedNamespace.entrySet().iterator();
+			while (it.hasNext()) {
+				final Map.Entry<String, String> pair = it.next();
+				final String namespace = pair.getKey();
+				final String[] filters = pair.getValue().split("|");
+				final IEclipsePreferences pluginCustomizationPreferences = DefaultScope.INSTANCE.getNode(namespace);
+				final IEclipsePreferences workspacePreferences = InstanceScope.INSTANCE.getNode(namespace);
 
-         while (it.hasNext()) {
-            final Map.Entry<String, String> pair = it.next();
-            final String namespace = pair.getKey();
-            final String[] filters = pair.getValue().split("|");
-            final IEclipsePreferences pluginCustomizationPreferences = DefaultScope.INSTANCE.getNode(namespace);
-            final IEclipsePreferences workspacePreferences = InstanceScope.INSTANCE.getNode(namespace);
+				try {
+					for (final String key : pluginCustomizationPreferences.keys()) {
+						String defaultPluginCustomizationValue = pluginCustomizationPreferences.get(key, "");
+						if (Strings.isValid(defaultPluginCustomizationValue)
+								&& (filters == null || startsWithAny(key, filters))) {
+							workspacePreferences.put(key, defaultPluginCustomizationValue);
+						}
+					}
+					workspacePreferences.flush();
+				} catch (final Exception e) {
+					e.printStackTrace();
+				}
+				it.remove();
+			}
+		}
+	}
 
-            try {
-               for (final String key : pluginCustomizationPreferences.keys()) {
-                  String defaultPluginCustomizationValue = pluginCustomizationPreferences.get(key, "");
-                  if (Strings.isValid(defaultPluginCustomizationValue) && (filters == null || startsWithAny(key, filters))) {
-                     workspacePreferences.put(key, defaultPluginCustomizationValue);
-                  }
-               }
-               workspacePreferences.flush();
-            } catch (final Exception e) {
-               e.printStackTrace();
-            }
-            it.remove();
-         }
-      }
-   }
-
-   private boolean startsWithAny(String key, String[] values) {
-      for (String value : values) {
-         return key.startsWith(value);
-      }
-      return false;
-   }
+	private boolean startsWithAny(String key, String[] values) {
+		for (String value : values) {
+			return key.startsWith(value);
+		}
+		return false;
+	}
 }

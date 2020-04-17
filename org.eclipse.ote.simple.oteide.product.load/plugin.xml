@@ -49,4 +49,11 @@
             class="org.eclipse.ote.simple.oteide.product.load.PersistPreferences">
       </startup>
    </extension>
+   <extension
+         id="loadpreferences"
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.eclipse.ote.simple.oteide.product.load.LoadPreferences">
+      </startup>
+   </extension>
 </plugin>
