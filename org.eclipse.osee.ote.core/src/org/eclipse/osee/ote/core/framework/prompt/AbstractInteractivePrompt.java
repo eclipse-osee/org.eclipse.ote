@@ -32,7 +32,7 @@ public abstract class AbstractInteractivePrompt<T> extends AbstractRemotePrompt 
       this.script = script;
    }
 
-   public T open(Executor executor) throws InterruptedException, Exception {
+   public T open(Executor executor) throws Exception {
       response = null;
       exception = null;
       if (executor != null) {
