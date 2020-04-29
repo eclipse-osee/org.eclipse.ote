@@ -25,7 +25,6 @@ import org.eclipse.osee.ote.core.framework.saxparse.IBaseSaxElementListener;
 import org.eclipse.osee.ote.core.framework.saxparse.OteSaxHandler;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.CheckGroupData;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.ConfigData;
-import org.eclipse.osee.ote.core.framework.saxparse.elements.UutErrorEntryData;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.OteLogData;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.QualificationData;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.RetryGroupData;
@@ -36,6 +35,7 @@ import org.eclipse.osee.ote.core.framework.saxparse.elements.SystemInfoData;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.TestPointResultsData;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.TimeSummaryData;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.UserData;
+import org.eclipse.osee.ote.core.framework.saxparse.elements.UutErrorEntryData;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.VersionData;
 import org.eclipse.osee.ote.ui.markers.MarkerPlugin;
 import org.eclipse.osee.ote.ui.output.Activator;
@@ -120,6 +120,9 @@ public class ProcessOutfileOverview implements IExceptionableRunnable {
          public void onStartElement(Object obj) {
             ConfigData data = (ConfigData) obj;
             callback.addOverviewData("Host Machine", data.getMachineName());
+            if (data.getUutConfiguration() != null && data.getUutConfiguration().length() > 0) {
+               callback.addOverviewData("Unit Under Test Configuration", data.getUutConfiguration());
+            }
          }
       });
 

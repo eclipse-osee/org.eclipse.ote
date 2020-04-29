@@ -15,15 +15,23 @@ package org.eclipse.osee.ote.core.framework.saxparse.elements;
  */
 public class ConfigData {
    private final String machineName;
+   private final String UutConfiguration;
 
    /**
     * @return the machineName
     */
    public String getMachineName() {
+
       return machineName;
    }
 
-   public ConfigData(String machineName) {
+   public String getUutConfiguration() {
+
+      return UutConfiguration;
+   }
+
+   public ConfigData(String machineName, String UutConfiguration) {
       this.machineName = machineName;
+      this.UutConfiguration = UutConfiguration;
    }
 }

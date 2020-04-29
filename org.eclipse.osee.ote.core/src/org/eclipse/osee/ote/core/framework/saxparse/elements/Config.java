@@ -24,7 +24,7 @@ public class Config extends ElementHandlers {
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
-      return new ConfigData(attributes.getValue("machineName"));
+      return new ConfigData(attributes.getValue("machineName"), attributes.getValue("uutConfiguration"));
    }
 
 }
