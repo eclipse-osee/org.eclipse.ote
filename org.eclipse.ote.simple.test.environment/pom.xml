@@ -12,6 +12,6 @@
 
 	<artifactId>org.eclipse.ote.simple.test.environment</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>Eclipse OTE Simple Test Environment (Incubation)</name>
+	<name>OTE Simple Test Environment (Incubation)</name>
 
 </project>

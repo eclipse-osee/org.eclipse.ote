@@ -38,6 +38,7 @@
    <features>
       <feature id="org.eclipse.ote.test.server.feature"/>
       <feature id="org.eclipse.ote.test.server.external.feature"/>
+      <feature id="org.eclipse.ote.serverclient.feature"/>
    </features>
 
    <configurations>

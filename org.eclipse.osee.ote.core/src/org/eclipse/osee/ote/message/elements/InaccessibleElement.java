@@ -11,15 +11,12 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
+
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 
 public class InaccessibleElement extends Element {
 
-   // TODO - this is a temporary hack for (PLT/CPG)_UFD_CMD. When cdb adds
-   // individual elements, delete this class!!! Make sure to remove it from
-   // MuxSignalType too!! Also make sure to take code out of Message Generation
-   // too.
    public InaccessibleElement(Message message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
       this(message, elementName, messageData, byteOffset, msb, lsb, msb, lsb);
    }

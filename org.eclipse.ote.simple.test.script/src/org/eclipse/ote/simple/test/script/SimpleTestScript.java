@@ -1,35 +1,37 @@
-/*******************************************************************************
- * Copyright (c) 2019 Boeing.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Boeing - initial API and implementation
- *******************************************************************************/
+/*********************************************************************
+* Copyright (c) 2020 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+**********************************************************************/
 
 package org.eclipse.ote.simple.test.script;
 
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
-import org.eclipse.osee.ote.core.enums.ScriptTypeEnum;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
 import org.eclipse.osee.ote.core.environment.jini.ITestEnvironmentCommandCallback;
+import org.eclipse.ote.simple.io.message.HELLO_WORLD;
 import org.eclipse.ote.simple.test.environment.SimpleTestEnvironment;
 
 /**
  * @author Andy Jury
  */
-public class SimpleTestScript extends TestScript {
-
-
-
+public class SimpleTestScript extends SimpleTestScriptType {
+   
+   HELLO_WORLD writer;
+   
    public SimpleTestScript(SimpleTestEnvironment testEnvironment, ITestEnvironmentCommandCallback callback) {
-
-      super(testEnvironment, null, ScriptTypeEnum.FUNCTIONAL_TEST, true);
-
+      super(testEnvironment, callback);
+      
+      this.writer = messageRequestor.getMessageWriter(HELLO_WORLD.class);
 
       new TestCase1(this);
       new TestCase2(this);
@@ -44,6 +46,14 @@ public class SimpleTestScript extends TestScript {
 
       public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
          prompt("In the LocalSetupTestCase");
+         writer.PRINT_ME.setNoLog("TEST1");
+         testWait(1000);
+         writer.PRINT_ME.setNoLog("TEST2");
+         testWait(1000);
+         writer.PRINT_ME.setNoLog("TEST3");
+         testWait(1000);
+         writer.PRINT_ME.setNoLog("TEST4");
+         testWait(1000);
       }
    }
 

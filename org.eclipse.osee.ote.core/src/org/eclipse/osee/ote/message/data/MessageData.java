@@ -520,7 +520,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    /**
     * Override this method if you want to specialize the send criteria in a data source. For example, if you only want
-    * to send data to the MUX driver if the data has changed.
+    * to send data if the data has changed.
     */
    protected boolean shouldSendData() {
       return true;

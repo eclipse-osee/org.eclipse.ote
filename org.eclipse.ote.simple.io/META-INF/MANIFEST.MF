@@ -5,14 +5,28 @@ Bundle-SymbolicName: org.eclipse.ote.simple.io;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*
-Import-Package: org.eclipse.osee.ote.core,
+Import-Package: org.eclipse.osee.framework.logging,
+ org.eclipse.osee.ote.core,
  org.eclipse.osee.ote.core.environment,
+ org.eclipse.osee.ote.core.environment.console,
  org.eclipse.osee.ote.core.environment.interfaces,
+ org.eclipse.osee.ote.core.framework,
+ org.eclipse.osee.ote.core.log,
  org.eclipse.osee.ote.message,
  org.eclipse.osee.ote.message.data,
  org.eclipse.osee.ote.message.elements,
  org.eclipse.osee.ote.message.enums,
- org.eclipse.osee.ote.message.interfaces
+ org.eclipse.osee.ote.message.interfaces,
+ org.eclipse.osee.ote.message.io,
+ org.eclipse.osee.ote.message.listener,
+ org.eclipse.ote.message.lookup,
+ org.eclipse.ote.message.manager,
+ org.eclipse.ote.services.core,
+ org.osgi.framework,
+ org.osgi.util.tracker
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.ote.messaging.dds
+Export-Package: org.eclipse.ote.simple.io,
+ org.eclipse.ote.simple.io.manager,
+ org.eclipse.ote.simple.io.message

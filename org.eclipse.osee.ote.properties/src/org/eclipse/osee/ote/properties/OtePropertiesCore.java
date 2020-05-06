@@ -20,6 +20,7 @@ public enum OtePropertiesCore implements OteProperties {
    serverFactoryClass("osee.ote.server.factory.class"),
    serverKeepalive("osee.ote.server.keepAlive"),
    serverTitle("osee.ote.server.title"),
+   signalMappingEnabled("ote.signal.mapping", false), 
    timeDebug("ote.time.debug", false),
    abortMultipleInterrupt("ote.abort.interrupt.multiple", false),
    timeDebugTimeout("ote.time.debug.timeout", 250000),

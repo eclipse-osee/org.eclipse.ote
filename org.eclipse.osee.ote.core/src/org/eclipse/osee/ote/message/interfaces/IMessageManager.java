@@ -11,10 +11,14 @@
 package org.eclipse.osee.ote.message.interfaces;
 
 import java.util.Collection;
+import java.util.Set;
+
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.enums.DataType;
+import org.eclipse.osee.ote.message.listener.DDSDomainParticipantListener;
+import org.eclipse.osee.ote.message.listener.IMessageCreationListener;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -40,9 +44,28 @@ public interface IMessageManager<T extends MessageData, U extends Message<? exte
 
    void init() throws Exception;
 
-   void publishMessages(boolean publish);
-
    boolean isPhysicalTypeAvailable(DataType physicalType);
 
    IMessageRequestor<T, U> createMessageRequestor(String name);
+
+   Class<? extends U> getMessageClass(String msgClass) throws ClassCastException, ClassNotFoundException;
+
+   DDSDomainParticipantListener getDDSListener(); 
+   void addPostCreateMessageListener(IMessageCreationListener listener);
+
+   void addPreCreateMessageListener(IMessageCreationListener listener);
+
+   void addInstanceRequestListener(IMessageCreationListener listener);
+
+   <CLASSTYPE extends U> CLASSTYPE createAndSetUpMessage(Class<CLASSTYPE> messageClass, IMessageRequestor<T, U> requestor,
+         boolean writer) throws TestException;
+
+   Set<DataType> getAvailableDataTypes();
+
+   boolean removeRequestorReference(IMessageRequestor<T, U> requestor, U msg);
+
+   <CLASSTYPE extends U> CLASSTYPE getMessageWriter(IMessageRequestor<T, U> messageRequestor, Class<CLASSTYPE> type);
+   <CLASSTYPE extends U> CLASSTYPE getMessageReader(IMessageRequestor<T, U> messageRequestor, Class<CLASSTYPE> type);
+
+
 }

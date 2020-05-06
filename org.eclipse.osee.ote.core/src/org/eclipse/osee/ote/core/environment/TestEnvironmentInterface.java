@@ -17,7 +17,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.util.List;
-
+import java.util.Set;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer;
 import org.eclipse.osee.ote.core.environment.interfaces.IEnvironmentFactory;
@@ -32,6 +32,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITimerControl;
 import org.eclipse.osee.ote.core.framework.IRunManager;
 import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -91,5 +92,7 @@ public interface TestEnvironmentInterface {
    public IEnvironmentFactory getEnvironmentFactory();
 
    void setupOutfileDir(String outfileDir) throws IOException;
+
+   public Set<? extends DataType> getDataTypes();
 
 }

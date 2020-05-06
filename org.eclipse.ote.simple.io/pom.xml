@@ -12,6 +12,6 @@
 
 	<artifactId>org.eclipse.ote.simple.io</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>Eclipse OTE Simple IO (Incubation)</name>
+	<name>OTE Simple IO (Incubation)</name>
 
 </project>

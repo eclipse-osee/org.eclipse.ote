@@ -1,30 +1,44 @@
-/*******************************************************************************
- * Copyright (c) 2020 Boeing.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Boeing - initial API and implementation
- *******************************************************************************/
+/*********************************************************************
+* Copyright (c) 2020 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+**********************************************************************/
 
 package org.eclipse.ote.simple.io;
 
-import org.eclipse.osee.ote.core.environment.TestEnvironment;
+import org.eclipse.osee.ote.message.interfaces.IMessageManager;
+import org.eclipse.osee.ote.message.interfaces.Namespace;
+import org.eclipse.ote.message.manager.NamespaceMapper;
 
 /**
- * Mostly empty for now.  This will be the injection point for any Simple IO specific set up with the env
+ * This will be the injection point for any Simple IO specific set up with the env
  * 
  * @author Michael P. Masterson
  */
 public class StartSimpleIoComponent {
    
+   private NamespaceMapper nsMapper;
+   private IMessageManager<?, ?> messageManager;
+
    public void start() {
       System.out.println("Started Simple IO Comp");
+      Namespace namespace = nsMapper.getNamespace(SimpleDataType.SIMPLE);
+      SimpleIOWriter writer = new SimpleIOWriter(namespace);
+      messageManager.getDDSListener().registerWriter(writer);
    }
    
-   public void bindEnv(TestEnvironment env) {
-
+   public void setNamespaceMapper(NamespaceMapper mapper) {
+      this.nsMapper = mapper;
+   }
+   
+   public void bindMsgManager(IMessageManager<?, ?> messageManager) {
+      this.messageManager = messageManager;
    }
 }

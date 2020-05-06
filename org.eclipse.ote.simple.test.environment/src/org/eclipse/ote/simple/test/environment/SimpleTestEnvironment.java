@@ -11,6 +11,7 @@
 
 package org.eclipse.ote.simple.test.environment;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.osee.ote.core.IUserSession;
@@ -20,6 +21,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.timer.RealTime;
+import org.eclipse.ote.simple.io.manager.SimpleMessageManager;
 
 /**
  * @author Andy Jury
@@ -32,12 +34,12 @@ public class SimpleTestEnvironment extends MessageSystemTestEnvironment {
 
    @Override
    public boolean isPhysicalTypeAvailable(DataType physicalType) {
-      return false;
+      return true;
    }
 
    @Override
    public Set<? extends DataType> getDataTypes() {
-      return null;
+      return new HashSet<>();
    }
 
    @Override
@@ -58,5 +60,10 @@ public class SimpleTestEnvironment extends MessageSystemTestEnvironment {
    @Override
    protected void loadExternalDrivers() {
       // Intentionally empty block
+   }
+   
+   @Override
+   public SimpleMessageManager getMsgManager() {
+      return (SimpleMessageManager) super.getMsgManager();
    }
 }

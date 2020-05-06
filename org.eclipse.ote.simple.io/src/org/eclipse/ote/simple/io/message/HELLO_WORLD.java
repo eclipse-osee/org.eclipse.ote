@@ -1,13 +1,15 @@
-/*******************************************************************************
- * Copyright (c) 2020 Boeing.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Boeing - initial API and implementation
- *******************************************************************************/
+/*********************************************************************
+* Copyright (c) 2020 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+**********************************************************************/
 
 package org.eclipse.ote.simple.io.message;
 
@@ -23,16 +25,8 @@ import org.eclipse.ote.simple.io.SimpleMessageType;
  * Simple Hello World message class intended as an example for use in the simple test environment. 
  * 
  * <table border="1">
- * <p>
- * <tr>
- * <td>RATE</td>
- * <td>50.0</td>
- * </tr>
- * <p>
- * <tr>
- * <td>DEFAULT_BYTE_SIZE</td>
- * <td>64</td>
- * </tr>
+ * <p><tr><td>RATE</td><td>50.0</td></tr>
+ * <p><tr><td>DEFAULT_BYTE_SIZE</td><td>64</td></tr>
  * </table>
  * 
  * @author Michael P. Masterson
@@ -53,7 +47,7 @@ public class HELLO_WORLD extends SimpleMessageType {
 
 
    public HELLO_WORLD() {
-      super("HELLO_WORLD", 64, 0, true, 0, 50.0);
+      super("HELLO_WORLD", 64, 0, true, 0, 4.0);
       SimpleMessageData messageData = new SimpleMessageData(this, this.getClass().getName(), getName(), getDefaultByteSize(), SimpleDataType.SIMPLE);
       setDefaultMessageData(messageData);
       messageData.setScheduled(true);

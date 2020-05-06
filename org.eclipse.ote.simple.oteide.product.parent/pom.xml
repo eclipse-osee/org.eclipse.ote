@@ -18,6 +18,7 @@
     
     <modules>
 		<module>../org.eclipse.ote.simple.oteide.product</module>
+		<module>../org.eclipse.ote.simple.io</module>
 		<module>../org.eclipse.ote.simple.test.environment</module>
 		<module>../org.eclipse.ote.simple.test.script</module>
 		<module>../org.eclipse.ote.simple.oteide.product.load</module>

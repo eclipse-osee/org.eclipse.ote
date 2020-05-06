@@ -16,15 +16,16 @@ import org.eclipse.osee.ote.message.data.MessageData;
 
 /**
  * @author Ken J. Aguilar
+ * 
+ * @param <T> The specific MessageData type
+ * @param <U> The specific Message type
  */
 public interface IMessageRequestor<T extends MessageData, U extends Message<? extends ITestEnvironmentMessageSystemAccessor, T, U>> {
    <CLASSTYPE extends U> CLASSTYPE getMessageReader(Class<CLASSTYPE> type) throws TestException;
-
    <CLASSTYPE extends U> CLASSTYPE getMessageWriter(Class<CLASSTYPE> type) throws TestException;
-
+   U getMessageWriter(String msgClass) throws TestException;
+   U getMessageReader(String msgClass) throws TestException;
    String getName();
-
    void remove(U message) throws TestException;
-
    void dispose();
 }
