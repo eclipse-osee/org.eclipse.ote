@@ -30,7 +30,6 @@
          version="0.0.0"
          unpack="false"/>
 
-
    <plugin
          id="org.eclipse.ote.services.core"
          download-size="0"
@@ -47,13 +46,6 @@
 
    <plugin
          id="org.eclipse.ote.io"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ote.simple.test.environment"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -1,0 +1,68 @@
+/*******************************************************************************
+ * Copyright (c) 2020 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+
+package org.eclipse.ote.simple.io;
+
+import org.eclipse.osee.framework.jdk.core.util.ByteUtil;
+import org.eclipse.osee.ote.message.IMessageHeader;
+import org.eclipse.osee.ote.message.Message;
+import org.eclipse.osee.ote.message.data.HeaderData;
+import org.eclipse.osee.ote.message.data.MemoryResource;
+import org.eclipse.osee.ote.message.elements.Element;
+import org.eclipse.osee.ote.message.elements.StringElement;
+
+/**
+ * This header is a 32 character message name field
+ * 
+ * @author Michael P. Masterson
+ */
+public class SimpleMessageHeader implements IMessageHeader {
+   public static final int HEADER_BYTE_SIZE = 32;
+   private HeaderData headerData;
+   
+   public final StringElement NAME;
+
+   public SimpleMessageHeader(Message<?,?,?> msg, MemoryResource data) {
+      headerData = new HeaderData("SIMPLE_HEADER", data);
+
+      Object[] path = new Object[]{(msg == null ? "message" : msg.getClass().getName()), "HEADER(SIMPLE)"};
+      NAME = new StringElement(msg, "NAME", headerData, 0, 0, HEADER_BYTE_SIZE * 8 - 1);
+      NAME.addPath(path);
+   }
+
+   public byte[] getData() {
+      return headerData.toByteArray();
+   }
+
+   public String getMessageName() {
+      return NAME.getNoLog();
+   }
+
+   public String toXml() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("<SimpleHeaderInfo>");
+      ByteUtil.printByteDump(builder, this.getData(), 0, HEADER_BYTE_SIZE, 8);
+      builder.append("</SimpleHeaderInfo>");
+      return builder.toString();
+   }
+
+   public Element[] getElements() {
+      return new Element[]{NAME};
+   }
+
+   public int getHeaderSize() {
+      return HEADER_BYTE_SIZE;
+   }
+
+   public void setNewBackingBuffer(byte[] data) {
+      headerData.setNewBackingBuffer(data);
+   }
+}
