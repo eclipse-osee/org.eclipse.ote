@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.ote.message.manager;
+package org.eclipse.osee.ote.message.interfaces;
 
 import java.util.Collection;
 

@@ -37,6 +37,7 @@ import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMessageManager;
 import org.eclipse.osee.ote.message.interfaces.IMessageRequestor;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAccessor;
+import org.eclipse.osee.ote.message.interfaces.MessageDataLookup;
 import org.eclipse.osee.ote.message.interfaces.Namespace;
 import org.eclipse.osee.ote.message.io.IOWriter;
 import org.eclipse.osee.ote.message.listener.DDSDomainParticipantListener;
@@ -64,6 +65,8 @@ import org.eclipse.osee.ote.properties.OtePropertiesCore;
  * and NamespaceMapper and call the init method.
  * 
  * @author Michael P. Masterson
+ * @param <D> 
+ * @param <M> 
  */
 public abstract class AbstractMessageManager<D extends MessageData, M extends Message<? extends ITestEnvironmentMessageSystemAccessor, D, M>> implements IMessageManager<D, M>, OTETopicLookup {
 
@@ -95,11 +98,29 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
    public AbstractMessageManager() {
       ddsListener = new DDSDomainParticipantListener();
       messageCollection = new MessageCollection<>();
-
    }
    
    public void bindEnv(TestEnvironmentInterface env) {
       this.env = new WeakReference<TestEnvironmentInterface>(env);
+   }
+   
+   public void bindMessageSignalMapping(MessageSignalMapping messageSignalMapping) {
+      this.messageSignalMapping = messageSignalMapping;
+   }
+   
+   public void unbindMessageSignalMapping() {
+      this.messageSignalMapping = null;
+   }
+   
+   /**
+    * @return the Publisher
+    */
+   public Publisher getPublisher() {
+      return uutPublisher;
+   }
+   
+   public MessageCollection<M> getMessageCollection() {
+      return messageCollection;
    }
    
    @Override
@@ -129,6 +150,7 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
       return (Class<M>) env.get().getRuntimeManager().loadFromRuntimeLibraryLoader(msgClass).asSubclass(Message.class);
    }
 
+   @Override
    public MessageDataLookup getMessageDataLookup(Namespace namespace) {
       MessageDataLookup lookup = messageDataLookupHash.get(namespace);
       if (lookup == null) {
@@ -138,6 +160,7 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
       return lookup;
    }
 
+   @Override
    public void putMessageDataLookup(Namespace namespace, MessageDataLookup lookup) {
       MessageDataLookup setLookup = messageDataLookupHash.get(namespace);
       if (setLookup == null) {
@@ -231,7 +254,7 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
     * Can be overwritten by application specific 
     */
    protected boolean isMessageMappingEnabled() {
-      return OtePropertiesCore.signalMappingEnabled.getBooleanValue();
+      return OtePropertiesCore.signalMappingEnabled.getBooleanValue() && messageSignalMapping != null;
    }
 
    private void insertNewMessageDataIntoLookup(Namespace namespace, MessageData data) {
@@ -239,9 +262,6 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
       lookup.put(data);
    }
    
-   /* (non-Javadoc)
-    * @see org.eclipse.ote.simple.io.manager.SimpleMessageManager#createMessage(java.lang.Class)
-    */
    @Override
    public <CLASSTYPE extends M> CLASSTYPE createMessage(Class<CLASSTYPE> messageClass) throws TestException {
       checkState();
@@ -463,6 +483,7 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
       }
    }
 
+   @Override
    public Set<Pair<Double, Integer>> getTasks() {
       return messageCollection.getPeriodicPublicationTasks().getRatePhaseMap().keySet();
    }
@@ -477,7 +498,7 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
       return new MessageRequestor<>(name, this);
    }
 
-   synchronized Collection<IMessageRequestor<D,M>> getMessageRequestors(M msg) {
+   public synchronized Collection<IMessageRequestor<D,M>> getMessageRequestors(M msg) {
       checkState();
       return requestorReferenceMap.get(msg);
    }

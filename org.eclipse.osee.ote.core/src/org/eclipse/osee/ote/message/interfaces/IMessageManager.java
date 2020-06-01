@@ -16,12 +16,14 @@ package org.eclipse.osee.ote.message.interfaces;
 import java.util.Collection;
 import java.util.Set;
 
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.listener.DDSDomainParticipantListener;
 import org.eclipse.osee.ote.message.listener.IMessageCreationListener;
+import org.eclipse.osee.ote.messaging.dds.entity.Publisher;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -54,6 +56,7 @@ public interface IMessageManager<T extends MessageData, U extends Message<? exte
    Class<? extends U> getMessageClass(String msgClass) throws ClassCastException, ClassNotFoundException;
 
    DDSDomainParticipantListener getDDSListener(); 
+   
    void addPostCreateMessageListener(IMessageCreationListener listener);
 
    void addPreCreateMessageListener(IMessageCreationListener listener);
@@ -70,5 +73,11 @@ public interface IMessageManager<T extends MessageData, U extends Message<? exte
    <CLASSTYPE extends U> CLASSTYPE getMessageWriter(IMessageRequestor<T, U> messageRequestor, Class<CLASSTYPE> type);
    <CLASSTYPE extends U> CLASSTYPE getMessageReader(IMessageRequestor<T, U> messageRequestor, Class<CLASSTYPE> type);
 
+   Publisher getPublisher();
 
+   void putMessageDataLookup(Namespace namespace, MessageDataLookup lookup);
+
+   MessageDataLookup getMessageDataLookup(Namespace namespace);
+
+   Set<Pair<Double, Integer>> getTasks();
 }

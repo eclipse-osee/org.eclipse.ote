@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.osee.ote.message.data.MessageData;
+import org.eclipse.osee.ote.message.interfaces.MessageDataLookup;
 
 /**
  * This is a simple (and slow) implementation of a data lookup that uses the topic name as a hashmap

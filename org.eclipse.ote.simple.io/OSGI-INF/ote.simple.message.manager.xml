@@ -5,7 +5,6 @@
    <service>
       <provide interface="org.eclipse.osee.ote.message.interfaces.IMessageManager"/>
    </service>
-   <reference bind="addIOWriter" cardinality="0..n" interface="ote.server.message.IOWriter" name="IOWriter" policy="dynamic" unbind="removeIOWriter"/>
-   <reference bind="addDataTypeProvider" cardinality="0..n" interface="ote.server.DataTypeProvider" name="DataTypeProvider" policy="dynamic" unbind="removeDataTypeProvider"/>
+   <reference bind="addDataTypeProvider" cardinality="0..n" interface="org.eclipse.ote.message.manager.DataTypeProvider" name="DataTypeProvider" policy="dynamic" unbind="removeDataTypeProvider"/>
    <reference bind="bindNamespaceMapper" cardinality="1..1" interface="org.eclipse.ote.message.manager.NamespaceMapper" name="NamespaceMapper" policy="dynamic"/>
 </scr:component>
