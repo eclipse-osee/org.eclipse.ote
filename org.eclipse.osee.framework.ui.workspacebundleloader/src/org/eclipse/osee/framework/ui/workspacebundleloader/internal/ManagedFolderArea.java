@@ -1,3 +1,16 @@
+/*********************************************************************
+ * Copyright (c) 2017 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+
 package org.eclipse.osee.framework.ui.workspacebundleloader.internal;
 
 import java.io.File;
@@ -9,7 +22,6 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.workspacebundleloader.BundleInfoLite;
 import org.eclipse.osee.framework.ui.workspacebundleloader.WorkspaceBundleLoadCoordinator;
@@ -21,57 +33,59 @@ public class ManagedFolderArea {
    public ManagedFolderArea(File temporaryBundleLocationFolder) {
       this.bundleLocationFolder = temporaryBundleLocationFolder;
    }
-   
-   public void initialize(){
+
+   public void initialize() {
       bundleLocationFolder = setupTemporaryBundle(this.bundleLocationFolder);
    }
 
-   private File setupTemporaryBundle(final File folder){
+   private File setupTemporaryBundle(final File folder) {
       File folderToReturn = folder;
-      if(!folderToReturn.exists()){
-         if(!folderToReturn.mkdirs()){
+      if (!folderToReturn.exists()) {
+         if (!folderToReturn.mkdirs()) {
             folderToReturn = makeTempFolder();
          }
-      } else if(folderToReturn.exists() && !folderToReturn.isDirectory()){
+      } else if (folderToReturn.exists() && !folderToReturn.isDirectory()) {
          folderToReturn = makeTempFolder();
-      } else if(folderToReturn.exists()){
+      } else if (folderToReturn.exists()) {
          cleanOutDirectory(folderToReturn);
       }
       return folderToReturn;
    }
-   
+
    /**
-    * should be a flat list of folders with the symbolic name of the bundle and then a version for each jar underneath each folder.
-    * @param folderToReturn 
+    * should be a flat list of folders with the symbolic name of the bundle and then a version for each jar underneath
+    * each folder.
+    * 
+    * @param folderToReturn
     */
    private void cleanOutDirectory(File folderRoot) {
       File[] symbolicNameFolders = folderRoot.listFiles();
-      for(File folder:symbolicNameFolders){
-         if(folder.isDirectory()){
-            for(File file :folder.listFiles()){
+      for (File folder : symbolicNameFolders) {
+         if (folder.isDirectory()) {
+            for (File file : folder.listFiles()) {
                file.delete();
             }
             folder.delete();
          }
       }
    }
-   
-   private File makeTempFolder(){
+
+   private File makeTempFolder() {
       File folder = new File(System.getProperty("java.io.tmpdir"));
       File oteFolder = new File(folder, "otebundleload");
-      if(!oteFolder.exists()){
+      if (!oteFolder.exists()) {
          oteFolder.mkdirs();
       }
       return oteFolder;
    }
-   
+
    public List<BundleInfoLite> copyDeltasToManagedFolder(List<BundleInfoLite> copies) {
       List<BundleInfoLite> bundlesAdded = new ArrayList<>();
-      for(BundleInfoLite info: copies){
+      for (BundleInfoLite info : copies) {
          File folder = new File(bundleLocationFolder, info.getSymbolicName());
          folder.mkdirs();
          File newFile = new File(folder, info.getVersion() + ".jar");
-         if(newFile.exists()){
+         if (newFile.exists()) {
             newFile.delete();
          }
          FileChannel out = null;
@@ -94,13 +108,13 @@ public class ManagedFolderArea {
             OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
          } finally {
             try {
-               if(in != null){
+               if (in != null) {
                   in.close();
                }
             } catch (IOException e) {
             }
             try {
-               if(out != null){
+               if (out != null) {
                   out.close();
                }
             } catch (IOException e) {
@@ -109,5 +123,5 @@ public class ManagedFolderArea {
       }
       return bundlesAdded;
    }
-   
+
 }

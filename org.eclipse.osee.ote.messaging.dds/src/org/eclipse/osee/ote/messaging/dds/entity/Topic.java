@@ -1,13 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2004, 20079 Boeing.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*********************************************************************
+ * Copyright (c) 2005 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Boeing - initial API and implementation
- *******************************************************************************/
+ **********************************************************************/
+
 package org.eclipse.osee.ote.messaging.dds.entity;
 
 import java.util.Collection;
@@ -20,9 +23,9 @@ import org.eclipse.osee.ote.messaging.dds.service.TypeSignature;
 import org.eclipse.osee.ote.messaging.dds.status.InconsistentTopicStatus;
 
 /**
- * Created on May 16, 2005 Provides a basic implementation of the <code>TopicDescription</code> interface for basic
- * topic support in the DDS system.
- * 
+ * Provides a basic implementation of the <code>TopicDescription</code> interface for basic topic support in the DDS
+ * system.
+ *
  * @see org.eclipse.osee.ote.messaging.dds.service.TopicDescription
  * @author Robert A. Fisher
  * @author David Diepenbrock
@@ -100,7 +103,7 @@ public class Topic extends DomainEntity implements TopicDescription {
     * Returns the count for how many times this topic has been "created". This is done to meet the requirement of the
     * DDS specification that a <code>Topic</code> must be deleted as many times as it was created or found via (@link
     * DomainParticipant#findTopic(String, Duration)}.
-    * 
+    *
     * @return integer count of the creations of this topic.
     */
    int getCount() {
@@ -136,7 +139,7 @@ public class Topic extends DomainEntity implements TopicDescription {
     * Set the listener for this <code>Topic</code>. If another listener was already assigned then it will be overridden
     * with out any error. Additionally, <b>null</b> may be passed as the listener to remove the current listener from
     * this topic.
-    * 
+    *
     * @param listener - The listener to invoke when events occur.
     * @param mask - Not implemented, <b>null</b> is acceptable.
     * @return {@link ReturnCode#OK}
@@ -162,7 +165,7 @@ public class Topic extends DomainEntity implements TopicDescription {
    /**
     * Used so the topic can keep track of the DataReaders that are created using this Topic. When the DataReader is
     * deleted, it should call removeDataReader.
-    * 
+    *
     * @param reader The DataReader that added this topic
     */
    void addDataReader(DataReader reader) {
@@ -172,7 +175,7 @@ public class Topic extends DomainEntity implements TopicDescription {
    /**
     * Used so the topic can keep track of the DataWriters that are created using this Topic. When the DataReader is
     * deleted, it should call removeDataWriter.
-    * 
+    *
     * @param writer The DataWriter that added this topic
     */
    void addDataWriter(DataWriter writer) {
@@ -181,7 +184,7 @@ public class Topic extends DomainEntity implements TopicDescription {
 
    /**
     * Used so the topic can keep track of the DataReaders that are created using this Topic.
-    * 
+    *
     * @param reader The DataReader that was deleted and used this Topic
     */
    void removeDataReader(DataReader reader) {
@@ -190,7 +193,7 @@ public class Topic extends DomainEntity implements TopicDescription {
 
    /**
     * Used so the topic can keep track of the DataWriters that are created using this Topic.
-    * 
+    *
     * @param writer The DataWriter that was deleted and used this Topic
     */
    void removeDataWriter(DataWriter writer) {

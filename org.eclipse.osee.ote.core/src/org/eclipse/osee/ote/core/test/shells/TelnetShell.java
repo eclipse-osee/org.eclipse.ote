@@ -1,13 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2009 Boeing.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*********************************************************************
+ * Copyright (c) 2005 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Boeing - initial API and implementation
- *******************************************************************************/
+ **********************************************************************/
+
 package org.eclipse.osee.ote.core.test.shells;
 
 import java.io.BufferedReader;
@@ -35,9 +38,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.InputBufferThread;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 
-/**
- * Created on Aug 15, 2005
- */
 public class TelnetShell implements TelnetNotificationHandler {
 
    private static final int MAX_RESPONSE_TIME = 10000;
@@ -122,7 +122,7 @@ public class TelnetShell implements TelnetNotificationHandler {
 
    /**
     * writes the command given to the output stream ( telnet )
-    * 
+    *
     * @param string The command to give
     */
    public void write(String string) {
@@ -172,7 +172,7 @@ public class TelnetShell implements TelnetNotificationHandler {
 
    /**
     * Sits on the line, reading in characters, and waits for the expected output from telnet
-    * 
+    *
     * @param string The String this function will stop on and return
     */
    public synchronized void waitFor(String string) throws InterruptedException {
@@ -212,7 +212,7 @@ public class TelnetShell implements TelnetNotificationHandler {
 
    /**
     * Writes the command to telnet and waits for the normal command prompt
-    * 
+    *
     * @param string The command to issue
     */
    public void sendCommand(String string) throws InterruptedException {
