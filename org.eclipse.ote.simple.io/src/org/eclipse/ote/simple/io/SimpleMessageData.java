@@ -31,7 +31,7 @@ public class SimpleMessageData extends MessageData implements Data {
     */
    private final SimpleMessageHeader header;
 
-   public SimpleMessageData(Message<?, ?, ?> msg, String typeName, String name, int dataByteSize, DataType type) {
+   public SimpleMessageData(Message msg, String typeName, String name, int dataByteSize, DataType type) {
       super(typeName, 
             name, 
             dataByteSize + SimpleMessageHeader.HEADER_BYTE_SIZE,
@@ -70,9 +70,6 @@ public class SimpleMessageData extends MessageData implements Data {
    }
 
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.data.MessageData#visit(org.eclipse.osee.ote.message.data.IMessageDataVisitor)
-    */
    @Override
    public void visit(IMessageDataVisitor visitor) {
       // Intentionally empty

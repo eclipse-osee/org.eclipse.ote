@@ -16,22 +16,26 @@ package org.eclipse.ote.simple.test.script;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.enums.ScriptTypeEnum;
 import org.eclipse.osee.ote.core.environment.jini.ITestEnvironmentCommandCallback;
+import org.eclipse.osee.ote.message.Message;
+import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 import org.eclipse.osee.ote.message.interfaces.IMessageRequestor;
-import org.eclipse.ote.simple.io.SimpleMessageData;
-import org.eclipse.ote.simple.io.SimpleMessageType;
-import org.eclipse.ote.simple.test.environment.SimpleTestEnvironment;
 
 /**
  * @author Michael P. Masterson
  */
 public class SimpleTestScriptType extends TestScript {
    
-   protected IMessageRequestor<SimpleMessageData, SimpleMessageType> messageRequestor;
+   protected IMessageRequestor<Message> messageRequestor;
 
-   public SimpleTestScriptType(SimpleTestEnvironment testEnvironment, ITestEnvironmentCommandCallback callback) {
+   @SuppressWarnings("unchecked")
+   public SimpleTestScriptType(MessageSystemTestEnvironment testEnvironment, ITestEnvironmentCommandCallback callback) {
       super(testEnvironment, null, ScriptTypeEnum.FUNCTIONAL_TEST, true);
 
       messageRequestor = testEnvironment.getMsgManager().createMessageRequestor(getClass().getName());
+   }
+   
+   protected <CLASSTYPE extends Message> CLASSTYPE getMessageWriter(Class<CLASSTYPE> type) {
+      return messageRequestor.getMessageWriter(type);
    }
    
    /**

@@ -76,7 +76,7 @@ public class EmptyEnum_Element extends DiscreteElement<EmptyEnum> {
    }
    
    @Override
-   public EmptyEnum_Element switchMessages(Collection<? extends Message<?,?,?>> messages) {
+   public EmptyEnum_Element switchMessages(Collection<? extends Message> messages) {
       return (EmptyEnum_Element) super.switchMessages(messages);
    }
 

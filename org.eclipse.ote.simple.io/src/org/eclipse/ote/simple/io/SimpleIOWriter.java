@@ -33,9 +33,6 @@ public class SimpleIOWriter implements IOWriter {
       this.namespace = namespace;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ote.simple.io.manager.IOWriter#write(org.eclipse.osee.ote.messaging.dds.IDestination, org.eclipse.osee.ote.messaging.dds.ISource, org.eclipse.osee.ote.messaging.dds.DataStoreItem)
-    */
    @Override
    public void write(IDestination destination, ISource source, DataStoreItem data) {
       print(data.getTheDataSample().getData().toByteArray());
@@ -46,33 +43,31 @@ public class SimpleIOWriter implements IOWriter {
     * @param arr
     */
    private void print(byte[] arr) {
-      StringBuilder sb = new StringBuilder(); 
+      StringBuilder sb = new StringBuilder("SIMPLE: "); 
       sb.append(String.format("%d:\"", System.currentTimeMillis()));
       
       int headerLength = 32;
       for (int i = 0; i < headerLength && arr[i] != 0; i++) {
          sb.append((char)arr[i]);
       }
-      sb.append("\" = ");
+      sb.append("\" = \"");
       
-      for (int i = headerLength; i < arr.length && arr[i] != 0; i++) {
-         sb.append((char)arr[i]);
+      for (int i = headerLength; i < arr.length ; i++) {
+         if(arr[i] == 0 && arr[i-1] != 0) {
+            sb.append("\\0");
+         } else {
+            sb.append((char)arr[i]);
+         }
       }
       sb.append("\"");
       System.out.println(sb);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ote.simple.io.manager.IOWriter#write(org.eclipse.osee.ote.messaging.dds.IDestination, org.eclipse.osee.ote.messaging.dds.ISource, org.eclipse.osee.ote.message.data.MessageData)
-    */
    @Override
    public void write(IDestination destination, ISource source, MessageData data) {
       print(data.toByteArray());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ote.simple.io.manager.IOWriter#write(org.eclipse.osee.ote.messaging.dds.IDestination, org.eclipse.osee.ote.messaging.dds.ISource, java.util.Collection)
-    */
    @Override
    public void write(IDestination destination, ISource source, Collection<MessageData> data) {
       for(MessageData md : data ) {
@@ -80,17 +75,11 @@ public class SimpleIOWriter implements IOWriter {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ote.simple.io.manager.IOWriter#accept(java.lang.String)
-    */
    @Override
    public boolean accept(String topic) {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ote.simple.io.manager.IOWriter#getNamespace()
-    */
    @Override
    public String getNamespace() {
       return namespace.toString();

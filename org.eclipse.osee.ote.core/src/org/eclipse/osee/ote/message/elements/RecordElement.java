@@ -94,7 +94,7 @@ public abstract class RecordElement extends Element {
       return (RecordElement) super.findElementInMessages(messages);
    }
    
-   public RecordElement switchMessagesNew(Collection<? extends Message<?,?,?>> messages) {
+   public RecordElement switchMessagesNew(Collection<? extends Message> messages) {
       return (RecordElement) super.switchMessages(messages);
    }
    

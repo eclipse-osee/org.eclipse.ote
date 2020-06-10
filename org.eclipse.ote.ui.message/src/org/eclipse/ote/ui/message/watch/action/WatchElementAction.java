@@ -57,7 +57,7 @@ public class WatchElementAction extends Action {
       boolean needsTreeView = false;
 
       IMessageSubscription subscription = msgNode.getSubscription();
-      Message<?, ?, ?> message = subscription.getMessage();
+     Message message = subscription.getMessage();
       Collection<Element> msgElements = message.getElements();
 
       for (final Element element : msgElements) {

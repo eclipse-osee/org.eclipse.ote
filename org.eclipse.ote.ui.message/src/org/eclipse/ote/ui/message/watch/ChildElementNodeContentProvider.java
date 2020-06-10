@@ -108,7 +108,7 @@ public class ChildElementNodeContentProvider implements ITreeContentProvider {
       WatchedMessageNode data = (WatchedMessageNode) inputElement;
       List<Element> list = new ArrayList<Element>();
 
-      Message<?, ?, ?> message = data.getSubscription().getMessage();
+     Message message = data.getSubscription().getMessage();
       for (final Element element : message.getElements()) {
          if (!(element instanceof RecordElement)) {
             if (data.findChildElement(new ElementPath(element.getElementPath())) == null) {

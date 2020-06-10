@@ -120,7 +120,7 @@ public class EnumeratedElement<T extends Enum<T> & IEnumValue<T>> extends Discre
    
    @Override
    @SuppressWarnings("unchecked")
-   public EnumeratedElement<T> switchMessages(Collection<? extends Message<?,?,?>> messages) {
+   public EnumeratedElement<T> switchMessages(Collection<? extends Message> messages) {
       return (EnumeratedElement<T>) super.switchMessages(messages);
    }
 

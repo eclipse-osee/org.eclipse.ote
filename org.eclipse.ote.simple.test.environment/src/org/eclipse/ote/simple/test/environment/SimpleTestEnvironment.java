@@ -23,12 +23,18 @@ import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.timer.RealTime;
+import org.eclipse.ote.simple.io.SimpleDataType;
 import org.eclipse.ote.simple.io.manager.SimpleMessageManager;
 
 /**
  * @author Andy Jury
  */
 public class SimpleTestEnvironment extends MessageSystemTestEnvironment {
+   
+   private static final Set<DataType> SUPPORTED_PHYSICAL_TYPES = new HashSet<DataType>();
+   static {
+        SUPPORTED_PHYSICAL_TYPES.add(SimpleDataType.SIMPLE); 
+   }
 
    public SimpleTestEnvironment(IRuntimeLibraryManager runtimeLibManager) {
       super(new SimpleTestEnvironmentFactory(new RealTime(), new ScriptControl(), new SimpleTestStation(), runtimeLibManager));
@@ -36,12 +42,12 @@ public class SimpleTestEnvironment extends MessageSystemTestEnvironment {
 
    @Override
    public boolean isPhysicalTypeAvailable(DataType physicalType) {
-      return true;
+      return SUPPORTED_PHYSICAL_TYPES.contains(physicalType);
    }
 
    @Override
    public Set<? extends DataType> getDataTypes() {
-      return new HashSet<>();
+      return SUPPORTED_PHYSICAL_TYPES;
    }
 
    @Override

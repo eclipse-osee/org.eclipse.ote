@@ -14,6 +14,7 @@
 package org.eclipse.osee.ote.message.mock;
 
 import java.util.Collection;
+
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.EnumeratedElement;
@@ -24,7 +25,7 @@ import org.eclipse.osee.ote.message.elements.RecordElement;
 import org.eclipse.osee.ote.message.elements.RecordMap;
 import org.eclipse.osee.ote.message.elements.StringElement;
 
-public class TestMessage extends Message<UnitTestAccessor, TestMessageData, TestMessage> {
+public class TestMessage extends Message {
 
    public final IntegerElement INT_ELEMENT_1;
    public final StringElement STRING_ELEMENT_1;
@@ -48,11 +49,6 @@ public class TestMessage extends Message<UnitTestAccessor, TestMessageData, Test
          new RecordMap<TestRecordElement>(this, ethData, "RECORD_MAP_1", 2, new RECORD_MAP_1_factory(ethData));
       addElements(INT_ELEMENT_1, STRING_ELEMENT_1, ENUM_ELEMENT_1, FLOAT32_ELEMENT_1, RECORD_MAP_1);
       setMemSource(TestMemType.ETHERNET);
-   }
-
-   @Override
-   public void switchElementAssociation(Collection<TestMessage> messages) {
-
    }
 
    public class RECORD_MAP_1_factory implements IRecordFactory {

@@ -50,7 +50,7 @@ public class SignedInteger16Element extends NumericElement<Integer> {
    }
    
    @Override
-   public SignedInteger16Element switchMessages(Collection<? extends Message<?,?,?>> messages) {
+   public SignedInteger16Element switchMessages(Collection<? extends Message> messages) {
       return (SignedInteger16Element) super.switchMessages(messages);
    }
 

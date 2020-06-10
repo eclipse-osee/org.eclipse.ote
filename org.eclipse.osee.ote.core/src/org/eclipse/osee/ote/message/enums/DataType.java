@@ -14,6 +14,7 @@
 package org.eclipse.osee.ote.message.enums;
 
 import java.io.Serializable;
+
 import org.eclipse.osee.ote.message.interfaces.INamespace;
 
 /**
@@ -24,7 +25,15 @@ public interface DataType extends Serializable, INamespace {
 
    String name();
 
+   /**
+    * @return The depth of the reading queue.  Set to 1 if serial reads are required.
+    */
    int getToolingDepth();
 
+   /**
+    * @return the byte buffer size for this data type.  This is generally at least the maximum
+    * allowable size for a single transmission.  However, any readers should be able to handle
+    * splitting large messages that are bigger than this value.
+    */
    int getToolingBufferSize();
 }

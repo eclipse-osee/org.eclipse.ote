@@ -17,7 +17,7 @@ package org.eclipse.osee.ote.message;
  * @author Andrew M. Finkbeiner
  */
 public interface IMessageDisposeListener {
-   void onPreDispose(Message<?, ?, ?> message);
+   void onPreDispose(Message message);
 
-   void onPostDispose(Message<?, ?, ?> message);
+   void onPostDispose(Message message);
 }

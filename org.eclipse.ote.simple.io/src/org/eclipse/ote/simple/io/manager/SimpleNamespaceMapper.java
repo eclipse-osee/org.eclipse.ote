@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.Namespace;
+import org.eclipse.ote.io.GenericOteIoType;
 import org.eclipse.ote.message.manager.NamespaceMapper;
 import org.eclipse.ote.simple.io.SimpleDataType;
 
@@ -37,6 +38,8 @@ public class SimpleNamespaceMapper implements NamespaceMapper {
       if(namespaceMap == null) {
          namespaceMap = new HashMap<>();
          namespaceMap.put(SimpleDataType.SIMPLE, new Namespace(SimpleDataType.SIMPLE.name()));
+         namespaceMap.put(GenericOteIoType.MUX, new Namespace(GenericOteIoType.MUX.name()));
+
       }
    }
 

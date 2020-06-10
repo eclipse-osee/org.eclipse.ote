@@ -32,7 +32,7 @@ public class SimpleMessageHeader implements IMessageHeader {
    
    public final StringElement NAME;
 
-   public SimpleMessageHeader(Message<?,?,?> msg, MemoryResource data) {
+   public SimpleMessageHeader(Message msg, MemoryResource data) {
       headerData = new HeaderData("SIMPLE_HEADER", data);
 
       Object[] path = new Object[]{(msg == null ? "message" : msg.getClass().getName()), "HEADER(SIMPLE)"};

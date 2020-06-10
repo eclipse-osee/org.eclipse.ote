@@ -19,22 +19,20 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.message.Message;
-import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.interfaces.IMessageManager;
 import org.eclipse.osee.ote.message.interfaces.IMessageRequestor;
-import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAccessor;
 
 /**
  * @author Ken J. Aguilar
  * @author Michael P. Masterson
  */
-public class MessageRequestor<D extends MessageData, M extends Message<? extends ITestEnvironmentMessageSystemAccessor, D, M>> implements IMessageRequestor<D,M> {
+public class MessageRequestor<M extends Message> implements IMessageRequestor<M> {
 
-   private final IMessageManager<D, M> messageManager;
+   private final IMessageManager<M> messageManager;
    private final HashSet<M> messagesToDecrementReferenceCount = new HashSet<M>();
    private final String name;
 
-   MessageRequestor(String name, IMessageManager<D, M> messageManager) {
+   MessageRequestor(String name, IMessageManager<M> messageManager) {
       this.name = name;
       this.messageManager = messageManager;
    }

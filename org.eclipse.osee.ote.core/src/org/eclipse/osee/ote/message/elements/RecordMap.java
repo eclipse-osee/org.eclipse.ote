@@ -15,6 +15,7 @@ package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
 import java.util.HashMap;
+
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 
@@ -82,7 +83,7 @@ public class RecordMap<T extends RecordElement> extends RecordElement {
       return messageData;
    }
 
-   public RecordMap<T> switchRecordMapMessages(Collection<? extends Message<?,?,?>> messages) {
+   public RecordMap<T> switchRecordMapMessages(Collection<? extends Message> messages) {
       for (RecordElement element : this.records.values()) {
          element.switchMessages(messages);
       }
@@ -90,15 +91,6 @@ public class RecordMap<T extends RecordElement> extends RecordElement {
       return this;
    }
 
-   //   public <U extends Message<? extends ITestEnvironmentMessageSystemAccessor, ? extends MessageData, U>> RecordMap<T> switchMessages(Collection<U> messages) {
-   //	      for (RecordElement element : this.records.values()) {
-   //	         element.switchMessages(messages);
-   //	      }
-   //
-   //	      return this;
-   //   }
-
-   
    @Override
    public RecordMap<T> findElementInMessages(Collection<? extends Message> messages) {
       for (RecordElement element : this.records.values()) {
@@ -108,7 +100,7 @@ public class RecordMap<T extends RecordElement> extends RecordElement {
    }
    
    @Override
-   public RecordMap<T> switchMessages(Collection<? extends Message<?,?,?>> messages) {
+   public RecordMap<T> switchMessages(Collection<? extends Message> messages) {
       for (RecordElement element : this.records.values()) {
          element.switchMessages(messages);
       }

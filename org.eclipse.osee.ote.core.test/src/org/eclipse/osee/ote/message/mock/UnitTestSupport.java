@@ -18,7 +18,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import org.junit.Assert;
+
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
@@ -29,6 +29,7 @@ import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.DiscreteElement;
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
+import org.junit.Assert;
 
 public class UnitTestSupport {
 
@@ -44,7 +45,7 @@ public class UnitTestSupport {
 
          @Override
          public void runOneCycle() throws InterruptedException, TestException {
-            TestMessageData data = msg.getActiveDataSource();
+            MessageData data = msg.getActiveDataSource();
             data.incrementActivityCount();
             data.notifyListeners();
 

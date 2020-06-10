@@ -34,7 +34,7 @@ public class InaccessibleElement extends Element {
    }
    
    @Override
-   public InaccessibleElement switchMessages(Collection<? extends Message<?,?,?>> messages) {
+   public InaccessibleElement switchMessages(Collection<? extends Message> messages) {
       return (InaccessibleElement) super.switchMessages(messages);
    }
 

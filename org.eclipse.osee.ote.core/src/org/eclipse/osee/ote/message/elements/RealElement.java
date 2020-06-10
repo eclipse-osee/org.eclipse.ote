@@ -48,7 +48,7 @@ public abstract class RealElement extends NumericElement<Double> {
    }
    
    @Override
-   public RealElement switchMessages(Collection<? extends Message<?,?,?>> messages) {
+   public RealElement switchMessages(Collection<? extends Message> messages) {
       return (RealElement) super.switchMessages(messages);
    }
 

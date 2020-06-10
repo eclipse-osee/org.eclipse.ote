@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OTE Mux IO
+Bundle-SymbolicName: org.eclipse.ote.io.mux
+Bundle-Version: 0.11.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.ote.message,
+ org.eclipse.osee.ote.message.data,
+ org.eclipse.osee.ote.message.elements,
+ org.eclipse.osee.ote.message.enums,
+ org.eclipse.osee.ote.message.interfaces,
+ org.eclipse.osee.ote.messaging.dds,
+ org.eclipse.osee.ote.messaging.dds.entity,
+ org.eclipse.ote.io
+Export-Package: org.eclipse.ote.io.mux

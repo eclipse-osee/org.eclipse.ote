@@ -15,7 +15,7 @@ public class RunTestsIsCancelled extends OteEventMessage {
 		super("MESSAGE_META_DATA_STAT", TOPIC, SIZE);
 		GUID = new StringElement(this, "MESSAGE", getDefaultMessageData(), 0, 0, OteEventMessage.sizeBytesBits(256));
 		
-		getDefaultMessageData().getMsgHeader().RESPONSE_TOPIC.setValue(BooleanResponse.TOPIC);
+		getHeader().RESPONSE_TOPIC.setValue(BooleanResponse.TOPIC);
 	}
 
    public RunTestsIsCancelled(byte[] bytes) {

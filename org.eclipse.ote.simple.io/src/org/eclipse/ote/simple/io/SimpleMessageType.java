@@ -14,12 +14,11 @@
 package org.eclipse.ote.simple.io;
 
 import org.eclipse.osee.ote.message.Message;
-import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 
 /**
  * @author Michael P. Masterson
  */
-public class SimpleMessageType extends Message<MessageSystemTestEnvironment, SimpleMessageData, SimpleMessageType>{
+public class SimpleMessageType extends Message {
 
    public SimpleMessageType(String name, int defaultByteSize, int defaultOffset, boolean isScheduled, int phase,
       double rate) {

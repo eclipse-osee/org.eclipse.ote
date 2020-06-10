@@ -51,7 +51,7 @@ public class IntegerElement extends NumericElement<Integer> {
    }
    
    @Override
-   public IntegerElement switchMessages(Collection<? extends Message<?,?,?>> messages) {
+   public IntegerElement switchMessages(Collection<? extends Message> messages) {
       return (IntegerElement) super.switchMessages(messages);
    }
 

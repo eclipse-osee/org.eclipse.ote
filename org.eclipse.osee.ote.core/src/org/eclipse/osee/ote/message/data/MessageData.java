@@ -17,9 +17,13 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.CopyOnWriteNoIteratorList;
 import org.eclipse.osee.ote.core.GCHelper;
@@ -80,6 +84,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    private int currentLength;
    private boolean isScheduled = false;
    private long time = -1;
+   private Map<Class<?>, Pair<Message, MemoryResource>> overrideMessages = new HashMap<Class<?>, Pair<Message, MemoryResource>>();
 
    public MessageData(String typeName, String name, int dataByteSize, int offset, DataType memType) {
       mem = new MemoryResource(new byte[dataByteSize], offset, dataByteSize - offset);
@@ -151,6 +156,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    /**
     * adds a {@link Message} who are mapped to this data object
+    * @param message Message to add
     */
    public void addMessage(Message message) {
       if (!messages.contains(message)) {
@@ -250,6 +256,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    /**
     * Notifies all {@link Message}s that have this registered as a data source of the update
+    * @throws MessageSystemException 
     */
    public void notifyListeners() throws MessageSystemException {
       final DataType memType = getType();
@@ -285,6 +292,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    /**
     * Override this method if you need to set some default data in the backing buffer.
+    * @param data 
     */
    public void setNewBackingBuffer(byte[] data) {
       setCurrentLength(data.length);
@@ -478,6 +486,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    }
 
    public void send() throws MessageSystemException {
+      performOverride();
       if (writer == null) {
          OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, getName() + " - the writer is null");
       } else if (shouldSendData()) {
@@ -505,6 +514,8 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    }
 
    protected void sendTo(IDestination destination, ISource source) throws MessageSystemException {
+      performOverride();
+
       if (writer == null) {
          OseeLog.log(MessageSystemTestEnvironment.class, Level.WARNING, getName() + " - the writer is null");
       } else if (shouldSendData()) {
@@ -682,6 +693,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    /**
     * A time value associated with this message.
     * The time value will have different meanings or may not be used depending on the context and usage.
+    * @return The time in milliseconds
     */
    public long getTime() {
       return time;
@@ -690,4 +702,103 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    public void setTime(long time) {
       this.time = time;
    }
+   
+   protected void performOverride() {
+      if (getMem().isDataChanged()) {
+         synchronized(overrideMessages) {
+            for (Pair<Message, MemoryResource> override : overrideMessages.values()) {
+               byte[] overrideMsgData = override.getFirst().getData();
+               byte[] overrideMask = override.getSecond().getData();
+               if (null != overrideMsgData && null != overrideMask) {
+                  byte[] targetMsgData = getMem().getData();
+                  int targetMsgHeaderSize = getMem().getOffset();
+                  int minLength = Math.min(targetMsgData.length - targetMsgHeaderSize, overrideMsgData.length - targetMsgHeaderSize);
+                  minLength = Math.min(minLength, overrideMask.length);
+                  int targetIndex;
+                  int overrideIndex;
+                  int overrideMsgHeaderSize = override.getFirst().getHeaderSize();
+                  for (int byteIndex=0; byteIndex < minLength; byteIndex++) {
+                     if (overrideMask[byteIndex] != 0x0) {
+                        targetIndex = byteIndex+targetMsgHeaderSize;
+                        overrideIndex = byteIndex + overrideMsgHeaderSize;
+                        overrideMsgData[overrideIndex] &= overrideMask[byteIndex]; // zeroize non override regions
+                        targetMsgData[targetIndex] &= ~overrideMask[byteIndex]; // zeroize regions to override
+                        targetMsgData[targetIndex] = (byte) (targetMsgData[targetIndex] | overrideMsgData[overrideIndex]);
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+
+  public MemoryResource getOverrideResource(Class<? extends Message> clazz) {
+     MemoryResource memResource = null;
+     Pair<Message, MemoryResource> override = getOverride(clazz);
+     if (override != null) {
+        memResource = override.getSecond();
+     }
+     return memResource;
+  }
+
+  public Message getOverrideMessage(Class<? extends Message> clazz) {
+     Message message = null;
+     Pair<Message, MemoryResource> override = getOverride(clazz);
+     if (override != null) {
+        message = override.getFirst();
+     }
+     return message;
+
+  }
+
+  private Pair<Message, MemoryResource> getOverride(Class<? extends Message> clazz) {
+     Pair<Message, MemoryResource> override = overrideMessages.get(clazz);
+     if (override == null) {
+        synchronized(overrideMessages) {
+           try {
+              Message msg = clazz.newInstance();
+              byte[] mask = new byte[msg.getMaxDataSize()];
+              MemoryResource memoryResource = new MemoryResource(mask, 0, mask.length);
+              override = new Pair<Message, MemoryResource>(msg, memoryResource);
+              overrideMessages.put(clazz, override);
+           } catch (Throwable th) {
+              th.printStackTrace();
+           }
+        }
+     }
+     return override;
+  }
+  
+
+  /**
+   * Remove any override messages for which there are no more overridden elements 
+   */
+  public void cleanupOverrides() {
+     synchronized(overrideMessages) {
+        Set<Class<?>> keySet = overrideMessages.keySet();
+        for (Class<?> clazz : keySet) {
+           byte[] overrideMask = overrideMessages.get(clazz).getSecond().getData();
+           boolean overrides = false;
+           for (byte checkByte : overrideMask) {
+              if (checkByte != (byte) 0x0) {
+                 overrides = true;
+                 break;
+              }
+           }
+           if (!overrides) {
+              overrideMessages.remove(clazz);
+           }
+        }
+     }
+  }
+  
+  /**
+   * Remove all overrides
+   */
+  public void clearOverrides() {
+     synchronized(overrideMessages) {
+        overrideMessages.clear();
+     }
+  }
+
 }

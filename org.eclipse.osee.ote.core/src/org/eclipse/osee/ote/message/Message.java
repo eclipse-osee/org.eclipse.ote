@@ -63,7 +63,7 @@ import org.w3c.dom.Document;
 /**
  * @author Andrew M. Finkbeiner
  */
-public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T extends MessageData, U extends Message<S, T, U>> implements Xmlizable, XmlizableStream {
+public abstract class Message implements Xmlizable, XmlizableStream {
    private static volatile AtomicLong constructed = new AtomicLong(0);
    private static volatile AtomicLong finalized = new AtomicLong(0);
    private final LinkedHashMap<String, Element> elementMap;
@@ -75,8 +75,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    private boolean destroyed = false;
 
    private DataType currentMemType;
-   private final Map<DataType, ArrayList<U>> memTypeToMessageMap = new HashMap<>();
-   private final Map<DataType, ArrayList<T>> memToDataMap = new HashMap<>();
+   private final Map<DataType, ArrayList<Message>> memTypeToMessageMap = new HashMap<>();
+   private final Map<DataType, ArrayList<MessageData>> memToDataMap = new HashMap<>();
    private final int phase;
    protected double rate;
    protected final double defaultRate;
@@ -89,7 +89,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    private static final double doubleTolerance = 0.000001;
    private final Set<DataType> memTypeActive = new HashSet<>();
 
-   private T defaultMessageData;
+   private MessageData defaultMessageData;
 
    private final List<IMemSourceChangeListener> preMemSourceChangeListeners = new CopyOnWriteArrayList<>();
    private final List<IMemSourceChangeListener> postMemSourceChangeListeners =
@@ -230,7 +230,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return getActiveDataSource().toByteArray();
    }
 
-   public T getMemoryResource() {
+   public MessageData getMemoryResource() {
       checkState();
       return memToDataMap.get(currentMemType).get(0);
    }
@@ -276,7 +276,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public void send() throws MessageSystemException {
       checkState();
       if (!isTurnedOff) {
-         ArrayList<T> dataList = memToDataMap.get(currentMemType);
+         ArrayList<MessageData> dataList = memToDataMap.get(currentMemType);
          if (dataList != null) {
             int listSize = dataList.size();
             for (int i = 0; i < listSize; i++) {
@@ -305,10 +305,10 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public void send(DataType type) throws MessageSystemException {
       checkState();
       if (!isTurnedOff) {
-         Collection<T> dataList = memToDataMap.get(type);
+         Collection<MessageData> dataList = memToDataMap.get(type);
          if (dataList != null) {
 
-            for (T data : dataList) {
+            for (MessageData data : dataList) {
                data.send();
             }
 
@@ -322,15 +322,12 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       }
    }
 
-   //	we may not really need this guy, in fact I think we don't
-   //	protected void takeNextSample() {
-   //	for (T item : memToDataMap.get(currentMemType)) {
-   //	item.takeNextSample();
-   //	}
-   //	}
-
-   public boolean setMemSource(S accessor, DataType type) {
-      return setMemSource(type);
+   public boolean setMemSource(ITestEnvironmentMessageSystemAccessor accessor, DataType type) {
+      accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
+         new MethodFormatter().add(type));
+      boolean success = setMemSource(type);
+      accessor.getLogger().methodEnded(accessor);
+      return success;
    }
 
    /**
@@ -338,7 +335,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     */
    //	public abstract void associateMessages(S accessor);
    /**
-    * Changes the element references for this message to a corresponding message with the given MemType. The messages
+    * Changes the element references for this message to a corresponding message with the given DataType. The messages
     * defined for this memType must have been provided by the associateMessages function to be seen.
     * 
     * @param memType the possibly new physical mem type.
@@ -348,11 +345,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       switchElementAssociation(getMessageTypeAssociation(memType));
    }
 
-   //   public abstract void switchElementAssociation(Collection<U> messages);
-
-   public void addMessageTypeAssociation(DataType memType, U messageToBeAdded) {
+   public void addMessageTypeAssociation(DataType memType, Message messageToBeAdded) {
       checkState();
-      ArrayList<U> list;
+      ArrayList<Message> list;
       if (!memTypeToMessageMap.containsKey(memType)) {
          list = new ArrayList<>(4);
          memTypeToMessageMap.put(memType, list);
@@ -360,35 +355,33 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
          list = memTypeToMessageMap.get(memType);
       }
       list.add(messageToBeAdded);
-
-      //		addMessageDataSource(messageToBeAdded.defaultMessageData);
    }
 
-   protected Collection<U> getMessageTypeAssociation(DataType type) {
-      final ArrayList<U> list = memTypeToMessageMap.get(type);
+   public Collection<Message> getMessageTypeAssociation(DataType type) {
+      final ArrayList<Message> list = memTypeToMessageMap.get(type);
       if (list != null) {
          return Collections.unmodifiableCollection(list);
       } else {
-         return new ArrayList<U>();
+         return new ArrayList<Message>();
       }
    }
 
-   public void addMessageDataSource(T... dataList) {
+   public void addMessageDataSource(MessageData... dataList) {
       checkState();
-      for (T data : dataList) {
+      for (MessageData data : dataList) {
          addMessageDataSource(data);
       }
    }
 
-   public void addMessageDataSource(Collection<T> dataList) {
-      for (T data : dataList) {
+   public void addMessageDataSource(Collection<MessageData> dataList) {
+      for (MessageData data : dataList) {
          addMessageDataSource(data);
       }
    }
 
-   protected void addMessageDataSource(T data) {
+   protected void addMessageDataSource(MessageData data) {
       final DataType type = data.getType();
-      final ArrayList<T> list;
+      final ArrayList<MessageData> list;
       if (!memToDataMap.containsKey(type)) {
          list = new ArrayList<>();
          memToDataMap.put(type, list);
@@ -399,19 +392,19 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       data.addMessage(this);
    }
 
-   public Collection<T> getMemSource(DataType type) {
+   public Collection<MessageData> getMemSource(DataType type) {
       checkState();
-      final ArrayList<T> list = memToDataMap.get(type);
+      final ArrayList<MessageData> list = memToDataMap.get(type);
       if (list != null) {
          return Collections.unmodifiableCollection(list);
       } else {
-         return new ArrayList<T>();
+         return new ArrayList<>();
       }
    }
 
-   public boolean getMemSource(DataType type, Collection<T> listToAddto) {
+   public boolean getMemSource(DataType type, Collection<MessageData> listToAddto) {
       checkState();
-      final ArrayList<T> list = memToDataMap.get(type);
+      final ArrayList<MessageData> list = memToDataMap.get(type);
       if (list != null) {
          return listToAddto.addAll(list);
       }
@@ -453,6 +446,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
+    * @param type 
     * @return a collection of mapped {@link Element}s for the specified DataType
     */
    public Collection<Element> getElements(DataType type) {
@@ -468,6 +462,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
+    * @param elementName 
     * @return true if the Message contains an element with the given name, false otherwise
     */
    public boolean hasElement(String elementName) {
@@ -550,6 +545,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
+    * @param elementName The element name 
+    * @param type The data type to search for the given element name
     * @return the element associated with the given name
     * @throws IllegalArgumentException if an element doesn't exist with given name. Use {@link #hasElement(String)} with
     * any use of this function.
@@ -615,15 +612,15 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
-    * Returns if the message is turned off.
+    * @return if the message is turned off.
     */
    public boolean isTurnedOff() {
       return isTurnedOff;
    }
 
    private void setSchedule(boolean newValue) {
-      ArrayList<T> dataList = memToDataMap.get(currentMemType);
-      for (T d : dataList) {
+      ArrayList<MessageData> dataList = memToDataMap.get(currentMemType);
+      for (MessageData d : dataList) {
          d.setScheduled(newValue);
       }
    }
@@ -657,12 +654,12 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
-    * Returns if the message is scheduled or not.
+    * @return if the message is scheduled or not.
     */
    @Deprecated
    public boolean isScheduled() {
-      ArrayList<T> dataList = memToDataMap.get(currentMemType);
-      for (T d : dataList) {
+      ArrayList<MessageData> dataList = memToDataMap.get(currentMemType);
+      for (MessageData d : dataList) {
          if (!d.isScheduled()) {
             return false;
          }
@@ -794,7 +791,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * Verifies that the message is sent at least once using the default message timeout. DO NOT override this method in
     * production code.
     * 
+    * @param accessor For logging results
     * @return if the check passed
+    * @throws InterruptedException 
     */
    public boolean checkForTransmission(ITestAccessor accessor) throws InterruptedException {
       return checkForTransmission(accessor, TransmissionTimeoutDefault);
@@ -804,8 +803,10 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * Verifies that the message is sent at least once within the time specified. DO NOT override this method in
     * production code.
     * 
+    * @param accessor For logging
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
+    * @throws InterruptedException 
     */
    public boolean checkForTransmission(ITestAccessor accessor, int milliseconds) throws InterruptedException {
       return checkForTransmissions(accessor, 1, milliseconds);
@@ -815,8 +816,10 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * Verifies that the message is sent at least "numTransmission" times within the default message timeout. DO NOT
     * override this method in production code.
     * 
+    * @param accessor For logging results
     * @param numTransmissions the number of transmissions to look for
     * @return if the check passed
+    * @throws InterruptedException 
     */
    public boolean checkForTransmissions(ITestAccessor accessor, int numTransmissions) throws InterruptedException {
       return checkForTransmissions(accessor, numTransmissions, TransmissionTimeoutDefault);
@@ -825,9 +828,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Verifies that the message is sent at least "numTransmission" times within the time specified.
     * 
+    * @param accessor For loging results
     * @param numTransmissions the number of transmission to look for
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
+    * @throws InterruptedException 
     */
    public boolean checkForTransmissions(ITestAccessor accessor, int numTransmissions, int milliseconds) throws InterruptedException {
       checkState();
@@ -845,9 +850,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    /**
     * Verifies that the message is not sent within the time specified.
-    * 
+    *
+    * @param accessor For logging results
     * @param milliseconds the amount to time (in milliseconds) to check
     * @return if the check passed
+    * @throws InterruptedException 
     */
    public boolean checkForNoTransmissions(ITestEnvironmentMessageSystemAccessor accessor, int milliseconds) throws InterruptedException {
       checkState();
@@ -884,7 +891,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Waits until message is sent at least once within the default message timeout.
     * 
+    * @param accessor For logging results
     * @return if the check passed
+    * @throws InterruptedException 
     */
    public boolean waitForTransmission(ITestEnvironmentMessageSystemAccessor accessor) throws InterruptedException {
       return waitForTransmission(accessor, TransmissionTimeoutDefault);
@@ -893,8 +902,10 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Waits until message is sent at least once within the time specified.
     * 
+    * @param accessor For logging results
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
+    * @throws InterruptedException 
     */
    public boolean waitForTransmission(ITestEnvironmentMessageSystemAccessor accessor, int milliseconds) throws InterruptedException {
       return waitForTransmissions(accessor, 1, milliseconds);
@@ -903,8 +914,10 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Waits until message is sent at least "numTransmission" times within the default message timeout.
     * 
+    * @param accessor For logging results
     * @param numTransmissions the number of transmissions to look for
     * @return if the check passed
+    * @throws InterruptedException 
     */
    public boolean waitForTransmissions(ITestEnvironmentMessageSystemAccessor accessor, int numTransmissions) throws InterruptedException {
       return waitForTransmissions(accessor, numTransmissions, TransmissionTimeoutDefault);
@@ -913,8 +926,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * Waits until message is sent at least "numTransmission" times within the time specified.
     * 
+    * @param accessor For logging results
+    * @param numTransmissions The exact number of transmissions to wait
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
+    * @throws InterruptedException 
     */
    public boolean waitForTransmissions(ITestEnvironmentMessageSystemAccessor accessor, int numTransmissions, int milliseconds) throws InterruptedException {
       checkState();
@@ -981,6 +997,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    /**
     * restores the state of this message. The state is intended to come from a remote instance of this message.
+    * 
+    * @param state 
     */
    public void setMessageState(final MessageState state) {
       checkState();
@@ -998,18 +1016,18 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       schedulingChangeListeners.remove(listener);
    }
 
-   public T getActiveDataSource() {
+   public MessageData getActiveDataSource() {
       checkState();
-      ArrayList<T> dataList = memToDataMap.get(currentMemType);
+      ArrayList<MessageData> dataList = memToDataMap.get(currentMemType);
       if (dataList == null) {
          throw new IllegalStateException("no datas for " + currentMemType);
       }
       return dataList.get(0);
    }
 
-   public T getActiveDataSource(DataType type) {
+   public MessageData getActiveDataSource(DataType type) {
       checkState();
-      ArrayList<T> dataList = memToDataMap.get(type);
+      ArrayList<MessageData> dataList = memToDataMap.get(type);
       return dataList != null ? dataList.get(0) : null;
    }
 
@@ -1033,6 +1051,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       this.currentMemType = currentMemType;
    }
 
+   /**
+    * 
+    * @param type
+    * @return True if mem source set correctly
+    */
    public boolean setMemSource(DataType type) {
       checkState();
       DataType oldMemType = getMemType();
@@ -1109,7 +1132,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * @return the memToDataMap
     */
-   public Collection<ArrayList<T>> getAllData() {
+   public Collection<ArrayList<MessageData>> getAllData() {
       checkState();
       return memToDataMap.values();
    }
@@ -1119,7 +1142,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return memToDataMap.keySet();
    }
 
-   public Collection<T> getMessageData(DataType type) {
+   public Collection<MessageData> getMessageData(DataType type) {
       checkState();
       return memToDataMap.get(type);
    }
@@ -1150,7 +1173,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * @return the defaultMessageData
     */
-   public T getDefaultMessageData() {
+   public MessageData getDefaultMessageData() {
       checkState();
       return defaultMessageData;
    }
@@ -1158,12 +1181,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * @param defaultMessageData the defaultMessageData to set
     */
-   @SuppressWarnings("unchecked")
-   protected void setDefaultMessageData(T defaultMessageData) {
+   protected void setDefaultMessageData(MessageData defaultMessageData) {
       checkState();
       this.defaultMessageData = defaultMessageData;
       addMessageDataSource(defaultMessageData);
-      addMessageTypeAssociation(defaultMessageData.getType(), (U) this);
+      addMessageTypeAssociation(defaultMessageData.getType(), this);
    }
 
    public boolean isWriter() {
@@ -1212,16 +1234,22 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return finalized.get();
    }
 
+   /**
+    * To be implemented if elements in a subclass must pass some criteria other than name matching
+    * @param currentElement  
+    * @param proposedElement 
+    * @return True if the proposed element is a proper replacement for the current element
+    */
    public boolean isValidElement(Element currentElement, Element proposedElement) {
       return true;
    }
 
    public IMessageHeader[] getHeaders() {
-      final Collection<T> dataSources = getMemSource(getMemType());
+      final Collection<MessageData> dataSources = getMemSource(getMemType());
       if (dataSources.size() > 0) {
          final IMessageHeader[] headers = new IMessageHeader[dataSources.size()];
          int i = 0;
-         for (T dataSrc : dataSources) {
+         for (MessageData dataSrc : dataSources) {
             headers[i] = dataSrc.getMsgHeader();
             i++;
          }
@@ -1243,11 +1271,14 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       getActiveDataSource().setActivityCount(activityCount);
    }
 
-   public void switchElementAssociation(Collection<U> messages) {
+   /**
+    * To be overridden if element switching is allowed
+    * @param messages The destination messages that this message should switch its elements to point to
+    */
+   public void switchElementAssociation(Collection<? extends Message> messages) {
    }
 
-   @SuppressWarnings("rawtypes")
-   public Map<? extends DataType, Class<? extends Message>[]> getAssociatedMessages() {
+   public Map<DataType, Class<? extends Message>[]> getAssociatedMessages() {
       return new HashMap<DataType, Class<? extends Message>[]>();
    }
 
@@ -1264,8 +1295,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
                } else {
                   message = messageRequestor.getMessageReader(clazz);
                }
-               this.addMessageDataSource((T) message.getDefaultMessageData());
-               this.addMessageTypeAssociation(entry.getKey(), (U) message);
+               this.addMessageDataSource(message.getDefaultMessageData());
+               this.addMessageTypeAssociation(entry.getKey(), message);
                setMemSource(entry.getKey());
             }
          }
@@ -1295,9 +1326,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    /**
     * Changes the rate back to the default rate.
+    * @param accessor 
     */
    public void changeRateToDefault(ITestEnvironmentMessageSystemAccessor accessor) {
-      //      accessor.getMsgManager().changeMessageRate(this, defaultRate, rate);
       double oldRate = getRate();
       rate = defaultRate;
       for (IMessageScheduleChangeListener listener : schedulingChangeListeners) {
@@ -1353,6 +1384,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 	   }
 	   return null;
    }
+   
+   
 
    
 }

@@ -14,6 +14,7 @@
 package org.eclipse.osee.ote.message;
 
 import java.util.Set;
+
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.message.enums.DataType;
@@ -48,7 +49,7 @@ public abstract class MessageSystemTestCase extends TestCase implements ITestAcc
    }
 
    @Override
-   public IMessageManager<?, ?> getMsgManager() {
+   public IMessageManager<?> getMsgManager() {
       return msgSysTestEnvironment.getMsgManager();
    }
 

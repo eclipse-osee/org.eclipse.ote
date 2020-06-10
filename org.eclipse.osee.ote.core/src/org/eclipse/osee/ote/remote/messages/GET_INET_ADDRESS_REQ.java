@@ -13,7 +13,7 @@ public class GET_INET_ADDRESS_REQ extends OteEventMessage {
 		super("GET_INET_ADDRESS_REQ", TOPIC, 1);
 		SOCKET_ID = createEnumeratedElement("SOCKET_ID", 1, SOCKET_ID.class);
 		
-		getDefaultMessageData().getMsgHeader().RESPONSE_TOPIC.setValue(GET_INET_ADDRESS_RESP.TOPIC);
+		getHeader().RESPONSE_TOPIC.setValue(GET_INET_ADDRESS_RESP.TOPIC);
 	}
 	
 }

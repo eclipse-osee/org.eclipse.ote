@@ -152,12 +152,12 @@ public class PeriodicPublishTask extends EnvironmentTask implements IMessageDisp
    }
 
    @Override
-   public void onPostDispose(Message<?, ?, ?> message) {
+   public void onPostDispose(Message message) {
       // intentionally blank
    }
 
    @Override
-   public void onPreDispose(Message<?, ?, ?> message) {
+   public void onPreDispose(Message message) {
       periodicMessages.remove(message);
    }
 

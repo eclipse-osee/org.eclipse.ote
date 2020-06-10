@@ -38,11 +38,11 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class MessageElementSelectionDialog extends ElementListSelectionDialog {
 
-   public MessageElementSelectionDialog(Shell parent, Message<?, ?, ?> msg) {
+   public MessageElementSelectionDialog(Shell parent, Message msg) {
       this(parent, msg, null, false);
    }
    
-   public MessageElementSelectionDialog(Shell parent, Message<?, ?, ?> msg, ElementFilter filter) {
+   public MessageElementSelectionDialog(Shell parent, Message msg, ElementFilter filter) {
       this(parent, msg, filter, false);
    }
    
@@ -54,7 +54,7 @@ public class MessageElementSelectionDialog extends ElementListSelectionDialog {
       this(parent, getMessage(msg), filter, false);
    }
 
-   public MessageElementSelectionDialog(Shell parent, Message<?, ?, ?> msg, ElementFilter filter, boolean headerOnly) {
+   public MessageElementSelectionDialog(Shell parent, Message msg, ElementFilter filter, boolean headerOnly) {
       super(parent, new LabelProvider());
       LinkedList<Element> topLevelElements = new LinkedList<Element>();
       LinkedList<Element> filterElements = new LinkedList<Element>();
@@ -72,7 +72,7 @@ public class MessageElementSelectionDialog extends ElementListSelectionDialog {
    }
 
    @SuppressWarnings({ "rawtypes", "unchecked" })
-   private static Message<?, ?, ?> getMessage(String msg) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+   private static Message getMessage(String msg) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
       ServiceTracker tracker =
          new ServiceTracker(FrameworkUtil.getBundle(MessageElementSelectionDialog.class).getBundleContext(), MessageDefinitionProvider.class.getName(),
             null);

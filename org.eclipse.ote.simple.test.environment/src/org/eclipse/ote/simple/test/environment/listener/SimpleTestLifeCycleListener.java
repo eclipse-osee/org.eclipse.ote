@@ -15,6 +15,7 @@ package org.eclipse.ote.simple.test.environment.listener;
 
 import java.util.Date;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.OteLevel;
@@ -28,6 +29,7 @@ import org.eclipse.osee.ote.core.framework.event.IEventData;
 import org.eclipse.osee.ote.core.framework.outfile.xml.SystemInfo;
 import org.eclipse.osee.ote.core.framework.outfile.xml.TestPointResults;
 import org.eclipse.osee.ote.core.framework.outfile.xml.TimeSummary;
+import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 import org.eclipse.ote.simple.test.environment.SimpleTestEnvironment;
 
 /**
@@ -119,7 +121,7 @@ public final class SimpleTestLifeCycleListener implements ITestLifecycleListener
    @Override
    public IMethodResult preInstantiation(IEventData eventData, TestEnvironment env) {
       env.onScriptSetup();
-      ((SimpleTestEnvironment) env).notifyPreInstantiationListeners();
+      ((MessageSystemTestEnvironment) env).notifyPreInstantiationListeners();
       return new MethodResultImpl(ReturnCode.OK);
    }
 

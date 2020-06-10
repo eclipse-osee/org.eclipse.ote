@@ -52,7 +52,7 @@ public class LongIntegerElement extends NumericElement<Long> {
    }
 
    @Override
-   public LongIntegerElement switchMessages(Collection<? extends Message<?,?,?>> messages) {
+   public LongIntegerElement switchMessages(Collection<? extends Message> messages) {
       return (LongIntegerElement) super.switchMessages(messages);
    }
 

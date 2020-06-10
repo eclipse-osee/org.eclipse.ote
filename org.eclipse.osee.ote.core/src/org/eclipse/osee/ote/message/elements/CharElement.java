@@ -56,7 +56,7 @@ public class CharElement extends DiscreteElement<Character> {
 	}
 	
 	@Override
-	public CharElement switchMessages(Collection<? extends Message<?,?,?>> messages) {
+	public CharElement switchMessages(Collection<? extends Message> messages) {
 		return (CharElement) super.switchMessages(messages);
 	}
 

@@ -93,7 +93,7 @@ public class WatchedElementNode extends ElementNode {
 
    public void setResolved(boolean isResolved) {
       if (isResolved) {
-         Message<?, ?, ?> message = getSubscription().getMessage();
+        Message message = getSubscription().getMessage();
          element = message.getElement(getElementPath().getElementPath(), getSubscription().getMemType());
          setEnabled(true);
          setDisabledReason("");

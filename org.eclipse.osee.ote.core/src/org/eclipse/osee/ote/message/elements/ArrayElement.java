@@ -88,7 +88,7 @@ public class ArrayElement extends Element {
    }
    
    @Override
-   public ArrayElement switchMessages(Collection<? extends Message<?,?,?>> messages) {
+   public ArrayElement switchMessages(Collection<? extends Message> messages) {
       return (ArrayElement) super.switchMessages(messages);
    }
 

@@ -21,9 +21,8 @@ import java.io.ObjectOutputStream;
 
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
-import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAccessor;
 
-public class OteByteMessage extends Message<ITestEnvironmentMessageSystemAccessor, MessageData, OteByteMessage>{
+public class OteByteMessage extends Message{
 
    protected final OteByteMessageData data;
    

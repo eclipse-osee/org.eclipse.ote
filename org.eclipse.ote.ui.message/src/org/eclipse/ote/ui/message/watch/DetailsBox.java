@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -189,7 +190,7 @@ public class DetailsBox implements IRegistryEventListener {
                hexDumpTxt.setText(node.getName() + " not found in library");
                return null;
             }
-            final Message<?, ?, ?> msg = msgNode.getSubscription().getMessage();
+            final Message msg = msgNode.getSubscription().getMessage();
             if (msg.isDestroyed()) {
                return null;
             }
@@ -266,7 +267,7 @@ public class DetailsBox implements IRegistryEventListener {
          @Override
          public Object messageNode(final MessageNode node) {
             WatchedMessageNode msgNode = (WatchedMessageNode) node;
-            final Message<?, ?, ?> msg = msgNode.getSubscription().getMessage();
+            final Message msg = msgNode.getSubscription().getMessage();
             if (msg != null && !msg.isDestroyed()) {
                printByteDump(msg);
                hexDumpTxt.setStyleRange(null);
@@ -330,7 +331,7 @@ public class DetailsBox implements IRegistryEventListener {
    /**
     * writes message data to a buffer in hex format
     */
-   private int printByteDump(Message<?, ?, ?> msg) {
+   private int printByteDump(Message msg) {
       strBuilder.setLength(0);
       final byte[] data = msg.getData();
       int columnCount = 0;

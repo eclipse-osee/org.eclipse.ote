@@ -14,7 +14,6 @@
 package org.eclipse.osee.ote.message.event;
 
 import org.eclipse.osee.ote.message.Message;
-import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 import org.eclipse.osee.ote.message.elements.ArrayElement;
 import org.eclipse.osee.ote.message.elements.EnumeratedElement;
 import org.eclipse.osee.ote.message.elements.IEnumValue;
@@ -25,7 +24,7 @@ import org.eclipse.osee.ote.message.elements.IntegerElement;
  * 
  *
  */
-public class OteEventMessage extends Message<MessageSystemTestEnvironment, OteEventMessageData, OteEventMessage>{
+public class OteEventMessage extends Message{
 
    private int currentOffset = 0;
    
@@ -47,7 +46,7 @@ public class OteEventMessage extends Message<MessageSystemTestEnvironment, OteEv
    }
 
    public OteEventMessageHeader getHeader(){
-	   return getDefaultMessageData().getMsgHeader();
+	   return (OteEventMessageHeader) getDefaultMessageData().getMsgHeader();
    }
    
    protected <T extends Enum<T> & IEnumValue<T>> EnumeratedElement<T> createEnumeratedElement(String name, int size, Class<T> clazz) {

@@ -14,11 +14,11 @@
 package org.eclipse.ote.simple.io.manager;
 
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
+import org.eclipse.osee.ote.message.Message;
+import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.ote.message.manager.AbstractMessageManager;
 import org.eclipse.ote.message.manager.DataTypeProvider;
 import org.eclipse.ote.message.manager.NamespaceMapper;
-import org.eclipse.ote.simple.io.SimpleMessageData;
-import org.eclipse.ote.simple.io.SimpleMessageType;
 
 /**
  * Mostly needed for binding some services for use in the super and specifying the concrete types for the generic
@@ -26,7 +26,7 @@ import org.eclipse.ote.simple.io.SimpleMessageType;
  * 
  * @author Michael P. Masterson
  */
-public class SimpleMessageManager extends AbstractMessageManager<SimpleMessageData, SimpleMessageType> {
+public class SimpleMessageManager extends AbstractMessageManager<MessageData, Message> {
    
    @Override
    public void bindEnv(TestEnvironmentInterface env) {
@@ -41,6 +41,14 @@ public class SimpleMessageManager extends AbstractMessageManager<SimpleMessageDa
    @Override
    public void addDataTypeProvider(DataTypeProvider provider) {
       super.addDataTypeProvider(provider);
+   }
+   
+   /* (non-Javadoc)
+    * @see org.eclipse.ote.message.manager.AbstractMessageManager#removeDataTypeProvider(org.eclipse.ote.message.manager.DataTypeProvider)
+    */
+   @Override
+   public void removeDataTypeProvider(DataTypeProvider provider) {
+      super.removeDataTypeProvider(provider);
    }
    
    public void start() {

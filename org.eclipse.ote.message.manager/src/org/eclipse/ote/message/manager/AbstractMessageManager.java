@@ -36,7 +36,6 @@ import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMessageManager;
 import org.eclipse.osee.ote.message.interfaces.IMessageRequestor;
-import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAccessor;
 import org.eclipse.osee.ote.message.interfaces.MessageDataLookup;
 import org.eclipse.osee.ote.message.interfaces.Namespace;
 import org.eclipse.osee.ote.message.io.IOWriter;
@@ -68,7 +67,7 @@ import org.eclipse.osee.ote.properties.OtePropertiesCore;
  * @param <D> 
  * @param <M> 
  */
-public abstract class AbstractMessageManager<D extends MessageData, M extends Message<? extends ITestEnvironmentMessageSystemAccessor, D, M>> implements IMessageManager<D, M>, OTETopicLookup {
+public abstract class AbstractMessageManager<D extends MessageData, M extends Message> implements IMessageManager<M>, OTETopicLookup {
 
    private DomainId domainId;
    private DomainParticipant participant;
@@ -80,11 +79,11 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
    private Publisher uutPublisher;
    private Subscriber subscriber;
    
-   private final  List<IMessageCreationListener> preCreation = new ArrayList<IMessageCreationListener>();
-   private final  List<IMessageCreationListener> postCreation = new ArrayList<IMessageCreationListener>();
-   private final  List<IMessageCreationListener> instanceRequestListeners = new ArrayList<IMessageCreationListener>();
-   private final  HashMap<M, HashSet<IMessageRequestor<D,M>>> requestorReferenceMap =
-         new HashMap<M, HashSet<IMessageRequestor<D,M>>>(200);
+   private final  List<IMessageCreationListener<M>> preCreation = new ArrayList<IMessageCreationListener<M>>();
+   private final  List<IMessageCreationListener<M>> postCreation = new ArrayList<IMessageCreationListener<M>>();
+   private final  List<IMessageCreationListener<M>> instanceRequestListeners = new ArrayList<IMessageCreationListener<M>>();
+   private final  HashMap<M, HashSet<IMessageRequestor<M>>> requestorReferenceMap =
+         new HashMap<M, HashSet<IMessageRequestor<M>>>(200);
    private volatile boolean initialized = false;
    protected volatile boolean destroyed = false;
 
@@ -186,19 +185,19 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
    }
 
    @Override
-   public void addPostCreateMessageListener(IMessageCreationListener listener) {
+   public void addPostCreateMessageListener(IMessageCreationListener<M> listener) {
       checkState();
       postCreation.add(listener);
    }
 
    @Override
-   public void addPreCreateMessageListener(IMessageCreationListener listener) {
+   public void addPreCreateMessageListener(IMessageCreationListener<M> listener) {
       checkState();
       preCreation.add(listener);
    }
 
    @Override
-   public void addInstanceRequestListener(IMessageCreationListener listener) {
+   public void addInstanceRequestListener(IMessageCreationListener<M> listener) {
       checkState();
       instanceRequestListeners.add(listener);
    }
@@ -208,7 +207,7 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
     * be done from a listener
     */
    @Override
-   public <CLASSTYPE extends M> CLASSTYPE createAndSetUpMessage(Class<CLASSTYPE> messageClass, IMessageRequestor<D,M> requestor, boolean writer) throws TestException {
+   public <CLASSTYPE extends M> CLASSTYPE createAndSetUpMessage(Class<CLASSTYPE> messageClass, IMessageRequestor<M> requestor, boolean writer) throws TestException {
       checkState();
       notifyPreCreateMessage(messageClass, requestor, writer);
 
@@ -346,7 +345,7 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
       return messageCollection.getAllWriters(type);
    }
 
-   public synchronized <CLASSTYPE extends M> CLASSTYPE getMessageReader(IMessageRequestor<D,M> requestor, Class<CLASSTYPE> type) {
+   public synchronized <CLASSTYPE extends M> CLASSTYPE getMessageReader(IMessageRequestor<M> requestor, Class<CLASSTYPE> type) {
       checkState();
       CLASSTYPE classtype = type.cast(messageCollection.get(type, false));
       if (classtype == null) {
@@ -364,25 +363,25 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
 
       }
       addRequestorReference(requestor, classtype);
-      for (IMessageCreationListener listener : instanceRequestListeners) {
+      for (IMessageCreationListener<M> listener : instanceRequestListeners) {
          listener.onInstanceRequest(type, classtype, requestor, false);
       }
       return classtype;
    }
 
-   private boolean addRequestorReference(IMessageRequestor<D,M> requestor, M msg) {
-      HashSet<IMessageRequestor<D,M>> list = requestorReferenceMap.get(msg);
+   private boolean addRequestorReference(IMessageRequestor<M> requestor, M msg) {
+      HashSet<IMessageRequestor<M>> list = requestorReferenceMap.get(msg);
       if (list == null) {
-         list = new HashSet<IMessageRequestor<D,M>>(24);
+         list = new HashSet<IMessageRequestor<M>>(24);
          requestorReferenceMap.put(msg, list);
       }
       return list.add(requestor);
    }
 
    @Override
-   public synchronized boolean removeRequestorReference(IMessageRequestor<D,M> requestor, M msg) {
+   public synchronized boolean removeRequestorReference(IMessageRequestor<M> requestor, M msg) {
       checkState();
-      HashSet<IMessageRequestor<D,M>> list = requestorReferenceMap.get(msg);
+      HashSet<IMessageRequestor<M>> list = requestorReferenceMap.get(msg);
       if (list != null) {
          boolean result = list.remove(requestor);
          if (list.isEmpty()) {
@@ -409,7 +408,7 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
       }
    }
 
-   public synchronized <CLASSTYPE extends M> CLASSTYPE getMessageWriter(IMessageRequestor<D,M> requestor, Class<CLASSTYPE> type) throws TestException {
+   public synchronized <CLASSTYPE extends M> CLASSTYPE getMessageWriter(IMessageRequestor<M> requestor, Class<CLASSTYPE> type) throws TestException {
       checkState();
       CLASSTYPE classtype = type.cast(messageCollection.get(type, true));
       if (classtype == null) {
@@ -426,7 +425,7 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
          }
       }
       addRequestorReference(requestor, classtype);
-      for (IMessageCreationListener listener : instanceRequestListeners) {
+      for (IMessageCreationListener<M> listener : instanceRequestListeners) {
          listener.onInstanceRequest(type, classtype, requestor, true);
       }
       return classtype;
@@ -458,16 +457,16 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
       }
    }
 
-   private <CLASSTYPE extends M> void notifyPostCreateMessage(Class<CLASSTYPE> messageClass, IMessageRequestor<D,M> requestor, boolean writer, CLASSTYPE message, Namespace namespace) {
+   private <CLASSTYPE extends M> void notifyPostCreateMessage(Class<CLASSTYPE> messageClass, IMessageRequestor<M> requestor, boolean writer, CLASSTYPE message, Namespace namespace) {
 
-      for (IMessageCreationListener listener : postCreation) {
+      for (IMessageCreationListener<M> listener : postCreation) {
          listener.onPostCreate(messageClass, requestor, writer, message, namespace);
       }
    }
 
-   private <CLASSTYPE extends M> void notifyPreCreateMessage(Class<CLASSTYPE> messageClass, IMessageRequestor<D,M> requestor, boolean writer) {
+   private <CLASSTYPE extends M> void notifyPreCreateMessage(Class<CLASSTYPE> messageClass, IMessageRequestor<M> requestor, boolean writer) {
 
-      for (IMessageCreationListener listener : preCreation) {
+      for (IMessageCreationListener<M> listener : preCreation) {
          listener.onPreCreate(messageClass, requestor, writer);
       }
    }
@@ -493,12 +492,12 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
    }
 
    @Override
-   public IMessageRequestor<D,M> createMessageRequestor(String name) {
+   public IMessageRequestor<M> createMessageRequestor(String name) {
       checkState();
       return new MessageRequestor<>(name, this);
    }
 
-   public synchronized Collection<IMessageRequestor<D,M>> getMessageRequestors(M msg) {
+   public synchronized Collection<IMessageRequestor<M>> getMessageRequestors(M msg) {
       checkState();
       return requestorReferenceMap.get(msg);
    }

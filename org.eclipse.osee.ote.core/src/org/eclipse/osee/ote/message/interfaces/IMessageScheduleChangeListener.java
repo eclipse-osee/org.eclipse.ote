@@ -20,7 +20,7 @@ import org.eclipse.osee.ote.message.Message;
  */
 public interface IMessageScheduleChangeListener {
 
-   public void onRateChanged(Message<?, ?, ?> message, double oldRate, double newRate);
+   public void onRateChanged(Message message, double oldRate, double newRate);
 
    public void isScheduledChanged(boolean isScheduled);
 

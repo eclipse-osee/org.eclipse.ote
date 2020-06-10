@@ -16,6 +16,7 @@ package org.eclipse.ote.simple.test.environment;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.core.framework.testrun.OteTestFactory;
+import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 
 /**
  * @author Andy Jury
@@ -28,7 +29,7 @@ public class SimpleTestFactory extends OteTestFactory {
 
    @Override
    protected Class<? extends TestEnvironment> getTestEnvironmentClass() {
-      return SimpleTestEnvironment.class;
+      return MessageSystemTestEnvironment.class;
    }
 
 }

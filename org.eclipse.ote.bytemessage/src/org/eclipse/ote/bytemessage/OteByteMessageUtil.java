@@ -149,7 +149,7 @@ public class OteByteMessageUtil {
       }
       Hashtable<String, Object> props = new Hashtable<String, Object>();
       props.put("event.topics", signal.getHeader().TOPIC.getValue());
-      return context.registerService(EventHandler.class, new EventHandlerForOteByteMessage<T>(signal, eventHandler), props);
+      return context.registerService(EventHandler.class, new EventHandlerForOteByteMessage(signal, eventHandler), props);
    }
    
    private static class EventHandlerForOteByteMessage<T extends OteByteMessage> implements EventHandler {

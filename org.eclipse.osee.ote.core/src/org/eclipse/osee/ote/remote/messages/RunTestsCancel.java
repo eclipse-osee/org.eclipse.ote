@@ -18,7 +18,7 @@ public class RunTestsCancel extends OteEventMessage {
 		GUID = new StringElement(this, "GUID", getDefaultMessageData(), 0, 0, OteEventMessage.sizeBytesBits(256));
 		CANCEL_ALL = new BooleanElement(this, "CANCEL_ALL", getDefaultMessageData(), GUID.getByteOffset()+GUID.getBitLength()/8, 0, 7);
 		
-		getDefaultMessageData().getMsgHeader().RESPONSE_TOPIC.setValue(BooleanResponse.TOPIC);
+		getHeader().RESPONSE_TOPIC.setValue(BooleanResponse.TOPIC);
 	}
 
    public RunTestsCancel(byte[] bytes) {

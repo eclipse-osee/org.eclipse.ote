@@ -19,7 +19,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.message.Message;
-import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.listener.DDSDomainParticipantListener;
 import org.eclipse.osee.ote.message.listener.IMessageCreationListener;
@@ -28,7 +27,7 @@ import org.eclipse.osee.ote.messaging.dds.entity.Publisher;
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface IMessageManager<T extends MessageData, U extends Message<? extends ITestEnvironmentMessageSystemAccessor, T, U>> {
+public interface IMessageManager<U extends Message> {
    void destroy();
 
    <CLASSTYPE extends U> CLASSTYPE createMessage(Class<CLASSTYPE> messageClass) throws TestException;
@@ -51,27 +50,27 @@ public interface IMessageManager<T extends MessageData, U extends Message<? exte
 
    boolean isPhysicalTypeAvailable(DataType physicalType);
 
-   IMessageRequestor<T, U> createMessageRequestor(String name);
+   IMessageRequestor<U> createMessageRequestor(String name);
 
    Class<? extends U> getMessageClass(String msgClass) throws ClassCastException, ClassNotFoundException;
 
    DDSDomainParticipantListener getDDSListener(); 
    
-   void addPostCreateMessageListener(IMessageCreationListener listener);
+   void addPostCreateMessageListener(IMessageCreationListener<U> listener);
 
-   void addPreCreateMessageListener(IMessageCreationListener listener);
+   void addPreCreateMessageListener(IMessageCreationListener<U> listener);
 
-   void addInstanceRequestListener(IMessageCreationListener listener);
+   void addInstanceRequestListener(IMessageCreationListener<U> listener);
 
-   <CLASSTYPE extends U> CLASSTYPE createAndSetUpMessage(Class<CLASSTYPE> messageClass, IMessageRequestor<T, U> requestor,
+   <CLASSTYPE extends U> CLASSTYPE createAndSetUpMessage(Class<CLASSTYPE> messageClass, IMessageRequestor<U> requestor,
          boolean writer) throws TestException;
 
    Set<DataType> getAvailableDataTypes();
 
-   boolean removeRequestorReference(IMessageRequestor<T, U> requestor, U msg);
+   boolean removeRequestorReference(IMessageRequestor<U> requestor, U msg);
 
-   <CLASSTYPE extends U> CLASSTYPE getMessageWriter(IMessageRequestor<T, U> messageRequestor, Class<CLASSTYPE> type);
-   <CLASSTYPE extends U> CLASSTYPE getMessageReader(IMessageRequestor<T, U> messageRequestor, Class<CLASSTYPE> type);
+   <CLASSTYPE extends U> CLASSTYPE getMessageWriter(IMessageRequestor<U> messageRequestor, Class<CLASSTYPE> type);
+   <CLASSTYPE extends U> CLASSTYPE getMessageReader(IMessageRequestor<U> messageRequestor, Class<CLASSTYPE> type);
 
    Publisher getPublisher();
 

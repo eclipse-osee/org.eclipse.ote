@@ -29,7 +29,7 @@ import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
 public class SubscriptionDetails implements ISubscriptionListener, IOSEEMessageListener {
    private final CopyOnWriteArrayList<ColumnElement> columnElements = new CopyOnWriteArrayList<ColumnElement>();
    private final IMessageSubscription subscription;
-   private Message<?, ?, ?> message;
+   private Message message;
 
    private final IUpdateListener listener;
 

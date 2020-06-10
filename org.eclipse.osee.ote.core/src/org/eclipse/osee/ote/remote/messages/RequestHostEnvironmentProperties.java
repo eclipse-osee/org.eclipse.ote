@@ -9,7 +9,7 @@ public class RequestHostEnvironmentProperties extends OteEventMessage {
 	public RequestHostEnvironmentProperties() {
 		super("RequestHostEnvironmentProperties", TOPIC, 1);
 		
-		getDefaultMessageData().getMsgHeader().RESPONSE_TOPIC.setValue(SerializedEnhancedProperties.EVENT);
+		getHeader().RESPONSE_TOPIC.setValue(SerializedEnhancedProperties.EVENT);
 	}
 	
 }

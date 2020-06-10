@@ -15,7 +15,6 @@ package org.eclipse.osee.ote.message.interfaces;
 
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.message.Message;
-import org.eclipse.osee.ote.message.data.MessageData;
 
 /**
  * @author Ken J. Aguilar
@@ -23,7 +22,7 @@ import org.eclipse.osee.ote.message.data.MessageData;
  * @param <T> The specific MessageData type
  * @param <U> The specific Message type
  */
-public interface IMessageRequestor<T extends MessageData, U extends Message<? extends ITestEnvironmentMessageSystemAccessor, T, U>> {
+public interface IMessageRequestor<U extends Message> {
    <CLASSTYPE extends U> CLASSTYPE getMessageReader(Class<CLASSTYPE> type) throws TestException;
    <CLASSTYPE extends U> CLASSTYPE getMessageWriter(Class<CLASSTYPE> type) throws TestException;
    U getMessageWriter(String msgClass) throws TestException;

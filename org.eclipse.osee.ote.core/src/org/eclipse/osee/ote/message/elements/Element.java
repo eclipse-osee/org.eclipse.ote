@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.MessageSystemException;
@@ -202,7 +203,7 @@ public abstract class Element implements ITimeout {
       return this.getNonMappingElement();
    }
    
-   public Element switchMessages(Collection<? extends Message<?,?,?>> messages) {
+   public Element switchMessages(Collection<? extends Message> messages) {
       for (Message currentMessage : messages) {
          //         System.out.println("SwitchMessages" + currentMessage.getMessageName());
          Element el = currentMessage.getElement(this.getElementPath());
@@ -258,7 +259,7 @@ public abstract class Element implements ITimeout {
 
    protected void throwNoMappingElementException() {
       throw new MessageSystemException(
-         "The element " + msg.get().getName() + "." + elementName + " does not exist for the message's current MemType="+messageData.getType().name()+"!! " + "\nIt shouldn't be used for this environment type!!",
+         "The element " + msg.get().getName() + "." + elementName + " does not exist for the message's current MemType="+msg.get().getMemType()+"!! " + "\nIt shouldn't be used for this environment type!!",
          Level.SEVERE);
    }
 

@@ -21,17 +21,12 @@ import org.eclipse.osee.ote.message.enums.DataType;
  */
 public enum SimpleDataType implements DataType {
    SIMPLE;
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.enums.DataType#getToolingDepth()
-    */
+
    @Override
    public int getToolingDepth() {
       return 1;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.enums.DataType#getToolingBufferSize()
-    */
    @Override
    public int getToolingBufferSize() {
       return 4096;

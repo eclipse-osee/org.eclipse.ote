@@ -38,8 +38,11 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.ote.message.interfaces,
  org.eclipse.osee.ote.message.timer,
  org.eclipse.osee.ote.server,
+ org.eclipse.ote.io,
  org.eclipse.ote.message.manager,
  org.eclipse.ote.services.core,
+ org.eclipse.ote.simple.io,
  org.eclipse.ote.simple.io.manager
 Export-Package: org.eclipse.ote.simple.test.environment,
- org.eclipse.ote.simple.test.environment.listener
+ org.eclipse.ote.simple.test.environment.listener,
+ org.eclipse.ote.simple.test.environment.mux
