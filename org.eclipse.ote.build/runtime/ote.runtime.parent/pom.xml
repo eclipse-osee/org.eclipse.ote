@@ -13,7 +13,6 @@
    <properties>
       <platform-version-name>neon</platform-version-name>
       <eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
-      <local-mirrors-path>${mirrors-server}/osee/sites/MIRRORS</local-mirrors-path>
       <orbit-version>R20181128170323</orbit-version>
       <mylyn_version>3.16.0</mylyn_version>
       <egit-version>4.4</egit-version>
@@ -55,41 +54,41 @@
 				<layout>p2</layout>
 				<url>${orbit-site}</url>
 			</repository>	
-			<repository>
-				<id>eclipse-ip</id>
-				<layout>p2</layout>
-				<url>${eclipse-ip-site}</url>
-			</repository>
 		
             <repository>
                <id>polarion</id>
                <layout>p2</layout>
                <url>http://community.polarion.com/projects/subversive/download/eclipse/6.0/neon-site/</url>
             </repository>
-            <repository>
+ <!--             <repository>
                <id>itemis</id>
                <layout>p2</layout>
-               <url>${local-mirrors-path}/itemis/${xtext-version}/</url>
-            </repository>
+               <url>https://download.itemis.com/updates/</url>
+                <url>${local-mirrors-path}/itemis/${xtext-version}/</url>  
+            </repository> 
             <repository>
                <id>checkstyle</id>
                <layout>p2</layout>
-               <url>${local-mirrors-path}/checkstyle/release/</url>
-            </repository>
+               <url>http://checkstyle.org/eclipse-cs/update</url>
+               <url>${local-mirrors-path}/checkstyle/release/</url>   
+            </repository>  -->
             <repository>
                <id>emma</id>
                <layout>p2</layout>
-               <url>${local-mirrors-path}/emma/2.3.3/</url>
+<!--               <url>${local-mirrors-path}/emma/2.3.3/</url> -->
+               <url>http://update.eclemma.org</url>
             </repository>
             <repository>
                <id>eclipse-mirror</id>
                <layout>p2</layout>
-               <url>${local-mirrors-path}/eclipse/${platform-version-name}</url>
+<!--                 <url>${local-mirrors-path}/eclipse/${platform-version-name}</url> -->
+               <url>http://download.eclipse.org/releases/neon/</url>
             </repository>
             <repository>
                <id>wb-mirror</id>
                <layout>p2</layout>
-               <url>${local-mirrors-path}/wb/1.1.0/</url>
+            <!--     <url>${local-mirrors-path}/wb/1.1.0/</url> -->
+               <url>http://archive.eclipse.org/windowbuilder/WB/release/R201106211200/3.4/</url>
             </repository>
             <repository> 
             	<id>egit</id>

@@ -17,12 +17,12 @@
    </license>
 
    <includes
-         id="com.mountainminds.eclemma.feature"
+         id="org.eclipse.eclemma.feature"
          version="0.0.0"/>
 
-   <includes
+<!--   <includes
          id="de.itemis.xtext.antlr.feature"
-         version="0.0.0"/>
+         version="0.0.0"/> 
 
    <includes
          id="de.itemis.xtext.antlr.sdk"
@@ -30,7 +30,7 @@
 
    <includes
          id="de.itemis.xtext.antlr.source.feature"
-         version="0.0.0"/>
+         version="0.0.0"/> -->
 
    <includes
          id="org.eclipse.aether.maven.feature"
@@ -578,14 +578,6 @@
 
    <includes
          id="org.eclipse.osee.core.ui.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.define.feature.source"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.define.feature"
          version="0.0.0"/>
 
    <includes
