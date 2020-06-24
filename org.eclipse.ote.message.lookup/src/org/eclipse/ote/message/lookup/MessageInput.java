@@ -15,6 +15,10 @@ package org.eclipse.ote.message.lookup;
 
 import java.util.List;
 
+/**
+ * 
+ * @author David N. Phillips
+ */
 public interface MessageInput {
 
    String getLabel();

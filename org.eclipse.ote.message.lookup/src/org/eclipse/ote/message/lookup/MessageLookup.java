@@ -15,7 +15,10 @@ package org.eclipse.ote.message.lookup;
 
 import java.util.List;
 
-
+/**
+ * 
+ * @author David N. Phillips
+ */
 public interface MessageLookup {
 	List<MessageLookupResult> lookup(String searchString);
 	List<MessageLookupResult> lookup(String searchString, String... messageType);

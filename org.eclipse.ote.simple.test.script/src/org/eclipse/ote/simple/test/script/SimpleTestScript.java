@@ -19,6 +19,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor
 import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
 import org.eclipse.osee.ote.core.environment.jini.ITestEnvironmentCommandCallback;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
+import org.eclipse.ote.simple.io.SimpleDataType;
 import org.eclipse.ote.simple.io.message.HELLO_WORLD;
 
 /**
@@ -47,7 +48,7 @@ public class SimpleTestScript extends SimpleTestScriptType {
       public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
          // This test case will fail when running in an environment with Mux
          // unless you uncomment the following line to force the message mem type
-         // writer.setMemSource(SimpleDataType.SIMPLE);
+         writer.setMemSource(SimpleDataType.SIMPLE);
          prompt("In the LocalSetupTestCase");
          writer.PRINT_ME.set(this, "TEST1");
          testWait(1000);

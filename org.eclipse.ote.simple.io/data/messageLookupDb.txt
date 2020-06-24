@@ -1,0 +1,2 @@
+org.eclipse.ote.simple.io.message.HELLO_WORLD,HELLO_WORLD,SIMPLE,1,64,0,4.0,true;PRINT_ME,ONLY_IN_SIMPLE
+org.eclipse.ote.simple.io.message.SIMPLE_MUX_MSG,SIMPLE_MUX_MSG,MUX,1,16,0,4.0,true;PRINT_ME,MUX_SPECIFIC_ELEMENT

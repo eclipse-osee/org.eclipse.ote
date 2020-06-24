@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ote.message;
 
-
 /**
  * @author Andrew M. Finkbeiner
  */
@@ -22,6 +21,7 @@ public interface MessageDefinitionProvider {
    /**
     * This function returns an ID that is intended to be unique to the running system. The system should not allow more
     * than one active instance of a service with the same singletonId.
+    * @return System unique ID for this provider
     */
    String singletonId();
 

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2020 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,12 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
+
 package org.eclipse.ote.message.lookup;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * 
+ * @author David N. Phillips
+ */
 public class MessageLookupResult {
 
    private final String messageName;
@@ -28,8 +33,8 @@ public class MessageLookupResult {
    private String rate;
    private String scheduled;
    private List<String> elements;
-   private List<String> publishers;
-   private List<String> subscribers;
+   private List<String> sources;
+   private List<String> destinations;
 
    private boolean sorted;
 
@@ -47,8 +52,8 @@ public class MessageLookupResult {
       this.rate = rate;
       this.scheduled = scheduled;
       elements = new ArrayList<String>();
-      publishers = new ArrayList<String>();
-      subscribers = new ArrayList<String>();
+      sources = new ArrayList<String>();
+      destinations = new ArrayList<String>();
 
       sorted = true;
    }
@@ -102,35 +107,35 @@ public class MessageLookupResult {
       return elements;
    }
 
-   public void addPublisher(String publisher) {
-      if (publisher != null && !publisher.isEmpty() && !publishers.contains(publisher)) {
-         publishers.add(publisher);
+   public void addSource(String source) {
+      if (source != null && !source.isEmpty() && !sources.contains(source)) {
+         sources.add(source);
          sorted = false;
       }
    }
 
-   public List<String> getPublishers() {
+   public List<String> getSources() {
       sort();
-      return publishers;
+      return sources;
    }
 
-   public void addSubscriber(String subscriber) {
-      if (subscriber != null && !subscriber.isEmpty() && !subscribers.contains(subscriber)) {
-         subscribers.add(subscriber);
+   public void addDestination(String destination) {
+      if (destination != null && !destination.isEmpty() && !destinations.contains(destination)) {
+         destinations.add(destination);
          sorted = false;
       }
    }
 
-   public List<String> getSubscribers() {
+   public List<String> getDestinations() {
       sort();
-      return subscribers;
+      return destinations;
    }
 
    private void sort() {
       if (!sorted) {
          Collections.sort(elements);
-         Collections.sort(publishers);
-         Collections.sort(subscribers);
+         Collections.sort(sources);
+         Collections.sort(destinations);
          sorted = true;
       }
    }

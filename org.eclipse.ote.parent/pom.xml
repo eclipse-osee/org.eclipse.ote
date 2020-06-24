@@ -28,6 +28,7 @@
 		<module>../org.eclipse.ote.statemachine.test</module>
 	
 	   <module>../org.eclipse.ote.message.lookup</module>
+	   <module>../org.eclipse.ote.message.lookup.test</module>
 	   <module>../org.eclipse.ote.client</module>
 	   <module>../org.eclipse.ote.client.ui</module>
 	   <module>../org.eclipse.ote.test.manager</module>

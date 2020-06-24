@@ -1,8 +1,23 @@
+/*********************************************************************
+ * Copyright (c) 2020 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+
 package org.eclipse.ote.ui.message.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,6 +47,10 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+/**
+ * 
+ * @author Michael P. Masterson
+ */
 public class MessageInfoComposite extends Composite {
    private static final int OFFSET = 10;
    private static final int HALF_OFFSET = 5;
@@ -159,16 +178,20 @@ public class MessageInfoComposite extends Composite {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (messageLookup != null && associationLookup != null) {
+            if (messageLookup != null) {
                MessageLookupResult result =  messageLookup.lookupClass(className);
-               associatedMsgs = associationLookup.lookupAssociatedMessages(className);
+               if(associationLookup != null) {
+                  associatedMsgs = associationLookup.lookupAssociatedMessages(className);
+               } else {
+                  associatedMsgs = Collections.emptyList();
+               }
                if (result != null) {
                   try {
                      labelMessage.setText(result.getClassName());
                      labelMessage.setBackground(TEXT_BACKGROUND_COLOR);
                      labelType.setText(result.getMessageType());
-                     labelPublishers.setText(toMessageCsv(result.getPublishers()));
-                     labelSubscribers.setText(toMessageCsv(result.getSubscribers()));
+                     labelPublishers.setText(toMessageCsv(result.getSources()));
+                     labelSubscribers.setText(toMessageCsv(result.getDestinations()));
                      labelAssociated.setText("");
                      labelByteSize.setText(Integer.toString(result.getByteSize()));
                      labelPhase.setText(result.getPhase());
@@ -247,28 +270,23 @@ public class MessageInfoComposite extends Composite {
    }
 
    private void test() {
-      labelMessage.setText("osee.test.core.message.pubsub.WEAP_IN");
+      labelMessage.setText("org.eclipse.ote.ui.message.search.ExampleMessage");
       if (labelMessage.getBackground().equals(TEXT_BACKGROUND_COLOR)) {
          labelMessage.setBackground(NOT_FOUND_COLOR);
       } else {
          labelMessage.setBackground(TEXT_BACKGROUND_COLOR);
       }
       labelType.setText("PUB_SUB");
-      labelPublishers.setText("IOP_P");
-      labelSubscribers.setText("INSTR, IOP_O, WPS_B, AND, MANY1, MANY2, MANY3, MANY4, MANY5, MANY6, MORE");
+      labelPublishers.setText("PUBLISHER_1");
+      labelSubscribers.setText("MANY1, MANY2, MANY3, MANY4, MANY5, MANY6, MORE");
       labelByteSize.setText("20");
       labelPhase.setText("0");
       labelRate.setText("50.0");
       labelScheduled.setText("false");
       associatedMsgs = new ArrayList<String>();
-      associatedMsgs.add("osee.test.core.message.aiu.WEAP_IN_AIL_AIU_WIRE");
-      associatedMsgs.add("osee.test.core.message.mux.CH5_23T06");
-      associatedMsgs.add("osee.test.core.message.mux.CH5_22T06");
-      associatedMsgs.add("osee.test.core.message.mux.CH5_25T06");
-      associatedMsgs.add("osee.test.core.message.mux.CH5_21T06");
-      associatedMsgs.add("osee.test.core.message.mux.CH5_26T06");
-      associatedMsgs.add("osee.test.core.message.mux.CH5_24T06");
-      associatedMsgs.add("osee.test.core.message.pats.WEAP_IN_PATS_WIRE");
+      associatedMsgs.add("org.eclipse.ote.ui.message.search.SOME_OTHER_MESSAGE");
+      associatedMsgs.add("org.eclipse.ote.ui.message.search.mux.SOME_MUX_MESSAGE");
+      associatedMsgs.add("org.eclipse.ote.ui.message.search.eth.SOME_ETHERNET_MESSAGE");
       updateAssociated();
       layout(true, true);
    }

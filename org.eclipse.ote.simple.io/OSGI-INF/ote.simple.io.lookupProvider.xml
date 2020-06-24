@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.eclipse.ote.simple.io.message.lookup.SimpleMessageLookupProvider">
+   <implementation class="org.eclipse.ote.simple.io.message.lookup.SimpleMessageLookupProvider"/>
+   <service>
+      <provide interface="org.eclipse.ote.message.lookup.MessageLookupProvider"/>
+      <provide interface="org.eclipse.ote.message.lookup.MessageAssociationLookup"/>
+   </service>
+</scr:component>

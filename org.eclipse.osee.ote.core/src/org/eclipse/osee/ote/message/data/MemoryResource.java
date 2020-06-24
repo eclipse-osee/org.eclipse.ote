@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ote.message.data;
 
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -87,6 +88,20 @@ public class MemoryResource {
    private final char getASCIICharFromOffset(int offset) {
       return (char) byteArray.get()[offset];
    }
+   
+   public final BigInteger getUnsigned64(int offset, int msb, int lsb) {
+      if(msb != 0 || lsb != 63 ) {
+         throw new IllegalArgumentException(String.format("Usnsigned 64 bit element must have (MSB,LSB) = (0, 63), actual (%d, %d)", msb, lsb));
+      }
+      byte[] bytes = new byte[9]; 
+      bytes[0] = 0; // forcing the value to be non-negative by setting the first byte to all zeroes
+      for(int i = 1 ; i < bytes.length ; i++) {
+         bytes[i] = getByte(offset+i-1, 0, 7);
+      }
+      BigInteger retVal = new BigInteger(bytes);
+      return retVal;
+      
+   }
 
    public final int getInt(int offset, int msb, int lsb) {
       offset += _offset;
@@ -106,6 +121,34 @@ public class MemoryResource {
       }
       return v >>> 7 - lsb % 8;
    }
+   
+   public final int getSignedInt(int offset, int msb, int lsb) {
+      offset += _offset;
+      final byte[] data = byteArray.get();
+      final int length = data.length;
+      final int beginByte = offset + msb / 8;
+      byte firstByteData = data[beginByte];
+      int firstBit = firstByteData >>> (7 - msb) & 0x01;
+      boolean isNeg = firstBit == 1;
+      int signedMask = 0x0;
+      if(isNeg) {
+         int fieldSize = lsb - msb;
+         signedMask = 0xFFFFFFFF >> fieldSize << fieldSize;
+      }
+      int endByte = offset + lsb / 8;
+      endByte = endByte < length ? endByte : length;
+      int v = firstByteData & 0xFF >>> msb % 8 & 0xFF;
+      if (endByte != beginByte) {
+         for (int i = beginByte + 1; i <= endByte - 1; i++) {
+            v <<= 8;
+            v |= data[i] & 0xFF;
+         }
+         v <<= 8;
+         v |= data[endByte] & 0xFF;
+      }
+      int retVal = v >>> 7 - lsb % 8;
+      return retVal | signedMask;
+   }
 
    public final short getSignedInt16(int offset, int msb, int lsb) {
       if (lsb - msb != 15) {
@@ -118,15 +161,16 @@ public class MemoryResource {
       int endByte = offset + lsb / 8;
       endByte = endByte < length ? endByte : length;
       int v = data[beginByte] & 0xFF >>> msb % 8 & 0xFF;
-            if (endByte != beginByte) {
-               for (int i = beginByte + 1; i <= endByte - 1; i++) {
-                  v <<= 8;
-                  v |= data[i] & 0xFF;
-               }
-               v <<= 8;
-               v |= data[endByte] & 0xFF;
-            }
-            return (short) (v >>> 7 - lsb % 8);
+            
+      if (endByte != beginByte) {
+         for (int i = beginByte + 1; i <= endByte - 1; i++) {
+            v <<= 8;
+            v |= data[i] & 0xFF;
+         }
+         v <<= 8;
+         v |= data[endByte] & 0xFF;
+      }
+      return (short) (v >>> 7 - lsb % 8);
    }
 
    public final int getSignedInt32(int offset, int msb, int lsb) {
@@ -140,15 +184,15 @@ public class MemoryResource {
       int endByte = offset + lsb / 8;
       endByte = endByte < length ? endByte : length;
       int v = data[beginByte] & 0xFF >>> msb % 8 & 0xFF;
-                  if (endByte != beginByte) {
-                     for (int i = beginByte + 1; i <= endByte - 1; i++) {
-                        v <<= 8;
-                        v |= data[i] & 0xFF;
-                     }
-                     v <<= 8;
-                     v |= data[endByte] & 0xFF;
-                  }
-                  return v >>> 7 - lsb % 8;
+      if (endByte != beginByte) {
+         for (int i = beginByte + 1; i <= endByte - 1; i++) {
+            v <<= 8;
+            v |= data[i] & 0xFF;
+         }
+         v <<= 8;
+         v |= data[endByte] & 0xFF;
+      }
+      return v >>> 7 - lsb % 8;
    }
 
    public final long getLong(int offset, int msb, int lsb) {
@@ -169,6 +213,38 @@ public class MemoryResource {
          v |= data[endByte] & 0xFF;
       }
       return v >>> 7 - lsb % 8;
+      } else {
+         throw new IllegalArgumentException("gettting long with bits not supported");
+      }
+   }
+   
+   public final long getSignedLong(int offset, int msb, int lsb) {
+      offset += _offset;
+      if (lsb - msb <= 64) {
+         final byte[] data = byteArray.get();
+         final int length = data.length;
+         final int beginByte = offset + msb / 8;
+         int endByte = offset + lsb / 8;
+         byte firstByteData = data[beginByte];
+         int firstBit = firstByteData >>> (7 - msb) & 0x01;
+         boolean isNeg = firstBit == 1;
+         int signedMask = 0x0;
+         if(isNeg) {
+            int fieldSize = lsb - msb;
+            signedMask = 0xFFFFFFFF >> fieldSize << fieldSize;
+         }
+         endByte = endByte < length ? endByte : length;
+         long v = data[beginByte] & 0xFF >>> msb % 8 & 0xFF;
+      if (endByte != beginByte) {
+         for (int i = beginByte + 1; i <= endByte - 1; i++) {
+            v <<= 8;
+            v |= data[i] & 0xFF;
+         }
+         v <<= 8;
+         v |= data[endByte] & 0xFF;
+      }
+      long retVal = v >>> 7 - lsb % 8;
+      return retVal | signedMask;
       } else {
          throw new IllegalArgumentException("gettting long with bits not supported");
       }
@@ -332,6 +408,11 @@ public class MemoryResource {
       int mask = ~maxValueInPosition;
       return mask;
    }
+   
+   public final void setBigInt(BigInteger v, int offset, int msb, int lsb) {
+      
+   }
+
 
    public final void setLong(long v, int offset, int msb, int lsb) {
       if (lsb - msb < 64) {

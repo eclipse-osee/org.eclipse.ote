@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.ote.message.manager.internal.MessageServiceImpl">
+   <implementation class="org.eclipse.ote.message.manager.internal.MessageServiceImpl"/>
+   <service>
+      <provide interface="org.eclipse.osee.ote.message.interfaces.IRemoteMessageService"/>
+   </service>
+   <reference bind="bindMessageManager" cardinality="1..1" interface="org.eclipse.osee.ote.message.interfaces.IMessageManager" name="IMessageManager" policy="static" unbind="unbindMessageManager"/>
+   <reference bind="bindOTESessionManager" cardinality="1..1" interface="org.eclipse.osee.ote.core.OTESessionManager" name="OTESessionManager" policy="static" unbind="unbindOTESessionManager"/>
+   <reference bind="bindTestEnvironment" cardinality="1..1" interface="org.eclipse.osee.ote.core.environment.TestEnvironmentInterface" name="TestEnvironmentInterface" policy="static" unbind="unbindTestEnvironment"/>
+</scr:component>

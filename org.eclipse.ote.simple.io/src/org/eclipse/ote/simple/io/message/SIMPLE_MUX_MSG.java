@@ -37,28 +37,42 @@ import org.eclipse.ote.io.mux.MuxReceiveTransmit;
  */
 public class SIMPLE_MUX_MSG extends MuxMessage {
 
+   private static final int SUBADDRESS = 4;
+   private static final MuxReceiveTransmit RECEIVE_TRANSMIT = MuxReceiveTransmit.TRANSMIT;
+   private static final int REMOTE_TERMINAL = 22;
+   private static final int CHANNEL = 1;
+   
    /**
     * The string to print or log when the message is sent
     * 
     *    <table border="1">
-    * <p><tr><td>UNIT_ABBR</td><td>null</td></tr>
+    * <p><tr><td>UNIT_ABBR</td><td>String</td></tr>
     * <p><tr><td>START_BYTE</td><td>0</td></tr>
     * <p><tr><td>MSB</td><td>0</td></tr>
-    * <p><tr><td>LSB</td><td>511</td></tr>
+    * <p><tr><td>LSB</td><td>39</td></tr>
     * </table>
     */
    public StringElement PRINT_ME;
+   
+   /**
+    * Only accessible in mux type.  
+    * <table border="1">
+    * <p><tr><td>UNIT_ABBR</td><td>Volts</td></tr>
+    * <p><tr><td>START_BYTE</td><td>6</td></tr>
+    * <p><tr><td>MSB</td><td>0</td></tr>
+    * <p><tr><td>LSB</td><td>10</td></tr>
+    */
    public RealElement MUX_SPECIFIC_ELEMENT;
 
 
    public SIMPLE_MUX_MSG() {
-      super("SIMPLE_MUX_MSG", 60, 0, true, 0, 4.0);
-      MuxData messageData = new MuxData(this, this.getClass().getName(), getName(), getDefaultByteSize(), 1, 22, MuxReceiveTransmit.TRANSMIT, 4, GenericOteIoType.MUX);
+      super("SIMPLE_MUX_MSG", 16, 0, true, 0, 4.0);
+      MuxData messageData = new MuxData(this, this.getClass().getName(), getName(), getDefaultByteSize(), CHANNEL, REMOTE_TERMINAL, RECEIVE_TRANSMIT, SUBADDRESS, GenericOteIoType.MUX);
       setDefaultMessageData(messageData);
       messageData.setScheduled(true);
-      int bitSize = 32 * 8 - 1;
+      int bitSize = 5 * 8 - 1;
       PRINT_ME = new StringElement(this, "PRINT_ME", messageData, 0, 0, bitSize);
-      MUX_SPECIFIC_ELEMENT = new FixedPointElement(this, "MUX_SPECIFIC_ELEMENT", messageData, 1.0, false, 33, 0, 10);
+      MUX_SPECIFIC_ELEMENT = new FixedPointElement(this, "MUX_SPECIFIC_ELEMENT", messageData, 1.0, false, 6, 0, 10);
       addElements(PRINT_ME, MUX_SPECIFIC_ELEMENT);
 
 	  //set up message stuff

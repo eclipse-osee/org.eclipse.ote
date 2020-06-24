@@ -16,6 +16,10 @@ package org.eclipse.ote.message.lookup;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * @author David N. Phillips
+ */
 public class MessageInputUtil {
 
 	public static List<MessageInputItem> messageLookupResultToMessageInputItem(List<MessageLookupResult> messageLookupResults){

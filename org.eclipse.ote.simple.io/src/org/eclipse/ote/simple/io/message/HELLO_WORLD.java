@@ -38,32 +38,47 @@ import org.eclipse.ote.simple.io.SimpleMessageData;
  */
 public class HELLO_WORLD extends Message {
 
+   private static final boolean IS_SCHEDULED = true;
+   private static final double RATE = 4.0;
+   private static final int PHASE = 0;
+   private static final int OFFSET = 0;
+   private static final int BYTE_SIZE = 24;
+   
    /**
     * The string to print or log when the message is sent
     * 
     *    <table border="1">
-    * <p><tr><td>UNIT_ABBR</td><td>null</td></tr>
+    * <p><tr><td>UNIT_ABBR</td><td>String</td></tr>
     * <p><tr><td>START_BYTE</td><td>0</td></tr>
-    * <p><tr><td>MSB</td><td>0</td></tr>
-    * <p><tr><td>LSB</td><td>511</td></tr>
+    * <p><tr><td>LENGTH</td><td>5</td></tr>
     * </table>
     */
    public StringElement PRINT_ME;
+   /**
+    * The distance to the thing.
+    * Only accessible in non-mux type.  
+    * <table border="1">
+    * <p><tr><td>UNIT_ABBR</td><td>Meters</td></tr>
+    * <p><tr><td>START_BYTE</td><td>6</td></tr>
+    * <p><tr><td>MSB</td><td>0</td></tr>
+    * <p><tr><td>LSB</td><td>32</td></tr>
+    */
    public IntegerElement ONLY_IN_SIMPLE;
+   
 
 
    public HELLO_WORLD() {
-      super("HELLO_WORLD", 64, 0, true, 0, 4.0);
+      super("HELLO_WORLD", BYTE_SIZE, OFFSET, IS_SCHEDULED, PHASE, RATE);
       SimpleMessageData messageData = new SimpleMessageData(this, this.getClass().getName(), getName(), getDefaultByteSize(), SimpleDataType.SIMPLE);
       setDefaultMessageData(messageData);
       messageData.setScheduled(true);
-      int bitSize = 32 * 8 - 1;
+      int bitSize = 5 * 8 - 1;
       PRINT_ME = new StringElement(this, "PRINT_ME", messageData, 0, 0, bitSize);
-      ONLY_IN_SIMPLE = new IntegerElement(this, "ONLY_IN_SIMPLE", messageData, 32, 0, 32);
-
+      ONLY_IN_SIMPLE = new IntegerElement(this, "ONLY_IN_SIMPLE", messageData, 6, 0, 31);
+      
       addElements(PRINT_ME, ONLY_IN_SIMPLE);
 
-	  //set up message stuff
+	  //set the default mem type
       setMemSource(SimpleDataType.SIMPLE);
 
    }

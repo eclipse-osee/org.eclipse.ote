@@ -3,7 +3,14 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OTE Message Lookup (Incubation)
 Bundle-SymbolicName: org.eclipse.ote.message.lookup
 Bundle-Version: 0.11.0.qualifier
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.hsqldb
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/*
 Export-Package: org.eclipse.ote.message.lookup
+Import-Package: org.eclipse.osee.ote.message,
+ org.eclipse.osee.ote.message.elements,
+ org.eclipse.osee.ote.message.enums,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.logging
