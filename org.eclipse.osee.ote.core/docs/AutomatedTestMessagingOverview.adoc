@@ -1,0 +1,152 @@
+= Automated Test Messaging Overview
+
+An OTE Message is simply a logical encapsulation of a data buffer.  These Message objects can be used to transmit
+data over ethernet to a separate device or sent between services running within the same JVM.  Wherever you
+want to send a packet of information, you can use the OTE Messaging system to do so.
+
+Messages are more than just a data buffer with a name.  They can also define the structure of the data
+by breaking up the buffer into logical Elements.  These elements are objects within the message class and include
+the type and location of the logical field.  The elements themselves provide many useful APIs and are the best way
+to read and write the data within a message. 
+
+All messages also have a header part. This header part contains additional information about the message that is 
+unique to the message type.  For instance you may have a Publish/Subscribe message whose header contains the 
+destination ID, the message name, and the message body size. Each type of message has its own unique set of one or
+more message headers depending on the application.
+
+== Accessing Message Writers
+To use a message in an OTE test, you must use the `IMessageManager` service to create a `IMessageRequestor` associated with the test
+class itself.  Normally, this API should be provided in the hierarchy of your test script to ease coding.  Here is an example:
+
+ public MyTestScript(MessageSystemTestEnvironment testEnvironment, ITestEnvironmentCommandCallback callback) {
+     this.messageRequestor = testEnvironment.getMsgManager().createMessageRequestor(getClass().getName());
+ } 
+ protected <CLASSTYPE extends Message> CLASSTYPE getMessageWriter(Class<CLASSTYPE> type) {
+      return messageRequestor.getMessageWriter(type);
+ }
+ 
+With this implemented, you would then obtain your message object like this:
+
+ SOME_MESSAGE messageWriter = getMessageWriter(SOME_MESSAGE.class);
+ 
+The message manager will handle registering your message with DDS and attaching it to an IO writer class to ensure it gets sent to 
+proper destination.
+
+NOTE: As soon as you get the message writer, the environment will use the default message definition to begin sending the data.  For
+instance, if your message defines itself as scheduled by default with a certain rate then the environment will immediately start
+sending at that rate.  See the next section regarding controlling this behavior.
+
+=== Controlling Message Transmissions
+Each message will define its own default periodicity however the test can control that behavior.  The following API are provided:
+
+[options="header",cols="1,2,2"]
+|===
+|Method   |Description   |Example   
+//----------------------
+|send()                 |Schedules the message to be sent as soon as possible.  
+                         The message type determines how fast that is.  For instance an ethernet type may 
+                         be transmitted immediately where a Mux message may only be sent on the next frame. | messageWriter.send();  
+|changeRate(double)     |changes the send rate to hz value provided.  If the message is not currently 
+                         scheduled, nothing will be sent until schedule() is called.                        |messageWriter.changeRate(12.5);   
+|schedule()             |Starts sending the message if it has a rate.  If the message has no rate, nothing
+                         will be sent until `changeRate` or `send` is called.                                   |messageWriter.schedule();  
+|unschedule()           |Stops the periodic sending of a message.  Does not prevent transmissions via the
+                         send() method.                                                                     |messageWriter.unschedule();  
+|waitForValue(value, timeout) |Waits up to the allotted timeout for the value to hit.  Returns the value 
+                               or the last value seen if timeout is reached. Useful for synchronizing 
+                               with a certain event before allowing the test to continue.                   |messageReader.SOME_INT_ELEMENT.waitForValue(10, 1000);   
+|===
+
+
+=== Changing Element Values
+Once you have a message writer object, you can start manipulating the data.  The easiest way to do this is via the 
+elements within the message object.  Here's an example:
+
+ messageWriter.SOME_INT_ELEMENT.set(this, 42); // can also use setNoLog if you don't want to log the call
+ 
+The `set()` method is the primary way you will change a message's data buffer.  The element determines how to convert the logical value argument into 
+the raw bit value and exactly where those bits will go in the overall message buffer.  In this case there isn't much to convert as it is already
+an integer however there are many element types available to fulfill your needs including enumerations, floats, fixed-point, boolean, String, etc. 
+
+It's important to note that these elements are strongly typed and will not allow you to set a logical value that doesn't match expected type.  For instance you
+couldn't pass in a String value to the set() above.    
+
+== Accessing Message Readers
+
+Similar to message writers, message readers are obtained from the `IMessageRequestor.getMessageReader` method like this:
+
+ SOME_MESSAGE messageReader = messageRequestor.getMessageReader(type)
+ 
+The message manager will then handle registering the reader with DDS and attach the appropriate IO reader to ensure the test object
+gets filled in with the latest incoming transmissions.
+
+=== Reading and Testing Element Values
+When trying to read values from the unit under test (or any other test environment actor) the message elements provide the majority of the API you would 
+need to use.  Here are some examples:
+
+[options="header",cols="1,2,3"]
+|===
+|Method   |Description   |Example   
+//----------------------
+|get()                         |pull the logical element value out of the latest buffer         |int latestValue = messageReader.SOME_INT_ELEMENT.get();   
+|check(logger, value)          |log a test point if the current value matches the 2nd argument  |messageReader.SOME_INT_ELEMENT.check(this, 10);   
+|check(logger, value, timeout) |Log a test point if the current value matches the 2nd argument 
+                                at any point in the next timeout ms                             |messageReader.SOME_INT_ELEMENT.check(this, 10, 1000);   
+|waitForValue(value, timeout)  |Waits up to the alotted timeout for the value to hit.  Returns
+                                the value or the last value seen if timeout is reached. Useful 
+                                for synchronizing with a certain event before allowing the test
+                                 to continue.                                                   |messageReader.SOME_INT_ELEMENT.waitForValue(10, 1000);   
+|===
+
+There are many other variants of these methods available (like checking ranges, pulses, etc) to fulfill your element testing needs. 
+
+Much like the writer elements, the reader elements also deal primarily with logical values.  Any value you use or check with the above
+API will convert the raw bit patterns for that element into the appropriate logical type.  This makes conceptual testing much
+easier and keeps the test developer focused on the real purpose of a test and not on the underlying message structure.  
+
+== Message Mapping
+One of the main benefits of using OTE tests are write once, run anywhere.  This is true for
+OTE messages as well.  The intent is that any test that tries to manipulate a message must work
+no matter where the test is run. 
+
+To map a message is to correlate two (or more) message classes together as associated types.
+At runtime, the test environment will choose the correct signal to send based on rules you define.
+
+For example, say you want to cause a light to blink in a cockpit by sending a "BLINK" signal and your 
+Unit Under Test (UUT) accepts communication over a 1553 Mux serial bus or via an internal Ethernet network. 
+
+You define two messages representing these two mediums for manipulating the cockpit light:  
+[options="header",cols="3,3,3,1,1,1,5"]
+|===
+|Message Name   |Message Type   |Element Name   |Byte   |MSB | LSB | Type   
+//-------------------------------------------------
+|COCKPIT_ETH   |Ethernet   |WARNING_LIGHT   |0   |1 | 2 |Enumeration (0 = OFF, 1 = ON, 2 = BLINK, 3 = SPARE)  
+|COCKPIT_MUX   |1553 Mux   |WARNING_LIGHT   |2   |0 | 1 |Enumeration (0 = OFF, 1 = ON, 2 = BLINK, 3 = SPARE)  
+|===
+
+In this case you could be running the test on a simulated environment at your desk where only Ethernet is
+available or against some target flight computer in a hardware lab where both are present.  Your test 
+philosophy is to always prefer the "most external" physical type available for the environment that the test is run.
+Without mapping you would have to add logic to your test to use the Mux message object when running in the lab
+or to use the Ethernet message when running at your desk. 
+
+With mapping you can, instead, create a logical message that conveys cockpit manipulation of any kind. You would then declare
+that this message associates with the COCKPIT_ETH and the COCKPIT_MUX messages. Here is the important method within this
+new COCKPIT_CONTROLS logical message:
+
+ @Override
+ public Map<DataType, Class<? extends Message>[]> getAssociatedMessages() {
+    Map<DataType, Class<? extends Message>[]> o = new LinkedHashMap<DataType, Class<? extends Message>[]>();
+    o.put(GenericOteIoType.Ethernet, new Class[]{COCKPIT_ETH.class});
+    o.put(GenericOteIoType.MUX, new Class[]{COCKPIT_MUX.class});
+    return o;
+ }
+
+Your test would then only use this one COCKPIT_CONTROLS message to manipulate the light. At runtime, the messaging environment
+will use the above method to determine mapping messages are available and will begin matching the elements of the source 
+message (COCKPIT_CONTROLS) to that of the most external associated message (ie. COCKPIT_MUX if in a lab).  The test does
+not have to care about the backing communication layer and instead focuses on the logical task of causing the light to blink at
+the correct time.  
+
+NOTE: By default, elements only match if their names are exactly the same but this matching algorithm may be overridden to 
+fit any application needs. 
