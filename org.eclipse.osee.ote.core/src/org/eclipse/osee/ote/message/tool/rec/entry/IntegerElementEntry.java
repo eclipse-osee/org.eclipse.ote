@@ -14,21 +14,22 @@
 package org.eclipse.osee.ote.message.tool.rec.entry;
 
 import java.nio.ByteBuffer;
+
 import org.eclipse.osee.ote.message.data.MemoryResource;
-import org.eclipse.osee.ote.message.elements.IntegerElement;
+import org.eclipse.osee.ote.message.elements.UnsignedIntegerElement;
 
 public class IntegerElementEntry implements IElementEntry {
 
-   private final IntegerElement element;
+   private final UnsignedIntegerElement element;
    private final byte[] nameAsBytes;
 
-   public IntegerElementEntry(IntegerElement element) {
+   public IntegerElementEntry(UnsignedIntegerElement element) {
       this.element = element;
       nameAsBytes = element.getElementPathAsString().getBytes();
    }
 
    @Override
-   public IntegerElement getElement() {
+   public UnsignedIntegerElement getElement() {
       return element;
    }
 

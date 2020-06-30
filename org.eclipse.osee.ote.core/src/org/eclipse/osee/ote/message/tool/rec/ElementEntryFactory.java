@@ -30,6 +30,7 @@ import org.eclipse.osee.ote.message.elements.RecordElement;
 import org.eclipse.osee.ote.message.elements.RecordMap;
 import org.eclipse.osee.ote.message.elements.SignedInteger16Element;
 import org.eclipse.osee.ote.message.elements.StringElement;
+import org.eclipse.osee.ote.message.elements.UnsignedIntegerElement;
 import org.eclipse.osee.ote.message.tool.rec.entry.ArrayElementEntry;
 import org.eclipse.osee.ote.message.tool.rec.entry.BooleanElementEntry;
 import org.eclipse.osee.ote.message.tool.rec.entry.CharElementEntry;
@@ -85,6 +86,11 @@ public class ElementEntryFactory {
 
       @Override
       public void asIntegerElement(IntegerElement element) {
+         entry = new IntegerElementEntry(element);
+      }
+      
+      @Override
+      public void asUnsignedIntegerElement(UnsignedIntegerElement element) {
          entry = new IntegerElementEntry(element);
       }
 

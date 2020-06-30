@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2020 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -15,23 +15,17 @@ package org.eclipse.osee.ote.message.elements.nonmapping;
 
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
-import org.eclipse.osee.ote.message.Message;
-import org.eclipse.osee.ote.message.data.MessageData;
-import org.eclipse.osee.ote.message.elements.IntegerElement;
-import org.eclipse.osee.ote.message.elements.UnsignedIntegerElement;
+import org.eclipse.osee.ote.message.data.MemoryResource;
+import org.eclipse.osee.ote.message.elements.SignedIntegerElement;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
 /**
- * @author Andy Jury
+ * @author Michael P. Masterson
  */
 @SuppressWarnings("unused")
-public class NonMappingIntegerElement extends IntegerElement {
+public class NonMappingSignedIntegerElement extends SignedIntegerElement {
 
-   /**
-    * Copy constructor.
-    * @param element 
-    */
-   public NonMappingIntegerElement(IntegerElement element) {
+   public NonMappingSignedIntegerElement(SignedIntegerElement element) {
       super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),
          element.getMsb(), element.getLsb());
       for (Object obj : element.getElementPath()) {
@@ -39,42 +33,10 @@ public class NonMappingIntegerElement extends IntegerElement {
       }
    }
 
-   public NonMappingIntegerElement(Message message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
-      super(message, elementName, messageData, byteOffset, msb, lsb);
-   }
-
-   public NonMappingIntegerElement(Message message, String elementName, MessageData messageData, int bitOffset, int bitLength) {
-      super(message, elementName, messageData, bitOffset, bitLength);
-   }
-
-   public NonMappingIntegerElement(Message message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalLsb, int originalMsb) {
-      super(message, elementName, messageData, byteOffset, msb, lsb, originalLsb, originalMsb);
-   }
-
    @Override
-   public String toString(Integer obj) {
+   public void checkForwarding(ITestAccessor accessor, SignedIntegerElement cause, int value) throws InterruptedException {
+
       throwNoMappingElementException();
-      return null;
-   }
-
-   @Override
-   public void setValue(Integer value) {
-      throwNoMappingElementException();
-   }
-
-   @Override
-   public Integer getValue() {
-      throwNoMappingElementException();
-      return 0;
-   }
-   
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.UnsignedIntegerElement#checkForwarding(org.eclipse.osee.ote.message.interfaces.ITestAccessor, org.eclipse.osee.ote.message.elements.UnsignedIntegerElement, int)
-    */
-   @Override
-   public void checkForwarding(ITestAccessor accessor, UnsignedIntegerElement cause,
-         int value) throws InterruptedException {
-      super.checkForwarding(accessor, cause, value);
    }
 
    public boolean check(ITestAccessor accessor, int value) {
@@ -107,7 +69,7 @@ public class NonMappingIntegerElement extends IntegerElement {
       return false;
    }
 
-   public boolean checkNot(ITestAccessor accessor, int value) {
+      public boolean checkNot(ITestAccessor accessor, int value) {
       throwNoMappingElementException();
       return false;
    }
@@ -287,36 +249,36 @@ public class NonMappingIntegerElement extends IntegerElement {
       throwNoMappingElementException();
    }
 
-   public int waitForValue(ITestEnvironmentAccessor accessor, int value, int milliseconds) throws InterruptedException {
+   public Integer waitForValue(ITestEnvironmentAccessor accessor, Integer value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
-   public int waitForNotValue(ITestEnvironmentAccessor accessor, int value, int milliseconds) throws InterruptedException {
-      throwNoMappingElementException();
-      return 0;
-   }
-
-   @Override
-   public int waitForRange(ITestEnvironmentAccessor accessor, int minValue, int maxValue, int milliseconds) throws InterruptedException {
+   public Integer waitForNotValue(ITestEnvironmentAccessor accessor, Integer value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
    @Override
-   public int waitForRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public Integer waitForRange(ITestEnvironmentAccessor accessor, Integer minValue, Integer maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
    @Override
-   public int waitForNotRange(ITestEnvironmentAccessor accessor, int minValue, int maxValue, int milliseconds) throws InterruptedException {
+   public Integer waitForRange(ITestEnvironmentAccessor accessor, Integer minValue, boolean minInclusive, Integer maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
    @Override
-   public int waitForNotRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public Integer waitForNotRange(ITestEnvironmentAccessor accessor, Integer minValue, Integer maxValue, int milliseconds) throws InterruptedException {
+      throwNoMappingElementException();
+      return 0;
+   }
+
+   @Override
+   public Integer waitForNotRange(ITestEnvironmentAccessor accessor, Integer minValue, boolean minInclusive, Integer maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
@@ -330,4 +292,22 @@ public class NonMappingIntegerElement extends IntegerElement {
    public boolean isNonMappingElement() {
       return true;
    }
+
+   @Override
+   public Integer getValue() {
+      throwNoMappingElementException();
+      return 0;
+   }
+
+   @Override
+   public void setValue(Integer value) {
+      throwNoMappingElementException();
+   }
+
+   @Override
+   public Integer valueOf(MemoryResource mem) {
+      throwNoMappingElementException();
+      return 0;
+   }
+
 }

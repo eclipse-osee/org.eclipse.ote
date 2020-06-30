@@ -88,7 +88,6 @@ public class UnitTestAccessor implements ITestEnvironmentMessageSystemAccessor, 
 
       @Override
       public void methodCalled(ITestEnvironmentAccessor source, MethodFormatter arguments, int methodCount) {
-
       }
 
       @Override

@@ -14,9 +14,9 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Random;
+
 import org.eclipse.osee.ote.message.data.HeaderData;
 import org.eclipse.osee.ote.message.data.MemoryResource;
-import org.eclipse.osee.ote.message.elements.LongIntegerElement;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -154,7 +154,7 @@ public class LongIntegerElementTest {
             long[] expectedVals = new long[count];
             Random r = new Random(System.currentTimeMillis());
 
-            for (int l = 0; l <= 1024; l++) {
+            for (int l = 0; l <= 256; l++) {
                /*
                 * perform sets going through the array. We do this so that we can catch sets that modified bits before
                 * the element
@@ -192,9 +192,10 @@ public class LongIntegerElementTest {
          } else {
             expectedVals[i] = val;
          }
+         long expectedValue = expectedVals[i];
          Assert.assertEquals(
             String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
-            Long.toHexString(expectedVals[i]), Long.toHexString(el.getValue()));
+            Long.toHexString(expectedValue), Long.toHexString(el.getValue()));
       }
    }
 

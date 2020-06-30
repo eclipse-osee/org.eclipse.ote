@@ -49,4 +49,6 @@ public interface IElementVisitor {
    void asSignedInteger16Element(SignedInteger16Element element);
 
    void asArrayElement(ArrayElement element);
+
+   void asUnsignedIntegerElement(UnsignedIntegerElement unsignedIntegerElement);
 }

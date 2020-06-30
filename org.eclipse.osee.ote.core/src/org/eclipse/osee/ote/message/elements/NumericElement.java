@@ -31,4 +31,5 @@ public abstract class NumericElement<T extends Number & Comparable<T>> extends D
    }
 
    public abstract long getNumericBitValue();
+
 }

@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.ote.message.mock;
 
-import java.util.Collection;
-
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.EnumeratedElement;

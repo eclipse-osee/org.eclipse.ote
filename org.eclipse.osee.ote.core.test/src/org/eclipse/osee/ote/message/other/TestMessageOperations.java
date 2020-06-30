@@ -91,10 +91,10 @@ public class TestMessageOperations {
       TestMessage msg = new TestMessage();
       support.activateMsg(msg);
       int time = 1000;
+      int frameInMs = (int) (1000/msg.getRate());
       int expectedXmits = (int) Math.round(msg.getRate()) * (time / 1000);
-      support.checkForTransmission(msg, expectedXmits, time + 10);
-
-      support.checkForTransmissionFail(msg, expectedXmits, time - 10);
+      support.checkForTransmission(msg, expectedXmits, time + frameInMs);
+      support.checkForTransmissionFail(msg, expectedXmits, time - frameInMs);
    }
 
 }

@@ -46,7 +46,7 @@ public class TestStringOperations {
    public void tearDown() throws Exception {
       support.cleanup();
    }
-
+   
    @Test
    public void testCheckWaitForValue() throws InterruptedException {
       TestMessage msg = new TestMessage();
@@ -58,7 +58,6 @@ public class TestStringOperations {
          "",
          "expected",
          "EXPECTED",
-         "Expected",
          "Expected",
          "01234",
          "x"}, "abc");

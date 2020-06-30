@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ote.message.mock;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -91,7 +92,7 @@ public class UnitTestSupport {
          public void onDataAvailable(MessageData data, DataType type) throws MessageSystemException {
             if (index < sequence.length) {
                element.setValue(sequence[index]);
-               System.out.println(element.getName() + " is now " + element.getValue());
+               System.out.println(System.currentTimeMillis() + ": " + index + ": " + element.getName() + " is now " + element.getValue());
                index++;
             } else {
                element.getMessage().removeListener(this);
@@ -112,13 +113,14 @@ public class UnitTestSupport {
       return seqHandle;
    }
 
-   public <T extends Comparable<T>> ScheduledFuture<?> maintainRandomizedList(final DiscreteElement<T> element, final T[] values, int millis) {
+   public <T extends Comparable<T>> ScheduledFuture<?> maintainRandomizedList(final DiscreteElement<T> element, final T[] values, int millis) throws InterruptedException {
       element.setValue(values[0]);
       return accessor.schedulePeriodicTask(new Runnable() {
          @Override
          public void run() {
             try {
-               element.setValue(selectRandom(values));
+               T randomVal = selectRandom(values);
+               element.setValue(randomVal);
             } catch (Exception e) {
                e.printStackTrace(System.err);
             }
@@ -183,7 +185,7 @@ public class UnitTestSupport {
          boolean c = element.checkNot(accessor, grp, value, millis);
          CheckPoint cp = (CheckPoint) grp.getTestPoints().get(0);
          long elapsedTime = cp.getElpasedTime();
-         Assert.assertTrue(element.getName() + String.format(".checkNot()->failed, elapsed time=%d", elapsedTime), c);
+         Assert.assertTrue(element.getName() + String.format(".checkNot(%s, %d)->failed, elapsed time=%d", value, millis, elapsedTime), c);
          System.out.printf("checkNot->passed, actual %s, expected %s, elapsed=%d\n", cp.getActual(), cp.getExpected(),
             cp.getElpasedTime());
       } catch (InterruptedException e) {
@@ -211,7 +213,7 @@ public class UnitTestSupport {
 
    public <T extends Comparable<T>> void checkWaitForValue(DiscreteElement<T> element, T value, int millis) throws InterruptedException {
       T result = element.waitForValue(accessor, value, millis);
-      Assert.assertEquals(element.getName() + " .checkWaitForValue()->failed", value, result);
+      Assert.assertEquals(String.format("%d: %s.checkWaitForValue()->failed", System.currentTimeMillis(), element.getName()), value, result);
    }
 
    public <T extends Comparable<T>> void checkList(DiscreteElement<T> element, T[] values, int millis) throws InterruptedException {
@@ -233,8 +235,12 @@ public class UnitTestSupport {
       CheckGroup chkGrp = new CheckGroup(Operation.AND, "checkListFail");
       boolean b = element.checkInList(accessor, chkGrp, values, millis);
       CheckPoint cp = (CheckPoint) ((CheckGroup) chkGrp.getTestPoints().get(0)).getTestPoints().get(0);
+      StringBuilder sb = new StringBuilder();
+      Arrays.stream(values).forEach(v -> sb.append(v).append(", "));
       Assert.assertFalse(
-         element.getName() + String.format(" .checkListFail()->failed, elapsed time=%d", cp.getElpasedTime()), b);
+         String.format("%d: %s.checkListFail(%s)->failed, found '%s', elapsed time=%d", 
+                       System.currentTimeMillis(), element.getName(),sb, cp.getActual(), cp.getElpasedTime()), 
+                       b);
    }
 
    public <T extends Comparable<T>> void checkMaintainList(DiscreteElement<T> element, T[] values, int millis) throws InterruptedException {
@@ -320,8 +326,9 @@ public class UnitTestSupport {
          checkWaitForValue(element, v, 40);
       }
       handle.waitForEndSequence(100, TimeUnit.MILLISECONDS);
-      setSequence(element, values);
+      handle = setSequence(element, values);
       checkWaitForValueFail(element, valueToFInd, 200);
+      handle.waitForEndSequence(100, TimeUnit.MILLISECONDS);
    }
 
    public <T extends Comparable<T>> void genericTestCheckList(DiscreteElement<T> element, T[] goodValues, T[] badValues) throws InterruptedException {
@@ -333,12 +340,35 @@ public class UnitTestSupport {
       }
 
       // check pass
-      maintainRandomizedList(element, goodValues, 500);
-      checkList(element, goodValues, 500);
-
+      ScheduledFuture<?> goodRandomizer = maintainRandomizedList(element, goodValues, 50);
+      try {
+         checkList(element, goodValues, 500);
+      } finally {
+         try {
+            goodRandomizer.cancel(false);
+            goodRandomizer.get();
+         } catch (CancellationException ex) {
+            // do nothing
+         } catch (ExecutionException ex) {
+            throw new RuntimeException("exception while waiting for randomizedList to finish", ex);
+         }
+      }
+      
       // check failure
-      maintainRandomizedList(element, badValues, 500);
-      checkListFail(element, goodValues, 500);
+      ScheduledFuture<?> badRandomizer = maintainRandomizedList(element, badValues, 50);
+      checkList(element, badValues, 500); // wait for the value to be set to the bad list
+      try {
+         checkListFail(element, goodValues, 500);
+      } finally {
+         try {
+            badRandomizer.cancel(false);
+            badRandomizer.get();
+         } catch (CancellationException ex) {
+            // do nothing
+         } catch (ExecutionException ex) {
+            throw new RuntimeException("exception while waiting for randomizedList to finish", ex);
+         }
+      }
    }
 
    public <T extends Comparable<T>> void genericTestCheckNotList(DiscreteElement<T> element, T[] allowedValues, T[] excludeValues) throws InterruptedException {

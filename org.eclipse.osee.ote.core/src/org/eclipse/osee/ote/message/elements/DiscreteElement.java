@@ -454,7 +454,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public final T waitForRange(ITestEnvironmentAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
+   public T waitForRange(ITestEnvironmentAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
       return waitForRange(accessor, minValue, true, maxValue, true, milliseconds);
    }
 
@@ -495,7 +495,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public final T waitForNotRange(ITestEnvironmentAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
+   public T waitForNotRange(ITestEnvironmentAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
       return waitForRange(accessor, minValue, true, maxValue, true, milliseconds);
    }
 

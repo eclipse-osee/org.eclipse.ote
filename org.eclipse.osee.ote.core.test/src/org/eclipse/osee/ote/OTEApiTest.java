@@ -3,6 +3,7 @@ package org.eclipse.osee.ote;
 import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.Future;
+
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +13,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
-@SuppressWarnings("restriction")
 public class OTEApiTest {
 
    private OTEApi oteApi;
@@ -55,24 +55,24 @@ public class OTEApiTest {
       Assert.assertEquals(validConfiguration, status.getConfiguration());
       Assert.assertEquals(validConfiguration, oteApi.getConfiguration().get().getConfiguration());
 
-      Bundle bundle = findBundle("loading.test1");
+      Bundle bundle = findActiveBundle("loading.test1");
       Assert.assertNotNull(bundle);
       Assert.assertEquals(Bundle.ACTIVE, bundle.getState());
 
-      bundle = findBundle("loading.test2");
+      bundle = findActiveBundle("loading.test2");
       Assert.assertNotNull(bundle);
       Assert.assertEquals(Bundle.ACTIVE, bundle.getState());
 
-      bundle = findBundle("loading.test3");
+      bundle = findActiveBundle("loading.test3");
       Assert.assertNotNull(bundle);
       Assert.assertEquals(Bundle.ACTIVE, bundle.getState());
 
       Future<ConfigurationStatus> resetFeature = oteApi.resetConfiguration(callable);
       ConfigurationStatus resetStatus = resetFeature.get();
       Assert.assertTrue(resetStatus.isSuccess());
-      Assert.assertNull(findBundle("loading.test1"));
-      Assert.assertNull(findBundle("loading.test2"));
-      Assert.assertNull(findBundle("loading.test3"));
+      Assert.assertNull(findActiveBundle("loading.test1"));
+      Assert.assertNull(findActiveBundle("loading.test2"));
+      Assert.assertNull(findActiveBundle("loading.test3"));
 
       Configuration invalidConfiguration = new Configuration();
       invalidConfiguration.addItem(config1);
@@ -81,9 +81,9 @@ public class OTEApiTest {
       ConfigurationStatus failStatus = failStatusFuture.get();
       Assert.assertFalse(failStatus.isSuccess());
       System.out.println(failStatus.getMessage());
-      Assert.assertNull(findBundle("loading.test1"));
-      Assert.assertNull(findBundle("loading.test2"));
-      Assert.assertNull(findBundle("loading.test3"));
+      Assert.assertNotNull(findActiveBundle("loading.test1"));
+      Assert.assertNull(findActiveBundle("loading.test2"));
+      Assert.assertNull(findActiveBundle("loading.test3"));
 
       //test the doing load case
       Future<ConfigurationStatus> good = oteApi.loadConfiguration(validConfiguration, callable);
@@ -148,64 +148,16 @@ public class OTEApiTest {
       status = statusFuture.get();
       Assert.assertFalse(status.isSuccess());
 
-      //      Assert.assertEquals(validConfiguration, status.getConfiguration());
-      //      Assert.assertEquals(validConfiguration, oteApi.getConfiguration().get().getConfiguration());
-
-      //      Bundle bundle = findBundle("loading.test1");
-      //      Assert.assertNotNull(bundle);
-      //      Assert.assertEquals(Bundle.ACTIVE, bundle.getState());
-      //      
-      //      bundle = findBundle("loading.test2");
-      //      Assert.assertNotNull(bundle);
-      //      Assert.assertEquals(Bundle.ACTIVE, bundle.getState());
-      //      
-      //      bundle = findBundle("loading.test3");
-      //      Assert.assertNotNull(bundle);
-      //      Assert.assertEquals(Bundle.ACTIVE, bundle.getState());
-
-      //      Future<ConfigurationStatus> resetFeature = oteApi.resetConfiguration(callable);
-      //      ConfigurationStatus resetStatus = resetFeature.get();
-      //      Assert.assertTrue(resetStatus.isSuccess());
-      //      Assert.assertNull(findBundle("loading.test1"));
-      //      Assert.assertNull(findBundle("loading.test2"));
-      //      Assert.assertNull(findBundle("loading.test3"));
-
-      //      Configuration invalidConfiguration = new Configuration();
-      //      invalidConfiguration.addItem(config1);
-      //      invalidConfiguration.addItem(config3);
-      //      Future<ConfigurationStatus> failStatusFuture = oteApi.loadConfiguration(invalidConfiguration, callable);
-      //      ConfigurationStatus failStatus = failStatusFuture.get();
-      //      Assert.assertFalse(failStatus.isSuccess());
-      //      System.out.println(failStatus.getMessage());
-      //      Assert.assertNull(findBundle("loading.test1"));
-      //      Assert.assertNull(findBundle("loading.test2"));
-      //      Assert.assertNull(findBundle("loading.test3"));
-      //      
-      //      //test the doing load case
-      //      Future<ConfigurationStatus> good = oteApi.loadConfiguration(validConfiguration, callable);
-      //      Future<ConfigurationStatus> bad = oteApi.loadConfiguration(validConfiguration, callable);
-      //      
-      //      ConfigurationStatus goodStatus = good.get();
-      //      ConfigurationStatus badStatus = bad.get();
-      //      Assert.assertTrue(goodStatus.isSuccess());
-      //      Assert.assertFalse(badStatus.isSuccess());
-      //      System.out.println(badStatus.getMessage());
-      //      
-      //      //test already configured
-      //      bad = oteApi.loadConfiguration(validConfiguration, callable);
-      //      badStatus = bad.get();
-      //      Assert.assertFalse(badStatus.isSuccess());
-      //      System.out.println(badStatus.getMessage());
    }
 
    private void clearJarCache() {
       oteApi.getRuntimeCache().clearJarCache();
    }
 
-   private Bundle findBundle(String symbolicName) {
+   private Bundle findActiveBundle(String symbolicName) {
       Bundle[] bundles = FrameworkUtil.getBundle(OTEApiTest.class).getBundleContext().getBundles();
       for (Bundle bundle : bundles) {
-         if (bundle.getSymbolicName().equals(symbolicName)) {
+         if (bundle.getSymbolicName().equals(symbolicName) && bundle.getState() == Bundle.ACTIVE) {
             return bundle;
          }
       }
@@ -214,8 +166,7 @@ public class OTEApiTest {
 
    private URL findEntry(String path) {
       URL url = null;
-      Bundle bundle = FrameworkUtil.getBundle(OTEApiTest.class);
-      url = bundle.getEntry(path);
+      url = this.getClass().getClassLoader().getResource(path);
       Assert.assertNotNull(url);
       return url;
    }

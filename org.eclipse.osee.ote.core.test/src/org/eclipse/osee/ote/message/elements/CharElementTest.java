@@ -7,7 +7,11 @@ package org.eclipse.osee.ote.message.elements;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.data.MessageData;
@@ -57,7 +61,15 @@ public class CharElementTest {
 
    @Test
    public void parseAndSetWithNonByteAlignedElementTest() throws Exception {
-      CharElement sut = new CharElement(message, "TEST", msgData, 0, 1, 7);
+      CharElement sut = new CharElement(message, "TEST1", msgData, 0, 1, 7);
+      List<Element> list = new ArrayList<>();
+      list.add(sut);
+      list.add(new CharElement(message, "TEST2", msgData, 1, 1, 7));
+      list.add(new CharElement(message, "TEST3", msgData, 2, 1, 7));
+      list.add(new CharElement(message, "TEST4", msgData, 3, 1, 7));
+      list.add(new CharElement(message, "TEST5", msgData, 4, 1, 7));
+
+      when(message.getElementIterator(sut)).thenReturn(list.listIterator());
       assertEquals("Start with all zeros in the byte array", "[0, 0, 0, 0, 0]",
          Arrays.toString(memoryResource.getData()));
       Arrays.fill(bytes, (byte) 0xFF);
@@ -68,7 +80,12 @@ public class CharElementTest {
       sut.parseAndSet(null, "");
       assertEquals("getValue should return null character", '\0', sut.getValue().charValue());
       sut.parseAndSet(null, "FOO");
-      assertEquals("Unfortunately we tromple the spare bit data", "[70, 79, 79, -1, -1]",
+      
+      when(message.getElementIterator(sut)).thenReturn(list.listIterator());
+      assertEquals("getString should return 'FOO' ", "FOO", sut.getString(null, 3));
+      // We set the entire array to 0xFF above and since the first bit is "skipped"
+      // when setting the ascii, the values are negative
+      assertEquals("Unfortunately we tromple the spare bit data", "[-58, -49, -49, -1, -1]",
          Arrays.toString(memoryResource.getData()));
    }
 
