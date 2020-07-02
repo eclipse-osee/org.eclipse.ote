@@ -27,14 +27,14 @@
    </properties>
 
    <groupId>org.eclipse.ote.build</groupId>
-   <artifactId>ote.runtime.parent</artifactId>
+   <artifactId>ote.dependencies.parent</artifactId>
    <packaging>pom</packaging>
    <name>OTE Runtime Parent</name>
    <version>1.0.0-SNAPSHOT</version>
 
    <modules>
-      <module>../ote.runtime.feature</module>
-      <module>../ote.runtime.p2</module>
+      <module>../ote.dependencies.feature</module>
+      <module>../ote.dependencies.p2</module>
    </modules>
 
  	<repositories>

@@ -37,17 +37,17 @@
 
 	<profiles>
 		<profile>
-			<id>ote.runtime.p2</id>
+			<id>ote.dependencies.p2</id>
 			<activation>
 				<property>
-					<name>ote.runtime.p2</name>
+					<name>ote.dependencies.p2</name>
 				</property>
 			</activation>
 			<repositories>
 				<repository>
 					<id>ote-runtime</id>
 					<layout>p2</layout>
-					<url>${ote.runtime.p2}</url>
+					<url>${ote.dependencies.p2}</url>
 				</repository>
 			</repositories>
 		</profile>

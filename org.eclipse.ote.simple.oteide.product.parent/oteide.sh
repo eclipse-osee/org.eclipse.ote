@@ -9,6 +9,6 @@ echo found $BASE_AREA
 echo
 cd -
 echo
-echo "mvn clean verify -Dote.p2=file://$BASE_AREA/org.eclipse.ote/org.eclipse.ote.p2/target/repository -Dosee.ote.p2=file://$BASE_AREA/org.eclipse.ote/org.eclipse.osee.ote.p2/target/repository -Dote.runtime.p2=$1"
+echo "mvn clean verify -Dote.p2=file://$BASE_AREA/org.eclipse.ote/org.eclipse.ote.p2/target/repository -Dosee.ote.p2=file://$BASE_AREA/org.eclipse.ote/org.eclipse.osee.ote.p2/target/repository -Dote.dependencies.p2=$1"
 echo
-mvn clean verify -Dote.p2=file://$BASE_AREA/org.eclipse.ote/org.eclipse.ote.p2/target/repository -Dosee.ote.p2=file://$BASE_AREA/org.eclipse.ote/org.eclipse.osee.ote.p2/target/repository -Dote.runtime.p2=$1
+mvn clean verify -Dote.p2=file://$BASE_AREA/org.eclipse.ote/org.eclipse.ote.p2/target/repository -Dosee.ote.p2=file://$BASE_AREA/org.eclipse.ote/org.eclipse.osee.ote.p2/target/repository -Dote.dependencies.p2=$1

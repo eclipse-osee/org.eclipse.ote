@@ -5,12 +5,12 @@
 
 	<parent>
 		<groupId>org.eclipse.ote.build</groupId>
-		<artifactId>ote.runtime.parent</artifactId>
+		<artifactId>ote.dependencies.parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../ote.runtime.parent</relativePath>
+		<relativePath>../ote.dependencies.parent</relativePath>
 	</parent>
 
-	<artifactId>ote.runtime.feature</artifactId>
+	<artifactId>ote.dependencies.feature</artifactId>
 	<packaging>eclipse-feature</packaging>
 	<name>OTE Runtime Feature</name>
 

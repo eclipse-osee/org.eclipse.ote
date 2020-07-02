@@ -5,14 +5,14 @@
 
 	<parent>
 		<groupId>org.eclipse.ote.build</groupId>
-		<artifactId>ote.runtime.parent</artifactId>
+		<artifactId>ote.dependencies.parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../ote.runtime.parent</relativePath>
+		<relativePath>../ote.dependencies.parent</relativePath>
 	</parent>
 
-	<artifactId>ote.runtime.p2</artifactId>
+	<artifactId>ote.dependencies.p2</artifactId>
 	<packaging>eclipse-repository</packaging>
-	<name>OTE Runtime - p2 Site </name>
+	<name>OTE Dependencies - p2 Site </name>
 	<version>1.0.0-SNAPSHOT</version>
 	       
 	<build>
