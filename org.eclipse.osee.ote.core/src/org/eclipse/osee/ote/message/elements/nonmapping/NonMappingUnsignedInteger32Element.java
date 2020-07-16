@@ -15,22 +15,48 @@ package org.eclipse.osee.ote.message.elements.nonmapping;
 
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
-import org.eclipse.osee.ote.message.data.MemoryResource;
-import org.eclipse.osee.ote.message.elements.SignedIntegerElement;
+import org.eclipse.osee.ote.message.Message;
+import org.eclipse.osee.ote.message.data.MessageData;
+import org.eclipse.osee.ote.message.elements.UnsignedInteger32Element;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
 /**
  * @author Michael P. Masterson
  */
 @SuppressWarnings("unused")
-public class NonMappingSignedIntegerElement extends SignedIntegerElement {
+public class NonMappingUnsignedInteger32Element extends UnsignedInteger32Element {
 
-   public NonMappingSignedIntegerElement(SignedIntegerElement element) {
+   /**
+    * Copy constructor.
+    * @param element 
+    */
+   public NonMappingUnsignedInteger32Element(UnsignedInteger32Element element) {
       super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),
          element.getMsb(), element.getLsb());
       for (Object obj : element.getElementPath()) {
          this.getElementPath().add(obj);
       }
+   }
+
+   public NonMappingUnsignedInteger32Element(Message message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
+      super(message, elementName, messageData, byteOffset, msb, lsb);
+   }
+
+   @Override
+   public String toString(Integer obj) {
+      throwNoMappingElementException();
+      return null;
+   }
+
+   @Override
+   public void setValue(Integer value) {
+      throwNoMappingElementException();
+   }
+
+   @Override
+   public Integer getValue() {
+      throwNoMappingElementException();
+      return 0;
    }
 
    public boolean check(ITestAccessor accessor, int value) {
@@ -63,7 +89,7 @@ public class NonMappingSignedIntegerElement extends SignedIntegerElement {
       return false;
    }
 
-      public boolean checkNot(ITestAccessor accessor, int value) {
+   public boolean checkNot(ITestAccessor accessor, int value) {
       throwNoMappingElementException();
       return false;
    }
@@ -243,36 +269,36 @@ public class NonMappingSignedIntegerElement extends SignedIntegerElement {
       throwNoMappingElementException();
    }
 
-   public Integer waitForValue(ITestEnvironmentAccessor accessor, Integer value, int milliseconds) throws InterruptedException {
+   public int waitForValue(ITestEnvironmentAccessor accessor, int value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
-   public Integer waitForNotValue(ITestEnvironmentAccessor accessor, Integer value, int milliseconds) throws InterruptedException {
-      throwNoMappingElementException();
-      return 0;
-   }
-
-   @Override
-   public Integer waitForRange(ITestEnvironmentAccessor accessor, Integer minValue, Integer maxValue, int milliseconds) throws InterruptedException {
+   public int waitForNotValue(ITestEnvironmentAccessor accessor, int value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
    @Override
-   public Integer waitForRange(ITestEnvironmentAccessor accessor, Integer minValue, boolean minInclusive, Integer maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public int waitForRange(ITestEnvironmentAccessor accessor, int minValue, int maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
    @Override
-   public Integer waitForNotRange(ITestEnvironmentAccessor accessor, Integer minValue, Integer maxValue, int milliseconds) throws InterruptedException {
+   public int waitForRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
    @Override
-   public Integer waitForNotRange(ITestEnvironmentAccessor accessor, Integer minValue, boolean minInclusive, Integer maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public int waitForNotRange(ITestEnvironmentAccessor accessor, int minValue, int maxValue, int milliseconds) throws InterruptedException {
+      throwNoMappingElementException();
+      return 0;
+   }
+
+   @Override
+   public int waitForNotRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
@@ -286,22 +312,4 @@ public class NonMappingSignedIntegerElement extends SignedIntegerElement {
    public boolean isNonMappingElement() {
       return true;
    }
-
-   @Override
-   public Integer getValue() {
-      throwNoMappingElementException();
-      return 0;
-   }
-
-   @Override
-   public void setValue(Integer value) {
-      throwNoMappingElementException();
-   }
-
-   @Override
-   public Integer valueOf(MemoryResource mem) {
-      throwNoMappingElementException();
-      return 0;
-   }
-
 }

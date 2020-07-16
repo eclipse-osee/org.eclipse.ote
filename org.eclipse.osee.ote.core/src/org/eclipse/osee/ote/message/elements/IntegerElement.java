@@ -22,9 +22,9 @@ import org.eclipse.osee.ote.message.elements.nonmapping.NonMappingIntegerElement
 /**
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
- * @deprecated Please use {@link UnsignedIntegerElement} instead
+ * @deprecated Please use {@link UnsignedInteger32Element} instead
  */
-public class IntegerElement extends UnsignedIntegerElement {
+public class IntegerElement extends UnsignedInteger32Element {
 
    @Override
    public void visit(IElementVisitor visitor) {
@@ -32,7 +32,7 @@ public class IntegerElement extends UnsignedIntegerElement {
    }
 
    public IntegerElement(Message message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
-      this(message, elementName, messageData, byteOffset, msb, lsb, msb, lsb);
+      super(message, elementName, messageData, byteOffset, msb, lsb);
    }
 
    public IntegerElement(Message message, String elementName, MessageData messageData, int bitOffset, int bitLength) {

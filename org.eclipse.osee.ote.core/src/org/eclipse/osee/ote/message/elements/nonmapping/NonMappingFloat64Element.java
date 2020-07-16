@@ -47,12 +47,6 @@ public class NonMappingFloat64Element extends Float64Element {
    }
 
    @Override
-   public void checkForwarding(ITestAccessor accessor, Float64Element cause, double value) throws InterruptedException {
-      throwNoMappingElementException();
-
-   }
-
-   @Override
    public boolean isNonMappingElement() {
       return true;
    }

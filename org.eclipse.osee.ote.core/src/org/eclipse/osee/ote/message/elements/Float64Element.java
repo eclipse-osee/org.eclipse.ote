@@ -19,7 +19,6 @@ import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.nonmapping.NonMappingFloat64Element;
-import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -36,36 +35,6 @@ public class Float64Element extends RealElement {
 
    public Float64Element(Message message, String elementName, MessageData messageData, int bitOffset, int bitLength) {
       super(message, elementName, messageData, bitOffset, bitLength);
-   }
-
-   /**
-    * Checks that this element correctly forwards a message sent from cause with the value passed.
-    * 
-    * @param cause The originator of the signal
-    * @param value The value sent by cause and being forwarded by this element
-    */
-   public void checkForwarding(ITestAccessor accessor, Float64Element cause, double value) throws InterruptedException {
-      /* check for 0 to begine */
-      check(accessor, 0d, 0);
-
-      /* Set the DP1 Mux Signal */
-      cause.set(accessor, value);
-
-      /* Chk Value on DP2 */
-      check(accessor, value, 1000);
-
-      /* Set DP1 to 0 */
-      cause.set(accessor, 0);
-
-      /* Init DP2 Mux to 0 */
-      set(accessor, 0);
-
-      /* Chk Value on DP2 is still set */
-      check(accessor, value, 500);
-
-      /* Chk DP2 is 0 for two-pulse signals and high for four-oulse signal */
-      check(accessor, 0d, 500);
-
    }
 
    /**

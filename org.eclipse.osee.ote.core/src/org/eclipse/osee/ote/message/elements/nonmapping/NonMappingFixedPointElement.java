@@ -16,7 +16,6 @@ package org.eclipse.osee.ote.message.elements.nonmapping;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.FixedPointElement;
-import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
 /**
  * @author Andy Jury
@@ -53,11 +52,6 @@ public class NonMappingFixedPointElement extends FixedPointElement {
 
    public NonMappingFixedPointElement(Message message, String elementName, MessageData messageData, double resolution, double minVal, boolean signed, int bitOffset, int bitLength) {
       super(message, elementName, messageData, resolution, minVal, signed, bitOffset, bitLength);
-   }
-
-   @Override
-   public void checkForwarding(ITestAccessor accessor, FixedPointElement cause, double value) throws InterruptedException {
-      throwNoMappingElementException();
    }
 
    /**

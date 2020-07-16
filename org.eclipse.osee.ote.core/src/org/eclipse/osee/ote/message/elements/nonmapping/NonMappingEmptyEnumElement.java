@@ -53,11 +53,6 @@ public class NonMappingEmptyEnumElement extends EmptyEnum_Element {
    }
 
    @Override
-   public void checkForwarding(ITestAccessor accessor, EmptyEnum_Element cause, EmptyEnum value) throws InterruptedException {
-      throwNoMappingElementException();
-   }
-
-   @Override
    public EmptyEnum elementMask(EmptyEnum value) {
       throwNoMappingElementException();
       return null;

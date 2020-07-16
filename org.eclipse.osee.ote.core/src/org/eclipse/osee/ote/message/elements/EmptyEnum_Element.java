@@ -14,13 +14,13 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.nonmapping.NonMappingEmptyEnumElement;
 import org.eclipse.osee.ote.message.enums.EmptyEnum;
-import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
 /**
  * @author Michael P. Masterson
@@ -37,36 +37,6 @@ public class EmptyEnum_Element extends DiscreteElement<EmptyEnum> {
 
    public EmptyEnum_Element(Message message, String elementName, MessageData messageData, int bitOffset, int bitLength) {
       super(message, elementName, messageData, bitOffset, bitLength);
-   }
-
-   /**
-    * Checks that this element correctly forwards a message sent from cause with the value passed.
-    * 
-    * @param cause The originator of the signal
-    * @param value The value sent by cause and being forwarded by this element
-    */
-   public void checkForwarding(ITestAccessor accessor, EmptyEnum_Element cause, EmptyEnum value) throws InterruptedException {
-      /* check for 0 to begin */
-      check(accessor, EmptyEnum.toEnum(0), 0);
-
-      /* Set the DP1 Signal */
-      cause.set(accessor, value);
-
-      /* Check Value on DP2 */
-      check(accessor, value, 1000);
-
-      /* Set DP1 to 0 */
-      cause.set(accessor, EmptyEnum.toEnum(0));
-
-      /* Set DP2 Mux to 0 */
-      set(accessor, EmptyEnum.toEnum(0));
-
-      /* Check Value on DP2 is still set */
-      check(accessor, value, 500);
-
-      /* Check DP2 is 0 for two-pulse signals and high for four-pulse signal */
-      check(accessor, EmptyEnum.toEnum(0), 500);
-
    }
 
    @Override

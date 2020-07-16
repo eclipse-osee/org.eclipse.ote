@@ -28,24 +28,24 @@ public class SignedIntegerElementTest {
 
    @Test
    public void test8bit() {
-      List<SignedIntegerElement> uuts = new ArrayList<>();
+      List<DiscreteElement<Byte>> uuts = new ArrayList<>();
       final HeaderData hd1 = new HeaderData("test_data 1", new MemoryResource(new byte[64], 0, 64));
       final HeaderData hd2 = new HeaderData("test_data 2", new MemoryResource(new byte[64], 2, 64));
       final HeaderData hd3= new HeaderData("test_data 3", new MemoryResource(new byte[64], 0, 64));
       final HeaderData hd4 = new HeaderData("test_data 4", new MemoryResource(new byte[64], 2, 64));
 
-      SignedIntegerElement element1 = new SignedIntegerElement(null, "Element1", hd1, 0, 0, 7);
-      SignedInteger8Element element2 = new SignedInteger8Element(null, "Element2", hd2, 0, 0);
-      SignedInteger8Element element3 = new SignedInteger8Element(null, "Element3", hd3, 0, 3);
-      SignedInteger8Element element4 = new SignedInteger8Element(null, "Element4", hd4, 0, 24);
+      SignedInteger8Element element1 = new SignedInteger8Element(null, "Element1", hd1, 2, 0, 7);
+      SignedInteger8Element element2 = new SignedInteger8Element(null, "Element2", hd2, 0, 0, 7);
+      SignedInteger8Element element3 = new SignedInteger8Element(null, "Element3", hd3, 0, 3, 10);
+      SignedInteger8Element element4 = new SignedInteger8Element(null, "Element4", hd4, 0, 24, 31);
       
       uuts.add(element1);
       uuts.add(element2);
       uuts.add(element3);
       uuts.add(element4);
 
-      int setVal = -128; // smallest value 
-      int expected = -128; 
+      byte setVal = -128; // smallest value 
+      byte expected = -128; 
       setAndCheck(uuts, setVal, expected);
       
        // Largest value
@@ -53,19 +53,8 @@ public class SignedIntegerElementTest {
       expected = 127;
       setAndCheck(uuts, setVal, expected);
       
-      // largest value + 1 should wrap to negative
-      setVal = 128;
-      expected = -128;
-      setAndCheck(uuts, setVal, expected);
-      
-      // smallest value - 1
-      setVal = -129;
-      expected = 127;
-      setAndCheck(uuts, setVal, expected);
-
-      
       // Set positive value but get negative
-      setVal = 255;
+      setVal = (byte) 0xFF;
       expected = -1;
       setAndCheck(uuts, setVal, expected);
 
@@ -73,24 +62,24 @@ public class SignedIntegerElementTest {
    
    @Test
    public void test16bit() {
-      List<SignedIntegerElement> uuts = new ArrayList<>();
+      List<DiscreteElement<Short>> uuts = new ArrayList<>();
       final HeaderData hd1 = new HeaderData("test_data 1", new MemoryResource(new byte[64], 0, 64));
       final HeaderData hd2 = new HeaderData("test_data 2", new MemoryResource(new byte[64], 2, 64));
       final HeaderData hd3= new HeaderData("test_data 3", new MemoryResource(new byte[64], 0, 64));
-      final HeaderData hd4 = new HeaderData("test_data 4", new MemoryResource(new byte[64], 2, 64));
+      final HeaderData hd4= new HeaderData("test_data 4", new MemoryResource(new byte[64], 0, 64));
 
-      SignedIntegerElement element1 = new SignedIntegerElement(null, "Element1", hd1, 0, 0, 15);
-      SignedInteger16Element element2 = new SignedInteger16Element(null, "Element2", hd2, 0, 0);
-      SignedInteger16Element element3 = new SignedInteger16Element(null, "Element3", hd3, 0, 2);
-      SignedInteger16Element element4 = new SignedInteger16Element(null, "Element4", hd4, 0, 16);
-      
+      DiscreteElement<Short> element1 = new SignedInteger16Element(null, "Element1", hd1, 0, 16, 31);
+      DiscreteElement<Short> element2 = new SignedInteger16Element(null, "Element2", hd2, 0, 0, 15);
+      DiscreteElement<Short> element3 = new SignedInteger16Element(null, "Element3", hd3, 0, 2, 17);
+      DiscreteElement<Short> element4 = new SignedInteger16Element(null, "Element4", hd4, 2, 0, 15);
+
       uuts.add(element1);
       uuts.add(element2);
       uuts.add(element3);
       uuts.add(element4);
 
-      int setVal = -32768; // smallest value 
-      int expected = -32768; 
+      short setVal = -32768; // smallest value 
+      short expected = -32768; 
       setAndCheck(uuts, setVal, expected);
       
        // Largest value
@@ -98,35 +87,24 @@ public class SignedIntegerElementTest {
       expected = 32767;
       setAndCheck(uuts, setVal, expected);
       
-      // largest value + 1 should wrap to negative
-      setVal = 32768;
-      expected = -32768;
-      setAndCheck(uuts, setVal, expected);
-      
-      // smallest value - 1
-      setVal = -32769;
-      expected = 32767;
-      setAndCheck(uuts, setVal, expected);
-
-      
       // Set full scale positive value but get negative
-      setVal = 0xFFFF;
+      setVal = (short) 0xFFFF;
       expected = -1;
       setAndCheck(uuts, setVal, expected);
    }
    
    @Test
    public void test32bit() {
-      List<SignedIntegerElement> uuts = new ArrayList<>();
+      List<DiscreteElement<Integer>> uuts = new ArrayList<>();
       final HeaderData hd1 = new HeaderData("test_data 1", new MemoryResource(new byte[64], 0, 64));
       final HeaderData hd2 = new HeaderData("test_data 2", new MemoryResource(new byte[64], 2, 64));
       final HeaderData hd3= new HeaderData("test_data 3", new MemoryResource(new byte[64], 0, 64));
       final HeaderData hd4 = new HeaderData("test_data 4", new MemoryResource(new byte[64], 2, 64));
 
-      SignedIntegerElement element1 = new SignedIntegerElement(null, "Element1", hd1, 0, 0, 31);
-      SignedInteger32Element element2 = new SignedInteger32Element(null, "Element2", hd2, 0, 0);
-      SignedInteger32Element element3 = new SignedInteger32Element(null, "Element3", hd3, 0, 4);
-      SignedInteger32Element element4 = new SignedInteger32Element(null, "Element4", hd4, 0, 16);
+      SignedInteger32Element element1 = new SignedInteger32Element(null, "Element1", hd1, 2, 0, 31);
+      SignedInteger32Element element2 = new SignedInteger32Element(null, "Element2", hd2, 0, 0, 31);
+      SignedInteger32Element element3 = new SignedInteger32Element(null, "Element3", hd3, 0, 4, 35);
+      SignedInteger32Element element4 = new SignedInteger32Element(null, "Element4", hd4, 0, 16, 47);
       
       uuts.add(element1);
       uuts.add(element2);
@@ -142,9 +120,6 @@ public class SignedIntegerElementTest {
       expected = Integer.MAX_VALUE;
       setAndCheck(uuts, setVal, expected);
       
-      // largest value + 1 doesn't fit in int primative so skipping
-      // smallest value - 1 doesn't fit in int primative so skipping
-      
       // Set full scale positive value but get negative
       setVal = 0xFFFFFFFF;
       expected = -1;
@@ -153,16 +128,16 @@ public class SignedIntegerElementTest {
    
    @Test
    public void test64bit() {
-      List<SignedLongIntegerElement> uuts = new ArrayList<>();
+      List<DiscreteElement<Long>> uuts = new ArrayList<>();
       final HeaderData hd1 = new HeaderData("test_data 1", new MemoryResource(new byte[64], 0, 64));
       final HeaderData hd2 = new HeaderData("test_data 2", new MemoryResource(new byte[66], 2, 66));
       final HeaderData hd3= new HeaderData("test_data 3", new MemoryResource(new byte[64], 0, 64));
       final HeaderData hd4 = new HeaderData("test_data 4", new MemoryResource(new byte[66], 2, 66));
 
-      SignedLongIntegerElement element1 = new SignedLongIntegerElement(null, "Element1", hd1, 0, 0, 63);
-      SignedInteger64Element element2 = new SignedInteger64Element(null, "Element2", hd2, 0, 0);
-      SignedInteger64Element element3 = new SignedInteger64Element(null, "Element3", hd3, 0, 5);
-      SignedInteger64Element element4 = new SignedInteger64Element(null, "Element4", hd4, 0, 16);
+      SignedInteger64Element element1 = new SignedInteger64Element(null, "Element1", hd1, 0, 0, 63);
+      SignedInteger64Element element2 = new SignedInteger64Element(null, "Element2", hd2, 0, 0, 63);
+      SignedInteger64Element element3 = new SignedInteger64Element(null, "Element3", hd3, 0, 5, 68);
+      SignedInteger64Element element4 = new SignedInteger64Element(null, "Element4", hd4, 0, 16, 79);
       
       uuts.add(element1);
       uuts.add(element2);
@@ -193,37 +168,21 @@ public class SignedIntegerElementTest {
       setAndCheck(uuts, setVal, expected);
    }
    
-   private void setAndCheck(List<SignedLongIntegerElement> uuts, long setVal, long expected) {
-      for (SignedLongIntegerElement el : uuts) {
+   private <T extends Comparable<T>> void setAndCheck(List<DiscreteElement<T>> uuts, T setVal, T expected) {
+      for (DiscreteElement<T> el : uuts) {
          setAndCheck(el, setVal, expected);
       }
    }
 
-   private void setAndCheck(SignedLongIntegerElement element1, long setVal, long expected) {
+   private <T extends Comparable<T>> void setAndCheck(DiscreteElement<T> element1, T setVal, T expected) {
       element1.setValue(setVal);
       check(element1, expected);
    }
 
-   private void check(SignedLongIntegerElement e, long expectedVals) {
+   private <T extends Comparable<T>> void check(DiscreteElement<T> e, T expectedVals) {
       Assert.assertEquals(
          String.format("corruption detect on %s: msb=%d, lsb=%d", e.getName(), e.getMsb(), e.getLsb()),
-         (Long) expectedVals, e.getValue());
+         expectedVals, e.getValue());
    }
 
-   private void setAndCheck(List<SignedIntegerElement> uuts, int setVal, int expected) {
-      for (SignedIntegerElement el : uuts) {
-         setAndCheck(el, setVal, expected);
-      }
-   }
-
-   private void setAndCheck(SignedIntegerElement element1, int setVal, int expected) {
-      element1.setValue(setVal);
-      check(element1, expected);
-   }
-
-   private void check(SignedIntegerElement e, int expectedVals) {
-      Assert.assertEquals(
-         String.format("corruption detect on %s: msb=%d, lsb=%d", e.getName(), e.getMsb(), e.getLsb()),
-         (Integer) expectedVals, e.getValue());
-   }
 }

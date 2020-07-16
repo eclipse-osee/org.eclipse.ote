@@ -13,13 +13,9 @@
 
 package org.eclipse.osee.ote.message.elements;
 
-import java.util.Arrays;
-import java.util.BitSet;
 import java.util.Collection;
 import java.util.ListIterator;
-import java.util.logging.Level;
 
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
@@ -58,36 +54,6 @@ public class CharElement extends DiscreteElement<Character> {
 	@Override
 	public CharElement switchMessages(Collection<? extends Message> messages) {
 		return (CharElement) super.switchMessages(messages);
-	}
-
-	/**
-	 * Checks that this element correctly forwards a message sent from cause with the value passed.
-	 * 
-	 * @param cause The originator of the signal
-	 * @param value The value sent by cause and being forwarded by this element
-	 */
-	public void checkForwarding(ITestAccessor accessor, CharElement cause, Character value) throws InterruptedException {
-		/* check for 0 to begine */
-		check(accessor, (char) 0, 0);
-
-		/* Set the DP1 Mux Signal */
-		cause.set(accessor, value);
-
-		/* Chk Value on DP2 */
-		check(accessor, value, 1000);
-
-		/* Set DP1 to 0 */
-		cause.set(accessor, (char) 0);
-
-		/* Init DP2 Mux to 0 */
-		set(accessor, (char) 0);
-
-		/* Chk Value on DP2 is still set */
-		check(accessor, value, 500);
-
-		/* Chk DP2 is 0 for two-pulse signals and high for four-oulse signal */
-		check(accessor, (char) 0, 500);
-
 	}
 
 	/**

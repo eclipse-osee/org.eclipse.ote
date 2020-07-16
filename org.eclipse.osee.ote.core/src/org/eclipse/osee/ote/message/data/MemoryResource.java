@@ -28,12 +28,9 @@ public class MemoryResource {
    private static final Charset US_ASCII_CHARSET = Charset.forName("US-ASCII");
 
    private final ByteArrayHolder byteArray;
-   //	private byte _data[];
    private int _offset;
    private final int _length;
    private volatile boolean _dataHasChanged;
-
-   //	private final ByteBuffer buffer;
 
    public MemoryResource(byte data[], int offset, int length) {
       byteArray = new ByteArrayHolder(data);
@@ -94,15 +91,12 @@ public class MemoryResource {
       if(fieldSize > 64) {
          throw new IllegalArgumentException(String.format("Field must be smaller than 64 bits, actual size = %d", fieldSize));
       }
-      final int beginByte = offset + msb / 8;
-      byte[] data = this.getData();
-      int endByte = offset + lsb / 8;
       int byteSize = fieldSize / 8;
       byte[] bytes = new byte[byteSize + 1]; 
-      long long1 = getLong(offset, msb, lsb);
+      long bitsAsLong = getLong(offset, msb, lsb);
       for(int i = bytes.length - 1 ; i > 0 ; i--) {
-         bytes[i] = (byte) long1;
-         long1 >>>= 8;
+         bytes[i] = (byte) bitsAsLong;
+         bitsAsLong >>>= 8;
       }
       bytes[0] = 0; // forcing the value to be non-negative by setting the first byte to all zeroes
       BigInteger retVal;
@@ -111,48 +105,55 @@ public class MemoryResource {
       return retVal;
       
    }
-
-   public final int getInt(int offset, int msb, int lsb) {
+   
+   public int getInt(int offset, int msb, int lsb, boolean isSigned) {
       offset += _offset;
-      final byte[] data = byteArray.get();
-      final int length = data.length;
-      final int beginByte = offset + msb / 8;
-      int endByte = offset + lsb / 8;
-      endByte = endByte < length ? endByte : length;
-      int v = data[beginByte] & 0xFF >>> msb % 8 & 0xFF;
-      if (endByte != beginByte) {
-         for (int i = beginByte + 1; i <= endByte - 1; i++) {
-            v <<= 8;
-            v |= data[i] & 0xFF;
+      if (lsb - msb <= 64) {
+         final byte[] data = byteArray.get();
+         final int length = data.length;
+         final int beginByte = offset + msb / 8;
+         int endByte = offset + lsb / 8;
+         int fieldSize = lsb - msb + 1;
+         endByte = endByte < length ? endByte : length;
+         int lsbShift = lsb % 8;
+         int v = data[beginByte] & 0xFF;
+         if (endByte != beginByte) {
+            for (int i = beginByte + 1; i <= endByte - 1; i++) {
+               v <<= 8;
+               v |= data[i] & 0xFF;
+            }
+            v <<= lsbShift + 1;
+            int lastByteShifted = (data[endByte] & 0xFF) >>> (7 - lsbShift);
+            v |= lastByteShifted;
+         } else {
+            v >>>= (7 - lsbShift);
          }
-         v <<= 8;
-         v |= data[endByte] & 0xFF;
+         int signExtensionShift = 32 - fieldSize;
+         int retVal = v << signExtensionShift; // remove the leading bits outside of the field
+         if(isSigned) {
+            retVal >>= signExtensionShift; // Guarantee sign extension
+         } else {
+            retVal >>>= signExtensionShift;
+         }
+         return retVal;
+      } else {
+         throw new IllegalArgumentException("gettting long with bits not supported");
       }
-      return v >>> 7 - lsb % 8;
+   }
+
+   /**
+    * @param offset
+    * @param msb
+    * @param lsb
+    * @return The int representation of the data with the sign extension removed.  The sign will remain if the field
+    * is 32 bits
+    */
+   public final int getInt(int offset, int msb, int lsb) {
+      return getInt(offset, msb, lsb, false);
    }
    
    public final int getSignedInt(int offset, int msb, int lsb) {
-      offset += _offset;
-      final byte[] data = byteArray.get();
-      final int length = data.length;
-      final int beginByte = offset + msb / 8;
-      byte firstByteData = data[beginByte];
-      int fieldSize = lsb - msb + 1;
-      int endByte = offset + lsb / 8;
-      endByte = endByte < length ? endByte : length;
-      
-      // using long so as not to lose the MS bits on the last left shift
-      long v = firstByteData & 0xFF; 
-      if (endByte != beginByte) {
-         for (int i = beginByte + 1; i <= endByte - 1; i++) {
-            v <<= 8;
-            v |= data[i] & 0xFF;
-         }
-         v <<= 8;
-         v |= data[endByte] & 0xFF;
-      }
-      int retVal = (int) (v >>> 7 - lsb % 8);
-      return retVal << (32 - fieldSize) >> (32 - fieldSize); // force sign extension
+      return getInt(offset, msb, lsb, true);
    }
 
    /**
@@ -203,11 +204,12 @@ public class MemoryResource {
          } else {
             v >>>= (7 - lsbShift);
          }
-         long retVal = v << (64 - fieldSize); // remove the leading bits outside of the field
+         int signShift = 64 - fieldSize;
+         long retVal = v << signShift; // remove the leading bits outside of the field
          if(isSigned) {
-            retVal >>= (64 - fieldSize); // Guarantee sign extension
+            retVal >>= signShift; // Guarantee sign extension
          } else {
-            retVal >>>= (64 - fieldSize);
+            retVal >>>= signShift;
          }
          return retVal;
       } else {
@@ -217,7 +219,6 @@ public class MemoryResource {
 
    public final String getASCIIString(int offset, int length) {
       offset += _offset;
-      // int size = ((lsb - msb) + 1) / 8;
 
       StringBuilder str = new StringBuilder(length);
       for (int i = 0; i < length; i++) {

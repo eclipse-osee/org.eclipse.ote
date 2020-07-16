@@ -47,11 +47,6 @@ public class NonMappingFloat32Element extends Float32Element {
    }
 
    @Override
-   public void checkForwarding(ITestAccessor accessor, Float32Element cause, double value) throws InterruptedException {
-      throwNoMappingElementException();
-   }
-
-   @Override
    public boolean isNonMappingElement() {
       return true;
    }

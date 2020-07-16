@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ote.message.elements;
 
+import java.math.BigInteger;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MemoryResource;
@@ -21,9 +23,9 @@ import org.eclipse.osee.ote.message.data.MessageData;
 /**
  * @author Michael P. Masterson
  */
-public class UnsignedInteger64Element extends NumericElement<Long> {
+public class UnsignedBigInteger64Element extends NumericElement<BigInteger> {
 
-   public UnsignedInteger64Element(Message msg, String elementName, MessageData messageData,
+   public UnsignedBigInteger64Element(Message msg, String elementName, MessageData messageData,
          int byteOffset, int msb, int lsb) {
       super(msg, elementName, messageData, byteOffset, msb, lsb);
    }
@@ -34,33 +36,33 @@ public class UnsignedInteger64Element extends NumericElement<Long> {
    }
 
    @Override
-   public void setValue(Long value) {
-      getMsgData().getMem().setLong(value, byteOffset, msb, lsb);
+   public void setValue(BigInteger obj) {
+      getMsgData().getMem().setBigInt(obj, byteOffset, msb, lsb);
    }
 
    @Override
-   public Long getValue() {
-      return getMsgData().getMem().getLong(byteOffset, msb, lsb);
+   public BigInteger getValue() {
+      return getMsgData().getMem().getUnsigned64(byteOffset, msb, lsb);
    }
 
    @Override
-   public String toString(Long obj) {
+   public String toString(BigInteger obj) {
       return obj.toString();
    }
 
    @Override
    public void parseAndSet(ITestEnvironmentAccessor accessor, String value) throws IllegalArgumentException {
-      this.set(accessor, Long.parseLong(value));
+      this.set(accessor, new BigInteger(value));
 
    }
 
    @Override
-   public Long valueOf(MemoryResource mem) {
-      return Long.valueOf(mem.getLong(byteOffset, msb, lsb));
+   public BigInteger valueOf(MemoryResource mem) {
+      return mem.getUnsigned64(byteOffset, msb, lsb);
    }
 
    @Override
-   public Long elementMask(Long value) {
+   public BigInteger elementMask(BigInteger value) {
       return value;
    }
 
@@ -70,11 +72,11 @@ public class UnsignedInteger64Element extends NumericElement<Long> {
    }
    
     public void setLong(long value) {
-       this.setValue(Long.valueOf(value));
+       this.setValue(BigInteger.valueOf(value));
     }
     
     public void setNoLog(long value) {
-       setValue(Long.valueOf(value));
+       setValue(BigInteger.valueOf(value));
     }
 
 }

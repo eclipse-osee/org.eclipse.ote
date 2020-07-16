@@ -16,6 +16,7 @@ package org.eclipse.osee.ote.message.tool.rec;
 import org.eclipse.osee.ote.message.elements.ArrayElement;
 import org.eclipse.osee.ote.message.elements.BooleanElement;
 import org.eclipse.osee.ote.message.elements.CharElement;
+import org.eclipse.osee.ote.message.elements.DiscreteElement;
 import org.eclipse.osee.ote.message.elements.Element;
 import org.eclipse.osee.ote.message.elements.EmptyEnum_Element;
 import org.eclipse.osee.ote.message.elements.EnumeratedElement;
@@ -25,12 +26,11 @@ import org.eclipse.osee.ote.message.elements.Float64Element;
 import org.eclipse.osee.ote.message.elements.IElementVisitor;
 import org.eclipse.osee.ote.message.elements.IntegerElement;
 import org.eclipse.osee.ote.message.elements.LongIntegerElement;
+import org.eclipse.osee.ote.message.elements.NumericElement;
 import org.eclipse.osee.ote.message.elements.RealElement;
 import org.eclipse.osee.ote.message.elements.RecordElement;
 import org.eclipse.osee.ote.message.elements.RecordMap;
-import org.eclipse.osee.ote.message.elements.SignedInteger16Element;
 import org.eclipse.osee.ote.message.elements.StringElement;
-import org.eclipse.osee.ote.message.elements.UnsignedIntegerElement;
 import org.eclipse.osee.ote.message.tool.rec.entry.ArrayElementEntry;
 import org.eclipse.osee.ote.message.tool.rec.entry.BooleanElementEntry;
 import org.eclipse.osee.ote.message.tool.rec.entry.CharElementEntry;
@@ -90,7 +90,7 @@ public class ElementEntryFactory {
       }
       
       @Override
-      public void asUnsignedIntegerElement(UnsignedIntegerElement element) {
+      public void asUnsignedIntegerElement(NumericElement<?> element) {
          entry = new IntegerElementEntry(element);
       }
 
@@ -135,7 +135,7 @@ public class ElementEntryFactory {
       }
 
       @Override
-      public void asSignedInteger16Element(SignedInteger16Element element) {
+      public void asSignedInteger16Element(DiscreteElement<Short> element) {
          entry = new SignedInteger16ElementEntry(element);
       }
 

@@ -15,19 +15,22 @@ package org.eclipse.osee.ote.message.elements.nonmapping;
 
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
-import org.eclipse.osee.ote.message.data.MemoryResource;
-import org.eclipse.osee.ote.message.elements.SignedLongIntegerElement;
+import org.eclipse.osee.ote.message.Message;
+import org.eclipse.osee.ote.message.data.MessageData;
+import org.eclipse.osee.ote.message.elements.UnsignedInteger64Element;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
 /**
- * 
  * @author Michael P. Masterson
  */
 @SuppressWarnings("unused")
-public class NonMappingSignedLong64Element extends SignedLongIntegerElement {
+public class NonMappingUnsignedInteger64Element extends UnsignedInteger64Element {
 
-
-   public NonMappingSignedLong64Element(SignedLongIntegerElement element) {
+   /**
+    * Copy constructor.
+    * @param element 
+    */
+   public NonMappingUnsignedInteger64Element(UnsignedInteger64Element element) {
       super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),
          element.getMsb(), element.getLsb());
       for (Object obj : element.getElementPath()) {
@@ -35,10 +38,25 @@ public class NonMappingSignedLong64Element extends SignedLongIntegerElement {
       }
    }
 
-   @Override
-   public void checkForwarding(ITestAccessor accessor, SignedLongIntegerElement cause, long value) throws InterruptedException {
+   public NonMappingUnsignedInteger64Element(Message message, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
+      super(message, elementName, messageData, byteOffset, msb, lsb);
+   }
 
+   @Override
+   public String toString(Long obj) {
       throwNoMappingElementException();
+      return null;
+   }
+
+   @Override
+   public void setValue(Long value) {
+      throwNoMappingElementException();
+   }
+
+   @Override
+   public Long getValue() {
+      throwNoMappingElementException();
+      return 0l;
    }
 
    public boolean check(ITestAccessor accessor, long value) {
@@ -71,7 +89,7 @@ public class NonMappingSignedLong64Element extends SignedLongIntegerElement {
       return false;
    }
 
-      public boolean checkNot(ITestAccessor accessor, long value) {
+   public boolean checkNot(ITestAccessor accessor, long value) {
       throwNoMappingElementException();
       return false;
    }
@@ -116,19 +134,19 @@ public class NonMappingSignedLong64Element extends SignedLongIntegerElement {
       throwNoMappingElementException();
    }
 
-   public void checkPulse(ITestAccessor accessor, long pulsedValue, long nonPulsedValue) throws InterruptedException {
+   public void checkPulse(ITestAccessor accessor, int pulsedValue, int nonPulsedValue) throws InterruptedException {
       throwNoMappingElementException();
    }
 
-   public void checkPulse(ITestAccessor accessor, CheckGroup checkGroup, long pulsedValue, long nonPulsedValue) throws InterruptedException {
+   public void checkPulse(ITestAccessor accessor, CheckGroup checkGroup, int pulsedValue, int nonPulsedValue) throws InterruptedException {
       throwNoMappingElementException();
    }
 
-   public void checkPulse(ITestAccessor accessor, long pulsedValue, long nonPulsedValue, int milliseconds) throws InterruptedException {
+   public void checkPulse(ITestAccessor accessor, int pulsedValue, int nonPulsedValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
    }
 
-   public void checkPulse(ITestAccessor accessor, CheckGroup checkGroup, long pulsedValue, long nonPulsedValue, int milliseconds) throws InterruptedException {
+   public void checkPulse(ITestAccessor accessor, CheckGroup checkGroup, int pulsedValue, int nonPulsedValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
    }
 
@@ -182,52 +200,52 @@ public class NonMappingSignedLong64Element extends SignedLongIntegerElement {
       return false;
    }
 
-   public long checkMaintain(ITestAccessor accessor, long value, int milliseconds) throws InterruptedException {
+   public int checkMaintain(ITestAccessor accessor, long value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
-   public long checkMaintain(ITestAccessor accessor, CheckGroup checkGroup, long value, int milliseconds) throws InterruptedException {
+   public int checkMaintain(ITestAccessor accessor, CheckGroup checkGroup, long value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
-   public long checkMaintainNot(ITestAccessor accessor, long value, int milliseconds) throws InterruptedException {
+   public int checkMaintainNot(ITestAccessor accessor, long value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
-   public long checkMaintainNot(ITestAccessor accessor, CheckGroup checkGroup, long value, int milliseconds) throws InterruptedException {
+   public int checkMaintainNot(ITestAccessor accessor, CheckGroup checkGroup, long value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
-   public long checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, long minValue, long maxValue, int milliseconds) throws InterruptedException {
+   public int checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, long minValue, long maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
-   public long checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, long minValue, boolean minInclusive, long maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public int checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, long minValue, boolean minInclusive, long maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
-   public long checkMaintainRange(ITestAccessor accessor, long minValue, long maxValue, int milliseconds) throws InterruptedException {
+   public int checkMaintainRange(ITestAccessor accessor, long minValue, long maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
-   public long checkMaintainRange(ITestAccessor accessor, long minValue, boolean minInclusive, long maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public int checkMaintainRange(ITestAccessor accessor, long minValue, boolean minInclusive, long maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
-   public long checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, long minValue, long maxValue, int milliseconds) throws InterruptedException {
+   public int checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, long minValue, long maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
 
-   public long checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, long minValue, boolean minInclusive, long maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public int checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, long minValue, boolean minInclusive, long maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
       return 0;
    }
@@ -243,7 +261,7 @@ public class NonMappingSignedLong64Element extends SignedLongIntegerElement {
    }
 
    @Override
-   public void setAndSend(ITestEnvironmentAccessor accessor, long value) {
+   public void setAndSend(ITestEnvironmentAccessor accessor, Long value) {
       throwNoMappingElementException();
    }
 
@@ -251,14 +269,14 @@ public class NonMappingSignedLong64Element extends SignedLongIntegerElement {
       throwNoMappingElementException();
    }
 
-   public Long waitForValue(ITestEnvironmentAccessor accessor, Long value, int milliseconds) throws InterruptedException {
+   public int waitForValue(ITestEnvironmentAccessor accessor, long value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
-      return 0l;
+      return 0;
    }
 
-   public Long waitForNotValue(ITestEnvironmentAccessor accessor, Long value, int milliseconds) throws InterruptedException {
+   public int waitForNotValue(ITestEnvironmentAccessor accessor, long value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
-      return 0l;
+      return 0;
    }
 
    @Override
@@ -294,22 +312,4 @@ public class NonMappingSignedLong64Element extends SignedLongIntegerElement {
    public boolean isNonMappingElement() {
       return true;
    }
-
-   @Override
-   public Long getValue() {
-      throwNoMappingElementException();
-      return 0l;
-   }
-
-   @Override
-   public void setValue(Long value) {
-      throwNoMappingElementException();
-   }
-
-   @Override
-   public Long valueOf(MemoryResource mem) {
-      throwNoMappingElementException();
-      return 0l;
-   }
-
 }

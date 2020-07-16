@@ -46,9 +46,9 @@ public interface IElementVisitor {
 
    void asLongIntegerElement(LongIntegerElement element);
 
-   void asSignedInteger16Element(SignedInteger16Element element);
+   void asSignedInteger16Element(DiscreteElement<Short> element);
 
    void asArrayElement(ArrayElement element);
 
-   void asUnsignedIntegerElement(UnsignedIntegerElement unsignedIntegerElement);
+   void asUnsignedIntegerElement(NumericElement<?> unsignedIntegerElement);
 }

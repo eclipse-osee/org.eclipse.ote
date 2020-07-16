@@ -1473,4 +1473,14 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
    abstract public T elementMask(T value);
 
+   /**
+    * Sets the element to the "value" passed and immediately sends the message that contains it..
+    * @param accessor 
+    * @param value The value to set.
+    */
+   public void setAndSend(ITestEnvironmentAccessor accessor, T value) {
+      this.set(accessor, value);
+      super.sendMessage();
+   }
+
 }

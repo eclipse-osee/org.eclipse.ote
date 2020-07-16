@@ -18,7 +18,6 @@ import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.IntegerElement;
-import org.eclipse.osee.ote.message.elements.UnsignedIntegerElement;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
 /**
@@ -68,15 +67,6 @@ public class NonMappingIntegerElement extends IntegerElement {
       return 0;
    }
    
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.UnsignedIntegerElement#checkForwarding(org.eclipse.osee.ote.message.interfaces.ITestAccessor, org.eclipse.osee.ote.message.elements.UnsignedIntegerElement, int)
-    */
-   @Override
-   public void checkForwarding(ITestAccessor accessor, UnsignedIntegerElement cause,
-         int value) throws InterruptedException {
-      super.checkForwarding(accessor, cause, value);
-   }
-
    public boolean check(ITestAccessor accessor, int value) {
       throwNoMappingElementException();
       return false;

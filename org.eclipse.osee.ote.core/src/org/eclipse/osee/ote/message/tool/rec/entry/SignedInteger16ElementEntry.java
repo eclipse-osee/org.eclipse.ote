@@ -15,20 +15,20 @@ package org.eclipse.osee.ote.message.tool.rec.entry;
 
 import java.nio.ByteBuffer;
 import org.eclipse.osee.ote.message.data.MemoryResource;
-import org.eclipse.osee.ote.message.elements.SignedInteger16Element;
+import org.eclipse.osee.ote.message.elements.DiscreteElement;
 
 public class SignedInteger16ElementEntry implements IElementEntry {
 
-   private final SignedInteger16Element element;
+   private final DiscreteElement<Short> element;
    private final byte[] nameAsBytes;
 
-   public SignedInteger16ElementEntry(SignedInteger16Element element) {
+   public SignedInteger16ElementEntry(DiscreteElement<Short> element) {
       this.element = element;
       nameAsBytes = element.getName().getBytes();
    }
 
    @Override
-   public SignedInteger16Element getElement() {
+   public DiscreteElement<Short> getElement() {
       return element;
    }
 

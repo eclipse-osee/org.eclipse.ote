@@ -46,17 +46,6 @@ public class NonMappingCharElement extends CharElement {
    }
 
    /**
-    * Checks that this element correctly forwards a message sent from cause with the value passed.
-    * 
-    * @param cause The originator of the signal
-    * @param value The value sent by cause and being forwarded by this element
-    */
-   public void checkForwarding(ITestAccessor accessor, CharElement cause, char value) throws InterruptedException {
-
-      throwNoMappingElementException();
-   }
-
-   /**
     * Verifies that the element is set to "value".
     * 
     * @param value Expected value

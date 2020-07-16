@@ -26,20 +26,20 @@ import org.junit.Test;
 /**
  * @author Michael P. Masterson
  */
-public class UnsignedInteger64ElementTest {
+public class UnsignedBigInteger64ElementTest {
 
    @Test
    public void test64bit() {
-      List<UnsignedInteger64Element> uuts = new ArrayList<>();
+      List<UnsignedBigInteger64Element> uuts = new ArrayList<>();
       final HeaderData hd1 = new HeaderData("test_data 1", new MemoryResource(new byte[66], 0, 66));
       final HeaderData hd2 = new HeaderData("test_data 2", new MemoryResource(new byte[66], 2, 66));
       final HeaderData hd3= new HeaderData("test_data 3", new MemoryResource(new byte[64], 0, 64));
       final HeaderData hd4 = new HeaderData("test_data 4", new MemoryResource(new byte[66], 2, 66));
 
-      UnsignedInteger64Element element1 = new UnsignedInteger64Element(null, "Element1", hd1, 2, 3);
-      UnsignedInteger64Element element2 = new UnsignedInteger64Element(null, "Element2", hd2, 0, 0);
-      UnsignedInteger64Element element3 = new UnsignedInteger64Element(null, "Element3", hd3, 0, 5);
-      UnsignedInteger64Element element4 = new UnsignedInteger64Element(null, "Element4", hd4, 3, 0);
+      UnsignedBigInteger64Element element1 = new UnsignedBigInteger64Element(null, "Element1", hd1, 2, 3, 66);
+      UnsignedBigInteger64Element element2 = new UnsignedBigInteger64Element(null, "Element2", hd2, 0, 0, 63);
+      UnsignedBigInteger64Element element3 = new UnsignedBigInteger64Element(null, "Element3", hd3, 0, 5, 68);
+      UnsignedBigInteger64Element element4 = new UnsignedBigInteger64Element(null, "Element4", hd4, 3, 0, 63);
       
       uuts.add(element1);
       uuts.add(element2);
@@ -72,22 +72,22 @@ public class UnsignedInteger64ElementTest {
       
    }
    
-   private void setAndCheck(List<UnsignedInteger64Element> uuts, long setVal, long expected) {
+   private void setAndCheck(List<UnsignedBigInteger64Element> uuts, long setVal, long expected) {
       setAndCheck(uuts, BigInteger.valueOf(setVal), BigInteger.valueOf(expected));
    }
    
-   private void setAndCheck(List<UnsignedInteger64Element> uuts, BigInteger setVal, BigInteger expected) {
-      for (UnsignedInteger64Element el : uuts) {
+   private void setAndCheck(List<UnsignedBigInteger64Element> uuts, BigInteger setVal, BigInteger expected) {
+      for (UnsignedBigInteger64Element el : uuts) {
          setAndCheck(el, setVal, expected);
       }
    }
 
-   private void setAndCheck(UnsignedInteger64Element element1, BigInteger setVal, BigInteger expected) {
+   private void setAndCheck(UnsignedBigInteger64Element element1, BigInteger setVal, BigInteger expected) {
       element1.setNoLog(setVal);
       check(element1, expected);
    }
 
-   private void check(UnsignedInteger64Element e, BigInteger expectedVal) {
+   private void check(UnsignedBigInteger64Element e, BigInteger expectedVal) {
       BigInteger actual = e.getValue();
       Assert.assertEquals(
          String.format("corruption detect on %s: msb=%d, lsb=%d, hexExp=%X, hexActual=%X", e.getName(), e.getMsb(), e.getLsb(), expectedVal.longValue(), actual.longValue()),
@@ -110,7 +110,7 @@ public class UnsignedInteger64ElementTest {
                e[count++] = new LongIntegerElement(null, "Element@" + k, hd, 0, k, k);
             }
             for (j = i; j < 65 - width; j += width) {
-               e[count++] = new UnsignedInteger64Element(null, "Element@" + j, hd, 0, j);
+               e[count++] = new UnsignedBigInteger64Element(null, "Element@" + j, hd, 0, j, j + 63);
             }
             // fill remaining bits with 1 bit signals
             for (int k = j; k < 64; k++) {
@@ -150,8 +150,8 @@ public class UnsignedInteger64ElementTest {
       for (int i = 0; i < length; i++) {
          long val = r.nextLong();
          Element unassignedEl = e[i];
-         if(unassignedEl instanceof UnsignedInteger64Element) {
-            UnsignedInteger64Element el = (UnsignedInteger64Element) unassignedEl;
+         if(unassignedEl instanceof UnsignedBigInteger64Element) {
+            UnsignedBigInteger64Element el = (UnsignedBigInteger64Element) unassignedEl;
             generateUnsigned64(el, expectedVals, val, i);
          } else {
             LongIntegerElement el = (LongIntegerElement) unassignedEl;
@@ -166,7 +166,7 @@ public class UnsignedInteger64ElementTest {
     * @param val
     * @param i
     */
-   private void generateUnsigned64(UnsignedInteger64Element el, long[] expectedVals, long val, int i) {
+   private void generateUnsigned64(UnsignedBigInteger64Element el, long[] expectedVals, long val, int i) {
       el.setValue(BigInteger.valueOf(val));
       int width = el.getLsb() - el.getMsb() + 1;
       if (width < 64) {
@@ -200,8 +200,8 @@ public class UnsignedInteger64ElementTest {
       for (int i = length - 1; i >= 0; i--) {
          long val = r.nextLong();
          Element unassignedEl = e[i];
-         if(unassignedEl instanceof UnsignedInteger64Element) {
-            UnsignedInteger64Element el = (UnsignedInteger64Element) unassignedEl;
+         if(unassignedEl instanceof UnsignedBigInteger64Element) {
+            UnsignedBigInteger64Element el = (UnsignedBigInteger64Element) unassignedEl;
             generateUnsigned64(el, expectedVals, val, i);
          } else {
             LongIntegerElement el = (LongIntegerElement) unassignedEl;
@@ -215,8 +215,8 @@ public class UnsignedInteger64ElementTest {
          long expected = expectedVals[i];
          Element unassignedEl = e[i];
          long actual;
-         if(unassignedEl instanceof UnsignedInteger64Element) {
-            UnsignedInteger64Element el = (UnsignedInteger64Element) unassignedEl;
+         if(unassignedEl instanceof UnsignedBigInteger64Element) {
+            UnsignedBigInteger64Element el = (UnsignedBigInteger64Element) unassignedEl;
             actual = el.getValue().longValue();
          } else {
             LongIntegerElement el = (LongIntegerElement) unassignedEl;

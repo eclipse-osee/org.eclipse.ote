@@ -14,6 +14,7 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
@@ -92,35 +93,6 @@ public class FixedPointElement extends RealElement {
 
    public void setNoLog(ITestEnvironmentAccessor accessor, double value) {
       setValue(value);
-   }
-
-   /**
-    * Checks that this element correctly forwards a message sent from cause with the value passed.
-    * 
-    * @param cause The originator of the signal
-    * @param value The value sent by cause and being forwarded by this element
-    */
-   public void checkForwarding(ITestAccessor accessor, FixedPointElement cause, double value) throws InterruptedException {
-      /* check for 0 to begine */
-      check(accessor, 0d, 0);
-
-      /* Set the DP1 Mux Signal */
-      cause.set(accessor, value);
-
-      /* Chk Value on DP2 */
-      check(accessor, value, 1000);
-
-      /* Set DP1 to 0 */
-      cause.set(accessor, 0);
-
-      /* Init DP2 Mux to 0 */
-      set(accessor, 0);
-
-      /* Chk Value on DP2 is still set */
-      check(accessor, value, 500);
-
-      /* Chk DP2 is 0 for two-pulse signals and high for four-oulse signal */
-      check(accessor, 0d, 500);
    }
 
    private double toFixed(long value, boolean signed, double resolution, double offset) {

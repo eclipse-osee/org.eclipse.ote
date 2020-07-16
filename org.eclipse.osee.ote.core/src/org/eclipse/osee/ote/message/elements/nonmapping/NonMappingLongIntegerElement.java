@@ -17,7 +17,6 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
-import org.eclipse.osee.ote.message.elements.IntegerElement;
 import org.eclipse.osee.ote.message.elements.LongIntegerElement;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
@@ -58,17 +57,6 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
    public Long getValue() {
       throwNoMappingElementException();
       return 0L;
-   }
-
-   /**
-    * Checks that this element correctly forwards a message sent from cause with the value passed.
-    * 
-    * @param cause The originator of the signal
-    * @param value The value sent by cause and being forwarded by this element
-    */
-   public void checkForwarding(ITestAccessor accessor, IntegerElement cause, int value) throws InterruptedException {
-
-      throwNoMappingElementException();
    }
 
    /**

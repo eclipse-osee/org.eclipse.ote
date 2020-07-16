@@ -72,39 +72,6 @@ public class UnsignedLongIntegerElement extends NumericElement<Long> {
    }
 
    /**
-    * Checks that this element correctly forwards a message sent from cause with the value passed.
-    * @param accessor 
-    * @param cause The originator of the signal
-    * @param value The value sent by cause and being forwarded by this element
-    * @throws InterruptedException 
-    */
-   public void checkForwarding(ITestAccessor accessor, UnsignedLongIntegerElement cause,
-         long value) throws InterruptedException {
-      value = removeSign(value);
-      /* check for 0 to begine */
-      check(accessor, 0, 0);
-
-      /* Set the DP1 Mux Signal */
-      cause.set(accessor, value);
-
-      /* Chk Value on DP2 */
-      check(accessor, value, 1000);
-
-      /* Set DP1 to 0 */
-      cause.set(accessor, 0);
-
-      /* Init DP2 Mux to 0 */
-      set(accessor, 0);
-
-      /* Chk Value on DP2 is still set */
-      check(accessor, value, 500);
-
-      /* Chk DP2 is 0 for two-pulse signals and high for four-pulse signal */
-      check(accessor, 0, 500);
-
-   }
-
-   /**
     * Verifies that the element is set to "value" within the number of "milliseconds" passed.
     * @param accessor 
     * @param value Expected value.

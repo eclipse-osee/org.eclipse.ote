@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ote.message.elements;
 
+import java.util.Collection;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MemoryResource;
@@ -74,5 +76,13 @@ public class BooleanElement extends DiscreteElement<Boolean> {
    public Boolean elementMask(Boolean value) {
       return value;
    }
-
+   
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ote.message.elements.Element#switchMessages(java.util.Collection)
+    */
+   @Override
+   public BooleanElement switchMessages(Collection<? extends Message> messages) {
+      return (BooleanElement) super.switchMessages(messages);
+   }
+   
 }
