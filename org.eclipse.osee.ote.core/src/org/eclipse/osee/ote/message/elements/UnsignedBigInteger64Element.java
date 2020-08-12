@@ -14,6 +14,7 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.math.BigInteger;
+import java.util.Collection;
 
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.Message;
@@ -77,6 +78,11 @@ public class UnsignedBigInteger64Element extends NumericElement<BigInteger> {
     
     public void setNoLog(long value) {
        setValue(BigInteger.valueOf(value));
+    }
+    
+    @Override
+    public UnsignedBigInteger64Element switchMessages(Collection<? extends Message> messages) {
+       return (UnsignedBigInteger64Element) super.switchMessages(messages);
     }
 
 }

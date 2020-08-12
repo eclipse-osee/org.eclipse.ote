@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ote.message.elements;
 
+import java.util.Collection;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MemoryResource;
@@ -68,13 +70,18 @@ public class UnsignedInteger64Element extends NumericElement<Long> {
    protected Element getNonMappingElement() {
       return this;
    }
-   
-    public void setLong(long value) {
-       this.setValue(Long.valueOf(value));
-    }
-    
-    public void setNoLog(long value) {
-       setValue(Long.valueOf(value));
-    }
+
+   public void setLong(long value) {
+      this.setValue(Long.valueOf(value));
+   }
+
+   public void setNoLog(long value) {
+      setValue(Long.valueOf(value));
+   }
+
+   @Override
+   public UnsignedInteger64Element switchMessages(Collection<? extends Message> messages) {
+      return (UnsignedInteger64Element) super.switchMessages(messages);
+   }
 
 }
