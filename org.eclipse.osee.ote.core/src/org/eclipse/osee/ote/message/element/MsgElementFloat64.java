@@ -1,0 +1,35 @@
+/*********************************************************************
+ * Copyright (c) 2020 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+package org.eclipse.osee.ote.message.element;
+
+import org.eclipse.osee.ote.message.Message;
+import org.eclipse.osee.ote.message.elements.Float64Element;
+import org.eclipse.osee.ote.message.interfaces.IMessageRequestor;
+
+/**
+ * Represent any message field as 64 bit float
+ * 
+ * @author Michael P. Masterson
+ */
+public class MsgElementFloat64 extends MsgElementReal {
+
+   /**
+    * @param sourceMessageClass
+    * @param sourceElement
+    * @param requestor 
+    */
+   public MsgElementFloat64(Class<? extends Message> sourceMessageClass, Float64Element sourceElement, IMessageRequestor<Message> requestor) {
+      super(sourceMessageClass, sourceElement, requestor);
+   }
+
+}
