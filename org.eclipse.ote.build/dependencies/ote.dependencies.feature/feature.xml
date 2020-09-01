@@ -20,22 +20,6 @@
          id="org.eclipse.eclemma.feature"
          version="0.0.0"/>
 
-<!--   <includes
-         id="de.itemis.xtext.antlr.feature"
-         version="0.0.0"/> 
-
-   <includes
-         id="de.itemis.xtext.antlr.sdk"
-         version="0.0.0"/>
-
-   <includes
-         id="de.itemis.xtext.antlr.source.feature"
-         version="0.0.0"/> -->
-
-   <includes
-         id="org.eclipse.aether.maven.feature"
-         version="0.0.0"/>
-
    <includes
          id="org.eclipse.birt"
          version="0.0.0"/>
@@ -325,10 +309,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.graphiti.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.help"
          version="0.0.0"/>
 
@@ -473,50 +453,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.xtext.examples"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.examples.source"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.runtime"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.runtime.source"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.sdk"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.ui"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.ui.source"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.xbase"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.xbase.lib"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.xbase.lib.source"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.xtext.xbase.source"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.nebula.widgets.ganttchart.feature"
          version="0.0.0"/>
 
@@ -643,7 +579,7 @@
    <includes
          id="org.eclipse.equinox.p2.user.ui"
          version="0.0.0"/>
-
+         
    <includes
          id="org.eclipse.team.svn"
          version="0.0.0"/>
@@ -757,15 +693,11 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.graphiti.source.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.ecf.core.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.ecf.core.source.feature"
+         id="org.eclipse.ecf.core.feature.source"
          version="0.0.0"/>
 
    <includes
@@ -773,7 +705,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.ecf.filetransfer.source.feature"
+         id="org.eclipse.ecf.filetransfer.feature.source"
          version="0.0.0"/>
 
    <includes
@@ -781,7 +713,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.ecf.core.ssl.source.feature"
+         id="org.eclipse.ecf.core.ssl.feature.source"
          version="0.0.0"/>
 
    <includes
@@ -797,7 +729,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.ecf.filetransfer.httpclient4.source.feature"
+         id="org.eclipse.ecf.filetransfer.httpclient4.feature.source"
          version="0.0.0"/>
 
    <includes
@@ -805,7 +737,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.ecf.filetransfer.httpclient4.ssl.source.feature"
+         id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.source"
          version="0.0.0"/>
 
    <includes
@@ -813,11 +745,51 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.ecf.filetransfer.ssl.source.feature"
+         id="org.eclipse.ecf.filetransfer.ssl.feature.source"
+         version="0.0.0"/>
+
+  <includes
+         id="org.eclipse.gmf.examples.runtime.ui.pde"
+         version="0.0.0"/>
+
+  <includes
+         id="org.eclipse.gmf.examples.runtime"
+         version="0.0.0"/>
+
+  <includes
+         id="org.eclipse.gmf.runtime.notation.sdk"
+         version="0.0.0"/>
+
+  <includes
+         id="org.eclipse.gmf.runtime.notation"
+         version="0.0.0"/>
+
+  <includes
+         id="org.eclipse.gmf.runtime.notation.source"
+         version="0.0.0"/>
+
+  <includes
+         id="org.eclipse.gmf.runtime.sdk"
+         version="0.0.0"/>
+
+  <includes
+         id="org.eclipse.gmf.runtime.thirdparty"
+         version="0.0.0"/>
+
+  <includes
+         id="org.eclipse.gmf.runtime.thirdparty.source"
+         version="0.0.0"/>
+
+  <includes
+         id="org.eclipse.gmf"
+         version="0.0.0"/>
+
+  <includes
+         id="org.eclipse.gmf.source"
          version="0.0.0"/>
 
    <requires>
-      <import plugin="org.junit" version="4.11.0" match="equivalent"/>
+      <import plugin="org.junit" version="4.12.0" match="equivalent"/>
    </requires>
 
    <plugin
@@ -891,27 +863,6 @@
 
    <plugin
          id="org.eclipse.equinox.concurrent"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.gmf.runtime.notation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.gmf.runtime.notation.edit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.gmf.tooling.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
