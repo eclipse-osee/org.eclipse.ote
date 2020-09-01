@@ -85,4 +85,11 @@ public class SimpleIOWriter implements IOWriter {
       return namespace.toString();
    }
 
+   /**
+    * 
+    */
+   public void destroy() {
+      System.out.println("Killing Simple IO Writer");
+   }
+
 }

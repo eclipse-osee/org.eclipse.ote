@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="org.eclipse.ote.simple.io">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.ote.simple.io">
    <implementation class="org.eclipse.ote.simple.io.StartSimpleIoComponent"/>
    <reference bind="setNamespaceMapper" cardinality="1..1" interface="org.eclipse.ote.message.manager.NamespaceMapper" name="NamespaceMapper" policy="dynamic"/>
    <reference bind="bindMsgManager" cardinality="1..1" interface="org.eclipse.osee.ote.message.interfaces.IMessageManager" name="IMessageManager" policy="dynamic"/>
+   <reference bind="bindEnv" cardinality="1..1" interface="org.eclipse.osee.ote.core.environment.TestEnvironment" name="TestEnvironment" policy="dynamic" unbind="unbindEnv"/>
 </scr:component>

@@ -14,6 +14,8 @@
 package org.eclipse.ote.simple.test.environment;
 
 import java.util.Hashtable;
+
+import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 import org.eclipse.osee.ote.server.TestEnvironmentFactory;
@@ -30,7 +32,7 @@ public class SimpleTestEnvironmentStartupFactory implements TestEnvironmentFacto
       SimpleTestEnvironment env = new SimpleTestEnvironment(runtimeLibraryManager);
 
       FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(
-         new String[] {SimpleTestEnvironment.class.getName()}, env, new Hashtable<String, Object>());
+         new String[] {TestEnvironment.class.getName(), SimpleTestEnvironment.class.getName()}, env, new Hashtable<String, Object>());
       return env;
    }
 

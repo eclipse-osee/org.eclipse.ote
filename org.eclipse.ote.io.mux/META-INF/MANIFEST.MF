@@ -13,5 +13,7 @@ Import-Package: org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.ote.message.interfaces,
  org.eclipse.osee.ote.messaging.dds,
  org.eclipse.osee.ote.messaging.dds.entity,
- org.eclipse.ote.io
-Export-Package: org.eclipse.ote.io.mux
+ org.eclipse.ote.io,
+ org.eclipse.ote.message.manager
+Export-Package: org.eclipse.ote.io.mux,
+ org.eclipse.ote.io.mux.lookup

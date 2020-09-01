@@ -90,4 +90,11 @@ public class SimpleMuxWriter implements IOWriter {
       return namespace.toString();
    }
 
+   /**
+    * 
+    */
+   public void destroy() {
+      System.out.println("Killing Simple Mux Writer");
+   }
+
 }

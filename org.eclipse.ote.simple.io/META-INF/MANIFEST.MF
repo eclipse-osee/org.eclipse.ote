@@ -21,8 +21,10 @@ Import-Package: org.eclipse.osee.framework.logging,
  org.eclipse.osee.ote.message.interfaces,
  org.eclipse.osee.ote.message.io,
  org.eclipse.osee.ote.message.listener,
+ org.eclipse.ote.bytemessage,
  org.eclipse.ote.io,
  org.eclipse.ote.io.mux,
+ org.eclipse.ote.io.mux.lookup,
  org.eclipse.ote.message.lookup,
  org.eclipse.ote.message.manager,
  org.eclipse.ote.services.core,
@@ -33,4 +35,5 @@ Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.ote.messaging.dds
 Export-Package: org.eclipse.ote.simple.io,
  org.eclipse.ote.simple.io.manager,
- org.eclipse.ote.simple.io.message
+ org.eclipse.ote.simple.io.message,
+ org.eclipse.ote.simple.io.message.lookup
