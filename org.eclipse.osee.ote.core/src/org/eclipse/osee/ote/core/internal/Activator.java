@@ -16,7 +16,6 @@ package org.eclipse.osee.ote.core.internal;
 import java.util.Hashtable;
 import java.util.logging.Level;
 
-import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.OteProperties;
@@ -47,7 +46,6 @@ public class Activator implements BundleActivator {
    private ConsoleCommandManager consoleCommandManager;
    private StandardShell stdShell;
    private ServiceRegistration consoleCommandRegistration;
-   private ServiceDependencyTracker serviceDependencyTracker;
    private MessageIoManagementStarter messageIoManagementStarter;
    private ServiceTracker testEnvTracker;
 
@@ -66,9 +64,6 @@ public class Activator implements BundleActivator {
       consoleCommandRegistration =
          context.registerService(ICommandManager.class.getName(), consoleCommandManager, new Hashtable());
 
-      serviceDependencyTracker = new ServiceDependencyTracker(bundleContext, new StatusBoardRegistrationHandler());
-      serviceDependencyTracker.open();
-      
       testEnvTracker = new ServiceTracker(context, TestEnvironmentInterface.class.getName(), null);
       testEnvTracker.open(true);
       
@@ -78,7 +73,6 @@ public class Activator implements BundleActivator {
 
    @Override
    public void stop(BundleContext context) throws Exception {
-      serviceDependencyTracker.close();
       closeAllValidServiceTrackers();
       unregisterTestEnvironment();
       if (stdShell != null) {

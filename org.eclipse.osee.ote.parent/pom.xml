@@ -226,9 +226,18 @@
 				</executions>
 				<!-- optional excludes -->
 				<configuration>
-					<excludes>
-						<plugin id="sourcefeature.bundle.nosource" />
-						<feature id="sourcefeature.feature.nosource" />
+					<excludes> 
+					<!-- Hopefully these will be removed from here once the jetty source issue is resolved.
+						 Right now, there are two jetty versions included in the ote.dependencies.p2 build
+						 but only one source, and it causes a build error.  This is due to the current
+						 0.26.0 OSEE build needing newer versions than are in Photon.  When the OSEE build
+						 moves past Photon, these bundles should be able to be removed from here. -->
+						<plugin id="org.eclipse.jetty.http" />
+						<plugin id="org.eclipse.jetty.io" />
+						<plugin id="org.eclipse.jetty.security" />
+						<plugin id="org.eclipse.jetty.server" />
+						<plugin id="org.eclipse.jetty.servlet" />
+						<plugin id="org.eclipse.jetty.util" />
 					</excludes>
 				</configuration>
 			</plugin>

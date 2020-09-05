@@ -309,6 +309,14 @@
          version="0.0.0"/>
 
    <includes
+         id="org.eclipse.graphiti.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.graphiti.feature.source"
+         version="0.0.0"/>
+
+   <includes
          id="org.eclipse.help"
          version="0.0.0"/>
 
@@ -326,6 +334,10 @@
 
    <includes
          id="org.eclipse.jgit.http.apache"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.launchbar"
          version="0.0.0"/>
 
    <includes
@@ -405,6 +417,10 @@
          version="0.0.0"/>
 
    <includes
+         id="org.eclipse.tm.terminal.control.feature"
+         version="0.0.0"/>
+
+   <includes
          id="org.eclipse.wb.core.feature"
          version="0.0.0"/>
 
@@ -430,6 +446,14 @@
 
    <includes
          id="org.eclipse.wb.xwt.feature"
+         version="0.0.0"/>
+         
+  <includes
+         id="org.eclipse.wst.common_core.feature"
+         version="0.0.0"/>
+
+  <includes
+         id="org.eclipse.wst.common_ui.feature"
          version="0.0.0"/>
 
    <includes
@@ -787,7 +811,7 @@
   <includes
          id="org.eclipse.gmf.source"
          version="0.0.0"/>
-
+         
    <requires>
       <import plugin="org.junit" version="4.12.0" match="equivalent"/>
    </requires>
@@ -926,6 +950,34 @@
 
    <plugin
          id="com.google.gson"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.tools.templates.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.tools.templates.freemarker"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+              
+   <plugin
+         id="org.freemarker"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.tools.templates.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

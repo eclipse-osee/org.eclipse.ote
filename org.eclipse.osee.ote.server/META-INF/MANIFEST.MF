@@ -6,8 +6,7 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-Description: OTE Server
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Import-Package: org.apache.felix.service.command;status=provisional;version="0.8.0",
- org.eclipse.core.runtime,
+Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.connection.service,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.util,
@@ -43,4 +42,5 @@ Export-Package: org.eclipse.osee.ote.server
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
 Require-Bundle: net.jini,
- jms.libraries
+ jms.libraries,
+ org.apache.felix.gogo.runtime

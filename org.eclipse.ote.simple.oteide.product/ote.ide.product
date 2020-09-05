@@ -41,7 +41,6 @@ https://wiki.eclipse.org/OSEE/OTE/Users_Guide
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -49,7 +48,6 @@ https://wiki.eclipse.org/OSEE/OTE/Users_Guide
    </plugins>
 
    <features>
-      <feature id="com.mountainminds.eclemma.feature"/>
       <feature id="org.eclipse.cdt"/>
       <feature id="org.eclipse.cdt.gdb"/>
       <feature id="org.eclipse.cdt.gdb.source"/>
@@ -64,6 +62,7 @@ https://wiki.eclipse.org/OSEE/OTE/Users_Guide
       <feature id="org.eclipse.cdt.sdk"/>
       <feature id="org.eclipse.e4.rcp"/>
       <feature id="org.eclipse.e4.rcp.source"/>
+      <feature id="org.eclipse.eclemma.feature"/>
       <feature id="org.eclipse.egit"/>
       <feature id="org.eclipse.emf.ecore"/>
       <feature id="org.eclipse.emf.common"/>
@@ -74,10 +73,7 @@ https://wiki.eclipse.org/OSEE/OTE/Users_Guide
       <feature id="org.eclipse.mylyn.commons.notifications"/>
       <feature id="org.eclipse.mylyn.commons.repositories"/>
       <feature id="org.eclipse.mylyn.discovery"/>
-      <feature id="org.eclipse.mylyn.gerrit.feature"/>
       <feature id="org.eclipse.mylyn.monitor"/>
-      <feature id="org.eclipse.mylyn.reviews.feature"/>
-      <feature id="org.eclipse.mylyn_feature"/>
       <feature id="org.eclipse.nebula.widgets.xviewer.feature"/>
       <feature id="org.eclipse.osee.client.ote.feature"/>
       <feature id="org.eclipse.osee.client.ote.feature.source"/>
