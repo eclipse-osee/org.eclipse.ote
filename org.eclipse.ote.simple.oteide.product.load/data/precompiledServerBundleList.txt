@@ -1,9 +1,11 @@
 org.eclipse.equinox.cm
 					org.eclipse.ote.bytemessage
 					org.eclipse.ote.io
+					org.eclipse.ote.io.mux
 					org.eclipse.ote.message.lookup
 					org.eclipse.ote.services.core
 					org.eclipse.ote.simple.test.environment
 					org.eclipse.ote.simple.io
 					org.eclipse.ote.statemachine
+					org.hsqldb
 			
