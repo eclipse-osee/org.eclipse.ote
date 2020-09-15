@@ -23,6 +23,7 @@ import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.ReturnFormatter;
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
+import org.eclipse.osee.ote.core.environment.UutApi;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
@@ -141,6 +142,11 @@ public class TestLogger extends Logger implements ITestLogger {
    @Override
    public void testpoint(ITestEnvironmentAccessor env, TestScript script, TestCase testCase, ITestPoint testPoint) {
       log(new TestPointRecord(env, script, testCase, testPoint));
+   }
+   
+   @Override
+   public void testpoint(UutApi api, ITestPoint testPoint) {
+      log(new TestPointRecord(api, testPoint));
    }
 
    /**

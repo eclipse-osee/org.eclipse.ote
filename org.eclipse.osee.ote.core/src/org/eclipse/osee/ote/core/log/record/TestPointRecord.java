@@ -14,20 +14,24 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.logging.Level;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
+import org.eclipse.osee.ote.core.environment.UutApi;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
 import org.eclipse.osee.ote.core.log.TestLevel;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -51,7 +55,8 @@ public class TestPointRecord extends TestRecord {
     * 
     * @param source
     *            The object requesting the logging.
-    * @param accessor
+    * @param script 
+    * @param testCase
     *            The test case the test point is in.
     * @param testPoint
     *            The TestSubPoint object for the test point.
@@ -59,28 +64,24 @@ public class TestPointRecord extends TestRecord {
     *            <b>True </b> if a timestamp should be recorded, <b>False </b>
     *            if not.
     */
-   public TestPointRecord(ITestEnvironmentAccessor source, TestScript script, TestCase accessor, ITestPoint testPoint, boolean timeStamp) {
+   public TestPointRecord(ITestEnvironmentAccessor source, TestScript script, TestCase testCase, ITestPoint testPoint, boolean timeStamp) {
       super(source, TestLevel.TEST_POINT, "", timeStamp);
       this.testPoint = testPoint;
       script.__addTestPoint(testPoint.isPass());
-      // this.testCase = accessor.getTestCase();
-      if (accessor == null) {
-         // OseeLog.log(Activator.class, Level.INFO, "test case null");
-      } else if (accessor.getTestScript() == null) {
+      if (testCase != null && testCase.getTestScript() == null) {
          OseeLog.log(TestEnvironment.class, Level.INFO, "test script null");
-      }
-      if (testPoint == null) {
-         OseeLog.log(TestEnvironment.class, Level.INFO, "test point null");
       }
       this.number = script.__recordTestPoint(testPoint.isPass());
    }
-
+   
    /**
     * TestPointRecord Constructor. Sets up a test point record of the result of
     * the test point
     * 
     * @param source
     *            The object requesting the logging.
+    * @param script 
+    * @param testCase 
     * @param testPoint
     *            The TestPoint object for the test point.
     */
@@ -163,6 +164,14 @@ public class TestPointRecord extends TestRecord {
    public TestPointRecord(ITestEnvironmentAccessor source, TestScript script, TestCase accessor, String testPointName, String expected, String actual,
       boolean passed) {
       this(source, script, accessor, testPointName, expected, actual, passed, true);
+   }
+
+   /**
+    * @param api
+    * @param testPoint
+    */
+   public TestPointRecord(UutApi api, ITestPoint testPoint) {
+      this(api.testEnv(), api.testAccessor().getTestScript(), api.testAccessor().getTestCase(), testPoint);
    }
 
    /**

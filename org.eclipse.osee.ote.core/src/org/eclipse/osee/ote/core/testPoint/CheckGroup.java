@@ -14,17 +14,19 @@
 package org.eclipse.osee.ote.core.testPoint;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestGroup;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Robert A. Fisher
@@ -54,6 +56,12 @@ public class CheckGroup implements ITestGroup {
 
    public CheckGroup add(ITestPoint testPoint) {
       this.testPoints.add(testPoint);
+
+      return this;
+   }
+   
+   public CheckGroup addAll(Collection<ITestPoint> testPoints) {
+      this.testPoints.addAll(testPoints);
 
       return this;
    }

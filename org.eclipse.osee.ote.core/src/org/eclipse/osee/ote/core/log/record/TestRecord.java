@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.ote.core.log.record;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,21 +23,20 @@ import java.util.regex.Pattern;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
-import org.eclipse.osee.ote.message.log.record.MessageJarConfigrecord;
 import org.eclipse.osee.ote.properties.OtePropertiesCore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Michael A. Winston
@@ -65,7 +62,7 @@ public abstract class TestRecord extends LogRecord implements Xmlizable, Xmlizab
 		stacktraceExcludes.add(Pattern.compile("org\\.eclipse\\.osee\\..*"));
 	}
 
-	private final ITestEnvironmentAccessor source;
+	private TestScript source;
 	private long timeStamp;
 	private final boolean printTimeStamp;
 	private Throwable throwable;
@@ -76,7 +73,7 @@ public abstract class TestRecord extends LogRecord implements Xmlizable, Xmlizab
 	 * source, the logging level, the log message and whether a timestamp should
 	 * be included.
 	 * 
-	 * @param source
+	 * @param env
 	 *            The object requesting the logging.
 	 * @param level
 	 *            The logging level.
@@ -85,23 +82,21 @@ public abstract class TestRecord extends LogRecord implements Xmlizable, Xmlizab
 	 * @param timeStamp
 	 *            <b>True </b> to include timestamp, <b>False </b> if not.
 	 */
-	public TestRecord(ITestEnvironmentAccessor source, Level level, String msg, boolean timeStamp) {
-		super(level, msg);
-		this.throwable = new Throwable();
-		this.printTimeStamp = timeStamp;
-		this.source = source;
-		if (this.printTimeStamp) {
-			if (source != null) {
-				this.timeStamp = source.getEnvTime();
-			} else {
-				this.timeStamp = System.currentTimeMillis();
-				try {
-					throw new Exception("source was null");
-				} catch (Exception e) {
-					OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
-				}
-			}
-		}
+	public TestRecord(ITestEnvironmentAccessor env, Level level, String msg, boolean timeStamp) {
+	   super(level, msg);
+	   this.throwable = new Throwable();
+	   this.printTimeStamp = timeStamp;
+	   if (this.printTimeStamp) {
+	      if (env != null) {
+	         this.source = env.getTestScript();
+	         this.timeStamp = env.getEnvTime();
+	      } else {
+	         this.source = null;
+	         this.timeStamp = System.currentTimeMillis();
+	         Exception e = new Exception("source was null");
+	         OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
+	      }
+	   }
 	}
 
 	@JsonIgnore
@@ -200,7 +195,7 @@ public abstract class TestRecord extends LogRecord implements Xmlizable, Xmlizab
 	   writer.writeEndElement();
 	}
 
-	public Object getSource() {
+	public TestScript getSource() {
 		return source;
 	}
 

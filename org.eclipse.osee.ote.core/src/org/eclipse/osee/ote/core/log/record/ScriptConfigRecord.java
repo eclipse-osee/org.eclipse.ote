@@ -23,9 +23,6 @@ import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestScript;
@@ -36,6 +33,10 @@ import org.eclipse.osee.ote.core.test.tags.BaseTestTags;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Ryan D. Brooks
@@ -102,7 +103,7 @@ public class ScriptConfigRecord extends TestRecord {
         // }
         DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
         configElement.appendChild(Jaxp.createElement(doc, BaseTestTags.EXECUTION_DATE, dateFormat.format(new Date()).toString()));
-        TestScript script = ((TestEnvironment) this.getSource()).getTestScript();
+        TestScript script = this.getSource();
         if (script != null) {
             configElement.appendChild(Jaxp.createElement(doc, BaseTestTags.ENVIRONMENT_FIELD, script.getType().toString()));
         } else {
@@ -133,7 +134,7 @@ public class ScriptConfigRecord extends TestRecord {
         }
         DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
         writeElement(writer, BaseTestTags.EXECUTION_DATE, dateFormat.format(new Date()).toString());
-        TestScript script = ((TestEnvironment) this.getSource()).getTestScript();
+        TestScript script = this.getSource();
         if (script != null) {
             writeElement(writer, BaseTestTags.ENVIRONMENT_FIELD, script.getType().toString());
         } else {
@@ -208,12 +209,12 @@ public class ScriptConfigRecord extends TestRecord {
 
     @JsonProperty
     public String getEnvironment() {
-        TestScript script = ((TestEnvironment) this.getSource()).getTestScript();
-        if (script != null) {
-            return script.getType().toString();
-        } else {
-            return null;
-        }
+       TestScript script = this.getSource();
+       if (script != null) {
+          return script.getType().toString();
+       } else {
+          return null;
+       }
     }
 
     @JsonIgnore

@@ -17,7 +17,7 @@ import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
  * @author Andrew M. Finkbeiner
  *
  */
-public interface OTEApi {
+public interface OTEApi { // OteServiceApi
    
    /**
     * Returns the OTEServerFolder service that enables management of the ote server folder area on

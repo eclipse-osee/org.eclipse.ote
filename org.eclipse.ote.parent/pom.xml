@@ -26,6 +26,8 @@
 	   <module>../org.eclipse.ote.services.core</module>
 		<module>../org.eclipse.ote.statemachine</module>
 		<module>../org.eclipse.ote.statemachine.test</module>
+		<module>../org.eclipse.ote.verify</module>
+		<module>../org.eclipse.ote.verify.test</module>
 	
 	   <module>../org.eclipse.ote.message.lookup</module>
 	   <module>../org.eclipse.ote.message.lookup.test</module>

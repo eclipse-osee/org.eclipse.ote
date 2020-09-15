@@ -15,11 +15,13 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 
 import java.util.logging.Handler;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.ReturnFormatter;
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
+import org.eclipse.osee.ote.core.environment.UutApi;
 import org.eclipse.osee.ote.core.log.record.TestPointRecord;
 import org.eclipse.osee.ote.core.log.record.TestRecord;
 
@@ -70,7 +72,11 @@ public interface ITestLogger {
 
    public void testpoint(TestPointRecord record);
 
+   public void testpoint(UutApi api, ITestPoint testPoint);
+
    public void warning(ITestEnvironmentAccessor source, String message);
 
    public void warning(String message);
+
+   
 }
