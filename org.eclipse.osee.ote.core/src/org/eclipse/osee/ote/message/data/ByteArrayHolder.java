@@ -20,6 +20,7 @@ import java.nio.ByteBuffer;
  */
 public class ByteArrayHolder {
    private byte[] buffer;
+   private byte[] mask;
    private ByteBuffer byteBuffer;
 
    public ByteArrayHolder() {
@@ -29,6 +30,7 @@ public class ByteArrayHolder {
    public ByteArrayHolder(byte[] buffer) {
       this.buffer = buffer;
       byteBuffer = ByteBuffer.wrap(buffer);
+      this.mask = new byte[buffer.length];
    }
 
    public void set(byte[] buffer) {
@@ -38,6 +40,10 @@ public class ByteArrayHolder {
 
    public byte[] get() {
       return this.buffer;
+   }
+
+   public byte[] getMask() {
+      return this.mask;
    }
 
    public ByteBuffer getByteBuffer() {

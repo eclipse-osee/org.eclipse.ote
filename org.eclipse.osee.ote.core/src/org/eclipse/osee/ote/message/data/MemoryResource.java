@@ -18,11 +18,11 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.logging.Level;
-
 import org.eclipse.osee.ote.message.MessageSystemException;
 
 /**
  * @author Andrew M. Finkbeiner
+ * @author Dominic Guss
  */
 public class MemoryResource {
    private static final Charset US_ASCII_CHARSET = Charset.forName("US-ASCII");
@@ -37,6 +37,7 @@ public class MemoryResource {
       _length = length;
       _offset = offset;
       _dataHasChanged = false;
+      zeroizeMask();
    }
 
    protected MemoryResource(ByteArrayHolder byteArray, int offset, int length) {
@@ -44,6 +45,7 @@ public class MemoryResource {
       _length = length;
       _offset = offset;
       _dataHasChanged = false;
+      zeroizeMask();
    }
 
    public final String getUnfilteredASCIIString(int offset, int msb, int lsb) {
@@ -51,12 +53,13 @@ public class MemoryResource {
       int size = (lsb - msb + 1) / 8;
 
       StringBuilder str = new StringBuilder(size);
-      int limit = Math.min(size, byteArray.get().length-offset);
+      int limit = Math.min(size, byteArray.get().length - offset);
       for (int i = 0; i < limit; i++) {
          str.append(getASCIICharFromOffset(offset + i));
       }
       return str.toString();
    }
+
    public void setData(byte data[]) {
       byteArray.set(data);
       _dataHasChanged = true;
@@ -85,16 +88,17 @@ public class MemoryResource {
    private final char getASCIICharFromOffset(int offset) {
       return (char) byteArray.get()[offset];
    }
-   
+
    public final BigInteger getUnsigned64(int offset, int msb, int lsb) {
       int fieldSize = lsb - msb + 1;
-      if(fieldSize > 64) {
-         throw new IllegalArgumentException(String.format("Field must be smaller than 64 bits, actual size = %d", fieldSize));
+      if (fieldSize > 64) {
+         throw new IllegalArgumentException(
+            String.format("Field must be smaller than 64 bits, actual size = %d", fieldSize));
       }
       int byteSize = fieldSize / 8;
-      byte[] bytes = new byte[byteSize + 1]; 
+      byte[] bytes = new byte[byteSize + 1];
       long bitsAsLong = getLong(offset, msb, lsb);
-      for(int i = bytes.length - 1 ; i > 0 ; i--) {
+      for (int i = bytes.length - 1; i > 0; i--) {
          bytes[i] = (byte) bitsAsLong;
          bitsAsLong >>>= 8;
       }
@@ -103,9 +107,8 @@ public class MemoryResource {
       retVal = new BigInteger(bytes);
 
       return retVal;
-      
    }
-   
+
    public int getInt(int offset, int msb, int lsb, boolean isSigned) {
       offset += _offset;
       if (lsb - msb <= 64) {
@@ -130,7 +133,7 @@ public class MemoryResource {
          }
          int signExtensionShift = 32 - fieldSize;
          int retVal = v << signExtensionShift; // remove the leading bits outside of the field
-         if(isSigned) {
+         if (isSigned) {
             retVal >>= signExtensionShift; // Guarantee sign extension
          } else {
             retVal >>>= signExtensionShift;
@@ -145,41 +148,42 @@ public class MemoryResource {
     * @param offset
     * @param msb
     * @param lsb
-    * @return The int representation of the data with the sign extension removed.  The sign will remain if the field
-    * is 32 bits
+    * @return The int representation of the data with the sign extension removed. The sign will remain if the field is
+    * 32 bits
     */
    public final int getInt(int offset, int msb, int lsb) {
       return getInt(offset, msb, lsb, false);
    }
-   
+
    public final int getSignedInt(int offset, int msb, int lsb) {
       return getInt(offset, msb, lsb, true);
    }
 
    /**
-    * Retrieves data from the buffer at the given location as a long.  this will not sign extend but if the
-    * field is 64 bits long and is large enough the value returned may still appear negative
+    * Retrieves data from the buffer at the given location as a long. this will not sign extend but if the field is 64
+    * bits long and is large enough the value returned may still appear negative
     * 
     * @param offset
     * @param msb
     * @param lsb
-    * @return The long representation of the data with the sign extension removed.  The sign will remain if the field
-    * is 64 bits
+    * @return The long representation of the data with the sign extension removed. The sign will remain if the field is
+    * 64 bits
     */
    public final long getLong(int offset, int msb, int lsb) {
       return getLong(offset, msb, lsb, false);
    }
-   
+
    public long getSignedLong(int offset, int msb, int lsb) {
       return getLong(offset, msb, lsb, true);
    }
 
    /**
     * Return bits described as a long.
+    * 
     * @param offset
     * @param msb
     * @param lsb
-    * @param isSigned true if the MSB should be considered the 2's compliment sign bit. 
+    * @param isSigned true if the MSB should be considered the 2's compliment sign bit.
     * @return The long value of the bits described
     */
    public long getLong(int offset, int msb, int lsb, boolean isSigned) {
@@ -206,7 +210,7 @@ public class MemoryResource {
          }
          int signShift = 64 - fieldSize;
          long retVal = v << signShift; // remove the leading bits outside of the field
-         if(isSigned) {
+         if (isSigned) {
             retVal >>= signShift; // Guarantee sign extension
          } else {
             retVal >>>= signShift;
@@ -324,6 +328,7 @@ public class MemoryResource {
    }
 
    private final void setByteFromOffset(int v, int offset) {
+      updateMask(offset);
       byteArray.get()[offset] = (byte) v;
       _dataHasChanged = true;
    }
@@ -333,6 +338,7 @@ public class MemoryResource {
    }
 
    public final void setInt(int v, int offset, int msb, int lsb) {
+      updateMask(offset, msb, lsb);
       offset += _offset;
       final byte[] data = byteArray.get();
       final int length = data.length;
@@ -376,15 +382,15 @@ public class MemoryResource {
       int mask = ~maxValueInPosition;
       return mask;
    }
-   
+
    public final void setBigInt(BigInteger v, int offset, int msb, int lsb) {
       long valAsLong = v.longValue();
       this.setLong(valAsLong, offset, msb, lsb);
    }
 
-
    public final void setLong(long v, int offset, int msb, int lsb) {
       if (lsb - msb < 64) {
+         updateMask(offset, msb, lsb);
          offset += _offset;
          final byte[] data = byteArray.get();
          final int length = data.length;
@@ -423,6 +429,7 @@ public class MemoryResource {
    }
 
    public final void setASCIIString(String s, int offset, int msb, int lsb) {
+      updateMask(offset, msb, lsb);
       int size = (lsb - msb + 1) / 8;
       int limit = Math.min(s.length(), size);
       System.arraycopy(s.getBytes(US_ASCII_CHARSET), 0, byteArray.get(), _offset + offset, limit);
@@ -431,6 +438,7 @@ public class MemoryResource {
    }
 
    public final void setASCIIString(String s, int offset) {
+      updateMask(offset, 0, 63);
       System.arraycopy(s.getBytes(US_ASCII_CHARSET), 0, byteArray.get(), _offset + offset, s.length());
       _dataHasChanged = true;
    }
@@ -446,7 +454,7 @@ public class MemoryResource {
    }
 
    public void copyData(int offset, byte[] src, int srcOffset, int length) {
-      //		assert(byteArray.get().length >= length );
+      //    assert(byteArray.get().length >= length );
       if (length + offset > byteArray.get().length) {
          throw new MessageSystemException("backing byte[] is too small for copy operation", Level.SEVERE);
       }
@@ -487,17 +495,14 @@ public class MemoryResource {
       return byteArray.getByteBuffer();
    }
 
-   //	public void set(ByteBuffer other) {
-   //	buffer.put(other);
-   //	}
    public ByteBuffer getAsBuffer(int offset, int length) {
       if (offset > byteArray.get().length) {
          throw new IllegalArgumentException(
-               "offset of " + offset + " cannot be bigger than data length of " + byteArray.get().length);
+            "offset of " + offset + " cannot be bigger than data length of " + byteArray.get().length);
       }
       if (offset + length > byteArray.get().length) {
          throw new IllegalArgumentException(
-               "offset (" + offset + ") plus length (" + length + ") is greater than data length of " + byteArray.get().length);
+            "offset (" + offset + ") plus length (" + length + ") is greater than data length of " + byteArray.get().length);
       }
       return ByteBuffer.wrap(byteArray.get(), offset, length);
    }
@@ -528,37 +533,198 @@ public class MemoryResource {
       _dataHasChanged = hasChanged;
    }
 
+   /**
+    * Provides a cumulative byte mask value between the most and least significant bits specified, and is index-aligned
+    * to the data[] byte array in this class.
+    * 
+    * @param offset byte position from which to begin from
+    * @param msb most significant bit
+    * @param lsb least significant bit
+    */
+   public void updateMask(int offset, int msb, int lsb) {
+      offset += _offset;
+      byte[] mask = getMask();
+      final int length = byteArray.get().length;
+      final int beginByte = offset + msb / 8;
+      int endByte = offset + lsb / 8;
+      endByte = endByte < length ? endByte : length - 1;
+      final int lsbMod = (lsb % 8) + 1;
+      final int msbMod = msb % 8;
+      int shift;
+      for (int i = endByte; i >= beginByte; i--) {
+         if (endByte == beginByte) { // MSB and LSB in same byte; shift accordingly
+            mask[i] |= 0xFF >>> msbMod; // Push ones
+            mask[i] |= mask[i] <<= lsbMod; // Pull zeros
+         } else if (i == endByte) { // Shift based on LSB
+            shift = lsbMod;
+            shift = shift > 0 ? 8 - shift : shift;
+            mask[i] |= (byte) (0xFF << shift);
+         } else if (i == beginByte) { // Shift based on MSB
+            mask[i] |= (byte) (0xFF >>> msbMod);
+         } else { // Mask all eight bits
+            mask[i] |= (byte) 0xFF;
+         }
+      }
+   }
+
+   /**
+    * Provides a cumulative byte mask value between at a specified index position, and is index-aligned to the data[]
+    * byte array in this class.
+    * 
+    * @param offset the mask's index position in which to update
+    */
+   public void updateMask(int offset) {
+      getMask()[offset] |= 0xFF;
+   }
+
+   public byte[] getMask() {
+      return byteArray.getMask();
+   }
+
+   public void zeroizeMask() {
+      Arrays.fill(byteArray.getMask(), (byte) 0x00);
+   }
+
+   public void printBinary(byte b, String label) {
+      System.out.print(label);
+      String bits;
+      bits = String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0');
+      System.out.print(bits + " ");
+      System.out.println("");
+   }
+
+   public void printBinary(byte[] byteArray, String label) {
+      System.out.print(label);
+      String bits;
+      for (int i = 0; i < byteArray.length; i++) {
+         bits = String.format("%8s", Integer.toBinaryString(byteArray[i] & 0xFF)).replace(' ', '0');
+         System.out.print(bits + " ");
+      }
+      System.out.println("");
+   }
+
    public static void main(String[] args) {
+      // Since we are going to set a Long, we need to shift it left 16 bits, as the byte 
+      // instantiated below is 48 bits (64 - 48 = 16). The initial offset is 4, which is 
+      // added to the offset entered as the first parameter, offset, in the setLong method.
+      int byteSize = 24;
+      MemoryResource mem = new MemoryResource(new byte[byteSize], 4, byteSize);
 
-      MemoryResource mem = new MemoryResource(new byte[24], 4, 24);
+      System.out.println("Begin Long tests...\n");
+
+      mem.printBinary(mem.getData(), "Orig Val: ");
+      mem.setLong(0x12L, 12, 2, 5);
+      mem.printBinary(mem.getData(), "New Val:  ");
+      printLongMemoryResourceData(mem, 12, 2, 5, byteSize);
       mem.setLong(0x1234567890abcdefL, 12, 0, 63);
-      for (int i = 0; i < 24; i++) {
-         System.out.printf("%02x ", mem.getData()[i]);
-      }
-      System.out.printf("\nget=%016x\n", mem.getLong(12, 0, 63));
+      mem.printBinary(mem.getData(), "New Val:  ");
+      printLongMemoryResourceData(mem, 12, 0, 63, byteSize);
 
+      mem.printBinary(mem.getData(), "Orig Val: ");
       mem.setLong(0xff22cc00aa11L, 12, 0, 43);
-      for (int i = 0; i < 24; i++) {
-         System.out.printf("%02x ", mem.getData()[i]);
-      }
-      System.out.printf("\nget=%016x\n", mem.getLong(12, 0, 43));
+      mem.printBinary(mem.getData(), "New Val:  ");
+      printLongMemoryResourceData(mem, 12, 0, 43, byteSize);
 
-      mem.setLong(0xffdd555522L, 12, 2, 41);
-      for (int i = 0; i < 24; i++) {
-         System.out.printf("%02x ", mem.getData()[i]);
-      }
-      System.out.printf("\nget=%016x\n", mem.getLong(12, 2, 41));
+      mem.printBinary(mem.getData(), "Orig Val: ");
+      mem.setLong(0xffdd555522L, 12, 0, 41);
+      mem.printBinary(mem.getData(), "New Val:  ");
+      printLongMemoryResourceData(mem, 12, 0, 41, byteSize);
 
+      mem.printBinary(mem.getData(), "Orig Val: ");
       mem.setLong(0x00L, 12, 2, 41);
-      for (int i = 0; i < 24; i++) {
-         System.out.printf("%02x ", mem.getData()[i]);
-      }
-      System.out.printf("\nget=%016x\n", mem.getLong(12, 2, 41));
+      mem.printBinary(mem.getData(), "New Val:  ");
+      printLongMemoryResourceData(mem, 12, 2, 41, byteSize);
 
+      mem.printBinary(mem.getData(), "Orig Val: ");
       mem.setLong(0x035544332211L, 12, 2, 43);
-      for (int i = 0; i < 24; i++) {
+      mem.printBinary(mem.getData(), "New Val:  ");
+      printLongMemoryResourceData(mem, 12, 2, 43, byteSize);
+
+      // Test for single byte change
+      mem.printBinary(mem.getData(), "Orig Val: ");
+      mem.setLong(0x035244332211L, 12, 2, 43);
+      mem.printBinary(mem.getData(), "New Val:  ");
+      printLongMemoryResourceData(mem, 12, 2, 43, byteSize);
+
+      mem.printBinary(mem.getData(), "Orig Val: ");
+      mem.setLong(0x05, 0, 0, 7);
+      mem.printBinary(mem.getData(), "New Val:  ");
+      printLongMemoryResourceData(mem, 0, 0, 7, byteSize);
+
+      mem.printBinary(mem.getData(), "Orig Val: ");
+      mem.setLong(0x27, 3, 0, 9);
+      mem.printBinary(mem.getData(), "New Val:  ");
+      printLongMemoryResourceData(mem, 3, 0, 9, byteSize);
+
+      System.out.println("Begin Int tests...\n");
+
+      mem = new MemoryResource(new byte[byteSize], 4, byteSize);
+
+      mem.printBinary(mem.getData(), "Orig Val: ");
+      mem.setInt(0x22334455, 9, 0, 31);
+      mem.printBinary(mem.getData(), "New Val:  ");
+      printIntMemoryResourceData(mem, 9, 0, 31, byteSize);
+
+      System.out.println("Begin ASCII tests...\n");
+
+      mem = new MemoryResource(new byte[byteSize], 4, byteSize);
+
+      mem.printBinary(mem.getData(), "Orig Val: ");
+      mem.setASCIIString("Testing", 0, 0, 55);
+      mem.printBinary(mem.getData(), "New Val:  ");
+      printStringMemoryResourceData(mem, 0, 0, 55, byteSize);
+
+      mem.printBinary(mem.getData(), "Orig Val: ");
+      mem.setASCIIString("Boeing", 12);
+      mem.printBinary(mem.getData(), "New Val:  ");
+      printStringMemoryResourceData(mem, 12, 0, 63, byteSize);
+   }
+
+   private static void printLongMemoryResourceData(MemoryResource mem, int offset, int msb, int lsb, int byteSize) {
+      System.out.println("Offset: " + (offset + mem.getOffset()) + "; MSB: " + msb + "; LSB: " + lsb);
+      System.out.printf("get=%016x\n", mem.getLong(offset, msb, lsb));
+      System.out.print("Offst: 00 01 02 03 04 05 05 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23\n");
+      System.out.print("Value: ");
+      for (int i = 0; i < byteSize; i++) {
          System.out.printf("%02x ", mem.getData()[i]);
       }
-      System.out.printf("\nget=%016x\n", mem.getLong(12, 2, 43));
+      System.out.print("\n Mask: ");
+
+      for (int i = 0; i < byteSize; i++) {
+         System.out.printf("%02x ", mem.getMask()[i]);
+      }
+      System.out.println("\n");
+   }
+
+   private static void printIntMemoryResourceData(MemoryResource mem, int offset, int msb, int lsb, int byteSize) {
+      System.out.println("Offset: " + (offset + mem.getOffset()) + "; MSB: " + msb + "; LSB: " + lsb);
+      System.out.printf("get=%016x\n", mem.getInt(offset, msb, lsb));
+      System.out.print("Offst: 00 01 02 03 04 05 05 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23\n");
+      System.out.print("Value: ");
+      for (int i = 0; i < byteSize; i++) {
+         System.out.printf("%02x ", mem.getData()[i]);
+      }
+      System.out.print("\n Mask: ");
+
+      for (int i = 0; i < byteSize; i++) {
+         System.out.printf("%02x ", mem.getMask()[i]);
+      }
+      System.out.println("\n");
+   }
+
+   private static void printStringMemoryResourceData(MemoryResource mem, int offset, int msb, int lsb, int byteSize) {
+      System.out.println("Offset: " + (offset + mem.getOffset()) + "; MSB: " + msb + "; LSB: " + lsb);
+      System.out.printf("get=%s\n", mem.getASCIIString(offset, msb, lsb));
+      System.out.print("Offst: 00 01 02 03 04 05 05 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23\n");
+      System.out.print("Value: ");
+      for (int i = 0; i < byteSize; i++) {
+         System.out.printf("%02x ", mem.getData()[i]);
+      }
+      System.out.print("\n Mask: ");
+
+      for (int i = 0; i < byteSize; i++) {
+         System.out.printf("%02x ", mem.getMask()[i]);
+      }
+      System.out.println("\n");
    }
 }
