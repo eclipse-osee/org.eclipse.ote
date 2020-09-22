@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
+import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.eclipse.osee.ote.core.environment.command.CommandDescription;
 import org.eclipse.osee.ote.core.environment.command.TestEnvironmentCommand;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentListener;
@@ -59,7 +60,8 @@ public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard {
    private final Object testPointLock = new Object();
    private TestPointStatusBoardRunnable latestTestPointUpdate;
    private final AtomicBoolean executeLatestTestPointUpdate = new AtomicBoolean();
-private EventAdmin eventAdmin;
+   private EventAdmin eventAdmin;
+   private TestEnvironmentInterface testEnv;
 
    //   private Future<?> lastTestPointUpdate;
 
@@ -96,6 +98,18 @@ private EventAdmin eventAdmin;
    
    public void stop(){
 	  dispose();   
+   }
+   
+   public void bindEnv(TestEnvironmentInterface testEnv) {
+      this.testEnv = testEnv;
+      testEnv.addEnvironmentListener(this);
+   }
+   
+   /**
+    * @param testEnv Not needed, just setting to null
+    */
+   public void unbindEnv(TestEnvironmentInterface testEnv) {
+      this.testEnv = null;
    }
    
    public void bindEventAdmin(EventAdmin eventAdmin){

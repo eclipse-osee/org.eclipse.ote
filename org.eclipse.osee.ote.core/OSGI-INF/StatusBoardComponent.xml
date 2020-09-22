@@ -5,4 +5,5 @@
    <service>
       <provide interface="org.eclipse.osee.ote.core.environment.status.OTEStatusBoard"/>
    </service>
+   <reference bind="bindEnv" cardinality="0..1" interface="org.eclipse.osee.ote.core.environment.TestEnvironmentInterface" name="TestEnvironmentInterface" policy="dynamic" unbind="unbindEnv"/>
 </scr:component>
