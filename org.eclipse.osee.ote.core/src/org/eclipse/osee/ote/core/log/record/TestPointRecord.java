@@ -13,26 +13,23 @@
 
 package org.eclipse.osee.ote.core.log.record;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.logging.Level;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
+import org.eclipse.osee.ote.core.environment.OteInternalApi;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
-import org.eclipse.osee.ote.core.environment.UutApi;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
 import org.eclipse.osee.ote.core.log.TestLevel;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Ryan D. Brooks
@@ -42,7 +39,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class TestPointRecord extends TestRecord {
    private static final long serialVersionUID = 921875066237859323L;
-   private int number;
+   private final int number;
    protected ITestPoint testPoint;
 
    public TestPointRecord(ITestEnvironmentAccessor source, ITestPoint testPoint, boolean timeStamp) {
@@ -170,7 +167,7 @@ public class TestPointRecord extends TestRecord {
     * @param api
     * @param testPoint
     */
-   public TestPointRecord(UutApi api, ITestPoint testPoint) {
+   public TestPointRecord(OteInternalApi api, ITestPoint testPoint) {
       this(api.testEnv(), api.testAccessor().getTestScript(), api.testAccessor().getTestCase(), testPoint);
    }
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.ote.api">
-   <implementation class="org.eclipse.osee.ote.internal.OTEApiImpl"/>
+   <implementation class="org.eclipse.osee.ote.internal.OteServiceApiImpl"/>
    <service>
-      <provide interface="org.eclipse.osee.ote.OTEApi"/>
+      <provide interface="org.eclipse.osee.ote.OteServiceApi"/>
    </service>
    <reference bind="bindRuntimeLibraryManager" cardinality="1..1" interface="org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager" name="IRuntimeLibraryManager" policy="static" unbind="unbindRuntimeLibraryManager"/>
    <reference bind="bindOTEServerFolder" cardinality="1..1" interface="org.eclipse.osee.ote.io.OTEServerFolder" name="OTEServerFolder" policy="static" unbind="unbindOTEServerFolder"/>

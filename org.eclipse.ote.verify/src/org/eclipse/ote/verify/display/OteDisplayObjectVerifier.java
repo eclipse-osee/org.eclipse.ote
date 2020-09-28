@@ -13,7 +13,7 @@
 package org.eclipse.ote.verify.display;
 
 import org.eclipse.osee.framework.jdk.core.type.DoublePoint;
-import org.eclipse.osee.ote.core.environment.UutApi;
+import org.eclipse.osee.ote.core.environment.OteInternalApi;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
 import org.eclipse.osee.ote.core.testPoint.Operation;
@@ -31,7 +31,7 @@ public class OteDisplayObjectVerifier<T extends OteDisplayObjectVerifier<T>> ext
    /**
     * @param api used for logging
     */
-   public OteDisplayObjectVerifier(UutApi api) {
+   public OteDisplayObjectVerifier(OteInternalApi api) {
       super(api);
       this.position = new OteVerifierAttribute("Position", true);
    }

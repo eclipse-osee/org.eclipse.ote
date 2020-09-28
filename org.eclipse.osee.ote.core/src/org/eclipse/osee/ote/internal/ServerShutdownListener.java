@@ -2,7 +2,7 @@ package org.eclipse.osee.ote.internal;
 
 import java.rmi.RemoteException;
 
-import org.eclipse.osee.ote.OTEApi;
+import org.eclipse.osee.ote.OteServiceApi;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpoint;
 import org.eclipse.osee.ote.message.event.OteEventMessageUtil;
 import org.eclipse.osee.ote.remote.messages.TestEnvironmentServerShutdown;
@@ -16,9 +16,9 @@ import org.osgi.service.event.EventHandler;
 
 public class ServerShutdownListener implements EventHandler {
 
-   private OTEApi oteApi;
+   private OteServiceApi oteApi;
 
-   public ServerShutdownListener(EventAdmin eventAdmin, OteUdpEndpoint oteEndpoint, OTEApi oteApi) {
+   public ServerShutdownListener(EventAdmin eventAdmin, OteUdpEndpoint oteEndpoint, OteServiceApi oteApi) {
       this.oteApi = oteApi;
    }
 

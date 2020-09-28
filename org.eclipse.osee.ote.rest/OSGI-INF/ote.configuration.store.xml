@@ -4,6 +4,6 @@
    <service>
       <provide interface="org.eclipse.osee.ote.rest.internal.OteConfigurationStore"/>
    </service>
-   <reference bind="bindOTEApi" cardinality="1..1" interface="org.eclipse.osee.ote.OTEApi" name="OTEApi" policy="static" unbind="unbindOTEApi"/>
+   <reference bind="bindOteServiceApi" cardinality="1..1" interface="org.eclipse.osee.ote.OteServiceApi" name="OteServiceApi" policy="static" unbind="unbindOteServiceApi"/>
    <reference bind="bindOteJobStore" cardinality="1..1" interface="org.eclipse.osee.ote.rest.internal.OteJobStore" name="OteJobStore" policy="static" unbind="unbindOteJobStore"/>
 </scr:component>

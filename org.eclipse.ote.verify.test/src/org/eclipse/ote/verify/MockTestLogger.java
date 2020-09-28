@@ -16,13 +16,12 @@ import java.util.List;
 import java.util.Stack;
 import java.util.logging.Handler;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.ReturnFormatter;
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
-import org.eclipse.osee.ote.core.environment.UutApi;
+import org.eclipse.osee.ote.core.environment.OteInternalApi;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
@@ -265,7 +264,7 @@ public class MockTestLogger implements ITestLogger {
     * @see org.eclipse.osee.ote.core.environment.interfaces.ITestLogger#testpoint(org.eclipse.osee.ote.core.log.comparator.NewOteApi, org.eclipse.osee.ote.core.environment.interfaces.ITestPoint)
     */
    @Override
-   public void testpoint(UutApi api, ITestPoint testPoint) {
+   public void testpoint(OteInternalApi api, ITestPoint testPoint) {
       this.points.push(testPoint);
    }
 

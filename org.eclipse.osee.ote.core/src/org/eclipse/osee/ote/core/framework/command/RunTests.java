@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.Configuration;
-import org.eclipse.osee.ote.OTEApi;
+import org.eclipse.osee.ote.OteServiceApi;
 import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.status.CommandEndedStatusEnum;
@@ -66,7 +66,7 @@ public class RunTests implements ITestServerCommand, Serializable {
       IMessageTestContext msgContext = (IMessageTestContext) environment;
       this.environment = environment;
       
-      OTEApi ote = ServiceUtility.getService(OTEApi.class);
+      OteServiceApi ote = ServiceUtility.getService(OteServiceApi.class);
       OTEServerFolder serverFolder = ote.getServerFolder();
       
       String testType = getTestType();

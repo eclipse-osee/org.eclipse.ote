@@ -1,6 +1,6 @@
 package org.eclipse.osee.ote.internal;
 
-import org.eclipse.osee.ote.OTEApi;
+import org.eclipse.osee.ote.OteServiceApi;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpoint;
 import org.eclipse.osee.ote.message.event.OteEventMessageUtil;
 import org.eclipse.osee.ote.remote.messages.RequestHostEnvironmentProperties;
@@ -18,7 +18,7 @@ import org.osgi.service.event.EventHandler;
 public class RemoteOteApiHandler {
 
    private EventAdmin eventAdmin;
-   private OTEApi oteApi;
+   private OteServiceApi oteApi;
    private OteUdpEndpoint oteEndpoint;
    private ServiceRegistration<EventHandler> configureAndResponse;
    private ServiceRegistration<EventHandler> getProperties;
@@ -46,14 +46,14 @@ public class RemoteOteApiHandler {
    /**
     * osgi
     */
-   public void bindOTEApi(OTEApi oteApi){
+   public void bindOteServiceApi(OteServiceApi oteApi){
       this.oteApi = oteApi;
    }
    
    /**
     * osgi
     */
-   public void unbindOTEApi(OTEApi oteApi){
+   public void unbindOteServiceApi(OteServiceApi oteApi){
       this.oteApi = null;
    }
    

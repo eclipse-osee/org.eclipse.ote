@@ -12,7 +12,7 @@
  **********************************************************************/
 package org.eclipse.ote.verify;
 
-import org.eclipse.osee.ote.core.environment.UutApi;
+import org.eclipse.osee.ote.core.environment.OteInternalApi;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
 
 /**
@@ -20,12 +20,12 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
  * @param <T> The concrete implementation 
  */
 public abstract class OteVerifier<T extends OteVerifier<T>> {
-   protected UutApi api;
+   protected OteInternalApi api;
    
    /**
     * @param api Needed for logging results
     */
-   public OteVerifier(UutApi api) {
+   public OteVerifier(OteInternalApi api) {
       this.api = api;
    }
 

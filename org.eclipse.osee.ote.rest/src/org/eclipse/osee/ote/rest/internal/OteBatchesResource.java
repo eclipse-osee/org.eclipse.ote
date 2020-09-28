@@ -26,7 +26,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.ote.OTEApi;
+import org.eclipse.osee.ote.OteServiceApi;
 import org.eclipse.osee.ote.core.ServiceUtility;
 
 /**
@@ -45,7 +45,7 @@ public class OteBatchesResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getBatches() throws OseeCoreException {
-      OTEApi ote = ServiceUtility.getService(OTEApi.class);
+      OteServiceApi ote = ServiceUtility.getService(OteServiceApi.class);
       File[] batches = ote.getServerFolder().getBatchesFolder().listFiles();
       String url = uriInfo.getAbsolutePath().toASCIIString();
       HTMLBuilder builder = new HTMLBuilder();

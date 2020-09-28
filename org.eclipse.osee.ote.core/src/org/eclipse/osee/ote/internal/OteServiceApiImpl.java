@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.eclipse.osee.ote.Configuration;
 import org.eclipse.osee.ote.ConfigurationItem;
 import org.eclipse.osee.ote.ConfigurationStatus;
-import org.eclipse.osee.ote.OTEApi;
+import org.eclipse.osee.ote.OteServiceApi;
 import org.eclipse.osee.ote.OTEServerRuntimeCache;
 import org.eclipse.osee.ote.OTEStatusCallback;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
@@ -22,7 +22,7 @@ import org.eclipse.osee.ote.core.model.IModelManager;
 import org.eclipse.osee.ote.io.OTEServerFolder;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 
-public final class OTEApiImpl implements OTEApi {
+public final class OteServiceApiImpl implements OteServiceApi {
 
    private final Configuration emptyConfiguration;
    private final ReentrantLock configurationLock;
@@ -147,7 +147,7 @@ public final class OTEApiImpl implements OTEApi {
       this.host = null;
    }
    
-   public OTEApiImpl(){
+   public OteServiceApiImpl(){
       this.configurationLock = new ReentrantLock();
       this.emptyConfiguration = new Configuration();
       this.currentConfigurationFuture = new OTEFutureImpl(new ConfigurationStatus(emptyConfiguration, true, ""));

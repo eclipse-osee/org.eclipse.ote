@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.rmi.RemoteException;
 
-import org.eclipse.osee.ote.OTEApi;
+import org.eclipse.osee.ote.OteServiceApi;
 import org.eclipse.osee.ote.core.ConnectionRequestResult;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpoint;
@@ -20,9 +20,9 @@ import org.osgi.service.event.EventHandler;
 public class ConnectionListener implements EventHandler {
 
    private OteUdpEndpoint oteEndpoint;
-   private OTEApi oteApi;
+   private OteServiceApi oteApi;
    
-   public ConnectionListener(EventAdmin eventAdmin, OteUdpEndpoint oteEndpoint, OTEApi oteApi) {
+   public ConnectionListener(EventAdmin eventAdmin, OteUdpEndpoint oteEndpoint, OteServiceApi oteApi) {
       this.oteEndpoint = oteEndpoint;
       this.oteApi = oteApi;
    }

@@ -13,14 +13,14 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
-public class OTEApiTest {
+public class OteServiceApiTest {
 
-   private OTEApi oteApi;
+   private OteServiceApi oteApi;
 
    @Before
    public void setup() {
       BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
-      ServiceReference<OTEApi> ref = context.getServiceReference(OTEApi.class);
+      ServiceReference<OteServiceApi> ref = context.getServiceReference(OteServiceApi.class);
       Assert.assertNotNull(ref);
       oteApi = context.getService(ref);
       Assert.assertNotNull(oteApi);
@@ -155,7 +155,7 @@ public class OTEApiTest {
    }
 
    private Bundle findActiveBundle(String symbolicName) {
-      Bundle[] bundles = FrameworkUtil.getBundle(OTEApiTest.class).getBundleContext().getBundles();
+      Bundle[] bundles = FrameworkUtil.getBundle(OteServiceApiTest.class).getBundleContext().getBundles();
       for (Bundle bundle : bundles) {
          if (bundle.getSymbolicName().equals(symbolicName) && bundle.getState() == Bundle.ACTIVE) {
             return bundle;

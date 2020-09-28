@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.rmi.server.ExportException;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.osee.ote.OTEApi;
+import org.eclipse.osee.ote.OteServiceApi;
 import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 import org.eclipse.osee.ote.core.framework.command.ITestCommandResult;
 import org.eclipse.osee.ote.core.framework.command.RunTests;
@@ -24,11 +24,11 @@ import org.osgi.service.event.EventHandler;
 
 public class RunTestListener implements EventHandler {
 
-   private OTEApi oteApi;
+   private OteServiceApi oteApi;
    
    private ConcurrentHashMap<String, ICommandHandle> handles;
    
-   public RunTestListener(EventAdmin eventAdmin, OteUdpEndpoint oteEndpoint, OTEApi oteApi) {
+   public RunTestListener(EventAdmin eventAdmin, OteUdpEndpoint oteEndpoint, OteServiceApi oteApi) {
       this.oteApi = oteApi;
       handles = new ConcurrentHashMap<>();
    }

@@ -3,7 +3,7 @@ package org.eclipse.osee.ote.internal;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
-import org.eclipse.osee.ote.OTEApi;
+import org.eclipse.osee.ote.OteServiceApi;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpoint;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpointInlineSender;
@@ -17,10 +17,10 @@ import org.osgi.service.event.EventHandler;
 
 public class GetPropertiesListener implements EventHandler {
 
-   private final OTEApi oteApi;
+   private final OteServiceApi oteApi;
    private final OteUdpEndpoint endpoint;
 
-   public GetPropertiesListener(EventAdmin eventAdmin, OteUdpEndpoint endpoint, OTEApi oteApi) {
+   public GetPropertiesListener(EventAdmin eventAdmin, OteUdpEndpoint endpoint, OteServiceApi oteApi) {
       this.oteApi = oteApi;
       this.endpoint = endpoint;
    }

@@ -35,7 +35,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.ote.OTEApi;
+import org.eclipse.osee.ote.OteServiceApi;
 import org.eclipse.osee.ote.core.ServiceUtility;
 
 /**
@@ -65,7 +65,7 @@ public class OteBatchResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getBatches() throws OseeCoreException {
-      OTEApi ote = ServiceUtility.getService(OTEApi.class);
+      OteServiceApi ote = ServiceUtility.getService(OteServiceApi.class);
       File rootBatches = ote.getServerFolder().getBatchesFolder();
       File myBatchFolder = new File(rootBatches, path);
       File logFile = ote.getServerFolder().getBatchLogFile(myBatchFolder);
@@ -93,7 +93,7 @@ public class OteBatchResource {
 	   return builder.get(); 
    }
    
-   private void generateResultsSection(HTMLBuilder builder, OTEApi ote, File myBatchFolder) {
+   private void generateResultsSection(HTMLBuilder builder, OteServiceApi ote, File myBatchFolder) {
       File runList = ote.getServerFolder().getBatchRunList(myBatchFolder);
       String runListContents = "";
       if(runList.exists()){
@@ -162,7 +162,7 @@ public class OteBatchResource {
       return results;
    }
 
-   private void generateStatusSection(HTMLBuilder builder, OTEApi ote, File myBatchFolder){
+   private void generateStatusSection(HTMLBuilder builder, OteServiceApi ote, File myBatchFolder){
       builder.h2("Status");
       String status = getFileContents(ote.getServerFolder().getBatchStatusFile(myBatchFolder));
       if(status.length() == 0){
@@ -191,7 +191,7 @@ public class OteBatchResource {
          @Override
          public void write(OutputStream output) throws IOException, WebApplicationException {
             try {
-               OTEApi ote = ServiceUtility.getService(OTEApi.class);
+               OteServiceApi ote = ServiceUtility.getService(OteServiceApi.class);
                File rootBatches = ote.getServerFolder().getBatchesFolder();
                File myBatchFolder = new File(rootBatches, path);
                ZIPGenerator generator = new ZIPGenerator(myBatchFolder);

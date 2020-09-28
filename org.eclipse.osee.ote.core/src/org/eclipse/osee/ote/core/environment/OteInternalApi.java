@@ -10,36 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.ote.verify;
 
-import org.eclipse.osee.ote.core.environment.OteInternalApi;
+package org.eclipse.osee.ote.core.environment;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
+import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
 /**
+ * Intended for API accessed by non-test developers only
+ * 
  * @author Michael P. Masterson
  */
-public class MockOteApi implements OteInternalApi {
-   
-   private final MockTestLogger mockLogger;
-
-   public MockOteApi() {
-      this.mockLogger = new MockTestLogger();
-   }
-
-   @Override
-   public ITestAccessor testAccessor() {
-      return null;
-   }
-
-   @Override
-   public ITestEnvironmentAccessor testEnv() {
-      return null;
-   }
-
-   @Override
-   public MockTestLogger testLogger() {
-      return mockLogger;
-   }
-
+public interface OteInternalApi {
+   ITestAccessor testAccessor();
+   ITestEnvironmentAccessor testEnv();
+   ITestLogger testLogger();
 }

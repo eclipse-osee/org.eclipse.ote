@@ -21,6 +21,10 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class OteVerifierAttribute implements Named {
 
+   // TODO: Add use of these to all constructor calls
+   public static final boolean REQUIRED = true;
+   public static final boolean OPTIONAL = false;
+
    private final String name;
    private Object value;
    private final boolean isRequired;
@@ -43,8 +47,8 @@ public class OteVerifierAttribute implements Named {
     * @return PASSED if the object is required/used and the objects match.<br>
     * FAILED if the object is required/used and the objects do not match.<br>
     * NOT_USED if the attributes are optional and never used.
-    * @throws OseeCoreException If the attribute is required but either of the values was never set or if the value is
-    * optional and the 'actual' value was never set
+    * @throws OseeCoreException If the attribute is required but the expected or actual value was never set. Also thrown
+    * if the value is optional and the expected value was set but the actual value was never set
     */
    public OteMatchResult matches(OteVerifierAttribute actual) {
       if (this.isRequired) {

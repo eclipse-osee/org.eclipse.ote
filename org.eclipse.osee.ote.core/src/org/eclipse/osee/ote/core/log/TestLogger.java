@@ -16,14 +16,13 @@ package org.eclipse.osee.ote.core.log;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.ReturnFormatter;
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
-import org.eclipse.osee.ote.core.environment.UutApi;
+import org.eclipse.osee.ote.core.environment.OteInternalApi;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
@@ -145,7 +144,7 @@ public class TestLogger extends Logger implements ITestLogger {
    }
    
    @Override
-   public void testpoint(UutApi api, ITestPoint testPoint) {
+   public void testpoint(OteInternalApi api, ITestPoint testPoint) {
       log(new TestPointRecord(api, testPoint));
    }
 

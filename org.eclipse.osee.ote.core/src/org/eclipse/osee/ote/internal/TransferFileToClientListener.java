@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-import org.eclipse.osee.ote.OTEApi;
+import org.eclipse.osee.ote.OteServiceApi;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpoint;
 import org.eclipse.osee.ote.filetransfer.TcpFileTransfer;
 import org.eclipse.osee.ote.message.event.OteEventMessageUtil;
@@ -20,9 +20,9 @@ import org.osgi.service.event.EventHandler;
 public class TransferFileToClientListener implements EventHandler {
 
    private ExecutorService pool;
-   private OTEApi oteApi;
+   private OteServiceApi oteApi;
 
-   public TransferFileToClientListener(EventAdmin eventAdmin, OteUdpEndpoint oteEndpoint, OTEApi oteApi) {
+   public TransferFileToClientListener(EventAdmin eventAdmin, OteUdpEndpoint oteEndpoint, OteServiceApi oteApi) {
       this.oteApi = oteApi;
       pool = Executors.newCachedThreadPool(new ThreadFactory() {
          @Override

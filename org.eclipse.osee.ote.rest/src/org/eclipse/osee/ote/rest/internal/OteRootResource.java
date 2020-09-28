@@ -26,7 +26,7 @@ import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.ote.OTEApi;
+import org.eclipse.osee.ote.OteServiceApi;
 import org.eclipse.osee.ote.core.ServiceUtility;
 
 /**
@@ -46,7 +46,7 @@ public class OteRootResource {
    @Produces(MediaType.TEXT_HTML)
    public String getConfiguration() throws OseeCoreException {
       String url = uriInfo.getAbsolutePath().toASCIIString();
-      OTEApi ote = ServiceUtility.getService(OTEApi.class);
+      OteServiceApi ote = ServiceUtility.getService(OteServiceApi.class);
       File serverFolder = ote.getServerFolder().getRootFolder();
       HTMLBuilder builder = new HTMLBuilder();
       builder.open("OTE Server");
@@ -68,7 +68,7 @@ public class OteRootResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getLatestBatch() throws Exception {
-      OTEApi ote = ServiceUtility.getService(OTEApi.class);
+      OteServiceApi ote = ServiceUtility.getService(OteServiceApi.class);
       File[] batches = ote.getServerFolder().getBatchesFolder().listFiles();
       
       Arrays.sort(batches, new ReverseAlphabeticalSort());
@@ -83,7 +83,7 @@ public class OteRootResource {
    @GET
    @Produces({"application/zip"})
    public StreamingOutput getLatestBatchContent() throws Exception {
-      OTEApi ote = ServiceUtility.getService(OTEApi.class);
+      OteServiceApi ote = ServiceUtility.getService(OteServiceApi.class);
       File[] batches = ote.getServerFolder().getBatchesFolder().listFiles();
       
       Arrays.sort(batches, new ReverseAlphabeticalSort());

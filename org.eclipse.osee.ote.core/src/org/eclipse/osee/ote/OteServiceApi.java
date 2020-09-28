@@ -2,7 +2,6 @@ package org.eclipse.osee.ote;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.model.IModelManager;
@@ -17,7 +16,7 @@ import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
  * @author Andrew M. Finkbeiner
  *
  */
-public interface OTEApi { // OteServiceApi
+public interface OteServiceApi {
    
    /**
     * Returns the OTEServerFolder service that enables management of the ote server folder area on

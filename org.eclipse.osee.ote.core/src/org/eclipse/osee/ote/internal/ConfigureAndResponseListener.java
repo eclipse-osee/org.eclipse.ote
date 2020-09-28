@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.ConfigurationStatus;
-import org.eclipse.osee.ote.OTEApi;
+import org.eclipse.osee.ote.OteServiceApi;
 import org.eclipse.osee.ote.OTEStatusCallback;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpoint;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpointSender;
@@ -22,10 +22,10 @@ import org.osgi.service.event.EventHandler;
 
 public class ConfigureAndResponseListener implements EventHandler {
 
-   private final OTEApi oteApi;
+   private final OteServiceApi oteApi;
    private final OteUdpEndpoint endpoint;
 
-   public ConfigureAndResponseListener(EventAdmin eventAdmin, OteUdpEndpoint endpoint, OTEApi oteApi) {
+   public ConfigureAndResponseListener(EventAdmin eventAdmin, OteUdpEndpoint endpoint, OteServiceApi oteApi) {
       this.oteApi = oteApi;
       this.endpoint = endpoint;
    }

@@ -12,6 +12,6 @@
 
 	<artifactId>org.eclipse.ote.verify.test</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
-	<name>OTE Verify Tests</name>
+	<name>OSEE Test Environment Verify Tests</name>
  
 </project>

@@ -12,23 +12,23 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.osee.ote.Configuration;
 import org.eclipse.osee.ote.ConfigurationStatus;
-import org.eclipse.osee.ote.OTEApi;
+import org.eclipse.osee.ote.OteServiceApi;
 import org.eclipse.osee.ote.rest.model.OTEConfiguration;
 import org.eclipse.osee.ote.rest.model.OTEJobStatus;
 
 public class OteConfigurationStoreImpl implements OteConfigurationStore {
 
-   private OTEApi ote;
+   private OteServiceApi ote;
    private OteJobStore oteJobs;
 	
 	public OteConfigurationStoreImpl(){
 	}
 	
-	public void bindOTEApi(OTEApi ote){
+	public void bindOteServiceApi(OteServiceApi ote){
 	   this.ote = ote;
 	}
 	
-	public void unbindOTEApi(OTEApi ote){
+	public void unbindOteServiceApi(OteServiceApi ote){
 	   this.ote = null;
 	}
 	

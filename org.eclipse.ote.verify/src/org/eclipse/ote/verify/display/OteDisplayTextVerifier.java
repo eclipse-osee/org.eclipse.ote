@@ -12,7 +12,8 @@
  **********************************************************************/
 package org.eclipse.ote.verify.display;
 
-import org.eclipse.osee.ote.core.environment.UutApi;
+
+import org.eclipse.osee.ote.core.environment.OteInternalApi;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.Operation;
 import org.eclipse.ote.verify.OteVerifierAttribute;
@@ -26,7 +27,7 @@ public class OteDisplayTextVerifier<T extends OteDisplayTextVerifier<T>> extends
    private final OteVerifierAttribute label;
    private final OteVerifierAttribute color;
 
-   public OteDisplayTextVerifier(UutApi api) {
+   public OteDisplayTextVerifier(OteInternalApi api) {
       super(api);
       label = new OteVerifierAttribute("Label", true);
       color = new OteVerifierAttribute("Color", false);

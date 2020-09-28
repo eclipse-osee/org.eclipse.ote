@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: OTE Verify Unit Test
+Bundle-Name: OSEE Test Environment Verify Unit Test
 Bundle-SymbolicName: org.eclipse.ote.verify.test
 Bundle-Version: 0.11.0.qualifier
 Bundle-Vendor: Boeing

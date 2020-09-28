@@ -98,7 +98,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    private volatile boolean isShutdown = false;
    private ServiceRegistration<TestEnvironmentInterface> myRegistration;
 
-   private UutApi uutApi;
+   private OteApi oteApi;
 
    protected TestEnvironment(IEnvironmentFactory factory) {
       GCHelper.getGCHelper().addRefWatch(this);
@@ -575,12 +575,12 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       getRunManager().abort();
    }
 
-   public UutApi getUutApi() {
-      return uutApi;
+   public OteApi getOteApi() {
+      return oteApi;
    }
 
-   public void setUutApi(UutApi uutApi) {
-      this.uutApi = uutApi;
+   public void setOteApi(OteApi oteApi) {
+      this.oteApi = oteApi;
    }
 
    public void prompt() {
