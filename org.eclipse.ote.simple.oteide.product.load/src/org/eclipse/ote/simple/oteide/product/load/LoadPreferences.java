@@ -47,11 +47,20 @@ public class LoadPreferences implements IStartup {
    Job saveActionsJob = new Job("Save Actions Preferences Job") {
       @Override
       public IStatus run(IProgressMonitor monitor) {
-         IEclipsePreferences ePrefs = InstanceScope.INSTANCE.getNode("org.eclipse.jdt.ui");
-         ePrefs.putBoolean("editor_save_participant_org.eclipse.jdt.ui.postsavelistener.cleanup", true);
-         ePrefs.putBoolean("sp_cleanup.format_source_code", true);
-         ePrefs.putBoolean("sp_cleanup.organize_imports", true);
-         ePrefs.putBoolean("sp_cleanup.on_save_use_additional_actions", true);
+         IEclipsePreferences jdtUiPrefs = InstanceScope.INSTANCE.getNode("org.eclipse.jdt.ui");
+         jdtUiPrefs.putBoolean("editor_save_participant_org.eclipse.jdt.ui.postsavelistener.cleanup", true);
+         jdtUiPrefs.putBoolean("sp_cleanup.format_source_code", true);
+         jdtUiPrefs.putBoolean("sp_cleanup.organize_imports", true);
+         jdtUiPrefs.putBoolean("sp_cleanup.on_save_use_additional_actions", true);
+
+         IEclipsePreferences coreRuntimePrefs = InstanceScope.INSTANCE.getNode("org.eclipse.core.runtime");
+         coreRuntimePrefs.put("line.separator", "\n"); // Unix style line endings (Windows is \r\n)
+
+         IEclipsePreferences jdtCorePrefs = InstanceScope.INSTANCE.getNode("org.eclipse.jdt.core");
+         jdtCorePrefs.putFloat("org.eclipse.jdt.core.compiler.codegen.targetPlatform", 1.8F);
+         jdtCorePrefs.putFloat("org.eclipse.jdt.core.compiler.compliance", 1.8F);
+         jdtCorePrefs.putFloat("org.eclipse.jdt.core.compiler.source", 1.8F);
+
          return Status.OK_STATUS;
       }
    };
