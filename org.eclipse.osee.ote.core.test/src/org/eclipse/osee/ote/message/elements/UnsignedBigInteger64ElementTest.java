@@ -119,7 +119,7 @@ public class UnsignedBigInteger64ElementTest {
             long[] expectedVals = new long[count];
             Random r = new Random(System.currentTimeMillis());
 
-            for (int l = 0; l <= 256; l++) {
+            for (int l = 0; l <= 128; l++) {
                /*
                 * perform sets going through the array. We do this so that we can catch sets that modified bits before
                 * the element

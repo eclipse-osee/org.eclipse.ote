@@ -2,6 +2,7 @@ package org.eclipse.osee.ote.message.data;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -110,7 +111,6 @@ public class MemoryResourceTest {
       mem.setLong(-100, 0, 0, 63);
       val = mem.getUnsigned64(0, 0, 63);
       hex = val.toString(16).toUpperCase();
-      System.out.println(hex);
       String expected = "FFFFFFFFFFFFFF9C";
       Assert.assertEquals(expected, hex);
    }
@@ -228,7 +228,122 @@ public class MemoryResourceTest {
       for (int i = 0; i < mem.getLength(); i++) {
          sb.append(String.format("%02x ", mem.getMask()[i]));
       }
-      expected = "00 00 00 00 ff ff ff ff ff ff ff 00 00 00 00 00 ff ff ff ff ff ff ff ff ";
+      expected = "00 00 00 00 ff ff ff ff ff ff ff 00 00 00 00 00 ff ff ff ff ff ff 00 00 ";
+      Assert.assertEquals(expected, sb.toString());
+      sb.setLength(0);
+      
+      // test for element less than a byte 
+      mem = new MemoryResource(new byte[24], 0, 1);
+      
+      mem.setInt(2, 0, 2, 3);
+      for (int i = 0; i < mem.getLength(); i++) {
+         sb.append(String.format("%02x ", mem.getMask()[i]));
+      }
+      expected = "30 ";
+      Assert.assertEquals(expected, sb.toString());
+      sb.setLength(0);
+      
+      mem.setInt(2, 0, 4, 6);
+      for (int i = 0; i < mem.getLength(); i++) {
+         sb.append(String.format("%02x ", mem.getMask()[i]));
+      }
+      expected = "3e ";
+      Assert.assertEquals(expected, sb.toString());
+      sb.setLength(0);
+      
+      
+      // Test element partially across multiple bytes
+      mem = new MemoryResource(new byte[24], 0, 4);
+      
+      mem.setInt(2, 0, 7, 16);
+      for (int i = 0; i < mem.getLength(); i++) {
+         sb.append(String.format("%02x ", mem.getMask()[i]));
+      }
+      expected = "01 ff 80 00 ";
+      Assert.assertEquals(expected, sb.toString());
+      sb.setLength(0);
+   }
+   
+   @Test
+   public void testElementMaskZeroize() {
+      StringBuilder sb = new StringBuilder();
+      MemoryResource mem = new MemoryResource(new byte[24], 0, 24);
+      String expected;
+
+      // setup
+      mem.setInt(0x22334455, 13, 0, 31);
+      for (int i = 0; i < mem.getLength(); i++) {
+         sb.append(String.format("%02x ", mem.getMask()[i]));
+      }
+      expected = "00 00 00 00 00 00 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00 00 00 00 ";
+      Assert.assertEquals(expected, sb.toString());
+      sb.setLength(0);
+      
+      mem.zeroizeMask(13, 2, 2);
+      for (int i = 0; i < mem.getLength(); i++) {
+         sb.append(String.format("%02x ", mem.getMask()[i]));
+      }
+      expected = "00 00 00 00 00 00 00 00 00 00 00 00 00 df ff ff ff 00 00 00 00 00 00 00 ";
+      Assert.assertEquals(expected, sb.toString());
+      sb.setLength(0);
+      
+      mem.zeroizeMask(13, 7, 16);
+      for (int i = 0; i < mem.getLength(); i++) {
+         sb.append(String.format("%02x ", mem.getMask()[i]));
+      }
+      expected = "00 00 00 00 00 00 00 00 00 00 00 00 00 de 00 7f ff 00 00 00 00 00 00 00 ";
+      Assert.assertEquals(expected, sb.toString());
+      sb.setLength(0);
+      
+      // add more mask for next part
+      mem.setInt(0x22334455, 13, 0, 31);
+      for (int i = 0; i < mem.getLength(); i++) {
+         sb.append(String.format("%02x ", mem.getMask()[i]));
+      }
+      expected = "00 00 00 00 00 00 00 00 00 00 00 00 00 ff ff ff ff 00 00 00 00 00 00 00 ";
+      Assert.assertEquals(expected, sb.toString());
+      sb.setLength(0);
+      
+      mem.zeroizeMask(14, 0, 2);
+      for (int i = 0; i < mem.getLength(); i++) {
+         sb.append(String.format("%02x ", mem.getMask()[i]));
+      }
+      expected = "00 00 00 00 00 00 00 00 00 00 00 00 00 ff 1f ff ff 00 00 00 00 00 00 00 ";
+      Assert.assertEquals(expected, sb.toString());
+      sb.setLength(0);
+      
+      mem.zeroizeMask(15, 0, 15);
+      for (int i = 0; i < mem.getLength(); i++) {
+         sb.append(String.format("%02x ", mem.getMask()[i]));
+      }
+      expected = "00 00 00 00 00 00 00 00 00 00 00 00 00 ff 1f 00 00 00 00 00 00 00 00 00 ";
+      Assert.assertEquals(expected, sb.toString());
+      sb.setLength(0);
+      
+   }
+   
+   @Test
+   public void testWholeMaskZeroize() {
+      StringBuilder sb = new StringBuilder();
+      MemoryResource mem = new MemoryResource(new byte[10], 0, 10);
+      String expected;
+
+      // setup
+      mem.setASCIIString("01", 0);
+      mem.setInt(0x0, 4, 3, 12);
+      mem.setInt(0x0, 7, 5, 5);
+      for (int i = 0; i < mem.getLength(); i++) {
+         sb.append(String.format("%02x ", mem.getMask()[i]));
+      }
+      expected = "ff ff 00 00 1f f8 00 04 00 00 ";
+      Assert.assertEquals(expected, sb.toString());
+      sb.setLength(0);
+      
+      mem.zeroizeMask();
+      for (int i = 0; i < mem.getLength(); i++) {
+         sb.append(String.format("%02x ", mem.getMask()[i]));
+      }
+      expected = "00 00 00 00 00 00 00 00 00 00 ";
       Assert.assertEquals(expected, sb.toString());
       sb.setLength(0);
    }

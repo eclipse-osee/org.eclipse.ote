@@ -43,6 +43,13 @@ public abstract class MsgElementDiscrete<T extends Comparable<T>> {
    public void setNoLog(T obj) {
       getElementToWrite().setNoLog(obj);
    }
+   
+   /**
+    * Zeroize this element's data and mask.
+    */
+   public void unset() {
+      getElementToWrite().unset();
+   }
 
    @SuppressWarnings("unchecked")
    protected DiscreteElement<T> getElementToWrite() {

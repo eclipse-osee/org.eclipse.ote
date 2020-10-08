@@ -14,9 +14,9 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Random;
+
 import org.eclipse.osee.ote.message.data.HeaderData;
 import org.eclipse.osee.ote.message.data.MemoryResource;
-import org.eclipse.osee.ote.message.elements.IntegerElement;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,26 +36,6 @@ public class IntegerElementTest {
    }
 
    @Test
-   public void test3BitInts() {
-      createTest(3);
-   }
-
-   @Test
-   public void test4BitInts() {
-      createTest(4);
-   }
-
-   @Test
-   public void test5BitInts() {
-      createTest(5);
-   }
-
-   @Test
-   public void test6BitInts() {
-      createTest(6);
-   }
-
-   @Test
    public void test7BitInts() {
       createTest(7);
    }
@@ -68,31 +48,6 @@ public class IntegerElementTest {
    @Test
    public void test9BitInts() {
       createTest(9);
-   }
-
-   @Test
-   public void test10BitInts() {
-      createTest(10);
-   }
-
-   @Test
-   public void test11BitInts() {
-      createTest(11);
-   }
-
-   @Test
-   public void test12BitInts() {
-      createTest(12);
-   }
-
-   @Test
-   public void test13BitInts() {
-      createTest(13);
-   }
-
-   @Test
-   public void test14BitInts() {
-      createTest(14);
    }
 
    @Test
@@ -111,75 +66,11 @@ public class IntegerElementTest {
    }
 
    @Test
-   public void test18BitInts() {
-      createTest(18);
-   }
-
-   @Test
-   public void test19BitInts() {
-      createTest(19);
-   }
-
-   @Test
-   public void test20BitInts() {
-      createTest(20);
-   }
-
-   @Test
-   public void test21BitInts() {
-      createTest(21);
-   }
-
-   @Test
-   public void test22BitInts() {
-      createTest(22);
-   }
-
-   @Test
-   public void test23BitInts() {
-      createTest(23);
-   }
-
-   @Test
-   public void test24BitInts() {
-      createTest(24);
-   }
-
-   @Test
-   public void test25BitInts() {
-      createTest(25);
-   }
-
-   @Test
-   public void test26BitInts() {
-      createTest(26);
-   }
-
-   @Test
-   public void test27BitInts() {
-      createTest(27);
-   }
-
-   @Test
-   public void test28BitInts() {
-      createTest(28);
-   }
-
-   @Test
-   public void test29BitInts() {
-      createTest(29);
-   }
-
-   @Test
-   public void test30BitInts() {
-      createTest(30);
-   }
-
-   @Test
    public void test32BitInts() {
       createTest(32);
    }
 
+   @SuppressWarnings("deprecation")
    private void createTest(int width) {
       final HeaderData hd = new HeaderData("test_data", new MemoryResource(new byte[64], 2, 64));
       IntegerElement[] e = new IntegerElement[32];
@@ -201,7 +92,7 @@ public class IntegerElementTest {
             int[] expectedVals = new int[count];
             Random r = new Random(System.currentTimeMillis());
 
-            for (int l = 0; l <= 255; l++) {
+            for (int l = 0; l <= 128; l++) {
                /*
                 * perform sets going through the array. We do this so that we can catch sets that modified bits before
                 * the element
@@ -228,6 +119,7 @@ public class IntegerElementTest {
       }
    }
 
+   @SuppressWarnings("deprecation")
    private void generateAscending(Random r, IntegerElement[] e, int[] expectedVals, int length) {
       for (int i = 0; i < length; i++) {
          int val = r.nextInt();
@@ -245,6 +137,7 @@ public class IntegerElementTest {
       }
    }
 
+   @SuppressWarnings("deprecation")
    private void generateDescending(Random r, IntegerElement[] e, int[] expectedVals, int length) {
       for (int i = length - 1; i >= 0; i--) {
          int val = r.nextInt();
@@ -262,6 +155,7 @@ public class IntegerElementTest {
       }
    }
 
+   @SuppressWarnings("deprecation")
    private void check(IntegerElement[] e, int[] expectedVals, int length) {
       for (int i = 0; i < length; i++) {
          IntegerElement el = e[i];

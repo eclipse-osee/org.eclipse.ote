@@ -33,7 +33,6 @@ import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -59,6 +58,8 @@ import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
 import org.eclipse.osee.ote.message.listener.MessageSystemListener;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.w3c.dom.Document;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -778,12 +779,25 @@ public abstract class Message implements Xmlizable, XmlizableStream {
        return getMemType().name();
    }
    
+   /**
+    * Zeroize the entire body of this message.  Notice that the header and mask will not be affected.
+    */
    public void zeroize() {
       checkState();
       for (DataType memType : memToDataMap.keySet()) {
          for (Element el : getElements(memType)) {
             el.zeroize();
          }
+      }
+   }
+   
+   /**
+    * Clears/zeroes out the entire mask for this message.
+    */
+   public void clearMask() {
+      Collection<MessageData> sources = getMemSource(currentMemType);
+      for (MessageData source : sources) {
+         source.getMem().zeroizeMask();
       }
    }
 

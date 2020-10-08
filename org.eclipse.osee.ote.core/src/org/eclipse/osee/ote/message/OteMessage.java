@@ -15,6 +15,7 @@ package org.eclipse.osee.ote.message;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.condition.ICondition;
 import org.eclipse.osee.ote.message.data.MessageData;
@@ -222,8 +223,18 @@ public abstract class OteMessage<M extends Message> {
       return getMessageToRead().getMessageName();
    }
 
+   /**
+    * Zeroize the entire body of this message.  Notice that the header and mask will not be affected.
+    */
    public void zeroize() {
       getMessageToWrite().zeroize();
+   }
+   
+   /**
+    * Clears/zeroes out the entire mask for this message.
+    */
+   public void clearMask() {
+      getMessageToWrite().clearMask();
    }
 
    /**

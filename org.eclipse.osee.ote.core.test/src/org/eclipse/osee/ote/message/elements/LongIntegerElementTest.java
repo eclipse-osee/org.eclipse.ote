@@ -38,70 +38,25 @@ public class LongIntegerElementTest {
    public void test3BitInts() {
       createLongIntTest(3);
    }
-
-   @Test
-   public void test4BitInts() {
-      createLongIntTest(4);
-   }
-
-   @Test
-   public void test5BitInts() {
-      createLongIntTest(5);
-   }
-
+   
    @Test
    public void test8BitInts() {
       createLongIntTest(8);
    }
 
    @Test
-   public void test10BitInts() {
-      createLongIntTest(10);
-   }
-
-   @Test
-   public void test12BitInts() {
-      createLongIntTest(12);
+   public void test9BitInts() {
+      createLongIntTest(9);
    }
 
    @Test
    public void test16BitInts() {
       createLongIntTest(16);
    }
-
+   
    @Test
-   public void test20BitInts() {
-      createLongIntTest(20);
-   }
-
-   @Test
-   public void test22BitInts() {
-      createLongIntTest(22);
-   }
-
-   @Test
-   public void test24BitInts() {
-      createLongIntTest(24);
-   }
-
-   @Test
-   public void test25BitInts() {
-      createLongIntTest(25);
-   }
-
-   @Test
-   public void test26BitInts() {
-      createLongIntTest(26);
-   }
-
-   @Test
-   public void test27BitInts() {
-      createLongIntTest(27);
-   }
-
-   @Test
-   public void test30BitInts() {
-      createLongIntTest(30);
+   public void test17BitInts() {
+      createLongIntTest(17);
    }
 
    @Test
@@ -112,21 +67,6 @@ public class LongIntegerElementTest {
    @Test
    public void test32BitInts() {
       createLongIntTest(32);
-   }
-
-   @Test
-   public void test40BitInts() {
-      createLongIntTest(40);
-   }
-
-   @Test
-   public void test48BitInts() {
-      createLongIntTest(48);
-   }
-
-   @Test
-   public void test50BitInts() {
-      createLongIntTest(50);
    }
 
    @Test
@@ -154,7 +94,7 @@ public class LongIntegerElementTest {
             long[] expectedVals = new long[count];
             Random r = new Random(System.currentTimeMillis());
 
-            for (int l = 0; l <= 256; l++) {
+            for (int l = 0; l <= 128; l++) {
                /*
                 * perform sets going through the array. We do this so that we can catch sets that modified bits before
                 * the element

@@ -283,6 +283,9 @@ public abstract class Element implements ITimeout {
       return elementName;
    }
 
+   /**
+    * Zeroize the data for this element (not the mask).
+    */
    public void zeroize() {
 
       getMsgData().getMem().setLong(0L, byteOffset, msb, lsb);

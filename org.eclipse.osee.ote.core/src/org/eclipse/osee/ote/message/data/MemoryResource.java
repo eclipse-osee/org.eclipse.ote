@@ -18,6 +18,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.logging.Level;
+
 import org.eclipse.osee.ote.message.MessageSystemException;
 
 /**
@@ -438,7 +439,8 @@ public class MemoryResource {
    }
 
    public final void setASCIIString(String s, int offset) {
-      updateMask(offset, 0, 63);
+      int bitLength = 8 * s.length() - 1;
+      updateMask(offset, 0, bitLength);
       System.arraycopy(s.getBytes(US_ASCII_CHARSET), 0, byteArray.get(), _offset + offset, s.length());
       _dataHasChanged = true;
    }
@@ -550,14 +552,15 @@ public class MemoryResource {
       endByte = endByte < length ? endByte : length - 1;
       final int lsbMod = (lsb % 8) + 1;
       final int msbMod = msb % 8;
+      int bitLength = lsb - msb;
       int shift;
       for (int i = endByte; i >= beginByte; i--) {
          if (endByte == beginByte) { // MSB and LSB in same byte; shift accordingly
-            mask[i] |= 0xFF >>> msbMod; // Push ones
-            mask[i] |= mask[i] <<= lsbMod; // Pull zeros
+            byte littleMask = (byte) (0xFF << (8 - bitLength - 1)); // N bits all the way to the left
+            littleMask = (byte) ((littleMask & 0xFF) >>> (msbMod)); // shift bits to match element
+            mask[i] |= littleMask; 
          } else if (i == endByte) { // Shift based on LSB
-            shift = lsbMod;
-            shift = shift > 0 ? 8 - shift : shift;
+            shift = 8 - lsbMod;
             mask[i] |= (byte) (0xFF << shift);
          } else if (i == beginByte) { // Shift based on MSB
             mask[i] |= (byte) (0xFF >>> msbMod);
@@ -576,16 +579,57 @@ public class MemoryResource {
    public void updateMask(int offset) {
       getMask()[offset] |= 0xFF;
    }
+   
 
+   /**
+    * Removes all the mask bits in the current buffer addressed by the arguments
+    * 
+    * @param offset
+    * @param msb
+    * @param lsb
+    */
+   public void zeroizeMask(int offset, int msb, int lsb) {
+      offset += _offset;
+      byte[] mask = getMask();
+      final int length = byteArray.get().length;
+      final int beginByte = offset + msb / 8;
+      int endByte = offset + lsb / 8;
+      endByte = endByte < length ? endByte : length - 1;
+      final int lsbMod = (lsb % 8) + 1;
+      final int msbMod = msb % 8;
+      int bitLength = lsb - msb;
+      int shift;
+      byte littleMask;
+      for (int i = endByte; i >= beginByte; i--) {
+         if (endByte == beginByte) { // MSB and LSB in same byte; shift accordingly
+            littleMask = (byte) (0xFF << (8 - bitLength - 1)); // N bits all the way to the left
+            littleMask = (byte) ((littleMask & 0xFF) >>> (msbMod)); // shift bits to match element
+            mask[i] &= ~littleMask; 
+         } else if (i == endByte) { // Shift based on LSB
+            shift = 8 - lsbMod;
+            littleMask = (byte) (0xFF << shift);
+            mask[i] &= ~littleMask;
+         } else if (i == beginByte) { // Shift based on MSB
+            littleMask = (byte) (0xFF >>> msbMod);
+            mask[i] &= ~littleMask;
+         } else { // Unmask all eight bits
+            mask[i] = 0;
+         }
+      }
+   }
+   
    public byte[] getMask() {
       return byteArray.getMask();
    }
 
+   /**
+    * Zero out all of the mask bits for this buffer
+    */
    public void zeroizeMask() {
       Arrays.fill(byteArray.getMask(), (byte) 0x00);
    }
 
-   public void printBinary(byte b, String label) {
+   public static void printBinary(byte b, String label) {
       System.out.print(label);
       String bits;
       bits = String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0');
@@ -593,7 +637,7 @@ public class MemoryResource {
       System.out.println("");
    }
 
-   public void printBinary(byte[] byteArray, String label) {
+   public static void printBinary(byte[] byteArray, String label) {
       System.out.print(label);
       String bits;
       for (int i = 0; i < byteArray.length; i++) {
@@ -727,4 +771,5 @@ public class MemoryResource {
       }
       System.out.println("\n");
    }
+
 }

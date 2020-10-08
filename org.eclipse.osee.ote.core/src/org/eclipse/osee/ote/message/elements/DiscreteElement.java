@@ -51,6 +51,14 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public abstract T getValue();
 
    public abstract String toString(T obj);
+   
+   /**
+    * Zeroize both the data and mask for this element
+    */
+   public void unset() {
+      zeroize();
+      getMsgData().getMem().zeroizeMask(byteOffset, msb, lsb);
+   }
 
    public String valueOf() {
       return getValue().toString();
