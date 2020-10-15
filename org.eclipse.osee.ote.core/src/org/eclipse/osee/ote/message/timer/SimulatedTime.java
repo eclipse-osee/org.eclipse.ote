@@ -13,13 +13,11 @@
 
 package org.eclipse.osee.ote.message.timer;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -68,7 +66,7 @@ public class SimulatedTime extends TimerControl {
    /**
     * @param scriptControl -
     */
-   public SimulatedTime(IScriptControl scriptControl) throws IOException {
+   public SimulatedTime(IScriptControl scriptControl) {
       super(3);
       this.scriptControl = scriptControl;
       cycleCounters = new HashSet<>(32);

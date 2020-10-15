@@ -58,6 +58,8 @@ public interface TestEnvironmentInterface {
 
    public boolean addTask(EnvironmentTask task);
 
+   public boolean removeTask(EnvironmentTask task);
+
    public long getEnvTime();
 
    public IExecutionUnitManagement getExecutionUnitManagement();

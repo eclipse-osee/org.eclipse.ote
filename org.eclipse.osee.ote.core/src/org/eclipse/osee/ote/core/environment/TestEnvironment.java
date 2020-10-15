@@ -181,6 +181,12 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return true;
    }
 
+   @Override
+   public boolean removeTask(EnvironmentTask task) {
+      factory.getTimerControl().removeTask(task);
+      return true;
+   }
+
    public boolean equals(ITestEnvironment testEnvironment) throws RemoteException {
       if (testEnvironment.getUniqueId() == getUniqueId()) {
          return true;
