@@ -13,7 +13,7 @@
 package org.eclipse.osee.ote.message.element;
 
 import org.eclipse.osee.ote.message.Message;
-import org.eclipse.osee.ote.message.elements.Float64Element;
+import org.eclipse.osee.ote.message.elements.RealElement;
 import org.eclipse.osee.ote.message.interfaces.IMessageRequestor;
 
 /**
@@ -28,7 +28,7 @@ public class MsgElementFloat64 extends MsgElementReal {
     * @param sourceElement
     * @param requestor 
     */
-   public MsgElementFloat64(Class<? extends Message> sourceMessageClass, Float64Element sourceElement, IMessageRequestor<Message> requestor) {
+   public MsgElementFloat64(Class<? extends Message> sourceMessageClass, RealElement sourceElement, IMessageRequestor<Message> requestor) {
       super(sourceMessageClass, sourceElement, requestor);
    }
 
