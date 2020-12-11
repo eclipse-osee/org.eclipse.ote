@@ -87,7 +87,7 @@ public class OteDisplayTextVerifierTest {
    @Test
    public void testExceptionWhenMissingActualPositionAttribute() {
       this.exceptionRule.expect(OseeCoreException.class);
-      this.exceptionRule.expectMessage("Required attribute 'Position' was never set on actual OTE verifier attribute");
+      this.exceptionRule.expectMessage("Optional attribute 'Position' was set on expected but not on actual");
       OteDisplayTextVerifier expected = new OteDisplayTextVerifier(api);
       OteDisplayTextVerifier actual = new OteDisplayTextVerifier(api);
 
@@ -119,10 +119,7 @@ public class OteDisplayTextVerifierTest {
 
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
-   public void testExceptionWhenMissingExpectedPositionAttribute() {
-      this.exceptionRule.expect(OseeCoreException.class);
-      this.exceptionRule.expectMessage(
-         "Required attribute 'Position' was never set on expected OTE verifier attribute");
+   public void testActualHavingMoreAttributesThanExpected() {
       OteDisplayTextVerifier expected = new OteDisplayTextVerifier(api);
       OteDisplayTextVerifier actual = new OteDisplayTextVerifier(api);
 
@@ -130,9 +127,12 @@ public class OteDisplayTextVerifierTest {
       expected.setColor(TEST_COLOR);
 
       actual.setPosition(new DoublePoint(TEST_DOUBLE + 1, TEST_DOUBLE));
-      actual.setLabel(TEST_STRING + "_BAD");
-      actual.setColor(TEST_COLOR + "_BAD");
-      expected.verify(actual);
+      actual.setLabel(TEST_STRING);
+      actual.setColor(TEST_COLOR);
+      expected.logResults(expected.verify(actual));
+      ITestPoint result = logger.pop();
+      Assert.assertTrue(result.isPass());
+      
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
