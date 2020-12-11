@@ -23,7 +23,7 @@ import org.eclipse.ote.verify.OteVerifierAttribute;
 
 /**
  * @author Michael P. Masterson
- * @param <T> 
+ * @param <T>
  */
 public class OteDisplayObjectVerifier<T extends OteDisplayObjectVerifier<T>> extends OteVerifier<T> {
    private final OteVerifierAttribute position;
@@ -33,13 +33,13 @@ public class OteDisplayObjectVerifier<T extends OteDisplayObjectVerifier<T>> ext
     */
    public OteDisplayObjectVerifier(OteInternalApi api) {
       super(api);
-      this.position = new OteVerifierAttribute("Position", true);
+      this.position = new OteVerifierAttribute("Position", OteVerifierAttribute.OPTIONAL);
    }
 
    public void setPosition(DoublePoint position) {
       this.position.setValue(position);
    }
-   
+
    public OteVerifierAttribute getPosition() {
       return position;
    }
@@ -68,6 +68,4 @@ public class OteDisplayObjectVerifier<T extends OteDisplayObjectVerifier<T>> ext
       }
    }
 
-   
-   
 }
