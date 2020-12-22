@@ -66,7 +66,6 @@
       <import plugin="org.apache.aries.util"/>
       <import plugin="org.osgi.service.blueprint"/>
       <import plugin="javax.wsdl"/>
-      <import plugin="javax.validation" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="javax.annotation" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="com.fasterxml.jackson.core.jackson-core" version="2.9.2" match="greaterOrEqual"/>
       <import plugin="com.fasterxml.jackson.core.jackson-annotations" version="2.9.2" match="greaterOrEqual"/>

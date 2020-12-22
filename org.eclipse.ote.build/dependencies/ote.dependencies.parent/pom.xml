@@ -10,22 +10,6 @@
       <relativePath>../../maven/core</relativePath>
    </parent>
 
-   <properties>
-      <platform-version-name>photon</platform-version-name>
-      <eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
-      <orbit-version>R20181128170323</orbit-version>
-      <mylyn_version>3.16.0</mylyn_version>
-      <egit-version>4.4</egit-version>
-      <subversive-version>1.0</subversive-version>
-      <polarion-version>3.0</polarion-version>
-      <xtext-version>2.0.0</xtext-version>
-      
-      
-	  <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository/</orbit-site>
-      <egit-site>http://download.eclipse.org/egit/updates</egit-site>
-
-   </properties>
-
    <groupId>org.eclipse.ote.build</groupId>
    <artifactId>ote.dependencies.parent</artifactId>
    <packaging>pom</packaging>
@@ -48,59 +32,12 @@
 				<layout>p2</layout>
 				<url>${osee-server-site}</url>
 			</repository>
-
 			<repository>
-				<id>orbit</id>
+				<id>osee-dep</id>
 				<layout>p2</layout>
-				<url>${orbit-site}</url>
-			</repository>	
-		
-            <repository>
-               <id>subversive</id>
-               <layout>p2</layout>
-               <url>http://download.eclipse.org/technology/subversive/4.0/update-site/</url>
-            </repository>
-		
-            <repository>
-               <id>polarion</id>
-               <layout>p2</layout>
-               <url>http://community.polarion.com/projects/subversive/download/eclipse/6.0/neon-site/</url>
-            </repository>
- <!--             <repository>
-               <id>itemis</id>
-               <layout>p2</layout>
-               <url>https://download.itemis.com/updates/</url>
-                <url>${local-mirrors-path}/itemis/${xtext-version}/</url>  
-            </repository> 
-            <repository>
-               <id>checkstyle</id>
-               <layout>p2</layout>
-               <url>http://checkstyle.org/eclipse-cs/update</url>
-               <url>${local-mirrors-path}/checkstyle/release/</url>   
-            </repository>  -->
-            <repository>
-               <id>emma</id>
-               <layout>p2</layout>
-<!--               <url>${local-mirrors-path}/emma/2.3.3/</url> -->
-               <url>http://update.eclemma.org</url>
-            </repository>
-            <repository>
-               <id>eclipse-mirror</id>
-               <layout>p2</layout>
-<!--                 <url>${local-mirrors-path}/eclipse/${platform-version-name}</url> -->
-               <url>${eclipse-site}</url>
-            </repository>
-            <repository>
-               <id>wb-mirror</id>
-               <layout>p2</layout>
-            <!--     <url>${local-mirrors-path}/wb/1.1.0/</url> -->
-               <url>http://archive.eclipse.org/windowbuilder/WB/release/R201106211200/3.4/</url>
-            </repository>
-            <repository> 
-            	<id>egit</id>
-            	<layout>p2</layout>
-            	<url>${egit-site}-${egit-version}</url>
-            </repository>
+				<url>${osee-dep-site}</url>
+			</repository>
+
 	</repositories>
 	
 </project>
