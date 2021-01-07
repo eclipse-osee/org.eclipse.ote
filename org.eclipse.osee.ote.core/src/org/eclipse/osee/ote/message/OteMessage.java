@@ -15,7 +15,6 @@ package org.eclipse.osee.ote.message;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.condition.ICondition;
 import org.eclipse.osee.ote.message.data.MessageData;
@@ -46,14 +45,14 @@ public abstract class OteMessage<M extends Message> {
    }
 
    public M getMessageToWrite() {
-      if (sourceMessageWriter == null) {
+      if (sourceMessageWriter == null || sourceMessageWriter.isDestroyed()) {
          sourceMessageWriter = requestor.getMessageWriter(sourceMessageClass);
       }
       return sourceMessageWriter;
    }
 
    public M getMessageToRead() {
-      if (sourceMessageReader == null) {
+      if (sourceMessageReader == null || sourceMessageReader.isDestroyed()) {
          sourceMessageReader = requestor.getMessageReader(sourceMessageClass);
       }
       return sourceMessageReader;

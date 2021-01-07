@@ -53,7 +53,7 @@ public abstract class MsgElementDiscrete<T extends Comparable<T>> {
 
    @SuppressWarnings("unchecked")
    protected DiscreteElement<T> getElementToWrite() {
-      if (sourceMessageWriter == null || elementToWrite == null) {
+      if (sourceMessageWriter == null || sourceMessageWriter.isDestroyed() || elementToWrite == null) {
          sourceMessageWriter = requestor.getMessageWriter(sourceMessageClass);
          elementToWrite = sourceMessageWriter.getElement(sourceElement.getElementName(), sourceElement.getClass());
       }
@@ -62,7 +62,7 @@ public abstract class MsgElementDiscrete<T extends Comparable<T>> {
 
    @SuppressWarnings("unchecked")
    protected DiscreteElement<T> getElementToRead() {
-      if (sourceMessageReader == null || elementToRead == null) {
+      if (sourceMessageReader == null || sourceMessageReader.isDestroyed() || elementToRead == null) {
          sourceMessageReader = requestor.getMessageReader(sourceMessageClass);
          elementToRead = sourceMessageReader.getElement(sourceElement.getElementName(), sourceElement.getClass());
       }
