@@ -11,8 +11,7 @@
 		<!-- <property name="versions.file" value="${basedir}/versions.txt" /> -->
 		
 		<!-- Grab version from dependency p2 --> 
-		<get src="${osee.ote.p2}/versions.txt" dest="${versions.file}"
-							username="${ldap.uname}" password="${ldap.pw}" />
+		<get src="${osee.ote.p2}/versions.txt" dest="${versions.file}" />
 		 
 		<!-- Add OSEE Version -->
 		<pathconvert property="version.bundle.path" setonempty="false">
