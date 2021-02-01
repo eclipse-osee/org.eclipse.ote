@@ -51,20 +51,32 @@ public abstract class MsgElementDiscrete<T extends Comparable<T>> {
       getElementToWrite().unset();
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "rawtypes"})
    protected DiscreteElement<T> getElementToWrite() {
       if (sourceMessageWriter == null || sourceMessageWriter.isDestroyed() || elementToWrite == null) {
          sourceMessageWriter = requestor.getMessageWriter(sourceMessageClass);
-         elementToWrite = sourceMessageWriter.getElement(sourceElement.getElementName(), sourceElement.getClass());
+         Class<? extends DiscreteElement> clazz = sourceElement.getClass();
+         elementToWrite = sourceMessageWriter.getElement(sourceElement.getElementName(), clazz);
+
+         // May be a record so use path instead
+         if (elementToWrite == null) {
+            elementToWrite = clazz.cast(sourceMessageWriter.getElement(sourceElement.getElementPath()));
+         }
       }
       return elementToWrite;
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "rawtypes"})
    protected DiscreteElement<T> getElementToRead() {
       if (sourceMessageReader == null || sourceMessageReader.isDestroyed() || elementToRead == null) {
          sourceMessageReader = requestor.getMessageReader(sourceMessageClass);
-         elementToRead = sourceMessageReader.getElement(sourceElement.getElementName(), sourceElement.getClass());
+         Class<? extends DiscreteElement> clazz = sourceElement.getClass();
+         elementToRead = sourceMessageReader.getElement(sourceElement.getElementName(), clazz);
+
+         // May be a record so use path instead
+         if (elementToRead == null) {
+            elementToRead = clazz.cast(sourceMessageReader.getElement(sourceElement.getElementPath()));
+         }
       }
       return elementToRead;
    }

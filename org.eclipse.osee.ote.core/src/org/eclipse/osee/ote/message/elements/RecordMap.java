@@ -15,7 +15,6 @@ package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
 import java.util.HashMap;
-
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 
@@ -28,19 +27,21 @@ public class RecordMap<T extends RecordElement> extends RecordElement {
    private final int NUMBER_OF_RECORDS;
 
    private final HashMap<Integer, T> records;
-   private IRecordFactory factory;
+   private final IRecordFactory factory;
 
-   public RecordMap(Message message, MessageData messageData, String elementName, int numberOfRecords, IRecordFactory factory) {
-      super(message, elementName, 1, messageData, 0, factory.getBitLength());
+   public RecordMap(Message message, MessageData messageData, String elementName, int numberOfRecords, int firstRecordBitOffset, IRecordFactory factory) {
+      this(message, messageData, elementName, 0, numberOfRecords, firstRecordBitOffset, factory);
+   }
+
+   public RecordMap(Message message, MessageData messageData, String elementName, int index, int numberOfRecords, int firstRecordBitOffset, IRecordFactory factory) {
+      super(message, elementName, index, messageData, firstRecordBitOffset, factory.getBitLength());
       NUMBER_OF_RECORDS = numberOfRecords;
       records = new HashMap<>(numberOfRecords);
       this.factory = factory;
    }
 
-   public RecordMap(Message message, MessageData messageData, int firstRecordByteOffset, int recordByteSize, int numberOfRecords) {
-      super(message, "", 1, messageData, 0, 0);
-      NUMBER_OF_RECORDS = numberOfRecords;
-      records = new HashMap<>(numberOfRecords);
+   public RecordMap(Message message, MessageData messageData, String elementName, int numberOfRecords, IRecordFactory factory) {
+      this(message, messageData, elementName, 1, numberOfRecords, 0, factory);
    }
 
    @Override
