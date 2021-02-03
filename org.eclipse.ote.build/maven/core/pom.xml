@@ -63,7 +63,7 @@
             <repository>
                <id>org.eclipse.ote.p2</id>
                <layout>p2</layout>
-               <url>${gitRepoRoot}/org.eclipse.ote/org.eclipse.ote.p2/target/repository/</url>
+               <url>${org.eclipse.ote.p2}</url>
             </repository>
          </repositories>
       </profile>
