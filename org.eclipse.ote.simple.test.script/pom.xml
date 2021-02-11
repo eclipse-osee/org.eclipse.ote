@@ -12,6 +12,6 @@
 
 	<artifactId>org.eclipse.ote.simple.test.script</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>Eclipse OTE Simple Test Script (Incubation)</name>
+	<name>OTE Simple Test Script</name>
 
 </project>

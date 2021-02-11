@@ -31,9 +31,9 @@
       <category name="org.eclipse.ote"/>
    </feature>
    
-   <category-def name="org.eclipse.ote" label="Eclipse OTE Features">
+   <category-def name="org.eclipse.ote" label="OTE Features">
       <description>
-         OTE Common CDB
+         OTE Features
       </description>
    </category-def>
 </site>

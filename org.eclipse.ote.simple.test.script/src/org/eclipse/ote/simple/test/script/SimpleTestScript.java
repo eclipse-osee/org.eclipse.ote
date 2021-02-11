@@ -19,7 +19,6 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestException;
@@ -40,12 +39,12 @@ import org.eclipse.ote.simple.io.message.lookup.SimpleMuxReceiverHeader;
  * @author Andy Jury
  */
 public class SimpleTestScript extends SimpleTestScriptType {
-   
+
    HELLO_WORLD writer;
-   
+
    public SimpleTestScript(MessageSystemTestEnvironment testEnvironment, ITestEnvironmentCommandCallback callback) {
       super(testEnvironment, callback);
-      
+
       this.writer = getMessageWriter(HELLO_WORLD.class);
 
       new TestCase1(this);
@@ -60,9 +59,13 @@ public class SimpleTestScript extends SimpleTestScriptType {
          super(parent, false, false);
       }
 
-      public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {}
+      @Override
+      public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
+         // Intentionally empty block
+      }
    }
 
+   @Override
    protected TestCase getSetupTestCase() {
 
       return new LocalSetupTestCase(this);
@@ -75,6 +78,7 @@ public class SimpleTestScript extends SimpleTestScriptType {
          super(parent);
       }
 
+      @Override
       public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
          prompt("In TestCase1");
          promptPause("In TestCase1");
@@ -89,6 +93,7 @@ public class SimpleTestScript extends SimpleTestScriptType {
          super(parent);
       }
 
+      @Override
       public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
          // This test case will fail when running in an environment with Mux
          // unless you uncomment the following line to force the message mem type
@@ -107,7 +112,7 @@ public class SimpleTestScript extends SimpleTestScriptType {
          writer.unschedule();
       }
    }
-   
+
    public class TestCaseSend extends TestCase {
 
       public TestCaseSend(TestScript parent) {
@@ -115,20 +120,20 @@ public class SimpleTestScript extends SimpleTestScriptType {
          super(parent);
       }
 
+      @Override
       public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
          try {
             MuxChannelSender sender = new MuxChannelSender();
             environment.addTask(sender);
-            
+
             testWait(10000);
             sender.disable();
-         }
-         catch (IOException ex) {
+         } catch (IOException ex) {
             logTestPoint(false, "Error starting packet sender", "N/A", ex.getMessage());
          }
       }
    }
-   
+
    private class MuxChannelSender extends EnvironmentTask {
 
       private SIMPLE_MUX_R_MSG sendMsg = new SIMPLE_MUX_R_MSG();
@@ -137,8 +142,7 @@ public class SimpleTestScript extends SimpleTestScriptType {
       private DatagramChannel datagramChannel;
       private ByteBuffer buffer;
       private InetSocketAddress socket;
-      
-      
+
       public MuxChannelSender() throws IOException {
          super(1.0);
          datagramChannel = DatagramChannel.open();
@@ -146,17 +150,17 @@ public class SimpleTestScript extends SimpleTestScriptType {
          buffer = ByteBuffer.allocate(payloadSize + header.getDefaultByteSize());
          InetAddress receiveAddress = InetAddress.getLocalHost();
          socket = new InetSocketAddress(receiveAddress, SimpleMuxReceiver.SIMPLE_MUX_RECEIVE_PORT);
-         
+
       }
 
       @Override
-      public void runOneCycle() throws InterruptedException, TestException { 
+      public void runOneCycle() throws TestException {
          sendMsg.MUX_SPECIFIC_ELEMENT.setNoLog((double) counter++);
          header.fillInBytes(sendMsg);
-         
+
          byte[] headerData = header.getData();
          byte[] muxData = sendMsg.getData();
-         
+
          buffer.clear();
          buffer.put(headerData);
          buffer.put(muxData);
@@ -164,11 +168,10 @@ public class SimpleTestScript extends SimpleTestScriptType {
          try {
             System.out.printf("%d: Sending to %s\n", System.currentTimeMillis(), socket.toString());
             datagramChannel.send(buffer, socket);
-         }
-         catch (IOException ex) {
+         } catch (IOException ex) {
             OseeLog.log(MuxChannelSender.class, Level.WARNING, "Error sending test packet to " + socket.toString(), ex);
          }
       }
-      
+
    }
 }

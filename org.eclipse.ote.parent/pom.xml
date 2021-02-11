@@ -13,28 +13,28 @@
 	<groupId>org.eclipse.ote</groupId>
 	<artifactId>org.eclipse.ote.parent</artifactId>
 	<packaging>pom</packaging>
-	<name>Eclipse OTE Parent (Incubation)</name>
+	<name>OTE Parent (Incubation)</name>
 
 	<modules>
-	   <module>../org.eclipse.ote.bytemessage</module>
-	   <module>../org.eclipse.ote.bytemessage.test</module>
-	   <module>../org.eclipse.ote.message.manager</module>
+		<module>../org.eclipse.ote.bytemessage</module>
+		<module>../org.eclipse.ote.bytemessage.test</module>
+		<module>../org.eclipse.ote.message.manager</module>
 		<module>../org.eclipse.ote.io</module>
 		<module>../org.eclipse.ote.io.test</module>
 		<module>../org.eclipse.ote.io.mux</module>
 		<module>../org.eclipse.ote.io.mux.test</module>
-	   <module>../org.eclipse.ote.services.core</module>
+		<module>../org.eclipse.ote.services.core</module>
 		<module>../org.eclipse.ote.statemachine</module>
 		<module>../org.eclipse.ote.statemachine.test</module>
 		<module>../org.eclipse.ote.verify</module>
 		<module>../org.eclipse.ote.verify.test</module>
 	
-	   <module>../org.eclipse.ote.message.lookup</module>
-	   <module>../org.eclipse.ote.message.lookup.test</module>
-	   <module>../org.eclipse.ote.client</module>
-	   <module>../org.eclipse.ote.client.ui</module>
-	   <module>../org.eclipse.ote.test.manager</module>
-	   <module>../org.eclipse.ote.test.manager.uut.selector</module>
+		<module>../org.eclipse.ote.message.lookup</module>
+		<module>../org.eclipse.ote.message.lookup.test</module>
+		<module>../org.eclipse.ote.client</module>
+		<module>../org.eclipse.ote.client.ui</module>
+		<module>../org.eclipse.ote.test.manager</module>
+		<module>../org.eclipse.ote.test.manager.uut.selector</module>
 		<module>../org.eclipse.ote.ui</module>
 		<module>../org.eclipse.ote.ui.message.util</module>
 		<module>../org.eclipse.ote.ui.eviewer</module>
