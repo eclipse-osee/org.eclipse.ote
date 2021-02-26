@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.ote.build</groupId>
+		<artifactId>core</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../org.eclipse.ote.build/maven/core/</relativePath>
+	</parent>
+	
+	<groupId>org.eclipse.ote.ci.test_server</groupId>
+	<artifactId>org.eclipse.ote.ci.test_server</artifactId>
+	<packaging>pom</packaging>
+	<name>OTE CI Test Server - Parent</name>
+    <version>0.1.0-SNAPSHOT</version>
+
+	<modules>
+		<module>../org.eclipse.ote.ci.test_server</module>
+		<module>../org.eclipse.ote.ci.test_server.external.feature</module>
+		<module>../org.eclipse.ote.ci.test_server.feature</module>
+		<module>../org.eclipse.ote.ci.test_server.product</module>
+	</modules>
+
+	
+</project>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="OteCiTestServer" uid="org.eclipse.ote.ci.test_server.product" id="org.eclipse.osee.ote.core.server" application="org.eclipse.osee.ote.core.server" version="0.1.0.qualifier" useFeatures="true" includeLaunchers="true">
+
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-clean
+      </programArgs>
+      <vmArgs>-Dote.id=STARTED_ 
+-Duser.name=OTE_CI 
+-XX:MaxPermSize=384m 
+-Dosee.ote.server.title=OTE_CI 
+-Dosee.ote.server.factory.class=org.eclipse.ote.simple.test.environment.SimpleTestEnvironmentStartupFactory
+-Dosee.log.default=INFO
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+
+   <launcher name="OteCiTestServer">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <vm>
+      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</windows>
+   </vm>
+
+   <plugins>
+      <plugin id="ch.qos.logback.classic"/>
+      <plugin id="ch.qos.logback.core"/>
+      <plugin id="ch.qos.logback.slf4j" fragment="true"/>
+      <plugin id="com.ctc.wstx"/>
+      <plugin id="com.google.guava"/>
+      <plugin id="com.google.inject"/>
+      <plugin id="javax.annotation"/>
+      <plugin id="javax.inject"/>
+      <plugin id="javax.servlet"/>
+      <plugin id="javax.ws.rs"/>
+      <plugin id="javax.xml"/>
+      <plugin id="org.apache.aries.blueprint"/>
+      <plugin id="org.apache.aries.proxy"/>
+      <plugin id="org.apache.aries.util"/>
+      <plugin id="org.apache.commons.codec"/>
+      <plugin id="org.apache.cxf.core"/>
+      <plugin id="org.apache.cxf.core.config" fragment="true"/>
+      <plugin id="org.apache.cxf.jaxrs.client"/>
+      <plugin id="org.apache.cxf.jaxrs.frontend"/>
+      <plugin id="org.apache.cxf.rs.security.oauth2"/>
+      <plugin id="org.apache.cxf.transport.http"/>
+      <plugin id="org.apache.felix.gogo.command"/>
+      <plugin id="org.apache.felix.gogo.runtime"/>
+      <plugin id="org.apache.felix.gogo.shell"/>
+      <plugin id="org.apache.ws.commons.schema"/>
+      <plugin id="org.apache.xerces"/>
+      <plugin id="org.apache.xml.resolver"/>
+      <plugin id="org.apache.xml.serializer"/>
+      <plugin id="org.codehaus.jackson.core"/>
+      <plugin id="org.codehaus.jackson.jaxrs"/>
+      <plugin id="org.codehaus.jackson.mapper"/>
+      <plugin id="org.codehaus.jackson.xc"/>
+      <plugin id="org.codehaus.stax2"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.console"/>
+      <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.osee.framework.jdk.core"/>
+      <plugin id="org.eclipse.osee.jaxrs"/>
+      <plugin id="org.eclipse.osee.jaxrs.client"/>
+      <plugin id="org.eclipse.osee.logback.config" fragment="true"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.hamcrest.core"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.osgi.service.blueprint"/>
+      <plugin id="org.slf4j.api"/>
+      <plugin id="ote.cloud.server.control"/>
+      <plugin id="ote.cloud.server.control.rest"/>
+      <plugin id="ote.cloud.server.control.rest.client"/>
+      <plugin id="ote.cloud.server.control.rest.model"/>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.ote.ci.test_server.feature" version="0.1.0.qualifier"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.osee.ote.connection.service" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osee.ote.io" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.osee.ote.server" autoStart="true" startLevel="0" />
+   </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
+
+</product>

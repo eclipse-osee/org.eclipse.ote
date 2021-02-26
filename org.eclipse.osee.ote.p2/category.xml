@@ -12,6 +12,12 @@
    <feature url="features/org.eclipse.osee.ote.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.ote.feature.source" version="0.26.0.qualifier">
       <category name="org.eclipse.osee.ote"/>
    </feature>
+   <feature url="features/org.eclipse.osee.ote.server.external.feature_0.26.0.qualifier.jar" id="org.eclipse.osee.ote.server.external.feature" version="0.26.0.qualifier">
+      <category name="org.eclipse.osee.ote"/>
+   </feature>
+   <feature url="features/org.eclipse.osee.ote.server.external.feature.source_0.26.0.qualifier.jar" id="org.eclipse.osee.ote.server.external.feature.source" version="0.26.0.qualifier">
+      <category name="org.eclipse.osee.ote"/>
+   </feature>
    <category-def name="org.eclipse.osee.ote" label="Eclipse OSEE OTE - (Incubation)">
       <description>
          Eclipse OSEE OTE - (Incubation)

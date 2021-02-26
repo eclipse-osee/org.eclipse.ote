@@ -22,6 +22,21 @@
 
    <profiles>
 	    <profile>
+			<id>ote.simple.p2</id>
+			<activation>
+				<property>
+					<name>ote.simple.p2</name>
+				</property>
+			</activation>
+			<repositories>
+				<repository>
+					<id>ote.simple.p2</id>
+					<layout>p2</layout>
+					<url>${ote.simple.p2}</url>
+				</repository>
+			</repositories>
+		</profile>
+	    <profile>
 			<id>ote.p2</id>
 			<activation>
 				<property>
@@ -83,22 +98,6 @@
             </repository>
          </repositories>
       </profile>
-	    <profile>
-			<id>osee.x.p2</id>
-			<activation>
-				<property>
-					<name>osee.x.p2</name>
-				</property>
-			</activation>
-			<repositories>
-				<repository>
-					<id>osee-x-site</id>
-					<layout>p2</layout>
-					<url>${osee.x.p2}</url>
-				</repository>
-			</repositories>
-		</profile>
-
    </profiles>
 
 

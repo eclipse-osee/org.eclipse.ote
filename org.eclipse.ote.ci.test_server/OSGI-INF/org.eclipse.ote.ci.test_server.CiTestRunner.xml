@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" immediate="true" name="org.eclipse.ote.ci.test_server.CiTestRunner">
+   <implementation class="org.eclipse.ote.ci.test_server.CiTestRunner"/>
+   <reference bind="bindIHostTestEnvironment" cardinality="1..1" interface="org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment" name="IHostTestEnvironment" policy="static" unbind="unbindIHostTestEnvironment"/>
+</scr:component>

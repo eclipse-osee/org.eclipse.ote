@@ -1,0 +1,30 @@
+<project name="Contribute Extra Build Steps" default="iniWorkaround">
+
+	<property name="linux_x86_64" value="target/products/ote.tm.rcp.product/linux/gtk/x86_64" />
+			<property name="win_x86_64" value="target/products/ote.tm.rcp.product/win32/win32/x86_64" />
+
+			<!-- write out some version files -->
+			<tstamp>
+				<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
+			</tstamp>
+			<echo file="${basedir}/target/build_date.txt" append="false" message="${TODAY}" />
+			<copy verbose="true" file="${basedir}/target/build_date.txt" todir="${linux_x86_64}" overwrite="true" />
+			<copy verbose="true" file="${basedir}/target/build_date.txt" todir="${win_x86_64}" overwrite="true" />
+	
+	<target name="iniWorkaround">
+		<copy todir="target/products/org.eclipse.ote.ci.test_server.product/linux/gtk/x86_64" overwrite="true">
+			<fileset dir="common" />
+		</copy>
+		<copy todir="target/products/org.eclipse.ote.ci.test_server.product/win32/win32/x86_64" overwrite="true">
+			<fileset dir="common" />
+		</copy>
+
+		<copy file="target/products/org.eclipse.ote.ci.test_server.product/linux/gtk/x86_64/OteCiTestServer"
+		      tofile="target/products/org.eclipse.ote.ci.test_server.product/linux/gtk/x86_64/OteCiTestServerSimpleTestScript"
+				overwrite="true" />
+		<copy file="target/products/org.eclipse.ote.ci.test_server.product/win32/win32/x86_64/OteCiTestServer.exe"
+			   		tofile="target/products/org.eclipse.ote.ci.test_server.product/win32/win32/x86_64/OteCiTestServerSimpleTestScript.exe"
+			    overwrite="true" />
+	</target>
+	
+</project>
