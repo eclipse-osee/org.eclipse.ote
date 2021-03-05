@@ -1,7 +1,7 @@
 <project name="Contribute Extra Build Steps" default="iniWorkaround">
 
-	<property name="linux_x86_64" value="target/products/ote.tm.rcp.product/linux/gtk/x86_64" />
-			<property name="win_x86_64" value="target/products/ote.tm.rcp.product/win32/win32/x86_64" />
+	<property name="linux_x86_64" value="target/products/org.eclipse.ote.ci.test_server.product/linux/gtk/x86_64" />
+			<property name="win_x86_64" value="target/products/org.eclipse.ote.ci.test_server.product/win32/win32/x86_64" />
 
 			<!-- write out some version files -->
 			<tstamp>
