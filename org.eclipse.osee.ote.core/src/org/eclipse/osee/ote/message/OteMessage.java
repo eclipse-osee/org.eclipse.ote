@@ -34,7 +34,7 @@ import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAcce
  * @param <M> The concrete Message type this class is wrapping
  */
 public abstract class OteMessage<M extends Message> {
-   private final IMessageRequestor<Message> requestor;
+   protected final IMessageRequestor<Message> requestor;
    private final Class<M> sourceMessageClass;
    private M sourceMessageWriter;
    private M sourceMessageReader;

@@ -112,7 +112,7 @@ public abstract class MsgElementDiscrete<T extends Comparable<T>> {
     * @param value The value to set.
     */
    public void set(ITestEnvironmentAccessor accessor, T value) {
-      getElementToWrite().setNoLog(value);
+      getElementToWrite().set(accessor, value);
    }
 
    /**
