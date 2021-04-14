@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.eclipse.ote.osgi.configuration.provider.sample">
+   <implementation class="org.eclipse.ote.osgi.configuration.internal.SampleConfigProvider"/>
+   <service>
+      <provide interface="org.eclipse.ote.osgi.configuration.OTEConfigurationProvider"/>
+   </service>
+</scr:component>
