@@ -16,6 +16,7 @@ package org.eclipse.osee.ote.ui.output.editors;
 import java.io.File;
 import java.io.InputStream;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -79,19 +80,19 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
 
    private static final int _1_MB = 1048576;
    private static final int _20_MB = _1_MB * 20;
-   
+
    @Override
    public IStatus run(IProgressMonitor monitor) throws Exception {
       InputStream inputStream = null;
       if (input instanceof IFileEditorInput) {
          IFile inputFile = ((IFileEditorInput) input).getFile();
          inputStream = inputFile.getContents();
-         
+
          File outfile = AWorkspace.iFileToFile(inputFile);
          if (outfile.length() > _20_MB) {
-            largeFile  = true;
+            largeFile = true;
          }
-                  
+
          MarkerPlugin.addMarkers(inputFile);
       } else if (input instanceof FileStoreEditorInput) {
          inputStream = ((FileStoreEditorInput) input).getURI().toURL().openStream();
@@ -111,8 +112,9 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
          @Override
          public void onEndElement(Object obj) {
             currentScriptItem.setColumnText(0, "ScriptInit");
-            currentScriptItem.setColumnText(1, String.format("Total: %d Fail: %d",
-                  (currentTestCasePass + currentTestCaseFail), currentTestCaseFail));
+            int totalPoints = currentTestCasePass + currentTestCaseFail;
+            String tallyString = String.format("Total: %d Fail: %d", totalPoints, currentTestCaseFail);
+            currentScriptItem.setColumnText(1, tallyString);
             currentScriptItem.setColumnText(2, "");
             currentScriptItem.setColumnText(3, "");
             currentScriptItem.setColumnText(4, "");
@@ -132,9 +134,9 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
          @Override
          public void onEndElement(Object obj) {
             currentScriptItem.generateTitle();
-            currentScriptItem.setColumnText(0, String.format("%s",
-                  currentScriptItem.getField("Name"), currentTestCasePass + currentTestCaseFail, currentTestCaseFail));
-            currentScriptItem.setColumnText(1, String.format("Total: %d Fail: %d", currentTestCasePass + currentTestCaseFail, currentTestCaseFail));
+            int totalPoints = currentTestCasePass + currentTestCaseFail;
+            currentScriptItem.setColumnText(0, String.format("%s", currentScriptItem.getField("Name")));
+            currentScriptItem.setColumnText(1, String.format("Total: %d Fail: %d", totalPoints, currentTestCaseFail));
             currentScriptItem.setColumnText(2, "");
             currentScriptItem.setColumnText(3, "");
             currentScriptItem.setColumnText(4, "");
@@ -163,10 +165,8 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
       handler.getHandler("Trace").addListener(new IBaseSaxElementListener() {
          @Override
          public void onEndElement(Object obj) {
-            currentScriptItem.setColumnText(
-               0,
-               String.format("%s.%s", currentScriptItem.getField("ObjectName"),
-                  currentScriptItem.getField("MethodName")));
+            currentScriptItem.setColumnText(0, String.format("%s.%s", currentScriptItem.getField("ObjectName"),
+               currentScriptItem.getField("MethodName")));
             currentScriptItem.setColumnText(1,
                String.format("(%s)", currentScriptItem.getFieldListValuesString("ArgumentValue")));
 
@@ -233,20 +233,20 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
          }
       });
       handler.getHandler("Attention").addListener(new IBaseSaxElementListener() {
-          @Override
-          public void onEndElement(Object obj) {
-             backUpTheTree();
-             isInAttention = false;
-          }
+         @Override
+         public void onEndElement(Object obj) {
+            backUpTheTree();
+            isInAttention = false;
+         }
 
-          @Override
-          public void onStartElement(Object obj) {
-             isInAttention = true;
-             BaseOutfileTreeItem item = new BaseOutfileTreeItem(OutfileRowType.info);
-             item.setColumnText(0, "Info");
-             relateAndSetCurrent(item);
-          }
-       });
+         @Override
+         public void onStartElement(Object obj) {
+            isInAttention = true;
+            BaseOutfileTreeItem item = new BaseOutfileTreeItem(OutfileRowType.info);
+            item.setColumnText(0, "Info");
+            relateAndSetCurrent(item);
+         }
+      });
       handler.getHandler("Name").addListener(new IBaseSaxElementListener() {
          @Override
          public void onEndElement(Object obj) {
@@ -261,12 +261,12 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
       handler.getHandler("Message").addListener(new IBaseSaxElementListener() {
          @Override
          public void onEndElement(Object obj) {
-            if(isInAttention){
-            	String str = obj.toString();
-            	str = str.replaceAll("\\n", "");
-            	currentScriptItem.setColumnText(1, str);
+            if (isInAttention) {
+               String str = obj.toString();
+               str = str.replaceAll("\\n", "");
+               currentScriptItem.setColumnText(1, str);
             } else {
-            	currentScriptItem.setField("Message", obj.toString());
+               currentScriptItem.setField("Message", obj.toString());
             }
          }
 
@@ -427,14 +427,15 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
       handler.getHandler("TestPoint").addListener(new IBaseSaxElementListener() {
          @Override
          public void onEndElement(Object obj) {
-            if (currentScriptItem.getField("Result").equalsIgnoreCase("PASSED")) {
+            String resultField = currentScriptItem.getField("Result");
+            if (resultField.equalsIgnoreCase("PASSED")) {
                currentTestCasePass++;
             } else {
                currentTestCaseFail++;
             }
             currentScriptItem.setItemKey("TP" + currentScriptItem.getField("Number"));
             currentScriptItem.setColumnText(0, String.format("TestPoint:%s", currentScriptItem.getField("Number")));
-            currentScriptItem.setColumnText(1, currentScriptItem.getField("Result"));
+            currentScriptItem.setColumnText(1, resultField);
 
             // do some trickery to propagate the passfail image up
             // the tree
@@ -468,10 +469,8 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
             currentScriptItem.setColumnText(1, currentScriptItem.getField("TestPointName"));
             currentScriptItem.setColumnText(2, String.format("Exp: %s", currentScriptItem.getField("Expected")));
             currentScriptItem.setColumnText(3, String.format("Act: %s", currentScriptItem.getField("Actual")));
-            currentScriptItem.setColumnText(
-               4,
-               String.format("%s ms [%s MT]", currentScriptItem.getField("ElapsedTime"),
-                  currentScriptItem.getField("NumberOfTransmissions")));
+            currentScriptItem.setColumnText(4, String.format("%s ms [%s MT]", currentScriptItem.getField("ElapsedTime"),
+               currentScriptItem.getField("NumberOfTransmissions")));
 
             if (currentScriptItem.getParent().getType() == OutfileRowType.testpoint) {
                IOutfileTreeItem updateme = currentScriptItem.getParent();
@@ -581,13 +580,13 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
          @Override
          public void onEndElement(Object obj) {
             String[] lines = obj.toString().split("\r\n");
-            if(lines.length == 1){
+            if (lines.length == 1) {
                lines = obj.toString().split("\n");
             }
-            if (lines != null){
-               for(int i = 0; i < lines.length; i++){
+            if (lines != null) {
+               for (int i = 0; i < lines.length; i++) {
                   BaseOutfileTreeItem item = new BaseOutfileTreeItem(OutfileRowType.log);
-                  item.setColumnText(1,lines[i]);
+                  item.setColumnText(1, lines[i]);
                   relateAndSetCurrent(item);
                   backUpTheTree();
                }
@@ -726,8 +725,8 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
 
       long all = System.currentTimeMillis() - time;
 
-      OseeLog.logf(Activator.class, Level.INFO,
-         "It took %d ms total to process the details page of %s.", all, input.getName());
+      OseeLog.logf(Activator.class, Level.INFO, "It took %d ms total to process the details page of %s.", all,
+         input.getName());
       return Status.OK_STATUS;
    }
 

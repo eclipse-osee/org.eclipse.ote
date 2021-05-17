@@ -13,20 +13,17 @@
 
 package org.eclipse.osee.ote.core.testPoint;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestGroup;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Robert A. Fisher
@@ -59,7 +56,7 @@ public class CheckGroup implements ITestGroup {
 
       return this;
    }
-   
+
    public CheckGroup addAll(Collection<ITestPoint> testPoints) {
       this.testPoints.addAll(testPoints);
 
@@ -137,6 +134,7 @@ public class CheckGroup implements ITestGroup {
       checkGroupElement.setAttribute("Mode", operation.toString());
       checkGroupElement.appendChild(Jaxp.createElement(doc, "GroupName", groupName));
 
+      // No need for an interactive result in a checkgroup
       if (this.isPass()) {
          checkGroupElement.appendChild(Jaxp.createElement(doc, "Result", "PASSED"));
       } else {
@@ -154,6 +152,8 @@ public class CheckGroup implements ITestGroup {
       writer.writeStartElement(name);
       writer.writeAttribute("Mode", operation.toString());
       XMLStreamWriterUtil.writeElement(writer, "GroupName", groupName);
+
+      // No need for an interactive result in a checkgroup
       if (this.isPass()) {
          XMLStreamWriterUtil.writeElement(writer, "Result", "PASSED");
       } else {

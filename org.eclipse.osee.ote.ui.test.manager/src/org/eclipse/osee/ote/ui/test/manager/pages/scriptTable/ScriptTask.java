@@ -79,16 +79,17 @@ public class ScriptTask {
 
       int passTP = scriptModel.getOutputModel().getPassedTestPoints();
       int failTP = scriptModel.getOutputModel().getFailedTestPoints();
-      if (status == ScriptStatusEnum.RUNNING && scriptModel.getOutputModel().isAborted()){
+      if (status == ScriptStatusEnum.RUNNING && scriptModel.getOutputModel().isAborted()) {
          return "(0/0)";
       }
       if (scriptModel.getOutputModel().isAborted()) {
          return "ABORTED";
       } else if (passTP > 0 || failTP > 0) {
+         int totalPoint = failTP + passTP;
          if (failTP == 0) {
             return "PASS (" + passTP + ")";
          } else {
-            return "FAIL (" + failTP + "/" + (passTP + failTP) + ")";
+            return "FAIL (" + failTP + "/" + totalPoint + ")";
          }
       } else if (status == ScriptStatusEnum.RUNNING) {
          return "(0/0)";

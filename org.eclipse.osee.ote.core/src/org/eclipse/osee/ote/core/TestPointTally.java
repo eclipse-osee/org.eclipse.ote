@@ -22,6 +22,8 @@ import org.eclipse.osee.ote.core.log.ITestPointTally;
 public class TestPointTally implements ITestPointTally {
    private int testPointSuccesses;
    private int testPointFailures;
+   private int testPointInteractives;
+
    private final String testName;
    private final OTEStatusBoard statusBoard;
 
@@ -38,18 +40,22 @@ public class TestPointTally implements ITestPointTally {
    }
 
    @Override
-   public int tallyTestPoint(boolean pass) {
-      if (pass) {
+   public int tallyTestPoint(boolean isPass, boolean isInteractive) {
+      if(isPass) {
          testPointSuccesses++;
       } else {
          testPointFailures++;
+      }
+      
+      if(isInteractive) {
+         testPointInteractives++;
       }
       sendUpdate();
       return getTestPointTotal();
    }
 
    private void sendUpdate() {
-      statusBoard.onTestPointUpdate(testPointSuccesses, testPointFailures, testName);
+      statusBoard.onTestPointUpdate(testPointSuccesses, testPointFailures, testPointInteractives, testName);
    }
 
    @Override

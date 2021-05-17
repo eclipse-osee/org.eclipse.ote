@@ -15,7 +15,6 @@ package org.eclipse.ote.simple.test.environment.listener;
 
 import java.util.Date;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.OteLevel;
@@ -76,8 +75,9 @@ public final class SimpleTestLifeCycleListener implements ITestLifecycleListener
          eventData.getTest().getLogger().log(eventData.getTest().getScriptResultRecord());
 
          OseeLog.log(SimpleTestEnvironment.class, OteLevel.TEST_EVENT,
-            String.format("%s Pass[%d] Fail[%d] Aborted[%b]", eventData.getTest().getClass().getSimpleName(),
-               eventData.getTest().getPasses(), eventData.getTest().getFails(), eventData.getTest().isAborted()));
+            String.format("%s Pass[%d] Fail[%d] interactive[%d] Aborted[%b]",
+               eventData.getTest().getClass().getSimpleName(), eventData.getTest().getPasses(),
+               eventData.getTest().getFails(), eventData.getTest().getInteractives(), eventData.getTest().isAborted()));
 
          env.onScriptComplete();
       } catch (InterruptedException ex) {
@@ -105,7 +105,8 @@ public final class SimpleTestLifeCycleListener implements ITestLifecycleListener
 
    private void addTestPointSummaryToScriptLog(final TestScript test) {
 
-      TestPointResults testPointResults = new TestPointResults(test.getPasses(), test.getFails(), test.isAborted());
+      TestPointResults testPointResults =
+         new TestPointResults(test.getPasses(), test.getFails(), test.getInteractives(), test.isAborted());
       test.addScriptSummary(testPointResults);
 
    }

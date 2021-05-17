@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -63,6 +62,7 @@ public class OteScriptQueue extends ScriptQueue {
             ScriptModel.TestFileData javafileData = script.updateScriptModelInfo(outputDir);
             script.getOutputModel().setPassedTestPoints(0);
             script.getOutputModel().setFailedTestPoints(0);
+            script.getOutputModel().setInteractiveTestPoints(0);
             script.getOutputModel().setAborted(false);
             OseeLog.log(OteTestManagerPlugin.class, Level.INFO, "sunData.sunOutFile *" + javafileData.outFile + "*");
             GUID guid = null;

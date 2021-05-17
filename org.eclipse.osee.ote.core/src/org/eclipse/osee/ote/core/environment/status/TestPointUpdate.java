@@ -21,6 +21,7 @@ public class TestPointUpdate implements Serializable, IServiceStatusDataCommand 
    private static final long serialVersionUID = 7157851807444983673L;
    private int pass;
    private int fail;
+   private int interactive;
    private CommandDescription description;
    private String testClassName;
 
@@ -30,9 +31,10 @@ public class TestPointUpdate implements Serializable, IServiceStatusDataCommand 
       this.description = description;
    }
 
-   public TestPointUpdate(int pass, int fail, String testClassName) {
+   public TestPointUpdate(int pass, int fail, int interactive, String testClassName) {
       this.pass = pass;
       this.fail = fail;
+      this.interactive = interactive;
       this.testClassName = testClassName;
    }
 
@@ -45,6 +47,10 @@ public class TestPointUpdate implements Serializable, IServiceStatusDataCommand 
 
    public int getPass() {
       return pass;
+   }
+
+   public int getInteractive() {
+      return interactive;
    }
 
    public String getClassName() {

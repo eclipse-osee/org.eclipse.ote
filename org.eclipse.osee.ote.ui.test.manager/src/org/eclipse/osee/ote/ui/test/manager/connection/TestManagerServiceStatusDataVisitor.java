@@ -188,11 +188,9 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
                task.getScriptModel().getOutputModel().setAborted(false);
                task.getScriptModel().getOutputModel().setPassedTestPoints(testPointUpdate.getPass());
                task.getScriptModel().getOutputModel().setFailedTestPoints(testPointUpdate.getFail());
+               task.getScriptModel().getOutputModel().setInteractiveTestPoints(testPointUpdate.getInteractive());
                scriptManager.updateScriptTableViewerTimed(task);
-            } 
-//            else {
-//               OseeLog.log(TestManagerPlugin.class, Level.WARNING, "testPointsUpdated: task is null");
-//            }
+            }
          }
       });
       logExecutorSize();
@@ -222,8 +220,8 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
    }
 
    private void logServiceStatusData(IServiceStatusDataCommand statusData) {
-      OseeLog.logf(TestManagerPlugin.class, Level.FINE,
-         "%s: %s ", statusData.getClass().getName(), statusData.getDescription());
+      OseeLog.logf(TestManagerPlugin.class, Level.FINE, "%s: %s ", statusData.getClass().getName(),
+         statusData.getDescription());
    }
 
    private ScriptTask getScriptTask(IServiceStatusDataCommand statusData) {
@@ -250,9 +248,11 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
                TestCommandStatus result = end.getCmdStatus();
                Throwable th = end.getThrowable();
                if (th != null && result != null) {
-                  OseeLog.log(TestManagerPlugin.class, Level.INFO, String.format("TestServer Command Completed [%s]", result.name()), th);
-               } else if ( result != null){
-                  OseeLog.log(TestManagerPlugin.class, Level.INFO, String.format("TestServer Command Completed [%s]", result.name()));
+                  OseeLog.log(TestManagerPlugin.class, Level.INFO,
+                     String.format("TestServer Command Completed [%s]", result.name()), th);
+               } else if (result != null) {
+                  OseeLog.log(TestManagerPlugin.class, Level.INFO,
+                     String.format("TestServer Command Completed [%s]", result.name()));
                }
             } catch (Exception ex) {
                OseeLog.log(TestManagerPlugin.class, Level.SEVERE, ex);
@@ -341,7 +341,7 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
                scriptManager.notifyScriptStart(task);
                logOnConsole(Level.INFO, String.format("Test Started: [%s]", task.getName()));
             }
-            
+
          }
       });
       logExecutorSize();
@@ -349,8 +349,8 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
 
    private void logExecutorSize() {
       if (executor instanceof ThreadPoolExecutor) {
-         OseeLog.logf(TestManagerServiceStatusDataVisitor.class, Level.FINE,
-            "Current StatusBoard Executor Size [%d]", ((ThreadPoolExecutor) executor).getQueue().size());
+         OseeLog.logf(TestManagerServiceStatusDataVisitor.class, Level.FINE, "Current StatusBoard Executor Size [%d]",
+            ((ThreadPoolExecutor) executor).getQueue().size());
       }
    }
 }

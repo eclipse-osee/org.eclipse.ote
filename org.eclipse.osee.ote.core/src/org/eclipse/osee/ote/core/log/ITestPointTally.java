@@ -27,9 +27,10 @@ public interface ITestPointTally {
     * Records test point result.
     * 
     * @param pass test point result. <b>True</b> for passing. <b>False</b> for failing.
+    * @param isInteractive <b>True</b> if test point is result of an interactive prompt
     * @return The total number of test points recorded.
     */
-   public int tallyTestPoint(boolean pass);
+   public int tallyTestPoint(boolean pass, boolean isInteractive);
 
    /**
     * @return The total number of test points recorded.

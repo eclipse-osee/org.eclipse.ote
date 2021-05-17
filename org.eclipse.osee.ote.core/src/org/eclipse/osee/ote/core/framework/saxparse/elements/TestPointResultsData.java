@@ -41,6 +41,10 @@ public class TestPointResultsData {
       return pass;
    }
 
+   public String getInteractive() {
+      return interactive;
+   }
+
    /**
     * @return the total
     */
@@ -51,11 +55,13 @@ public class TestPointResultsData {
    private final String fail;
    private final String pass;
    private final String total;
+   private final String interactive;
 
-   public TestPointResultsData(String aborted, String fail, String pass, String total) {
+   public TestPointResultsData(String aborted, String fail, String pass, String interactive, String total) {
       this.aborted = aborted;
       this.fail = fail;
       this.pass = pass;
+      this.interactive = interactive;
       this.total = total;
    }
 

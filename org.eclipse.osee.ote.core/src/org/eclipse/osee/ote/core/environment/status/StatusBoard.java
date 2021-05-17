@@ -21,7 +21,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.GCHelper;
@@ -52,7 +51,7 @@ import org.osgi.service.event.EventAdmin;
  */
 public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard {
    private static final long TP_UPDATE_THROTTLE = 5000;
-   
+
    private long lastTpUpdateTime = 0;
 
    private final ThreadPoolExecutor executor;
@@ -91,44 +90,43 @@ public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard {
       }, TP_UPDATE_THROTTLE, TP_UPDATE_THROTTLE, TimeUnit.MILLISECONDS);
    }
 
+   public void start() {
 
-   public void start(){
-	   
    }
-   
-   public void stop(){
-	  dispose();   
+
+   public void stop() {
+      dispose();
    }
-   
+
    public void bindEnv(TestEnvironmentInterface testEnv) {
       this.testEnv = testEnv;
       testEnv.addEnvironmentListener(this);
    }
-   
+
    /**
     * @param testEnv Not needed, just setting to null
     */
    public void unbindEnv(TestEnvironmentInterface testEnv) {
       this.testEnv = null;
    }
-   
-   public void bindEventAdmin(EventAdmin eventAdmin){
-	   this.eventAdmin = eventAdmin;
+
+   public void bindEventAdmin(EventAdmin eventAdmin) {
+      this.eventAdmin = eventAdmin;
    }
-   
-   public void unbindEventAdmin(EventAdmin eventAdmin){
-	   this.eventAdmin = null;
+
+   public void unbindEventAdmin(EventAdmin eventAdmin) {
+      this.eventAdmin = null;
    }
-   
+
    @Override
    public void onCommandAdded(TestEnvironment env, TestEnvironmentCommand cmd) {
       CommandAdded cmdAdded = new CommandAdded();
       cmdAdded.set(cmd.getDescription());
       try {
-    	  CommandAddedMessage msg = new CommandAddedMessage(cmdAdded);
-    	  notifyListeners(msg);
+         CommandAddedMessage msg = new CommandAddedMessage(cmdAdded);
+         notifyListeners(msg);
       } catch (IOException e) {
-    	  OseeLog.log(StatusBoard.class, Level.SEVERE, e);
+         OseeLog.log(StatusBoard.class, Level.SEVERE, e);
       }
    }
 
@@ -138,10 +136,10 @@ public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard {
       cmdRemoved.setDescription(cmdDesc);
       cmdRemoved.setReason(status);
       try {
-    	  CommandRemovedMessage msg = new CommandRemovedMessage(cmdRemoved);
-    	  notifyListeners(msg);
+         CommandRemovedMessage msg = new CommandRemovedMessage(cmdRemoved);
+         notifyListeners(msg);
       } catch (IOException e) {
-    	  OseeLog.log(StatusBoard.class, Level.SEVERE, e);
+         OseeLog.log(StatusBoard.class, Level.SEVERE, e);
       }
    }
 
@@ -150,10 +148,10 @@ public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard {
       EnvironmentError envError = new EnvironmentError();
       envError.set(t);
       try {
-    	  EnvErrorMessage msg = new EnvErrorMessage(envError);
-    	  notifyListeners(msg);
+         EnvErrorMessage msg = new EnvErrorMessage(envError);
+         notifyListeners(msg);
       } catch (IOException e) {
-    	  OseeLog.log(StatusBoard.class, Level.SEVERE, e);
+         OseeLog.log(StatusBoard.class, Level.SEVERE, e);
       }
    }
 
@@ -162,10 +160,10 @@ public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard {
       SequentialCommandBegan seqCmdBegan = new SequentialCommandBegan();
       seqCmdBegan.set(cmdDesc);
       try {
-    	  SequentialCommandBeganMessage msg = new SequentialCommandBeganMessage(seqCmdBegan);
-    	  notifyListeners(msg);
+         SequentialCommandBeganMessage msg = new SequentialCommandBeganMessage(seqCmdBegan);
+         notifyListeners(msg);
       } catch (IOException e) {
-    	  OseeLog.log(StatusBoard.class, Level.SEVERE, e);
+         OseeLog.log(StatusBoard.class, Level.SEVERE, e);
       }
    }
 
@@ -176,30 +174,30 @@ public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard {
       SequentialCommandEnded seqCmdEnded = new SequentialCommandEnded();
       seqCmdEnded.set(cmdDesc, status);
       try {
-    	  SequentialCommandEndedMessage msg = new SequentialCommandEndedMessage(seqCmdEnded);
-    	  notifyListeners(msg);
+         SequentialCommandEndedMessage msg = new SequentialCommandEndedMessage(seqCmdEnded);
+         notifyListeners(msg);
       } catch (IOException e) {
-    	  OseeLog.log(StatusBoard.class, Level.SEVERE, e);
+         OseeLog.log(StatusBoard.class, Level.SEVERE, e);
       }
    }
 
    @Override
-   public void onTestPointUpdate(int pass, int fail, String testClassName) {
-	   try {
-		   TestPointStatusBoardRunnable runnable =
-				   new TestPointStatusBoardRunnable(new TestPointUpdateMessage(new TestPointUpdate(pass, fail, testClassName)), eventAdmin);
-		   if (System.currentTimeMillis() - lastTpUpdateTime > TP_UPDATE_THROTTLE) {
-			   lastTpUpdateTime = System.currentTimeMillis();
-			   executor.submit(runnable);
-		   } else {
-			   synchronized (testPointLock) {
-				   latestTestPointUpdate = runnable;
-				   executeLatestTestPointUpdate.set(true);
-			   }
-		   }
-	   } catch (IOException e) {
-		   OseeLog.log(StatusBoard.class, Level.SEVERE, e);
-	   }
+   public void onTestPointUpdate(int pass, int fail, int interactive, String testClassName) {
+      try {
+         TestPointStatusBoardRunnable runnable = new TestPointStatusBoardRunnable(
+            new TestPointUpdateMessage(new TestPointUpdate(pass, fail, interactive, testClassName)), eventAdmin);
+         if (System.currentTimeMillis() - lastTpUpdateTime > TP_UPDATE_THROTTLE) {
+            lastTpUpdateTime = System.currentTimeMillis();
+            executor.submit(runnable);
+         } else {
+            synchronized (testPointLock) {
+               latestTestPointUpdate = runnable;
+               executeLatestTestPointUpdate.set(true);
+            }
+         }
+      } catch (IOException e) {
+         OseeLog.log(StatusBoard.class, Level.SEVERE, e);
+      }
    }
 
    @SuppressWarnings("rawtypes")
@@ -207,7 +205,7 @@ public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard {
       executor.execute(new StatusBoardRunnable(msg) {
          @Override
          public void run() {
-        	 OteEventMessageUtil.sendEvent(msg, eventAdmin);
+            OteEventMessageUtil.sendEvent(msg, eventAdmin);
          }
       });
    }
@@ -223,39 +221,41 @@ public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard {
 
    @Override
    public void onTestServerCommandFinished(TestEnvironment env, ICommandHandle handle) {
-	   try {
-	      ITestCommandResult status = handle.get();
-	      TestCommandStatus cmdStatus = null;
-	      Throwable th = null;
-	      if(status != null){
-	         cmdStatus = status.getStatus();
-	         th = status.getThrowable();
-	      }
-		   TestServerCommandCompleteMessage msg = new TestServerCommandCompleteMessage(new TestServerCommandComplete(cmdStatus, th));
-		   notifyListeners(msg);
-	   } catch (IOException e) {
-		   OseeLog.log(StatusBoard.class, Level.SEVERE, e);
-	   }
+      try {
+         ITestCommandResult status = handle.get();
+         TestCommandStatus cmdStatus = null;
+         Throwable th = null;
+         if (status != null) {
+            cmdStatus = status.getStatus();
+            th = status.getThrowable();
+         }
+         TestServerCommandCompleteMessage msg =
+            new TestServerCommandCompleteMessage(new TestServerCommandComplete(cmdStatus, th));
+         notifyListeners(msg);
+      } catch (IOException e) {
+         OseeLog.log(StatusBoard.class, Level.SEVERE, e);
+      }
    }
 
    @Override
    public void onTestComplete(String className, String serverOutfilePath, String clientOutfilePath, CommandEndedStatusEnum status, List<IHealthStatus> healthStatus) {
-	   try {
-		   TestCompleteMessage msg = new TestCompleteMessage(new TestComplete(className, serverOutfilePath, clientOutfilePath, status, healthStatus));
-		   notifyListeners(msg);
-	   } catch (IOException e) {
-		   OseeLog.log(StatusBoard.class, Level.SEVERE, e);
-	   }
+      try {
+         TestCompleteMessage msg = new TestCompleteMessage(
+            new TestComplete(className, serverOutfilePath, clientOutfilePath, status, healthStatus));
+         notifyListeners(msg);
+      } catch (IOException e) {
+         OseeLog.log(StatusBoard.class, Level.SEVERE, e);
+      }
    }
 
    @Override
-   public void onTestStart(String className, String serverOutfilePath, String clientOutfilePath ) {
-	   try {
-		   TestStartMessage msg = new TestStartMessage(new TestStart(className, serverOutfilePath, clientOutfilePath));
-		   notifyListeners(msg);
-	   } catch (IOException e) {
-		   OseeLog.log(StatusBoard.class, Level.SEVERE, e);
-	   }
+   public void onTestStart(String className, String serverOutfilePath, String clientOutfilePath) {
+      try {
+         TestStartMessage msg = new TestStartMessage(new TestStart(className, serverOutfilePath, clientOutfilePath));
+         notifyListeners(msg);
+      } catch (IOException e) {
+         OseeLog.log(StatusBoard.class, Level.SEVERE, e);
+      }
    }
 
 }

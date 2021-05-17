@@ -98,6 +98,7 @@ public class ScriptJsonOutLogHandler extends Handler {
                Map<String, Object> results = new HashMap<String, Object>();
                results.put("passes", ((TestPointResults) rec).getPasses());
                results.put("fails", ((TestPointResults) rec).getFails());
+               results.put("interactives", ((TestPointResults) rec).getInteractives());
                results.put("aborted", ((TestPointResults) rec).isAborted());
                results.put("total", ((TestPointResults) rec).getTotal());
                minimum.put("results", results);
@@ -119,8 +120,7 @@ public class ScriptJsonOutLogHandler extends Handler {
 
    private void handleTestPoint(ITestPoint testPoint, List<Object> testPoints, int number, String groupName, boolean overallPass, String levelNum) {
       if (testPoint instanceof CheckPoint) {
-         Map<String, Object> point =
-            convertCheckPoint((CheckPoint) testPoint, number, groupName, overallPass, levelNum);
+         Map<String, Object> point = convertCheckPoint((CheckPoint) testPoint, number, groupName, overallPass, levelNum);
          testPoints.add(point);
       } else if (testPoint instanceof CheckGroup) {
          CheckGroup group = (CheckGroup) testPoint;
@@ -140,6 +140,7 @@ public class ScriptJsonOutLogHandler extends Handler {
       tpMap.put("expected", checkPoint.getExpected());
       tpMap.put("actual", checkPoint.getActual());
       tpMap.put("pass", checkPoint.isPass());
+      tpMap.put("isInteractive", checkPoint.isInteractive());
       tpMap.put("number", number);
       tpMap.put("overall", overallPass);
       if (!groupName.isEmpty()) {

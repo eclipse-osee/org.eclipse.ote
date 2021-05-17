@@ -34,6 +34,7 @@ public class OutputModel extends FileModel {
 
    private int failedTestPoints = 0;
    private int passedTestPoints = 0;
+   private int interactiveTestPoints = 0;
    private boolean aborted = false;
    private boolean exists = false;
 
@@ -67,12 +68,20 @@ public class OutputModel extends FileModel {
       return passedTestPoints;
    }
 
+   public int getInteractiveTestPoints() {
+      return interactiveTestPoints;
+   }
+
    public void setFailedTestPoints(int failedTestPoints) {
       this.failedTestPoints = failedTestPoints;
    }
 
    public void setPassedTestPoints(int passedTestPoints) {
       this.passedTestPoints = passedTestPoints;
+   }
+
+   public void setInteractiveTestPoints(int interactiveTestPoints) {
+      this.interactiveTestPoints = interactiveTestPoints;
    }
 
    private class ParseTestPoints extends AbstractSaxHandler {
@@ -86,10 +95,12 @@ public class OutputModel extends FileModel {
          if ("TestPointResults".equals(name)) {
             String fail = attributes.getValue("fail");
             String pass = attributes.getValue("pass");
+            String interactive = attributes.getValue("interactive");
             String aborted = attributes.getValue("aborted");
             try {
                failedTestPoints = Integer.parseInt(fail);
                passedTestPoints = Integer.parseInt(pass);
+               interactiveTestPoints = Integer.parseInt(interactive);
                if (aborted != null && aborted.length() > 0) {
                   OutputModel.this.aborted = Boolean.parseBoolean(aborted);
                }

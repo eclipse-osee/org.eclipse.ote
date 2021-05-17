@@ -185,11 +185,12 @@ public abstract class TestScript implements ITimeout {
    private final ScriptResultRecord scriptResultRecord;
    private int pass;
    private int fail;
+   private int interactive;
    private ScriptLoggingListener loggingListener;
    private final TestPromptImpl promptImpl;
    private ITestRunListenerProvider listenerProvider;
-   private boolean shouldPauseOnFail;
-   private boolean printFailToConsole;
+   private final boolean shouldPauseOnFail;
+   private final boolean printFailToConsole;
 
    public TestScript(TestEnvironment environment, IUserSession callback, ScriptTypeEnum scriptType, boolean isBatchable) {
       constructed.incrementAndGet();
@@ -387,10 +388,12 @@ public abstract class TestScript implements ITimeout {
     * Do not use this method from tests instead use {@link #logTestPoint(boolean, String, String, String)}. Takes result
     * of test point and updates the total test point tally.
     * 
+    * @param isPass True if the test point is passing
+    * @param isInteractive True if test point is result of interactive prompt
     * @return total number of test points completed as an int.
     */
-   public int __recordTestPoint(boolean passed) {
-      return testPointTally.tallyTestPoint(passed);
+   public int __recordTestPoint(boolean isPass, boolean isInteractive) {
+      return testPointTally.tallyTestPoint(isPass, isInteractive);
    }
 
    public int getCurrentPointNumber() {
@@ -567,11 +570,15 @@ public abstract class TestScript implements ITimeout {
    /**
     * Do not use this method from tests instead use {@link #logTestPoint(boolean, String, String, String)}.
     */
-   public void __addTestPoint(boolean pass) {
-      if (pass) {
+   public void __addTestPoint(boolean isPass, boolean isInteractive) {
+      if (isPass) {
          this.pass++;
       } else {
          this.fail++;
+      }
+
+      if (isInteractive) {
+         interactive++;
       }
    }
 
@@ -660,6 +667,10 @@ public abstract class TestScript implements ITimeout {
 
    public int getFails() {
       return fail;
+   }
+
+   public int getInteractives() {
+      return interactive;
    }
 
    @JsonProperty
