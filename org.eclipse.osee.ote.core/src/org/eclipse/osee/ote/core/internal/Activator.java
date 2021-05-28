@@ -18,7 +18,6 @@ import java.util.logging.Level;
 
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.core.OteProperties;
 import org.eclipse.osee.ote.core.StandardShell;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
@@ -26,6 +25,7 @@ import org.eclipse.osee.ote.core.environment.console.ConsoleCommandManager;
 import org.eclipse.osee.ote.core.environment.console.ICommandManager;
 import org.eclipse.osee.ote.core.log.GCHelper;
 import org.eclipse.osee.ote.message.internal.MessageIoManagementStarter;
+import org.eclipse.osee.ote.properties.OteProperties;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

@@ -1,6 +1,6 @@
 package org.eclipse.osee.ote.properties;
 
-public enum OtePropertiesCore implements OteProperties {
+public enum OtePropertiesCore implements OteSimpleProperties {
 
    authorizedUser("ote.authorized.user"),
    batchFolderDays("ote.batchfolder.days"),

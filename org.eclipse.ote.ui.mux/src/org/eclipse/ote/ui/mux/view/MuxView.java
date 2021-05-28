@@ -15,7 +15,6 @@ package org.eclipse.ote.ui.mux.view;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
@@ -24,7 +23,6 @@ import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.connection.service.IServiceConnector;
@@ -36,6 +34,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.message.IInstrumentationRegistrationListener;
 import org.eclipse.osee.ote.message.instrumentation.IOInstrumentation;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystem;
+import org.eclipse.osee.ote.properties.OteProperties;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
 import org.eclipse.ote.ui.mux.MuxToolPlugin;
@@ -92,7 +91,8 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
          thread = new ListenerThread();
       } catch (Exception e) {
          OseeLog.log(MuxView.class, Level.SEVERE, "Mux View could not start listening thread", e);
-         MessageDialog.openError(parent.getShell(), "Error", "Mux View could not initialize. See Error Log for details");
+         MessageDialog.openError(parent.getShell(), "Error",
+            "Mux View could not initialize. See Error Log for details");
          return;
       }
       thread.start();
@@ -101,9 +101,9 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
          @Override
          protected void update() {
             try {
-            	for(MuxChannelComposite mux:channelComposites.values()){
-            		mux.refresh();
-            	}
+               for (MuxChannelComposite mux : channelComposites.values()) {
+                  mux.refresh();
+               }
             } catch (Throwable t) {
                OseeLog.log(MuxToolPlugin.class, Level.SEVERE, "problems refreshing viewer", t);
                stop();
@@ -115,31 +115,30 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
       MuxToolPlugin.getDefault().getOteClientService().addConnectionListener(this);
    }
 
-   
-   private MuxChannelComposite addChannelToView(int channel){
-	   if(!channelComposites.containsKey(channel)){
-		   Composite chanTabComp = new Composite(tabFolder, SWT.NONE);
-		   MuxChannelComposite muxChannelComposite = new MuxChannelComposite(chanTabComp, SWT.NONE, channel);
-		   GridLayout chanLayout = new GridLayout(1, false);
-		   chanTabComp.setLayout(chanLayout);
-		   channelComposites.put(channel, muxChannelComposite);
-		   
-		   int index = 0;
-		   for(MuxChannelComposite muxChannel : channelComposites.values()){
-			   if(muxChannelComposite == muxChannel){
-				   break;
-			   }
-			   index++;
-		   }
-		   TabItem chanTab = new TabItem(tabFolder, SWT.NONE, index);
-		   chanTab.setText("Channel "+ channel);
-		   chanTab.setControl(chanTabComp);
-		   return muxChannelComposite;
-	   } else {
-		   return null;
-	   }
+   private MuxChannelComposite addChannelToView(int channel) {
+      if (!channelComposites.containsKey(channel)) {
+         Composite chanTabComp = new Composite(tabFolder, SWT.NONE);
+         MuxChannelComposite muxChannelComposite = new MuxChannelComposite(chanTabComp, SWT.NONE, channel);
+         GridLayout chanLayout = new GridLayout(1, false);
+         chanTabComp.setLayout(chanLayout);
+         channelComposites.put(channel, muxChannelComposite);
+
+         int index = 0;
+         for (MuxChannelComposite muxChannel : channelComposites.values()) {
+            if (muxChannelComposite == muxChannel) {
+               break;
+            }
+            index++;
+         }
+         TabItem chanTab = new TabItem(tabFolder, SWT.NONE, index);
+         chanTab.setText("Channel " + channel);
+         chanTab.setControl(chanTabComp);
+         return muxChannelComposite;
+      } else {
+         return null;
+      }
    }
-   
+
    /**
     * Passing the focus request to the viewer's control.
     */
@@ -190,7 +189,7 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
          super("Mux View Listener Thread");
          channel = DatagramChannel.open();
          port = PortUtil.getInstance().getValidPort();
-         address = new InetSocketAddress(InetAddress.getLocalHost(), port);
+         address = new InetSocketAddress(OteProperties.getDefaultInetAddress(), port);
          channel.socket().bind(address);
          OseeLog.log(MuxToolPlugin.class, Level.INFO,
             "MuxView connection - host: " + address.getHostName() + "    port: " + address.getPort());
@@ -206,19 +205,19 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
                buffer.flip();
                final int channel = buffer.array()[0];
                MuxChannelComposite composite = channelComposites.get(channel);
-               if(composite != null){
-            	   composite.onDataAvailable(buffer);
+               if (composite != null) {
+                  composite.onDataAvailable(buffer);
                } else {
-            	   PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable(){
+                  PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
-					@Override
-					public void run() {
-						 MuxChannelComposite muxChannelComposite = addChannelToView(channel);
-						 muxChannelComposite.updateColors(true);
-						 muxChannelComposite.setMuxProbe(muxProbe);
-		            	 muxChannelComposite.onDataAvailable(buffer);
-					}
-            	   });
+                     @Override
+                     public void run() {
+                        MuxChannelComposite muxChannelComposite = addChannelToView(channel);
+                        muxChannelComposite.updateColors(true);
+                        muxChannelComposite.setMuxProbe(muxProbe);
+                        muxChannelComposite.onDataAvailable(buffer);
+                     }
+                  });
                }
             }
          } catch (InterruptedIOException e) {
@@ -250,7 +249,7 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
 
    @Override
    public void onConnectionLost(IServiceConnector connector) {
-	  muxProbe = null;
+      muxProbe = null;
       handleConnectionLostStatus();
    }
 
@@ -307,10 +306,10 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-        	 for(MuxChannelComposite mux:channelComposites.values()){
-         		mux.updateColors(false);
-         		mux.setMuxProbe(null);
-         	}
+            for (MuxChannelComposite mux : channelComposites.values()) {
+               mux.updateColors(false);
+               mux.setMuxProbe(null);
+            }
             // we are not connected
             if (task != null) {
                task.stop();
@@ -338,10 +337,10 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
                   if (task != null) {
                      task.start();
                   }
-                  for(MuxChannelComposite mux:channelComposites.values()){
-               		mux.updateColors(true);
-               		mux.setMuxProbe(muxProbe);
-               	}
+                  for (MuxChannelComposite mux : channelComposites.values()) {
+                     mux.updateColors(true);
+                     mux.setMuxProbe(muxProbe);
+                  }
                }
 
             });

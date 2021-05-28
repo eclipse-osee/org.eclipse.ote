@@ -24,16 +24,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.IServicePropertyChangeListener;
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
-import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.master.rest.model.OTEServer;
-
+import org.eclipse.osee.ote.properties.OteProperties;
 import net.jini.export.Exporter;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
@@ -45,7 +43,7 @@ import net.jini.jeri.tcp.TcpServerEndpoint;
 public abstract class RestLookupConnector implements IServiceConnector {
    public static final String TYPE = "jmstojini";
    public static final String OTE_EMBEDDED_BROKER_PROP = "OTEEmbeddedBroker";
-   
+
    private static final class ExportInfo {
       private final Exporter exporter;
       private final Object exportedObject;
@@ -55,13 +53,13 @@ public abstract class RestLookupConnector implements IServiceConnector {
          this.exporter = exporter;
       }
    }
-   
+
    private static final String PROPERTY_ID = "id";
-   
+
    private final HashMap<Object, ExportInfo> exports = new HashMap<>();
    private final ExportClassLoader exportClassLoader;
    private final List<IServicePropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
-   private String uniqueServerId;
+   private final String uniqueServerId;
    protected Object service;
    Object myLock = new Object();
    protected OTEServer server;
@@ -111,7 +109,7 @@ public abstract class RestLookupConnector implements IServiceConnector {
    }
 
    private Exporter createExporter() throws UnknownHostException {
-      return new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
+      return new BasicJeriExporter(TcpServerEndpoint.getInstance(OteProperties.getDefaultIpAddress(), 0),
          new BasicILFactory(null, null, exportClassLoader), false, false);
    }
 
@@ -122,41 +120,41 @@ public abstract class RestLookupConnector implements IServiceConnector {
 
    @Override
    public Serializable getProperty(String property, Serializable defaultValue) {
-      if("name".equalsIgnoreCase(property)){
+      if ("name".equalsIgnoreCase(property)) {
          return server.getName();
       }
-      if("station".equalsIgnoreCase(property)){
+      if ("station".equalsIgnoreCase(property)) {
          return server.getStation();
       }
-      if("type".equalsIgnoreCase(property)){
+      if ("type".equalsIgnoreCase(property)) {
          return server.getType();
       }
-      if("version".equalsIgnoreCase(property)){
+      if ("version".equalsIgnoreCase(property)) {
          return server.getVersion();
       }
-      if("comment".equalsIgnoreCase(property)){
+      if ("comment".equalsIgnoreCase(property)) {
          return server.getComment();
       }
-      if("date".equalsIgnoreCase(property)){
+      if ("date".equalsIgnoreCase(property)) {
          return server.getStartTime();
       }
-      if("owner".equalsIgnoreCase(property)){
+      if ("owner".equalsIgnoreCase(property)) {
          return server.getOwner();
       }
-      if(PROPERTY_ID.equalsIgnoreCase(property)){
+      if (PROPERTY_ID.equalsIgnoreCase(property)) {
          return server.getUUID();
       }
-      if("appServerURI".equalsIgnoreCase(property)){
+      if ("appServerURI".equalsIgnoreCase(property)) {
          return server.getOteRestServer();
       }
-      if("user_list".equalsIgnoreCase(property)){
-         if(server.getConnectedUsers() == null){
+      if ("user_list".equalsIgnoreCase(property)) {
+         if (server.getConnectedUsers() == null) {
             return defaultValue;
          } else {
             return server.getConnectedUsers();
          }
       }
-	   return defaultValue;
+      return defaultValue;
    }
 
    @Override
@@ -164,43 +162,43 @@ public abstract class RestLookupConnector implements IServiceConnector {
 
    @Override
    public boolean ping() {
-	  if(this.service == null){
-		  return false;
-	  } else {
-		  try{
-			  EnhancedProperties props = ((IHostTestEnvironment)this.service).getProperties();
-			  if(props != null){
-			     return uniqueServerId.equals(props.getProperty(PROPERTY_ID));
-			  } else {
-			     return false;
-			  }
-		  } catch (Throwable th){
-			  return false;
-		  }
-	  }
+      if (this.service == null) {
+         return false;
+      } else {
+         try {
+            EnhancedProperties props = ((IHostTestEnvironment) this.service).getProperties();
+            if (props != null) {
+               return uniqueServerId.equals(props.getProperty(PROPERTY_ID));
+            } else {
+               return false;
+            }
+         } catch (Throwable th) {
+            return false;
+         }
+      }
    }
-   
+
    public boolean ping(long timeout) {
-     if(this.service == null){
-        return false;
-     } else {
-        try{
-           if(this.service instanceof HostProxy){
-              EnhancedProperties prop = ((HostProxy)this.service).getProperties(timeout);
-              if(prop != null){
-                 return uniqueServerId.equals(prop.getProperty(PROPERTY_ID));
-              } else {
-                 return false;
-              }
-           } else {
-              return ping();
-           }
-        } catch (Throwable th){
-           return false;
-        }
-     }
+      if (this.service == null) {
+         return false;
+      } else {
+         try {
+            if (this.service instanceof HostProxy) {
+               EnhancedProperties prop = ((HostProxy) this.service).getProperties(timeout);
+               if (prop != null) {
+                  return uniqueServerId.equals(prop.getProperty(PROPERTY_ID));
+               } else {
+                  return false;
+               }
+            } else {
+               return ping();
+            }
+         } catch (Throwable th) {
+            return false;
+         }
+      }
    }
-   
+
    @Override
    public void addPropertyChangeListener(IServicePropertyChangeListener listener) {
       propertyChangeListeners.add(listener);
@@ -213,10 +211,10 @@ public abstract class RestLookupConnector implements IServiceConnector {
 
    @Override
    public void setProperty(String key, Serializable value) {
-//      properties.setProperty(key, value);
-//      for (IServicePropertyChangeListener listener : propertyChangeListeners) {
-//         listener.propertyChanged(this, key, value);
-//      }
+      //      properties.setProperty(key, value);
+      //      for (IServicePropertyChangeListener listener : propertyChangeListeners) {
+      //         listener.propertyChanged(this, key, value);
+      //      }
    }
 
    @Override
@@ -244,7 +242,6 @@ public abstract class RestLookupConnector implements IServiceConnector {
    public void init(Object service) {
       // INTENTIONALLY EMPTY BLOCK
    }
-   
 
    public void setUserList(String connectedUsers) {
       server.setConnectedUsers(connectedUsers);
@@ -264,18 +261,18 @@ public abstract class RestLookupConnector implements IServiceConnector {
       server.setUUID(properties.getProperty(PROPERTY_ID).toString());
       server.setOteRestServer(properties.getProperty("appServerURI").toString());
       Serializable users = properties.getProperty("user_list");
-      if(users != null){
+      if (users != null) {
          server.setConnectedUsers(users.toString());
       } else {
          // INTENTIONALLY EMPTY BLOCK
       }
    }
-   
+
    @Override
-   public void setConnected(boolean connected){
-      this.connected  = connected;
+   public void setConnected(boolean connected) {
+      this.connected = connected;
    }
-   
+
    @Override
    public boolean isConnected() {
       return this.connected;

@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
-import org.eclipse.osee.ote.core.OteProperties;
+import org.eclipse.osee.ote.properties.OteProperties;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

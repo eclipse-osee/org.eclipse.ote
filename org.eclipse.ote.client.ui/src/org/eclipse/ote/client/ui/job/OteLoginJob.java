@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IWorkbenchUser;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
+import org.eclipse.osee.ote.properties.OteProperties;
 import org.eclipse.ote.client.Activator;
 import org.eclipse.ote.client.ui.core.OteSessionDelegateViewImpl;
 import org.eclipse.ote.client.ui.internal.OteClientUiPlugin;
@@ -41,7 +42,7 @@ public class OteLoginJob extends Job {
    }
 
    public OteLoginJob(OSEEPerson1_4 user) throws UnknownHostException {
-      this(user, InetAddress.getLocalHost());
+      this(user, OteProperties.getDefaultInetAddress());
    }
 
    public OteLoginJob(OSEEPerson1_4 user, InetAddress address) {

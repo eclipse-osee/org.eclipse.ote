@@ -231,6 +231,10 @@
 					<excludes>
 						<plugin id="sourcefeature.bundle.nosource" />
 						<feature id="sourcefeature.feature.nosource" />
+						<feature id="org.eclipse.xtext.ui" />
+						<plugin id="org.eclipse.zest.core" />
+						<plugin id="org.eclipse.zest.layouts" />
+						
 					</excludes>
 				</configuration>
 			</plugin>

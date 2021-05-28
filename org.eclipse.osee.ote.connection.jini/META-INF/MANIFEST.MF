@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.connection.service,
  org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.framework.jdk.core.util.network
+ org.eclipse.osee.framework.jdk.core.util.network,
+ org.eclipse.osee.ote.properties
 Export-Package: org.eclipse.osee.ote.connection.jini
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

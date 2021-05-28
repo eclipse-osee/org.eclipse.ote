@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
+import org.eclipse.osee.framework.jdk.core.util.Network;
+import org.eclipse.osee.ote.connection.jini.util.LeaseRenewTask;
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
@@ -33,9 +36,6 @@ import net.jini.id.UuidFactory;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
-import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
-import org.eclipse.osee.framework.jdk.core.util.Network;
-import org.eclipse.osee.ote.connection.jini.util.LeaseRenewTask;
 
 /**
  * @author Ken J. Aguilar
@@ -63,12 +63,10 @@ public class JiniServiceSideConnector extends JiniConnector implements IJiniConn
 
       this.service = (Remote) service;
       serviceId = generateServiceId();
-      serviceExporter =
-         new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
-            new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
-      linkExporter =
-         new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
-            new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
+      serviceExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
+         new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
+      linkExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
+         new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
       serviceProxy = serviceExporter.export(this.service);
       exportedThis = (IJiniConnectorLink) linkExporter.export(this);
       setProperty(LINK_PROPERTY, (Serializable) exportedThis);
@@ -79,12 +77,10 @@ public class JiniServiceSideConnector extends JiniConnector implements IJiniConn
       super(props);
       this.service = service;
       serviceId = generateServiceId();
-      serviceExporter =
-         new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
-            new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
-      linkExporter =
-         new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
-            new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
+      serviceExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
+         new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
+      linkExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
+         new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
       serviceProxy = serviceExporter.export(service);
       exportedThis = (IJiniConnectorLink) linkExporter.export(this);
       props.setProperty(LINK_PROPERTY, (Serializable) exportedThis);

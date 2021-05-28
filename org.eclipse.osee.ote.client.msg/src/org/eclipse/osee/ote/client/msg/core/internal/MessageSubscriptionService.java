@@ -28,7 +28,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,6 +46,7 @@ import org.eclipse.osee.ote.message.tool.IFileTransferHandle;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.eclipse.osee.ote.message.tool.TransferConfig;
 import org.eclipse.osee.ote.message.tool.UdpFileTransferHandler;
+import org.eclipse.osee.ote.properties.OteProperties;
 import org.eclipse.osee.ote.remote.messages.RECORDING_COMPLETE;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.service.IOteClientService;
@@ -70,8 +70,8 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
    private UdpFileTransferHandler fileTransferHandler;
    private volatile boolean connected = false;
 
-   private final ExecutorService threadPool = Executors.newFixedThreadPool(MAX_CONCURRENT_WORKER_THREADS,
-      new ThreadFactory() {
+   private final ExecutorService threadPool =
+      Executors.newFixedThreadPool(MAX_CONCURRENT_WORKER_THREADS, new ThreadFactory() {
          private final ThreadGroup group =
             new ThreadGroup(Thread.currentThread().getThreadGroup(), "Msg Watch Workers");
          private int count = 1;
@@ -88,28 +88,28 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
     * Monitors a set of channels for message updates and dispatches the updates to worker threads
     */
    private UpdateDispatcher dispatcher = null;
-//   private volatile IRemoteMessageService service;
+   //   private volatile IRemoteMessageService service;
 
    private volatile IOteClientService clientService;
 
-   public void start(){
-	   clientService.addConnectionListener(this);
+   public void start() {
+      clientService.addConnectionListener(this);
    }
-   
-   public void stop(){
-	   clientService.removeConnectionListener(this);
+
+   public void stop() {
+      clientService.removeConnectionListener(this);
    }
-   
-   public void bindOteClientService(IOteClientService clientService){
-	   this.clientService = clientService;
+
+   public void bindOteClientService(IOteClientService clientService) {
+      this.clientService = clientService;
    }
-   
-   public void unbindOteClientService(IOteClientService clientService){
-	   this.clientService = null;
+
+   public void unbindOteClientService(IOteClientService clientService) {
+      this.clientService = null;
    }
-   
+
    public MessageSubscriptionService() throws IOException {
-      localAddress = InetAddress.getLocalHost();
+      localAddress = OteProperties.getDefaultInetAddress();
       msgDatabase = new MessageDatabase(this);
       OseeLog.log(Activator.class, Level.INFO,
          "OTE client message service started on: " + localAddress.getHostAddress());
@@ -121,47 +121,45 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
       subscription.bind(name);
       if (msgDatabase != null) {
          subscription.attachMessageDb(msgDatabase);
-         if(connected){
+         if (connected) {
             subscription.attachService();
          }
       }
       subscriptions.add(subscription);
       return subscription;
    }
-   
+
    @Override
    public IMessageSubscription subscribe(String name, MessageMode mode) {
-	      return subscribe(name, (DataType)null, mode);
+      return subscribe(name, (DataType) null, mode);
    }
 
    @Override
-   public IMessageSubscription subscribe(String name, DataType dataType,
-		   MessageMode mode) {
-	   MessageSubscription subscription = new MessageSubscription(this);
-	   subscription.bind(name, dataType, mode);
-	   if (msgDatabase != null) {
-		   subscription.attachMessageDb(msgDatabase);
-		   if(connected){
-		      subscription.attachService();
-		   }
-	   }
-	   subscriptions.add(subscription);
-	   return subscription;
+   public IMessageSubscription subscribe(String name, DataType dataType, MessageMode mode) {
+      MessageSubscription subscription = new MessageSubscription(this);
+      subscription.bind(name, dataType, mode);
+      if (msgDatabase != null) {
+         subscription.attachMessageDb(msgDatabase);
+         if (connected) {
+            subscription.attachService();
+         }
+      }
+      subscriptions.add(subscription);
+      return subscription;
    }
-   
+
    @Override
-   public IMessageSubscription subscribe(String name, String dataType,
-		   MessageMode mode) {
-	   MessageSubscription subscription = new MessageSubscription(this);
-	   subscription.bind(name, dataType, mode);
-	   if (msgDatabase != null) {
-		   subscription.attachMessageDb(msgDatabase);
-		   if(connected) {
-		      subscription.attachService();
-		   }
-	   }
-	   subscriptions.add(subscription);
-	   return subscription;
+   public IMessageSubscription subscribe(String name, String dataType, MessageMode mode) {
+      MessageSubscription subscription = new MessageSubscription(this);
+      subscription.bind(name, dataType, mode);
+      if (msgDatabase != null) {
+         subscription.attachMessageDb(msgDatabase);
+         if (connected) {
+            subscription.attachService();
+         }
+      }
+      subscriptions.add(subscription);
+      return subscription;
    }
 
    /**
@@ -197,7 +195,7 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
       OseeLog.log(Activator.class, Level.INFO, "connecting OTE client message service");
       if (event.getEnvironment() instanceof ITestEnvironmentMessageSystem) {
          ITestEnvironmentMessageSystem env = (ITestEnvironmentMessageSystem) event.getEnvironment();
-         try{
+         try {
             dispatcher = new UpdateDispatcher(MessageServiceSupport.getMsgUpdateSocketAddress());
             try {
                createProccessors();
@@ -211,7 +209,7 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
                subscription.attachService();
             }
             dispatcher.start();
-         } catch (IOException ex){
+         } catch (IOException ex) {
             OseeLog.log(MessageSubscriptionService.class, Level.SEVERE, "failed to create update processors", ex);
          }
       }
@@ -261,11 +259,11 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
 
    @Override
    public InetSocketAddress getAddressByType(String messageName, DataType dataType) throws RemoteException {
-      if(dispatcher == null){
+      if (dispatcher == null) {
          return null;
       }
       final DatagramChannel channel = dispatcher.getChannel(dataType);
-      if(channel == null){
+      if (channel == null) {
          return null;
       }
       return new InetSocketAddress(localAddress, channel.socket().getLocalPort());
@@ -276,35 +274,36 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
       return clientService.getSessionKey();
    }
 
-   public void addMessageDefinitionProvider(MessageDefinitionProvider provider){
-	   for (MessageSubscription subscription : subscriptions) {
-		   if(!subscription.isResolved()){
-			   subscription.attachMessageDb(msgDatabase);
-		   }
-	   }
+   public void addMessageDefinitionProvider(MessageDefinitionProvider provider) {
+      for (MessageSubscription subscription : subscriptions) {
+         if (!subscription.isResolved()) {
+            subscription.attachMessageDb(msgDatabase);
+         }
+      }
    }
-   
-   public void removeMessageDefinitionProvider(MessageDefinitionProvider provider){
-	   for (MessageSubscription subscription : subscriptions) {
-		   if(subscription.isResolved()){
-			   Class<? extends Message> msg = null;
-			   Bundle hostBundle = null;
-			   try {
-				   msg = ExportClassLoader.getInstance().loadClass(subscription.getMessageClassName()).asSubclass(Message.class);
-				   hostBundle = FrameworkUtil.getBundle(msg.getClass());
-			   } catch (ClassNotFoundException e) {
-			   } finally{
-				   if(msg == null || hostBundle == null){
-					   subscription.detachMessageDb(msgDatabase);
-				   }
-			   }
-		   }
-	   }
+
+   public void removeMessageDefinitionProvider(MessageDefinitionProvider provider) {
+      for (MessageSubscription subscription : subscriptions) {
+         if (subscription.isResolved()) {
+            Class<? extends Message> msg = null;
+            Bundle hostBundle = null;
+            try {
+               msg = ExportClassLoader.getInstance().loadClass(subscription.getMessageClassName()).asSubclass(
+                  Message.class);
+               hostBundle = FrameworkUtil.getBundle(msg.getClass());
+            } catch (ClassNotFoundException e) {
+            } finally {
+               if (msg == null || hostBundle == null) {
+                  subscription.detachMessageDb(msgDatabase);
+               }
+            }
+         }
+      }
    }
-   
+
    @Override
    public synchronized IFileTransferHandle startRecording(String fileName, List<MessageRecordDetails> list) throws FileNotFoundException, IOException {
-      if(!connected){
+      if (!connected) {
          throw new IllegalStateException("can't record: not connected to test server");
       }
       if (fileTransferHandler == null) {
@@ -317,18 +316,16 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
       InetSocketAddress recorderOutputAddress = MessageServiceSupport.getRecorderSocketAddress();
 
       // setup a transfer from a socket to a file
-      TransferConfig config =
-         new TransferConfig(fileName, recorderOutputAddress, new InetSocketAddress(InetAddress.getLocalHost(), port),
-            TransferConfig.Direction.SOCKET_TO_FILE, 128000);
+      TransferConfig config = new TransferConfig(fileName, recorderOutputAddress,
+         new InetSocketAddress(OteProperties.getDefaultIpAddress(), port), TransferConfig.Direction.SOCKET_TO_FILE,
+         128000);
       IFileTransferHandle handle = fileTransferHandler.registerTransfer(config);
 
       // send the command to start recording
       RecordCommand cmd =
          new RecordCommand(this.getTestSessionKey(), new InetSocketAddress(InetAddress.getLocalHost(), port), list);
       MessageServiceSupport.startRecording(cmd);
-      OseeLog.log(
-         Activator.class,
-         Level.INFO,
+      OseeLog.log(Activator.class, Level.INFO,
          "recording started with " + list.size() + " entries, recorder output socket=" + recorderOutputAddress.toString());
       return handle;
    }
@@ -337,26 +334,26 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
    public synchronized void stopRecording() throws RemoteException, IOException {
       MessageServiceSupport.stopRecording();
    }
-   
-   /* (non-Javadoc)
+
+   /*
+    * (non-Javadoc)
     * @see org.osgi.service.event.EventHandler#handleEvent(org.osgi.service.event.Event)
     */
    @Override
    public void handleEvent(Event event) {
-      if(event.getTopic().equals(RECORDING_COMPLETE.TOPIC)) {
+      if (event.getTopic().equals(RECORDING_COMPLETE.TOPIC)) {
 
          if (fileTransferHandler != null && fileTransferHandler.hasActiveTransfers()) {
             try {
                fileTransferHandler.stopAllTransfers();
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                System.err.println(ex.getMessage());
                ex.printStackTrace(System.err);
             }
          }
          fileTransferHandler = null;
       }
-      
+
    }
 
    public AbstractMessageDataBase getMsgDatabase() {

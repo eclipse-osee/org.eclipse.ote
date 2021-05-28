@@ -18,4 +18,5 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.ui.plugin.util,
- org.eclipse.osee.framework.ui.plugin.xnavigate
+ org.eclipse.osee.framework.ui.plugin.xnavigate,
+ org.eclipse.osee.ote.properties

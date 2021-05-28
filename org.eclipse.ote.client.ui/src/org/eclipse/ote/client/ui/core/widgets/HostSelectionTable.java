@@ -15,7 +15,6 @@ package org.eclipse.ote.client.ui.core.widgets;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -24,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -41,6 +39,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
+import org.eclipse.osee.ote.properties.OteProperties;
 import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.service.TestSessionException;
 import org.eclipse.ote.client.ui.OteClientServiceTracker;
@@ -81,7 +80,8 @@ import org.osgi.framework.ServiceReference;
  * @author Ken J. Aguilar
  */
 public class HostSelectionTable {
-   private static final String DEFAULT_ZIP_PATTERN = "\\pathToGetTo\\installs\\@OTE_%s\\archives\\ote.server.runtime.zip";
+   private static final String DEFAULT_ZIP_PATTERN =
+      "\\pathToGetTo\\installs\\@OTE_%s\\archives\\ote.server.runtime.zip";
    private static final String DEFAULT_LINUX_PATTERN = "/pathToWhereServersAreLaunchedFrom/";
    protected static final String ZIP_FILE_PROPERTY = "ote.server.zip";
    private static final String LINUX_PROPERTY = "ote.server.linux.path";
@@ -101,33 +101,33 @@ public class HostSelectionTable {
       @SuppressWarnings({"rawtypes", "unchecked"})
       @Override
       public void removedService(ServiceReference reference, Object service) {
-    	 if(!hostTable.getTree().isDisposed()){
-    		 hostTable.setInput(null);
-    	 }
+         if (!hostTable.getTree().isDisposed()) {
+            hostTable.setInput(null);
+         }
          super.remove(reference);
       }
 
    };
    private ScheduledExecutorService executor;
    private ScheduledFuture<?> monitorRestLookup;
-   private Color goldenRod;
-   private Color normalBackground;
+   private final Color goldenRod;
+   private final Color normalBackground;
    private Font bigFont;
-   private Image copyImage;
-   private Image downloadImage;
+   private final Image copyImage;
+   private final Image downloadImage;
 
-   public void setFilter(String filter){
+   public void setFilter(String filter) {
       hostTable.setFilter(filter);
    }
-   
+
    /**
-    * @param parent 
-    * @param style  
+    * @param parent
+    * @param style
     */
    public HostSelectionTable(Composite parent, int style) {
       Display display = Display.getCurrent();
       this.goldenRod = new Color(display, 255, 193, 37);
-      this.normalBackground = new Color(display, 202,225,255);
+      this.normalBackground = new Color(display, 202, 225, 255);
       this.copyImage = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_COPY);
       this.downloadImage = OteClientUiPlugin.getImageDescriptor("OSEE-INF/images/arrow_down_end.png").createImage();
 
@@ -135,7 +135,7 @@ public class HostSelectionTable {
       addLabels(parent);
       this.hostTable = createHostTable(parent);
       startLookupMonitor();
-      
+
    }
 
    private void addClipBoard(Composite parent) {
@@ -151,69 +151,71 @@ public class HostSelectionTable {
       final String shortenedClientVersion;
       Pattern pattern = Pattern.compile("(\\d+\\.\\d+\\.\\d+).*");
       Matcher clientMatcher = pattern.matcher(clientSideVersion);
-      if(clientMatcher.matches()){
+      if (clientMatcher.matches()) {
          shortenedClientVersion = clientMatcher.group(1);
       } else {
          shortenedClientVersion = clientSideVersion;
       }
-      
+
       Composite comp = new Composite(parent, SWT.NONE);
       GridLayoutFactory.fillDefaults().numColumns(3).applyTo(comp);
-      
+
       Composite labelComp = new Composite(comp, SWT.NONE);
       GridLayoutFactory.fillDefaults().numColumns(1).applyTo(labelComp);
-      GridDataFactory.swtDefaults().span(1,2).applyTo(labelComp);
-      
+      GridDataFactory.swtDefaults().span(1, 2).applyTo(labelComp);
+
       Group group = new Group(labelComp, SWT.NONE);
       group.setText("Client version");
       GridDataFactory.swtDefaults().span(1, 2).applyTo(group);
       GridLayoutFactory.fillDefaults().applyTo(group);
-      
+
       Label label = new Label(group, SWT.CENTER);
       label.setText(shortenedClientVersion);
       GridDataFactory.fillDefaults().grab(true, false).applyTo(label);
       FontDescriptor boldDesc = FontDescriptor.createFrom(label.getFont()).setStyle(SWT.BOLD).setHeight(16);
       this.bigFont = boldDesc.createFont(label.getDisplay());
       label.setFont(bigFont);
-      
+
       Button linuxBtn = new Button(comp, SWT.PUSH);
       linuxBtn.setImage(copyImage);
-      linuxBtn.setToolTipText("Paste this into a linux shell to access the correct version of the Test Server you wish to launch.");
+      linuxBtn.setToolTipText(
+         "Paste this into a linux shell to access the correct version of the Test Server you wish to launch.");
       linuxBtn.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             String path = System.getProperty(LINUX_PROPERTY, DEFAULT_LINUX_PATTERN);
-            if(path.contains("%s")) {
+            if (path.contains("%s")) {
                path = String.format(path, shortenedClientVersion);
             }
-            
+
             TextTransfer trans = TextTransfer.getInstance();
-            cb.setContents(new Object[] {path}, new Transfer[]{trans});
-            
-            MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Path copied", 
-                                          "Your clipboard now contains the currnet solaris/linux server folder.\n"
-                                          + "Feel free to paste directly into a unix shell.");
+            cb.setContents(new Object[] {path}, new Transfer[] {trans});
+
+            MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Path copied",
+               "Your clipboard now contains the currnet solaris/linux server folder.\n" + "Feel free to paste directly into a unix shell.");
          }
       });
 
-      
       label = new Label(comp, SWT.NONE);
       label.setText("Copy linux path to clipboard");
-      label.setToolTipText("Paste this into a linux shell to access the correct version of the Test Server you wish to launch.");
-      
+      label.setToolTipText(
+         "Paste this into a linux shell to access the correct version of the Test Server you wish to launch.");
+
       Button winBtn = new Button(comp, SWT.PUSH);
       winBtn.setImage(downloadImage);
-      winBtn.setToolTipText("Unzip this file to your hardrive to access the correct version of the Test Server you wish to launch.");
-      
+      winBtn.setToolTipText(
+         "Unzip this file to your hardrive to access the correct version of the Test Server you wish to launch.");
+
       winBtn.addSelectionListener(new WindowsDownloadSelection(shortenedClientVersion));
 
       label = new Label(comp, SWT.NONE);
       label.setText("Download windows server");
-      label.setToolTipText("Unzip this file to your hardrive to access the correct version of the Test Server you wish to launch.");
-      
-      
+      label.setToolTipText(
+         "Unzip this file to your hardrive to access the correct version of the Test Server you wish to launch.");
+
       label = new Label(comp, SWT.NONE);
-      label.setText("Golden highlights below indicate servers that may not be compatible with this client.  Caution is advised if you choose to connect to a highlighted server.");
+      label.setText(
+         "Golden highlights below indicate servers that may not be compatible with this client.  Caution is advised if you choose to connect to a highlighted server.");
       GridDataFactory.swtDefaults().span(3, 1).applyTo(label);
    }
 
@@ -223,7 +225,7 @@ public class HostSelectionTable {
    private void startLookupMonitor() {
       tracker.open();
       executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
-         
+
          @Override
          public Thread newThread(Runnable r) {
             Thread t = new Thread(r);
@@ -232,8 +234,9 @@ public class HostSelectionTable {
             return t;
          }
       });
-      
-      monitorRestLookup = executor.scheduleWithFixedDelay(new MonitorRestLookup(hostTable.getTree()), 5, 5, TimeUnit.SECONDS);
+
+      monitorRestLookup =
+         executor.scheduleWithFixedDelay(new MonitorRestLookup(hostTable.getTree()), 5, 5, TimeUnit.SECONDS);
    }
 
    /**
@@ -262,12 +265,17 @@ public class HostSelectionTable {
             boolean connect = true;
             if (selection != null && !selection.isEmpty()) {
                final TestHostItem item = (TestHostItem) selection.getFirstElement();
-               boolean clientAndServerVersionsMatch = ClientServerBundleVersionChecker.clientAndServerVersionsMatch(item);
-               if(!clientAndServerVersionsMatch){
-                  connect = MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Connection Warning", String.format("Server Version [%s] and Client Version[%s] do not match, are you sure you want to attempt to connect?",  ClientServerBundleVersionChecker.getServerVersion(item), ClientServerBundleVersionChecker.getClientVersion()));
+               boolean clientAndServerVersionsMatch =
+                  ClientServerBundleVersionChecker.clientAndServerVersionsMatch(item);
+               if (!clientAndServerVersionsMatch) {
+                  connect = MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Connection Warning",
+                     String.format(
+                        "Server Version [%s] and Client Version[%s] do not match, are you sure you want to attempt to connect?",
+                        ClientServerBundleVersionChecker.getServerVersion(item),
+                        ClientServerBundleVersionChecker.getClientVersion()));
                }
-               if(connect){
-                  new Thread(new Runnable(){
+               if (connect) {
+                  new Thread(new Runnable() {
                      @Override
                      public void run() {
                         handleConnection(item);
@@ -279,10 +287,11 @@ public class HostSelectionTable {
 
       });
    }
-   
+
    /**
-    * This code ensures that the Writer only background color is preserved when the row is selected. 
-    * Otherwise, the selection would hide whether the message is a reader or a writer.
+    * This code ensures that the Writer only background color is preserved when the row is selected. Otherwise, the
+    * selection would hide whether the message is a reader or a writer.
+    * 
     * @param viewer
     */
    private void addSelectionBackgroundChanger(final HostTable viewer) {
@@ -291,13 +300,14 @@ public class HostSelectionTable {
          @Override
          public void handleEvent(Event event) {
 
-            Tree table =(Tree)event.widget;
-            TreeItem item =(TreeItem)event.item;
+            Tree table = (Tree) event.widget;
+            TreeItem item = (TreeItem) event.item;
             Object data = item.getData();
-            if( data instanceof TestHostItem ) {
+            if (data instanceof TestHostItem) {
                TestHostItem watchedMessageNode = (TestHostItem) data;
-               boolean clientAndServerVersionsMatch = ClientServerBundleVersionChecker.clientAndServerVersionsMatch(watchedMessageNode);
-               if(clientAndServerVersionsMatch){
+               boolean clientAndServerVersionsMatch =
+                  ClientServerBundleVersionChecker.clientAndServerVersionsMatch(watchedMessageNode);
+               if (clientAndServerVersionsMatch) {
                   return;
                }
 
@@ -307,11 +317,11 @@ public class HostSelectionTable {
 
                int clientWidth = table.getClientArea().width;
 
-               GC gc = event.gc;               
+               GC gc = event.gc;
                Color oldForeground = gc.getForeground();
 
                gc.setBackground(goldenRod);
-               gc.setForeground(oldForeground);              
+               gc.setForeground(oldForeground);
                gc.fillRectangle(0, event.y, clientWidth, event.height);
 
                gc.setForeground(oldForeground);
@@ -324,7 +334,7 @@ public class HostSelectionTable {
 
       });
    }
-   
+
    public XViewer getTable() {
       return hostTable;
    }
@@ -362,82 +372,83 @@ public class HostSelectionTable {
    public static void doConnection(final IHostTestEnvironment testHost, OSEEPerson1_4 user) {
       doConnection("Initializing connection", testHost, user);
    }
-   
+
    public static void doConnection(final IServiceConnector serviceConnector, OSEEPerson1_4 user) {
       doConnection("Initializing connection", serviceConnector, user);
    }
-   
+
    public static void doConnection(final String jobName, final IHostTestEnvironment testHost, OSEEPerson1_4 user) {
-     doConnection(jobName, null, testHost, user);
+      doConnection(jobName, null, testHost, user);
    }
-   
+
    public static void doConnection(final String jobName, final IServiceConnector serviceConnector, OSEEPerson1_4 user) {
-     doConnection(jobName, serviceConnector, null, user);
+      doConnection(jobName, serviceConnector, null, user);
    }
-   
+
    private static void doConnection(final String jobName, final IServiceConnector serviceConnector, final IHostTestEnvironment testHost, OSEEPerson1_4 user) {
       doConnection(waitForClientService(5000), jobName, serviceConnector, testHost, user);
    }
+
    private static void doConnection(final IOteClientService service, final String jobName, final IServiceConnector serviceConnector, final IHostTestEnvironment testHost, OSEEPerson1_4 user) {
 
-         if (service == null) {
-            throw new IllegalStateException("can't acquire OTE client service");
-         }
-         if (service.getUser() == null) {
-            try {
-               OteLoginJob job = new OteLoginJob(user);
-               job.addJobChangeListener(new JobChangeAdapter() {
+      if (service == null) {
+         throw new IllegalStateException("can't acquire OTE client service");
+      }
+      if (service.getUser() == null) {
+         try {
+            OteLoginJob job = new OteLoginJob(user);
+            job.addJobChangeListener(new JobChangeAdapter() {
 
-                  @Override
-                  public void done(final IJobChangeEvent event) {
-                     Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void done(final IJobChangeEvent event) {
+                  Displays.ensureInDisplayThread(new Runnable() {
 
-                        @Override
-                        public void run() {
-                           if (!event.getResult().isOK()) {
+                     @Override
+                     public void run() {
+                        if (!event.getResult().isOK()) {
 
-                              String user = System.getProperty("user.name");
-                              OseeLog.log(OteClientUiPlugin.class, Level.WARNING,
-                                 "Could not log you in using OSEE Authentication. You will be logged in as " + user);
-                              try {
-                                 service.setUser(new OSEEPerson1_4(user, "", user), InetAddress.getLocalHost());
-                                 service.setSessionDelegate(new OteSessionDelegateViewImpl());
-                              } catch (Exception e) {
-                                 OteClientUiPlugin.log(Level.SEVERE, "failed to login into OTE", e);
-                                 MessageDialog.openError(Displays.getActiveShell(), "Connection Aborted",
-                                    "Cannot login to OTE system. See Error Log for details.");
-                                 return;
-                              }
-
+                           String user = System.getProperty("user.name");
+                           OseeLog.log(OteClientUiPlugin.class, Level.WARNING,
+                              "Could not log you in using OSEE Authentication. You will be logged in as " + user);
+                           try {
+                              service.setUser(new OSEEPerson1_4(user, "", user), OteProperties.getDefaultInetAddress());
+                              service.setSessionDelegate(new OteSessionDelegateViewImpl());
+                           } catch (Exception e) {
+                              OteClientUiPlugin.log(Level.SEVERE, "failed to login into OTE", e);
+                              MessageDialog.openError(Displays.getActiveShell(), "Connection Aborted",
+                                 "Cannot login to OTE system. See Error Log for details.");
+                              return;
                            }
-                           if(serviceConnector == null){
-                              OteConnectionJob job = new OteConnectionJob(jobName, testHost, CONNECTION_TIMEOUT);
-                              job.schedule();
-                           } else {
-                              OteConnectionJob job = new OteConnectionJob(jobName, serviceConnector, CONNECTION_TIMEOUT);
-                              job.schedule();
-                           }
+
                         }
-                     });
-                  }
-               });
-               job.schedule();
-            } catch (Exception e) {
-               OteClientUiPlugin.log(Level.SEVERE, "failed to connect", e);
-               MessageDialog.openError(Displays.getActiveShell(), "Connection Aborted",
-                  "Cannot login to OTE system. See Error Log for details.");
+                        if (serviceConnector == null) {
+                           OteConnectionJob job = new OteConnectionJob(jobName, testHost, CONNECTION_TIMEOUT);
+                           job.schedule();
+                        } else {
+                           OteConnectionJob job = new OteConnectionJob(jobName, serviceConnector, CONNECTION_TIMEOUT);
+                           job.schedule();
+                        }
+                     }
+                  });
+               }
+            });
+            job.schedule();
+         } catch (Exception e) {
+            OteClientUiPlugin.log(Level.SEVERE, "failed to connect", e);
+            MessageDialog.openError(Displays.getActiveShell(), "Connection Aborted",
+               "Cannot login to OTE system. See Error Log for details.");
 
-            }
+         }
+      } else {
+         if (serviceConnector == null) {
+            OteConnectionJob job = new OteConnectionJob(jobName, testHost, CONNECTION_TIMEOUT);
+            job.schedule();
          } else {
-           if(serviceConnector == null){
-              OteConnectionJob job = new OteConnectionJob(jobName, testHost, CONNECTION_TIMEOUT);
-              job.schedule();
-           } else {
-              OteConnectionJob job = new OteConnectionJob(jobName, serviceConnector, CONNECTION_TIMEOUT);
-              job.schedule();
-           } 
+            OteConnectionJob job = new OteConnectionJob(jobName, serviceConnector, CONNECTION_TIMEOUT);
+            job.schedule();
          }
       }
+   }
 
    public static void doConnection(final IHostTestEnvironment testHost) {
       doConnection(testHost, null);
@@ -446,35 +457,33 @@ public class HostSelectionTable {
    public static void doConnection(final IServiceConnector connector) {
       doConnection(connector, null);
    }
-   
+
    public static void doConnection(IOteClientService service, String message, IHostTestEnvironment testHost) {
       doConnection(service, message, null, testHost, null);
    }
-   
+
    /**
-    * The class field copyImage is intentionally not disposed in this method.
-    * If dispose is called on it, it is then disposed in the shared registry
-    * that it is pulled from.
-    * Then the next time the HostSelectionTable gets instantiated within the 
-    * same OTE-IDE session, it will still be disposed and cause an exception.
+    * The class field copyImage is intentionally not disposed in this method. If dispose is called on it, it is then
+    * disposed in the shared registry that it is pulled from. Then the next time the HostSelectionTable gets
+    * instantiated within the same OTE-IDE session, it will still be disposed and cause an exception.
     */
    public void dispose() {
-	  try{
-		  monitorRestLookup.cancel(false);
-		  executor.shutdown();
-		  tracker.close();
-		  this.goldenRod.dispose();
-		  this.normalBackground.dispose();
-		  this.downloadImage.dispose();
-		  this.bigFont.dispose();
-		  if (hostTable != null) {
-			  hostTable.dispose();
-		  }
-	  } catch (Throwable th){
-		  OseeLog.log(getClass(), Level.WARNING, "Failed to stop dispose host table cleanly.", th);
-	  }
+      try {
+         monitorRestLookup.cancel(false);
+         executor.shutdown();
+         tracker.close();
+         this.goldenRod.dispose();
+         this.normalBackground.dispose();
+         this.downloadImage.dispose();
+         this.bigFont.dispose();
+         if (hostTable != null) {
+            hostTable.dispose();
+         }
+      } catch (Throwable th) {
+         OseeLog.log(getClass(), Level.WARNING, "Failed to stop dispose host table cleanly.", th);
+      }
    }
-   
+
    /**
     * @author Michael P. Masterson
     */
@@ -494,34 +503,35 @@ public class HostSelectionTable {
       @Override
       public void widgetSelected(SelectionEvent e) {
          String zipFilePath = System.getProperty(ZIP_FILE_PROPERTY, DEFAULT_ZIP_PATTERN);
-         if(zipFilePath.contains("%s")) {
+         if (zipFilePath.contains("%s")) {
             zipFilePath = String.format(zipFilePath, shortenedClientVersion);
          }
-         
+
          File zipFile = new File(zipFilePath);
-         if( !zipFile.exists() ) {
-            String errorMsg = String.format("OTE test server archive not found at %s.\n\n"
-                                          + "Contact OTE personnel to help solve this issue.", zipFile.getAbsolutePath());
+         if (!zipFile.exists()) {
+            String errorMsg = String.format(
+               "OTE test server archive not found at %s.\n\n" + "Contact OTE personnel to help solve this issue.",
+               zipFile.getAbsolutePath());
             MessageDialog.openError(Display.getCurrent().getActiveShell(), "Zip file not found", errorMsg);
             return;
          }
-         
-         
+
          DirectoryDialog dialog = new DirectoryDialog(Display.getCurrent().getActiveShell());
          dialog.setMessage("Select a destination folder:");
          String defaultFolder = System.getProperty("user.home") + "\\OTE_WIN_SERVERS\\" + shortenedClientVersion;
          File selectedDestFolder = new File(defaultFolder);
-         if( !selectedDestFolder.exists()) {
+         if (!selectedDestFolder.exists()) {
             selectedDestFolder.mkdirs();
          }
          dialog.setFilterPath(defaultFolder);
          String dir = dialog.open();
          selectedDestFolder = new File(dir);
-         
-         if( selectedDestFolder.exists()) {
-            OpenOrOverwriteDialog openDialog = new OpenOrOverwriteDialog(Display.getCurrent().getActiveShell(), selectedDestFolder.getAbsolutePath());
+
+         if (selectedDestFolder.exists()) {
+            OpenOrOverwriteDialog openDialog =
+               new OpenOrOverwriteDialog(Display.getCurrent().getActiveShell(), selectedDestFolder.getAbsolutePath());
             boolean shouldOpen = openDialog.open();
-            if(shouldOpen) {
+            if (shouldOpen) {
                openFolder(selectedDestFolder);
                return;
             }
@@ -529,11 +539,13 @@ public class HostSelectionTable {
          Job unzipJob = new UnzipJob(zipFile, selectedDestFolder);
          unzipJob.setUser(true);
          unzipJob.schedule();
-         
-         String message = String.format("The OTE Windows test server was successfully downloaded to\n%s\n\n"
-                                    + "Do you wish to open destination folder?", selectedDestFolder.getAbsolutePath());
-         boolean showFolder = MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "OTE Server successfully downloaded", message);
-         if( showFolder ) {
+
+         String message = String.format(
+            "The OTE Windows test server was successfully downloaded to\n%s\n\n" + "Do you wish to open destination folder?",
+            selectedDestFolder.getAbsolutePath());
+         boolean showFolder = MessageDialog.openQuestion(Display.getCurrent().getActiveShell(),
+            "OTE Server successfully downloaded", message);
+         if (showFolder) {
             openFolder(selectedDestFolder);
          }
       }
@@ -544,9 +556,9 @@ public class HostSelectionTable {
       private void openFolder(File selectedDestFolder) {
          try {
             Runtime.getRuntime().exec("explorer.exe " + selectedDestFolder.getAbsolutePath());
-         }
-         catch (IOException ex) {
-            String errorMsg = String.format("Error trying to open destination folder at \n%s\n\nError was:\n%s", selectedDestFolder.getAbsolutePath(), ex.getMessage());
+         } catch (IOException ex) {
+            String errorMsg = String.format("Error trying to open destination folder at \n%s\n\nError was:\n%s",
+               selectedDestFolder.getAbsolutePath(), ex.getMessage());
             MessageDialog.openError(Display.getCurrent().getActiveShell(), "Zip file not found", errorMsg);
             ex.printStackTrace();
          }

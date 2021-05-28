@@ -6,3 +6,5 @@ Bundle-Version: 0.26.0.qualifier
 Require-Bundle: org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.ote.properties
+Import-Package: org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.plugin.core

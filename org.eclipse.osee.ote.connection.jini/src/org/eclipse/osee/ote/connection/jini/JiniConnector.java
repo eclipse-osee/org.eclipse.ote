@@ -20,17 +20,15 @@ import java.rmi.server.ExportException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-
+import org.eclipse.osee.connection.service.IServiceConnector;
+import org.eclipse.osee.connection.service.IServicePropertyChangeListener;
+import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
+import org.eclipse.osee.ote.properties.OteProperties;
 import net.jini.core.entry.Entry;
 import net.jini.export.Exporter;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
-
-import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.connection.service.IServicePropertyChangeListener;
-import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
-import org.eclipse.osee.framework.jdk.core.util.Network;
 
 /**
  * @author Ken J. Aguilar
@@ -99,7 +97,7 @@ public abstract class JiniConnector implements IServiceConnector {
    }
 
    private Exporter createExporter() throws UnknownHostException {
-      return new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
+      return new BasicJeriExporter(TcpServerEndpoint.getInstance(OteProperties.getDefaultIpAddress(), 0),
          new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
    }
 
@@ -144,11 +142,11 @@ public abstract class JiniConnector implements IServiceConnector {
          }
       }
    }
-   
-   public void setConnected(boolean connected){
+
+   public void setConnected(boolean connected) {
       this.connected = connected;
    }
-   
+
    public boolean isConnected() {
       return this.connected;
    }

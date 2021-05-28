@@ -48,6 +48,7 @@ import org.eclipse.osee.ote.core.framework.testrun.ITestRunListener;
 import org.eclipse.osee.ote.core.framework.testrun.ITestRunListenerProvider;
 import org.eclipse.osee.ote.core.log.ITestPointTally;
 import org.eclipse.osee.ote.core.log.record.ScriptResultRecord;
+import org.eclipse.osee.ote.properties.OteProperties;
 import org.junit.Ignore;
 import org.junit.Test;
 

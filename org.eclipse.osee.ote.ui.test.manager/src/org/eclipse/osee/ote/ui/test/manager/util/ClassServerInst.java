@@ -34,10 +34,10 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.CorePreferences;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.osee.ote.classserver.ClassServer;
 import org.eclipse.osee.ote.classserver.PathResourceFinder;
+import org.eclipse.osee.ote.properties.OteProperties;
 import org.eclipse.osee.ote.runtimemanager.UserLibResourceFinder;
 
 public class ClassServerInst {
@@ -59,14 +59,14 @@ public class ClassServerInst {
     */
    private ClassServerInst() {
       try {
-         InetAddress useHostAddress = CorePreferences.getDefaultInetAddress();
+         InetAddress useHostAddress = OteProperties.getDefaultInetAddress();
          classServer = new ClassServer(0, useHostAddress)//;
-            {
-               @Override
-               protected void fileDownloaded(String fp, InetAddress addr) {
-                  System.out.println("ClassServerInst: File " + fp + " downloaded to " + addr);
-               }
-            };
+         {
+            @Override
+            protected void fileDownloaded(String fp, InetAddress addr) {
+               System.out.println("ClassServerInst: File " + fp + " downloaded to " + addr);
+            }
+         };
          pathResourceFinder = new PathResourceFinder(new String[] {}, false);
          classServer.addResourceFinder(new UserLibResourceFinder());
          classServer.addResourceFinder(new OTEBuilderResourceFinder());
@@ -90,9 +90,7 @@ public class ClassServerInst {
          };
          job.schedule();
       } catch (BindException ex) {
-         OseeLog.log(
-            ClassServerInst.class,
-            Level.SEVERE,
+         OseeLog.log(ClassServerInst.class, Level.SEVERE,
             "Class Server not started.  Likely the IP address used is not local.  Set your IP address in the advanced page.",
             ex);
       } catch (Exception ex) {
@@ -151,13 +149,12 @@ public class ClassServerInst {
 
       return list.toArray(new String[list.size()]);
    }
-   
-   /* 
+
+   /*
     * START Code Duplicated from AJavaProject because of release dependencies
-    */   
-   private final Map<IJavaProject, IClasspathEntry[]> cachedPath =
-         new HashMap<IJavaProject, IClasspathEntry[]>();
-   
+    */
+   private final Map<IJavaProject, IClasspathEntry[]> cachedPath = new HashMap<IJavaProject, IClasspathEntry[]>();
+
    private IClasspathEntry[] localGetResolvedClasspath(IJavaProject javaProject) throws JavaModelException {
       IClasspathEntry[] paths = cachedPath.get(javaProject);
       if (paths == null) {
@@ -166,7 +163,7 @@ public class ClassServerInst {
       }
       return paths;
    }
-   
+
    private ArrayList<File> getJavaProjectProjectDependancies(IJavaProject javaProject) {
       ArrayList<File> urls = new ArrayList<File>();
       try {
@@ -206,7 +203,7 @@ public class ClassServerInst {
       }
       return urls;
    }
-   /* 
+   /*
     * STOP Code Duplicated from AJavaProject because of release dependencies
     */
 }
