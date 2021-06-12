@@ -28,20 +28,21 @@
 						</goals>
 						<configuration>
 							<excludes>
-								<plugin id="org.apache.xerces" />
-								<plugin id="javax.xml" />
-								<plugin id="org.eclipse.jgit" />
+								<plugin id="ch.qos.logback.slf4j" />
+								<plugin id="com.google.guava" />
 								<plugin id="javax.servlet" />
-								<plugin id="org.apache.xml.resolver" />
-								<plugin id="org.apache.xml.serializer" />
-								<plugin id="net.jini" />
+								<plugin id="javax.ws.rs" />
+								<plugin id="javax.xml" />
 								<plugin id="jms.libraries" />
-								<plugin id="org.eclipse.osee.logback.config" />
+								<plugin id="net.jini" />
 								<plugin id="org.apache.commons.codec" />
 								<plugin id="org.apache.cxf.core.config" />
-								<plugin id="ch.qos.logback.slf4j" />
-								<plugin id="javax.ws.rs" />
+								<plugin id="org.apache.xerces" />
+								<plugin id="org.apache.xml.resolver" />
+								<plugin id="org.apache.xml.serializer" />
 								<plugin id="org.eclipse.equinox.console.ssh" />								
+								<plugin id="org.eclipse.jgit" />
+								<plugin id="org.eclipse.osee.logback.config" />
 							</excludes>
 						</configuration>
 					</execution>
