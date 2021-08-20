@@ -16,7 +16,6 @@ package org.eclipse.osee.ote.ui.output.editors;
 import java.io.File;
 import java.io.InputStream;
 import java.util.logging.Level;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -76,6 +75,17 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
    private void backUpTheTree() {
       currentScriptItem.cacheColumnStyledString();
       currentScriptItem = (BaseOutfileTreeItem) currentScriptItem.getParent();
+   }
+
+   /**
+    * This method is used to ensure the Location child isn't added twice to the same item.
+    * 
+    * @return
+    */
+   private boolean currentItemIsEmbeddedTestPoint() {
+      OutfileRowType currentType = currentScriptItem.getType();
+      OutfileRowType parentType = currentScriptItem.getParent().getType();
+      return (currentType == OutfileRowType.testpoint) && (parentType != OutfileRowType.testcase);
    }
 
    private static final int _1_MB = 1048576;
@@ -311,7 +321,7 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
       handler.getHandler("Location").addListener(new IBaseSaxElementListener() {
          @Override
          public void onEndElement(Object obj) {
-            if (currentScriptItem.getType() == OutfileRowType.testpoint) {
+            if (currentItemIsEmbeddedTestPoint()) {
                return;
             }
             currentScriptItem.setColumnText(1, String.format("Time: [%s ms]", currentScriptItem.getField("Time")));
@@ -319,7 +329,7 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
             String line = "";
 
             for (IOutfileTreeItem child : currentScriptItem.getChildren()) {
-               if (child.getType() == OutfileRowType.stacktrace && currentScriptItem.getParent().getType() != OutfileRowType.testpoint) {
+               if (child.getType() == OutfileRowType.stacktrace) {
                   boolean nolinefound = true;
                   String source = child.getColumnText(0);
                   if (nolinefound && source.contains(callback.getScriptName())) {
@@ -339,19 +349,19 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
                   currentScriptItem.getParent().setColumnText(-1, currentScriptItem.getField("Time"));
                }
             }
-
             backUpTheTree();
          }
 
          @Override
          public void onStartElement(Object obj) {
-            if (currentScriptItem.getType() == OutfileRowType.testpoint) {
+            if (currentItemIsEmbeddedTestPoint()) {
                return;
             }
             BaseOutfileTreeItem item = new BaseOutfileTreeItem(OutfileRowType.location);
             item.setColumnText(0, "Location");
             relateAndSetCurrent(item);
          }
+
       });
       handler.getHandler("OteLog").addListener(new IBaseSaxElementListener() {
          @Override
@@ -382,7 +392,7 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
       handler.getHandler("Stacktrace").addListener(new IBaseSaxElementListener() {
          @Override
          public void onEndElement(Object obj) {
-            if (largeFile || currentScriptItem.getType() == OutfileRowType.testpoint) {
+            if (largeFile || currentItemIsEmbeddedTestPoint()) {
                return;
             }
             backUpTheTree();
@@ -390,7 +400,7 @@ public class ProcessOutfileDetails implements IExceptionableRunnable {
 
          @Override
          public void onStartElement(Object obj) {
-            if (largeFile || currentScriptItem.getType() == OutfileRowType.testpoint) {
+            if (largeFile || currentItemIsEmbeddedTestPoint()) {
                return;
             }
             BaseOutfileTreeItem item = new BaseOutfileTreeItem(OutfileRowType.stacktrace);
