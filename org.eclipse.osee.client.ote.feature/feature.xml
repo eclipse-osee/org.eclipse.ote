@@ -18,29 +18,22 @@
    </license>
 
    <requires>
-      <import plugin="org.eclipse.osee.framework.jdk.core"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.apache.commons.net"/>
-      <import plugin="org.eclipse.osee.framework.logging"/>
       <import plugin="net.jini" version="2.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.xerces"/>
-      <import plugin="org.eclipse.osee.framework.core"/>
-      <import plugin="org.eclipse.osee.framework.plugin.core"/>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.eclipse.ui" version="3.5.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.jobs"/>
       <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.osee.framework.ui.plugin"/>
-      <import plugin="org.eclipse.osee.framework.ui.swt"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.nebula.widgets.xviewer"/>
-      <import plugin="org.eclipse.osee.framework.ui.ws"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.ui.workbench"/>
@@ -73,6 +66,13 @@
       <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual"/>
       <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.2" match="greaterOrEqual"/>
       <import plugin="com.sun.xml.fastinfoset"/>
+      <import feature="org.eclipse.osee.client.all.feature"/>
+      <import feature="org.eclipse.osee.client.feature"/>
+      <import feature="org.eclipse.osee.core.feature"/>
+      <import feature="org.eclipse.osee.core.runtime.feature"/>
+      <import feature="org.eclipse.osee.core.ui.feature"/>
+      <import feature="org.eclipse.osee.dep.feature"/>
+      <import feature="org.eclipse.osee.framework.ui.feature"/>
    </requires>
 
    <plugin

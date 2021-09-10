@@ -73,14 +73,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.egit"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.egit.mylyn"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.emf"
          version="0.0.0"/>
 
@@ -594,6 +586,8 @@
 
    <requires>
       <import plugin="org.junit" version="4.12.0" match="equivalent"/>
+      <import plugin="org.apache.lucene.analyzers-common" version="6.1.0" match="equivalent"/>
+      <import plugin="org.apache.lucene.core" version="6.1.0" match="equivalent"/>
    </requires>
 
    <plugin
@@ -814,6 +808,13 @@
 
    <plugin
          id="org.eclipse.zest.layouts"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.lucene.queryparser"
          download-size="0"
          install-size="0"
          version="0.0.0"
