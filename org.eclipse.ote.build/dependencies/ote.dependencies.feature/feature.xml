@@ -339,17 +339,19 @@
    <includes
          id="org.eclipse.xtext.docs"
          version="0.0.0"/>
+
    <includes
          id="org.eclipse.xtext.ui"
          version="0.0.0"/>
+
    <includes
          id="org.eclipse.xtext.xbase"
          version="0.0.0"/>
-                  
+
    <includes
          id="org.eclipse.xtext.runtime"
          version="0.0.0"/>
-               
+
    <includes
          id="org.eclipse.nebula.widgets.ganttchart.feature"
          version="0.0.0"/>
@@ -582,24 +584,28 @@
          id="org.eclipse.osee.framework.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.osee.client.all.feature"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.junit" version="4.12.0" match="equivalent"/>
    </requires>
-   
+
    <plugin
          id="net.bytebuddy.byte-buddy"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false" />
+         unpack="false"/>
 
    <plugin
          id="net.bytebuddy.byte-buddy-agent"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false" />
-         
+         unpack="false"/>
+
    <plugin
          id="org.h2"
          download-size="0"
@@ -710,15 +716,15 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-      <plugin
+
+   <plugin
          id="org.jsoup"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-            <plugin
+
+   <plugin
          id="org.eclipse.xtext"
          download-size="0"
          install-size="0"
@@ -787,26 +793,26 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.json"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>      
-         
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.zest.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.zest.layouts"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
 </feature>
