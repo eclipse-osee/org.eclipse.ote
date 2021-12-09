@@ -33,6 +33,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.osee.ote.classserver.ClassServer;
@@ -169,32 +170,40 @@ public class ClassServerInst {
       try {
          IClasspathEntry[] paths = localGetResolvedClasspath(javaProject);
          for (int i = 0; i < paths.length; i++) {
-            if (paths[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-               if (paths[i].getPath().toFile().exists()) {
+            IClasspathEntry pathEntry = paths[i];
+            if (pathEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+               if (pathEntry.getPath().toFile().exists()) {
                   //          urls.add(paths[i].getPath().toFile());
                } else {
                   File file = null;
-                  file = new File(AWorkspace.getWorkspacePath().concat(paths[i].getPath().toOSString()));
+                  file = new File(AWorkspace.getWorkspacePath().concat(pathEntry.getPath().toOSString()));
                   if (file.exists()) {
                      urls.add(file);
                   }
                }
-            } else if (paths[i].getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+            } else if (pathEntry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
                urls.add(new File(AWorkspace.getWorkspacePath().concat(
-                  paths[i].getPath().toFile().getPath().concat(File.separator + "bin" + File.separator))));
-            } else if (paths[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-               File projectlocation = javaProject.getProject().getLocation().toFile();
-               File projecttricky = javaProject.getProject().getFullPath().toFile();
-               IPath output = paths[i].getOutputLocation();
+                  pathEntry.getPath().toFile().getPath().concat(File.separator + "bin" + File.separator))));
+            } else if (pathEntry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+               IProject project = javaProject.getProject();
+               File projectlocation = project.getLocation().toFile();
+
+               File projecttricky = project.getFullPath().toFile();
+               IPath output = pathEntry.getOutputLocation();
                File fileLocation;
                if (output == null) {
                   fileLocation = javaProject.getOutputLocation().toFile();
                } else {
-                  fileLocation = paths[i].getOutputLocation().toFile();
+                  fileLocation = pathEntry.getOutputLocation().toFile();
                }
                String realLocation =
                   fileLocation.toString().replace(projecttricky.toString(), projectlocation.toString());
+
+               File resourceFolder = new File(projectlocation, OseeInf.ROOT_DIR);
                urls.add(new File(realLocation));
+               if (resourceFolder.exists()) {
+                  urls.add(resourceFolder);
+               }
             }
          }
 
