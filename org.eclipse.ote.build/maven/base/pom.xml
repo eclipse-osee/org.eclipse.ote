@@ -7,14 +7,14 @@
 	<artifactId>base</artifactId>
 	<packaging>pom</packaging>
 	<name>Eclipse OTE Maven Repos Parent</name>
-	<version>0.11.0-SNAPSHOT</version>
+	<version>0.26.1-SNAPSHOT</version>
 
 	<properties>
 		<build-alias>-DEV</build-alias>
-		<tycho-version>1.0.0</tycho-version>
-		<tychoExtrasVersion>1.0.0</tychoExtrasVersion>
-		<platform-version-name>mars</platform-version-name>
-		<orbit-version>R20130517111416</orbit-version>
+		<tycho-version>1.7.0</tycho-version>
+		<tychoExtrasVersion>1.7.0</tychoExtrasVersion>
+		<platform-version-name>2020-06/202006171000</platform-version-name>
+		<orbit-version>R20201130205003</orbit-version>
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
