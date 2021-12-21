@@ -3,10 +3,10 @@ package org.eclipse.osee.ote.rest.client.internal;
 import java.net.URI;
 import java.util.List;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.ote.rest.client.OTECacheItem;
 import org.eclipse.osee.ote.rest.client.Progress;
 import org.eclipse.osee.ote.rest.model.OTEConfiguration;
@@ -20,11 +20,11 @@ public class PrepareOteServerFile extends BaseClientCallable<Progress> {
    private final URI uri;
    private final List<OTECacheItem> jars;
    private final Progress progress;
-   private final JaxRsClient factory;
+   private final JaxRsApi factory;
    private OTEJobStatus status;
    private final String baseJarURL;
 
-   public PrepareOteServerFile(URI uri, String baseJarURL, List<OTECacheItem> jars, Progress progress, JaxRsClient factory) {
+   public PrepareOteServerFile(URI uri, String baseJarURL, List<OTECacheItem> jars, Progress progress, JaxRsApi factory) {
       super(progress);
       this.uri = uri;
       this.jars = jars;
@@ -48,7 +48,7 @@ public class PrepareOteServerFile extends BaseClientCallable<Progress> {
    private void waitForJobComplete() throws Exception {
 
       URI jobUri = status.getUpdatedJobStatus().toURI();
-      JaxRsWebTarget service = factory.target(jobUri);
+      WebTarget service = factory.newTargetUrl(jobUri.toString());
 
       while (!status.isJobComplete()) {
          Thread.sleep(POLLING_RATE);
@@ -72,8 +72,8 @@ public class PrepareOteServerFile extends BaseClientCallable<Progress> {
          configuration.addItem(item);
       }
       URI targetUri = UriBuilder.fromUri(uri).path("ote").path("cache").build();
-      return factory.target(targetUri).request(MediaType.APPLICATION_JSON).post(Entity.json(configuration),
-         OTEJobStatus.class);
+      return factory.newTargetUrl(targetUri.toString()).request(MediaType.APPLICATION_JSON).post(
+         Entity.json(configuration), OTEJobStatus.class);
    }
 
 }

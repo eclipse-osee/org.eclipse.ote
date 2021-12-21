@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.ote.rest.client.OTECacheItem;
 import org.eclipse.osee.ote.rest.client.OteClient;
 import org.eclipse.osee.ote.rest.client.Progress;
@@ -35,7 +35,11 @@ import org.eclipse.osee.ote.rest.model.OTETestRun;
 public class OteClientImpl implements OteClient {
 
    private ExecutorService executor;
-   private volatile JaxRsClient client;
+   private volatile JaxRsApi jaxRsApi;
+
+   public void bindJaxRsApi(JaxRsApi jaxRsApi) {
+      this.jaxRsApi = jaxRsApi;
+   }
 
    public void start(Map<String, Object> props) {
       executor = Executors.newCachedThreadPool(new ThreadFactory() {
@@ -47,43 +51,38 @@ public class OteClientImpl implements OteClient {
             return th;
          }
       });
-      update(props);
    }
 
    public void stop() {
       if (executor != null) {
          executor.shutdown();
       }
-      client = null;
-   }
-
-   public void update(Map<String, Object> props) {
-      client = JaxRsClient.newBuilder().properties(props).build();
+      jaxRsApi = null;
    }
 
    @Override
    public Future<Progress> getFile(URI uri, File destination, String filePath, final Progress progress) {
-      return executor.submit(new GetOteServerFile(uri, destination, filePath, progress, client));
+      return executor.submit(new GetOteServerFile(uri, destination, filePath, progress, jaxRsApi));
    }
 
    @Override
    public Future<Progress> configureServerEnvironment(URI uri, List<File> jars, final Progress progress) {
-      return executor.submit(new ConfigureOteServer(uri, jars, progress, client));
+      return executor.submit(new ConfigureOteServer(uri, jars, progress, jaxRsApi));
    }
 
    @Override
    public Future<Progress> updateServerJarCache(URI uri, String baseJarURL, List<OTECacheItem> jars, Progress progress) {
-      return executor.submit(new PrepareOteServerFile(uri, baseJarURL, jars, progress, client));
+      return executor.submit(new PrepareOteServerFile(uri, baseJarURL, jars, progress, jaxRsApi));
    }
 
    @Override
    public Future<ProgressWithCancel> runTest(URI uri, OTETestRun tests, Progress progress) {
-      return executor.submit(new RunTests(uri, tests, progress, client));
+      return executor.submit(new RunTests(uri, tests, progress, jaxRsApi));
    }
 
    @Override
    public Future<Progress> configureServerEnvironment(URI uri, OTEConfiguration configuration, Progress progress) {
-      return executor.submit(new ConfigureOteServer(uri, configuration, progress, client));
+      return executor.submit(new ConfigureOteServer(uri, configuration, progress, jaxRsApi));
    }
 
 }

@@ -6,8 +6,8 @@ import java.util.logging.Level;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.ote.rest.client.Progress;
 import org.eclipse.osee.ote.rest.client.ProgressWithCancel;
 import org.eclipse.osee.ote.rest.model.OTEJobStatus;
@@ -18,11 +18,11 @@ public class RunTests implements ProgressWithCancel, Callable<ProgressWithCancel
    private final URI uri;
    private final OTETestRun tests;
    private final Progress progress;
-   private final JaxRsClient factory;
+   private final JaxRsApi factory;
    private OTEJobStatus status;
    private String id;
 
-   public RunTests(URI uri, OTETestRun tests, Progress progress, JaxRsClient factory) {
+   public RunTests(URI uri, OTETestRun tests, Progress progress, JaxRsApi factory) {
       this.uri = uri;
       this.tests = tests;
       this.progress = progress;
@@ -41,8 +41,8 @@ public class RunTests implements ProgressWithCancel, Callable<ProgressWithCancel
    public boolean cancelSingle() {
       URI targetUri = UriBuilder.fromUri(uri).path("ote").path("run").path("{run-id}").build(id);
       try {
-         OTEJobStatus cancelStatus =
-            factory.target(targetUri).request(MediaType.APPLICATION_JSON).put(Entity.json(""), OTEJobStatus.class);
+         OTEJobStatus cancelStatus = factory.newTargetUrl(targetUri.toString()).request(MediaType.APPLICATION_JSON).put(
+            Entity.json(""), OTEJobStatus.class);
          return cancelStatus.isSuccess();
       } catch (Exception e) {
          OseeLog.log(getClass(), Level.SEVERE, e);
@@ -52,7 +52,8 @@ public class RunTests implements ProgressWithCancel, Callable<ProgressWithCancel
 
    private OTEJobStatus sendCommand() throws Exception {
       URI targetUri = UriBuilder.fromUri(uri).path("ote").path("run").build();
-      return factory.target(targetUri).request(MediaType.APPLICATION_JSON).post(Entity.json(tests), OTEJobStatus.class);
+      return factory.newTargetUrl(targetUri.toString()).request(MediaType.APPLICATION_JSON).post(Entity.json(tests),
+         OTEJobStatus.class);
    }
 
    @Override
@@ -61,7 +62,7 @@ public class RunTests implements ProgressWithCancel, Callable<ProgressWithCancel
 
       try {
          OTEJobStatus cancelStatus =
-            factory.target(targetUri).request(MediaType.APPLICATION_JSON).delete(OTEJobStatus.class);
+            factory.newTargetUrl(targetUri.toString()).request(MediaType.APPLICATION_JSON).delete(OTEJobStatus.class);
          return cancelStatus.isSuccess();
       } catch (Exception e) {
          OseeLog.log(getClass(), Level.SEVERE, e);

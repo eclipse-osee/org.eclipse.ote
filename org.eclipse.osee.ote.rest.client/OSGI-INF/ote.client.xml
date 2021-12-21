@@ -4,4 +4,5 @@
    <service>
       <provide interface="org.eclipse.osee.ote.rest.client.OteClient"/>
    </service>
+      <reference bind="bindJaxRsApi" cardinality="1..1" interface="org.eclipse.osee.framework.core.JaxRsApi" name="jaxRsApi" policy="static"/>
 </scr:component>

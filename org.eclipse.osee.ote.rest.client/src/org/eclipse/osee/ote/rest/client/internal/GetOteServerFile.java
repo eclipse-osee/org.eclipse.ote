@@ -8,8 +8,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.ote.rest.client.Progress;
 
 public class GetOteServerFile extends BaseClientCallable<Progress> {
@@ -18,10 +18,10 @@ public class GetOteServerFile extends BaseClientCallable<Progress> {
    private final String filePath;
    @SuppressWarnings("unused")
    private final Progress progress;
-   private final JaxRsClient factory;
+   private final JaxRsApi factory;
    private final File destination;
 
-   public GetOteServerFile(URI uri, File destination, String filePath, Progress progress, JaxRsClient factory) {
+   public GetOteServerFile(URI uri, File destination, String filePath, Progress progress, JaxRsApi factory) {
       super(progress);
       this.uri = uri;
       this.filePath = filePath;
@@ -34,7 +34,7 @@ public class GetOteServerFile extends BaseClientCallable<Progress> {
    public void doWork() throws Exception {
       URI targetUri = UriBuilder.fromUri(uri).path("ote").path("file").queryParam("path", filePath).build();
 
-      Response response = factory.target(targetUri).request(MediaType.APPLICATION_XML).get();
+      Response response = factory.newTargetUrl(targetUri.toString()).request(MediaType.APPLICATION_XML).get();
       if (response.getStatus() == Status.OK.getStatusCode()) {
          InputStream is = (InputStream) response.getEntity();
          FileOutputStream fos = new FileOutputStream(destination);
