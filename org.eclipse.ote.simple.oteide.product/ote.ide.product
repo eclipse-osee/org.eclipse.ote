@@ -35,7 +35,6 @@ https://wiki.eclipse.org/OSEE/OTE/Users_Guide
    <splash
       location="org.eclipse.ote.simple.oteide.product.load" />
    <launcher name="ote">
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -87,9 +86,6 @@ https://wiki.eclipse.org/OSEE/OTE/Users_Guide
       <feature id="org.eclipse.platform"/>
       <feature id="org.eclipse.platform.source"/>
       <feature id="org.eclipse.sdk"/>
-      <feature id="org.eclipse.team.svn"/>
-      <feature id="org.polarion.eclipse.team.svn.connector"/>
-      <feature id="org.polarion.eclipse.team.svn.connector.svnkit18"/>
       <feature id="org.eclipse.ote.simple.oteide.product.feature"/>
    </features>
 
