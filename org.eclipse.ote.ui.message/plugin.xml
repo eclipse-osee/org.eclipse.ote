@@ -27,14 +27,6 @@
          <run class="org.eclipse.ote.ui.message.watch.recording.xform.RunCSVConversion"/>
       </application>
    </extension>
-   <extension
-         point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
-      <XNavigateItem 
-      classname="org.eclipse.ote.ui.message.navigate.MessageNavigateViewItems" 
-      category="Messaging"
-      viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
-      </XNavigateItem>
-   </extension>
 
    <extension
          id="CsvTransform"
@@ -44,5 +36,11 @@
             Action="org.eclipse.ote.ui.message.watch.recording.xform.CsvTransform"
             Label="Csv Transform"
             Tooltip="Transform the base CSV format."/>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.plugin.XNavigateItemProvider">
+      <XNavigateItemProvider
+            classname="org.eclipse.ote.ui.message.navigate.MessageNavigateViewItems">
+      </XNavigateItemProvider>
    </extension>
 </plugin>

@@ -13,28 +13,35 @@
 
 package org.eclipse.ote.ui.eviewer.view;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
+import org.eclipse.osee.ote.ui.navigate.OteNavigatorTopFolders;
 import org.eclipse.ote.ui.eviewer.OteElementImage;
 import org.eclipse.ote.ui.eviewer.action.EViewerAction;
 
 /**
  * @author Donald G. Dunne
  */
-public class MessageNavigateViewItems implements IXNavigateContainer {
+public class MessageNavigateViewItems implements XNavigateItemProvider {
+   private final XNavItemCat navItemCat = new XNavItemCat(OteNavigatorTopFolders.MESSAGING_FOLDER.getName() + ".element_viewer");
+
    public MessageNavigateViewItems() {
       super();
    }
 
    @Override
-   public List<XNavigateItem> getNavigateItems() {
-      List<XNavigateItem> items = new ArrayList<XNavigateItem>();
-      items.add(new XNavigateItemAction(null, new EViewerAction(), OteElementImage.ELEMENT_VIEW, false));
+   public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items) {
+      items.add(new XNavigateItemAction(new EViewerAction(), OteElementImage.ELEMENT_VIEW, navItemCat, XNavItemCat.SUBCAT));
       return items;
+   }
+
+   @Override
+   public boolean isApplicable() {
+      return true;
    }
 
 }

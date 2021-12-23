@@ -28,8 +28,8 @@ public class HostSelectionAction extends Action implements ActionFactory.IWorkbe
    public static final String ID = "ote.tools.action.selectHostAction";
 
    public HostSelectionAction() {
-	   super("Ote Server Connect", OteClientUiPlugin.getImageDescriptor("OSEE-INF/images/connect.gif"));
-	   setId(ID);
+      super("Ote Server Connect", OteClientUiPlugin.getImageDescriptor("OSEE-INF/images/connect.gif"));
+      setId(ID);
    }
 
    @Override

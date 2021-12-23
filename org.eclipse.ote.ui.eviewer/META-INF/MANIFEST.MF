@@ -19,6 +19,7 @@ Export-Package: org.eclipse.ote.ui.eviewer.tohex,
  org.eclipse.ote.ui.eviewer.view
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.jdk.core.persistence,
+ org.eclipse.osee.ote.ui.navigate,
  org.eclipse.ote.io,
  org.eclipse.ote.message.lookup,
  org.eclipse.ote.ui.message.util

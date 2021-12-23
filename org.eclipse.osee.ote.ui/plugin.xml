@@ -72,4 +72,10 @@
              </enablement>
       </consolePageParticipant>
    </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.plugin.XNavigateItemProvider">
+      <XNavigateItemProvider
+            classname="org.eclipse.osee.ote.ui.navigate.OteNavigatorTopFolders">
+      </XNavigateItemProvider>
+   </extension>
 </plugin>

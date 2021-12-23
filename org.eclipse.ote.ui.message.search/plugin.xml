@@ -16,11 +16,10 @@
          restorable="true">
       </view>
    </extension>
-   <extension point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
-      <XNavigateItem
-         classname="org.eclipse.ote.ui.message.search.internal.MessageNavigateViewItems"
-         category="Messaging"
-         viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
-      </XNavigateItem>
+   <extension
+         point="org.eclipse.osee.framework.ui.plugin.XNavigateItemProvider">
+      <XNavigateItemProvider
+            classname="org.eclipse.ote.ui.message.search.internal.MessageNavigateViewItems">
+      </XNavigateItemProvider>
    </extension>
 </plugin>

@@ -13,11 +13,16 @@
 
 package org.eclipse.osee.ote.ui;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.NavigateItemCollector;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -25,11 +30,11 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class OteNavigateComposite extends XNavigateComposite {
 
-   public OteNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style) {
+   public OteNavigateComposite(NavigateItemCollector navigateViewItems, Composite parent, int style) {
       super(navigateViewItems, parent, style);
    }
 
-   public OteNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style, String filterText) {
+   public OteNavigateComposite(NavigateItemCollector navigateViewItems, Composite parent, int style, String filterText) {
       super(navigateViewItems, parent, style, filterText);
    }
 
@@ -46,6 +51,11 @@ public class OteNavigateComposite extends XNavigateComposite {
             OseeLog.log(OteNavigateComposite.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
+   }
+
+   @Override
+   public Collection<? extends ArtifactId> getCurrUserUserGroups() {
+      return Arrays.asList(CoreUserGroups.Everyone);
    }
 
 }

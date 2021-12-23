@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -21,24 +21,28 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.INavigateItemRefresher;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.NavigateItemCollector;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.ote.ui.OteNavigateComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * Insert the type's description here.
- * 
- * @see ViewPart
+ * XNavigator for the OTE product
  */
-public class OteNavigateView extends ViewPart {
+public class OteNavigateView extends ViewPart implements INavigateItemRefresher {
 
    public static final String VIEW_ID = "org.eclipse.osee.ote.ui.navigate.OteNavigateView";
    private OteNavigateComposite xNavComp;
+   private NavigateItemCollector itemCollector;
 
    @Override
    public void setFocus() {
@@ -47,12 +51,24 @@ public class OteNavigateView extends ViewPart {
       }
    }
 
+   @Override
+   public void refresh(XNavigateItem item) {
+      if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree())
+          && Widgets.isAccessible(xNavComp.getFilteredTree().getViewer().getTree())) {
+
+         xNavComp.getFilteredTree().getViewer().refresh(item);
+      }
+   }
+
    /*
     * @see IWorkbenchPart#createPartControl(Composite)
     */
    @Override
    public void createPartControl(Composite parent) {
-      xNavComp = new OteNavigateComposite(new OteNavigateViewItems(), parent, SWT.NONE);
+      XResultData rd = new XResultData();
+      itemCollector = new NavigateItemCollector(OteXNavigateItemProviders.getProviders(), this, rd);
+
+      xNavComp = new OteNavigateComposite(itemCollector, parent, SWT.NONE);
 
       xNavComp.getFilteredTree().getViewer().setSorter(new OteNavigateViewerSorter());
 
@@ -73,7 +89,8 @@ public class OteNavigateView extends ViewPart {
          public void added(IExtension[] extensions) {
             try {
                refresh();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                OseeLog.log(getClass(), Level.SEVERE, ex);
             }
          }
@@ -82,7 +99,8 @@ public class OteNavigateView extends ViewPart {
          public void added(IExtensionPoint[] extensionPoints) {
             try {
                refresh();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                OseeLog.log(getClass(), Level.SEVERE, ex);
             }
          }
@@ -91,7 +109,8 @@ public class OteNavigateView extends ViewPart {
          public void removed(IExtension[] extensions) {
             try {
                refresh();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                OseeLog.log(getClass(), Level.SEVERE, ex);
             }
          }
@@ -100,7 +119,8 @@ public class OteNavigateView extends ViewPart {
          public void removed(IExtensionPoint[] extensionPoints) {
             try {
                refresh();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                OseeLog.log(getClass(), Level.SEVERE, ex);
             }
          }

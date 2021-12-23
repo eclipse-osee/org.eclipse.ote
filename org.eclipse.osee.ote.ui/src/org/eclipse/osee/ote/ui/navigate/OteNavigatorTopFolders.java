@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,27 +11,29 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.ote.test.manager.navigate;
+package org.eclipse.osee.ote.ui.navigate;
 
 import java.util.List;
+
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerImage;
 
 /**
- * @author Donald G. Dunne
+ * @author Michael P. Masterson
  */
-public class TestManagerNavigateViewItems implements XNavigateItemProvider {
-   public TestManagerNavigateViewItems() {
-      super();
-   }
+public class OteNavigatorTopFolders implements XNavigateItemProvider {
+
+   public static final XNavigateItemFolder CONNECTIONS_FOLDER = new XNavigateItemFolder("Connections",
+                                                                                        XNavItemCat.TOP);
+   public static final XNavigateItemFolder MESSAGING_FOLDER = new XNavigateItemFolder("Messaging",
+                                                                                      XNavItemCat.TOP);
 
    @Override
    public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items) {
-      items.add(new XNavigateItemAction(new TestManagerAction(), TestManagerImage.TEST_MANAGER, XNavItemCat.TOP));
-
+      items.add(CONNECTIONS_FOLDER);
+      items.add(MESSAGING_FOLDER);
       return items;
    }
 

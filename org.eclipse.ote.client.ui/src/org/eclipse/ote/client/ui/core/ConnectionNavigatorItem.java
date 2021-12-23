@@ -13,25 +13,36 @@
 
 package org.eclipse.ote.client.ui.core;
 
-import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
+
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
 import org.eclipse.osee.ote.ui.OteImage;
+import org.eclipse.osee.ote.ui.navigate.OteNavigatorTopFolders;
 import org.eclipse.ote.client.ui.actions.HostSelectionAction;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class ConnectionNavigatorItem implements IXNavigateContainer {
+public class ConnectionNavigatorItem implements XNavigateItemProvider {
+
+   private final XNavItemCat navItemCat = new XNavItemCat(OteNavigatorTopFolders.CONNECTIONS_FOLDER.getName() + ".host");
 
    @Override
-   public List<XNavigateItem> getNavigateItems() {
+   public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items) {
 
-      XNavigateItem item = new XNavigateItemAction(null, new HostSelectionAction(), OteImage.CONNECTED, false);
+      HostSelectionAction hostSelectionAction = new HostSelectionAction();
+      XNavigateItem item = new XNavigateItemAction(hostSelectionAction, OteImage.CONNECTED,
+                                                   navItemCat, XNavItemCat.SUBCAT);
+      items.add(item);
+      return items;
+   }
 
-      return Collections.singletonList(item);
+   @Override
+   public boolean isApplicable() {
+      return true;
    }
 
 }

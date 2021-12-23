@@ -13,32 +13,30 @@
 
 package org.eclipse.osee.ote.ui;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public enum OteImage implements KeyedImage {
-   CHECKOUT("checkout.gif"),
-   CONNECTED("connected_sm.gif"),
-   OTE("welcome_item3.gif");
-
-   private final String fileName;
+public class OteImage extends OseeImage {
+   private static final Long ENUM_ID = 8675309L;
+   public static OteImage CHECKOUT = new OteImage("checkout.gif");
+   public static OteImage CONNECTED = new OteImage("connected_sm.gif");
+   public static OteImage OTE = new OteImage("welcome_item3.gif");
 
    private OteImage(String fileName) {
-      this.fileName = fileName;
+      super(fileName);
    }
 
    @Override
-   public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(TestCoreGuiPlugin.PLUGIN_ID, fileName);
+   public String getPluginId() {
+      return TestCoreGuiPlugin.PLUGIN_ID;
    }
 
    @Override
-   public String getImageKey() {
-      return TestCoreGuiPlugin.PLUGIN_ID + ".images." + fileName;
+   public Long getTypeId() {
+      return ENUM_ID;
    }
+
 }

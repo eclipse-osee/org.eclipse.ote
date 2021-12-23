@@ -16,11 +16,9 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
-      <XNavigateItem
-            category="Messaging"
-            classname="org.eclipse.ote.ui.mux.actions.MuxViewNavigatorItem"
-            viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
-      </XNavigateItem>
+         point="org.eclipse.osee.framework.ui.plugin.XNavigateItemProvider">
+      <XNavigateItemProvider
+            classname="org.eclipse.ote.ui.mux.actions.MuxViewNavigatorItem">
+      </XNavigateItemProvider>
    </extension>
 </plugin>

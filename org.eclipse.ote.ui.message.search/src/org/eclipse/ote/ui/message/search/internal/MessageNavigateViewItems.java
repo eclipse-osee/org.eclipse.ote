@@ -13,20 +13,27 @@
 
 package org.eclipse.ote.ui.message.search.internal;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
+
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemProvider;
+import org.eclipse.osee.ote.ui.navigate.OteNavigatorTopFolders;
 import org.eclipse.ote.ui.message.search.OteMessageViewImage;
 
-public class MessageNavigateViewItems implements IXNavigateContainer {
+public class MessageNavigateViewItems implements XNavigateItemProvider {
+   private final XNavItemCat navItemCat = new XNavItemCat(OteNavigatorTopFolders.MESSAGING_FOLDER.getName() + ".message_search");
 
    @Override
-   public List<XNavigateItem> getNavigateItems() {
-      List<XNavigateItem> items = new ArrayList<XNavigateItem>();
-      items.add(new XNavigateItemAction(null, new MessageSearchViewAction(), OteMessageViewImage.GLASSES, false));
+   public List<XNavigateItem> getNavigateItems(List<XNavigateItem> items) {
+      items.add(new XNavigateItemAction(new MessageSearchViewAction(), OteMessageViewImage.GLASSES, navItemCat, XNavItemCat.SUBCAT));
       return items;
+   }
+
+   @Override
+   public boolean isApplicable() {
+      return true;
    }
 
 }
