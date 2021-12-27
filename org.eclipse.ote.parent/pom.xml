@@ -58,8 +58,8 @@
 
 		<build-alias>-DEV</build-alias>
 
-		<tycho-version>1.0.0</tycho-version>
-		<tycho-extras-version>1.0.0</tycho-extras-version>
+		<tycho-version>1.7.0</tycho-version>
+		<tycho-extras-version>1.7.0</tycho-extras-version>
 
 		<maven-antrun-version>1.6</maven-antrun-version>
 		<ant-contrib-version>1.0b3</ant-contrib-version>
@@ -89,13 +89,11 @@
 		<platform-version-name>neon</platform-version-name>
 		<!-- <orbit-version>R20150124073747</orbit-version> -->
 		<orbit-version>R20160520211859</orbit-version>
-		<xtext-version>2.0.0</xtext-version>
 		<subversive-version>1.0</subversive-version>
 		<polarion-version>3.0</polarion-version>
 
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
-		<itemis-site>http://download.itemis.com/updates/releases/${xtext-version}</itemis-site>
 
 		<osee-create-help-docs>false</osee-create-help-docs>
 
@@ -145,16 +143,6 @@
 							<arch>x86_64</arch>
 						</environment>
 						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
 							<os>linux</os>
 							<ws>gtk</ws>
 							<arch>x86_64</arch>
@@ -181,16 +169,6 @@
 							<os>win32</os>
 							<ws>win32</ws>
 							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86</arch>
 						</environment>
 						<environment>
 							<os>linux</os>
@@ -231,7 +209,6 @@
 					<excludes>
 						<plugin id="sourcefeature.bundle.nosource" />
 						<feature id="sourcefeature.feature.nosource" />
-						<feature id="org.eclipse.xtext.ui" />
 						<plugin id="org.eclipse.zest.core" />
 						<plugin id="org.eclipse.zest.layouts" />
 						

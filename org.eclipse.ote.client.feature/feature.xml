@@ -15,9 +15,7 @@
    <license url="http://www.example.com/license">
       [Enter License Description here.]
    </license>
-   <includes
-         id="org.eclipse.xtext.ui"
-         version="0.0.0"/>
+
    <plugin
          id="org.eclipse.ote.client"
          download-size="0"
@@ -100,21 +98,20 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>         
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.zest.layouts"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>        
-         
-         
+         unpack="false"/>
+
    <plugin
          id="org.mockito"
          download-size="0"
          install-size="0"
          version="0.0.0"
-	 		unpack="false"/> 
+         unpack="false"/>
 
 </feature>

@@ -15,9 +15,7 @@
 		<property name="defaultWorkspaceName" value="workspace" />
 		<property name="additionalExecIniArgs" value=" " />
 
-		<updateProduct os="win32" ws="win32" arch="x86" jreVersion="1.8.0_45" />
 		<updateProduct os="win32" ws="win32" arch="x86_64" jreVersion="1.8.0_45" />
-		<updateProduct os="linux" ws="gtk" arch="x86" jreVersion="1.8.0_45" />
 		<updateProduct os="linux" ws="gtk" arch="x86_64" jreVersion="1.8.0_45" />
 		<updateProduct os="macosx" ws="cocoa" arch="x86_64" jreVersion="_" />
 

@@ -3,9 +3,7 @@
 	<target name="iniWorkaround">
 
 		<property name="linux_x86_64" value="target/products/ote.ide/linux/gtk/x86_64" />
-		<property name="linux_x86" value="target/products/ote.ide/linux/gtk/x86" />
 		<property name="win_x86_64" value="target/products/ote.ide/win32/win32/x86_64" />
-		<property name="win_x86" value="target/products/ote.ide/win32/win32/x86" />
 
 		<!-- write out some version files -->
 		<tstamp>
@@ -13,9 +11,7 @@
 		</tstamp>
 		<echo file="${basedir}/target/build_date.txt" append="false" message="${TODAY}" />
 		<copy verbose="true" file="${basedir}/target/build_date.txt" todir="${linux_x86_64}" overwrite="true" />
-		<copy verbose="true" file="${basedir}/target/build_date.txt" todir="${linux_x86}" overwrite="true" />
 		<copy verbose="true" file="${basedir}/target/build_date.txt" todir="${win_x86_64}" overwrite="true" />
-		<copy verbose="true" file="${basedir}/target/build_date.txt" todir="${win_x86}" overwrite="true" />
 
 		<!-- do the post install -->
 

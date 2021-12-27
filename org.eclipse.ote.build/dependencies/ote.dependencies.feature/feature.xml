@@ -425,6 +425,14 @@
          version="0.0.0"/>
 
    <includes
+         id="org.eclipse.ecf.filetransfer.httpclient45.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.ecf.filetransfer.httpclient45.feature.source"
+         version="0.0.0"/>
+
+   <includes
          id="org.eclipse.ecf.filetransfer.ssl.feature"
          version="0.0.0"/>
 
@@ -454,6 +462,8 @@
 
    <requires>
       <import plugin="org.junit" version="4.12.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.batik.gvt" version="1.9.1" match="compatible"/>
+      <import plugin="org.apache.batik.gvt" version="1.13.0" match="compatible"/>
    </requires>
 
    <plugin
@@ -829,6 +839,13 @@
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.nebula.cwt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.osgi"
          download-size="0"
          install-size="0"
@@ -983,10 +1000,185 @@
          unpack="false"/>
 
    <plugin
+         id="org.apache.batik.anim"
+         download-size="0"
+         install-size="0"
+         version="1.13.0.v20201130-1756"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.anim"
+         download-size="0"
+         install-size="0"
+         version="1.9.1.v20181015-1528"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.awt.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.bridge"
+         download-size="0"
+         install-size="0"
+         version="1.9.1.v20181015-1528"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.bridge"
+         download-size="0"
+         install-size="0"
+         version="1.13.0.v20201124-1840"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.codec"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.constants"
+         download-size="0"
+         install-size="0"
+         version="1.9.1.v20180227-1645"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.constants"
+         download-size="0"
+         install-size="0"
+         version="1.13.0.v20200622-2037"
+         unpack="false"/>
+
+   <plugin
          id="org.apache.batik.css"
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.dom"
+         download-size="0"
+         install-size="0"
+         version="1.9.1.v20181015-1528"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.dom"
+         download-size="0"
+         install-size="0"
+         version="1.13.0.v20201124-1839"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.dom.svg"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.ext.awt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.extension"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.gvt"
+         download-size="0"
+         install-size="0"
+         version="1.13.0.v20201124-1835"
+         unpack="false"/>
+         
+   <plugin
+         id="org.apache.batik.gvt"
+         download-size="0"
+         install-size="0"
+         version="1.9.1.v20190730-1743"
+         unpack="false"/>
+         
+   <plugin
+         id="org.apache.batik.i18n"
+         download-size="0"
+         install-size="0"
+         version="1.13.0.v20200622-2037"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.i18n"
+         download-size="0"
+         install-size="0"
+         version="1.9.1.v20180227-1645"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.parser"
+         download-size="0"
+         install-size="0"
+         version="1.9.1.v20190730-1743"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.parser"
+         download-size="0"
+         install-size="0"
+         version="1.13.0.v20201124-1833"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.pdf"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.script"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.svggen"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.transcoder"
+         download-size="0"
+         install-size="0"
+         version="1.13.0.v20201124-1841"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.transcoder"
+         download-size="0"
+         install-size="0"
+         version="1.9.1.v20181015-1528"
+         unpack="false"/>
+         
+   <plugin
+         id="org.apache.batik.util"
+         download-size="0"
+         install-size="0"
+         version="1.9.1.v20180703-1553"
          unpack="false"/>
 
    <plugin
@@ -997,10 +1189,17 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.batik.util"
+         id="org.apache.batik.xml"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.13.0.v20201124-1831"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.xml"
+         download-size="0"
+         install-size="0"
+         version="1.9.1.v20190730-1743"
          unpack="false"/>
 
    <plugin
@@ -1068,6 +1267,13 @@
 
    <plugin
          id="org.apache.xml.resolver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.xalan"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1508,69 +1714,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.batik.ext.awt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.transcoder"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.bridge"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.dom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.dom.svg"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.svggen"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.parser"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.xml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.pdf"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.wst.common.uriresolver"
          download-size="0"
          install-size="0"
@@ -1828,5 +1971,19 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.jst.j2ee"
+         download-size="0"
+         install-size="0"
+         version="1.2.301.v201903222025"
+         unpack="false"/>
+                  
+   <plugin
+         id="org.eclipse.jst.j2ee.core"
+         download-size="0"
+         install-size="0"
+         version="1.4.1.v201903222024"
+         unpack="false"/>                  
 
 </feature>
