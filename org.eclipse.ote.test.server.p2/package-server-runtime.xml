@@ -177,12 +177,6 @@ java ^
 						<then>
 							<echo file="@{configPath}/config.ini" message="${jarFilename}@start" append="true" />
 						</then>
-						<elseif>
-							<equals arg1="${projectName}" arg2="org.apache.cxf.core.config" />
-							<then>
-								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
-							</then>
-						</elseif>
 
 						<elseif>
 							<equals arg1="${projectName}" arg2="org.eclipse.osee.ote.io" />

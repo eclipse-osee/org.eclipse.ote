@@ -52,12 +52,6 @@
       <plugin id="org.apache.aries.proxy"/>
       <plugin id="org.apache.aries.util"/>
       <plugin id="org.apache.commons.codec"/>
-      <plugin id="org.apache.cxf.core"/>
-      <plugin id="org.apache.cxf.core.config" fragment="true"/>
-      <plugin id="org.apache.cxf.jaxrs.client"/>
-      <plugin id="org.apache.cxf.jaxrs.frontend"/>
-      <plugin id="org.apache.cxf.rs.security.oauth2"/>
-      <plugin id="org.apache.cxf.transport.http"/>
       <plugin id="org.apache.felix.gogo.command"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
       <plugin id="org.apache.felix.gogo.shell"/>
@@ -83,7 +77,6 @@
       <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.osee.framework.jdk.core"/>
       <plugin id="org.eclipse.osee.jaxrs"/>
-      <plugin id="org.eclipse.osee.jaxrs.client"/>
       <plugin id="org.eclipse.osee.logback.config" fragment="true"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
