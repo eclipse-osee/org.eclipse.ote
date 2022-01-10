@@ -12,7 +12,7 @@
 	<properties>
 		<build-alias>-DEV</build-alias>
 		<tycho-version>1.7.0</tycho-version>
-		<tychoExtrasVersion>1.7.0</tychoExtrasVersion>
+		<tycho-extras-version>1.7.0</tycho-extras-version>
 		<platform-version-name>2020-06/202006171000</platform-version-name>
 		<orbit-version>R20201130205003</orbit-version>
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
@@ -334,7 +334,7 @@
 		<plugin>
 			<groupId>org.eclipse.tycho.extras</groupId>
 			<artifactId>tycho-source-feature-plugin</artifactId>
-			<version>${tychoExtrasVersion}</version>
+			<version>${tycho-extras-version}</version>
 			<executions>
 				<execution>
 					<id>source-feature</id>

@@ -2,38 +2,19 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
+	
+	   <parent>
+      <groupId>org.eclipse.ote.build</groupId>
+      <artifactId>core</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <relativePath>../org.eclipse.ote.build/maven/core</relativePath>
+   </parent>
 
 	<groupId>org.eclipse.ote</groupId>
 	<artifactId>org.eclipse.ote.mavenbuild</artifactId>
 	<packaging>pom</packaging>
 	<name>Eclipse OTE Maven Repos Parent</name>
 	<version>0.11.0-SNAPSHOT</version>
-
-	<properties>
-		<build-alias>-DEV</build-alias>
-		<tycho-version>1.0.0</tycho-version>
-		<tychoExtrasVersion>1.0.0</tychoExtrasVersion>
-		<platform-version-name>kepler</platform-version-name>
-		<orbit-version>R20130517111416</orbit-version>
-		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
-		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
-		<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
-		
-		<maven-antrun-version>1.6</maven-antrun-version>
-		<ant-contrib-version>1.0b3</ant-contrib-version>
-		<jsch-version>0.1.42</jsch-version>
-		<ant-jsch-version>1.8.2</ant-jsch-version>
-		<ant-commons-net-version>1.7.0</ant-commons-net-version>
-		<commons-net-version>1.4.1</commons-net-version>
-		<jacoco-version>0.5.3.201107060350</jacoco-version>
-		<findbugs-version>2.5.2</findbugs-version>
-		<pmd-version>3.0</pmd-version>
-		<checkstyle-version>2.6</checkstyle-version>
-		<javadoc-version>2.8</javadoc-version>
-		<build-helper-maven-plugin-version>1.7</build-helper-maven-plugin-version>
-		<maven-resources-version>2.5</maven-resources-version>
-		<gitRepoRoot>file:../../../</gitRepoRoot>		
-	</properties>
 
 	<profiles>
 	    <profile>
@@ -339,7 +320,7 @@
 		<plugin>
 			<groupId>org.eclipse.tycho.extras</groupId>
 			<artifactId>tycho-source-feature-plugin</artifactId>
-			<version>${tychoExtrasVersion}</version>
+			<version>${tycho-extras-version}</version>
 			<executions>
 				<execution>
 					<id>source-feature</id>
