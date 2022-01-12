@@ -254,17 +254,17 @@
 
 	<profiles>
 		<profile>
-			<id>osee.base.p2</id>
+			<id>ote.dependencies.p2</id>
 			<activation>
 				<property>
-					<name>osee.base.p2</name>
+					<name>ote.dependencies.p2</name>
 				</property>
 			</activation>
 			<repositories>
 				<repository>
-					<id>osee.base.p2</id>
+					<id>ote.dependencies.p2</id>
 					<layout>p2</layout>
-					<url>${osee.base.p2}</url>
+					<url>${ote.dependencies.p2}</url>
 				</repository>
 			</repositories>
 		</profile>   
