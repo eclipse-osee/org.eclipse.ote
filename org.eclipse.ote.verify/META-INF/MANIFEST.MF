@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Test Environment Verify
 Bundle-SymbolicName: org.eclipse.ote.verify
-Bundle-Version: 0.11.0.qualifier
+Bundle-Version: 0.26.3.qualifier
 Import-Package: org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.ote.core.environment,
  org.eclipse.osee.ote.core.environment.interfaces,

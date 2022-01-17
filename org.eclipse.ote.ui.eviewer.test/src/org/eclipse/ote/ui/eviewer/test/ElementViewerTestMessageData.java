@@ -6,7 +6,9 @@ import org.eclipse.osee.ote.message.data.MessageData;
 public class ElementViewerTestMessageData extends MessageData{
 
    public ElementViewerTestMessageData(byte[] data, int dataByteSize, int offset) {
-      super(data, dataByteSize, offset);
+      super("EL_VIEWER", dataByteSize, offset, null);
+
+      this.getMem().setData(data);
    }
 
    @Override

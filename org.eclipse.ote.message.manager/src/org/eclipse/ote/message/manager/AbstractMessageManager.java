@@ -214,7 +214,7 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
       // instantiate the message
       CLASSTYPE message = createMessage(messageClass);
 
-      Namespace namespace = nsMapper.getNamespace(message.getMemType());
+      Namespace namespace = nsMapper.getNamespace(message.getDefaultMessageData().getLogicalIoType());
 
       // create readers or writers for each data source
       MessageData data = message.getDefaultMessageData();
@@ -224,8 +224,7 @@ public abstract class AbstractMessageManager<D extends MessageData, M extends Me
          OTEWriterImpl oteWriter = new OTEWriterImpl(newTopic, uutPublisher, true, data, uutPublisher, this.ddsListener, this, data, namespace.toString());
          data.setWriter(oteWriter);
       } else {
-         data.setReader(createDataReader(data.getTypeSupport(), data, namespace, data.getTopicName(),
-               data.getTypeName()));
+         data.setReader(createDataReader(data.getTypeSupport(), data, namespace, data.getTopicName(), data.getTypeName()));
 
          insertNewMessageDataIntoLookup(namespace, data);
       }

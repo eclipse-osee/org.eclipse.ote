@@ -43,7 +43,7 @@ public class RunTestArguments {
    private Double hours;
    private boolean abortOnFirstFail = false, safetyOnly = false;
 
-   private String[] appArgs;
+   private final String[] appArgs;
 
    public RunTestArguments(String[] appArgs) {
       this.appArgs = appArgs;
@@ -158,7 +158,6 @@ public class RunTestArguments {
       sb.append(TAB).append(
          "-t  [REQUIRED] tests to run.  Can either be a csv file or a comma seperated list of tests.").append(NEWLINE);
       sb.append(TAB).append("-l  length to run in hours (accepts doubles).").append(NEWLINE);
-      sb.append(TAB).append("-cndRate  rate to run cnd simulated").append(NEWLINE);
       sb.append(TAB).append("-safetyOnly <true|false> When true only runs scripts with @Safety annotation").append(
          NEWLINE);
       sb.append(TAB).append("-abortOnFirstFail <true|false> When true aborts the test after first failure").append(

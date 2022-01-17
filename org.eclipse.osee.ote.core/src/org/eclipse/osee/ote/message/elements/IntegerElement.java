@@ -22,7 +22,6 @@ import org.eclipse.osee.ote.message.elements.nonmapping.NonMappingIntegerElement
 /**
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
- * @deprecated Please use {@link UnsignedInteger32Element} instead
  */
 public class IntegerElement extends UnsignedInteger32Element {
 

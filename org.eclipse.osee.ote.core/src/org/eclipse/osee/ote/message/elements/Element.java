@@ -135,7 +135,7 @@ public abstract class Element implements ITimeout {
    }
 
    public DataType getType() {
-      return messageData.getType();
+      return messageData.getPhysicalIoType();
    }
 
    /**

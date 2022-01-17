@@ -381,7 +381,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
    }
 
    protected void addMessageDataSource(MessageData data) {
-      final DataType type = data.getType();
+      final DataType type = data.getPhysicalIoType();
       final ArrayList<MessageData> list;
       if (!memToDataMap.containsKey(type)) {
          list = new ArrayList<>();
@@ -1199,7 +1199,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
       checkState();
       this.defaultMessageData = defaultMessageData;
       addMessageDataSource(defaultMessageData);
-      addMessageTypeAssociation(defaultMessageData.getType(), this);
+      addMessageTypeAssociation(defaultMessageData.getPhysicalIoType(), this);
    }
 
    public boolean isWriter() {

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE Client Plug-in
 Bundle-SymbolicName: org.eclipse.ote.client;singleton:=true
-Bundle-Version: 0.11.0.qualifier
+Bundle-Version: 0.26.3.qualifier
 Bundle-Activator: org.eclipse.ote.client.Activator
 Bundle-Vendor: The Boeing Company
 Import-Package: org.eclipse.core.resources,

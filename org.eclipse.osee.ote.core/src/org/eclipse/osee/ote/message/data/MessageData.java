@@ -69,7 +69,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    private DataWriter writer;
    private DataReader reader;
-   private DataSample myDataSample;
+   private final DataSample myDataSample;
 
    private final MemoryResource mem;
    private final String typeName;
@@ -77,68 +77,69 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    private final CopyOnWriteNoIteratorList<Message> messages = new CopyOnWriteNoIteratorList<>(Message.class);
    private final CopyOnWriteNoIteratorList<IMessageSendListener> messageSendListeners = new CopyOnWriteNoIteratorList<>(IMessageSendListener.class);
    private final int defaultDataByteSize;
-   private final DataType memType;
+   private final DataType physicalIoType;
+   private final DataType logicalIoType;
+
    private final boolean isEnabled = true;
    private long activityCount = 0;
    private long sentCount;
    private int currentLength;
    private boolean isScheduled = false;
    private long time = -1;
-   private Map<Class<?>, Pair<Message, MemoryResource>> overrideMessages = new HashMap<Class<?>, Pair<Message, MemoryResource>>();
+   private final Map<Class<?>, Pair<Message, MemoryResource>> overrideMessages = new HashMap<Class<?>, Pair<Message, MemoryResource>>();
 
-   public MessageData(String typeName, String name, int dataByteSize, int offset, DataType memType) {
-      mem = new MemoryResource(new byte[dataByteSize], offset, dataByteSize - offset);
-      myDataSample = new DataSample(this);
-      this.typeName = typeName;
-      this.name = name;
-      this.defaultDataByteSize = dataByteSize;
-      this.currentLength = dataByteSize;
-      this.memType = memType;
+   public MessageData(String typeName, String name, int dataByteSize, int offset,
+         DataType physicalIoType) {
+      this(typeName, name, dataByteSize, offset, physicalIoType, physicalIoType);
    }
 
-   public MessageData(String typeName, String name, MemoryResource mem, DataType memType) {
+   public MessageData(String typeName, String name, int dataByteSize, int offset,
+         DataType physicalIoType, DataType logicalIoType) {
+      this(typeName, name,
+           new MemoryResource(new byte[dataByteSize], offset, dataByteSize - offset),
+           physicalIoType, logicalIoType);
+   }
+
+   public MessageData(String typeName, String name, MemoryResource mem, DataType physicalIoType,
+         DataType logicalIoType) {
       this.mem = mem;
       myDataSample = new DataSample(this);
       this.typeName = typeName;
       this.name = name;
-      this.defaultDataByteSize = mem.getLength();
-      this.currentLength = mem.getLength();
-      this.memType = memType;
+      this.defaultDataByteSize = mem.getLength() + mem.getOffset();
+      this.currentLength = defaultDataByteSize;
+      this.physicalIoType = physicalIoType;
+      this.logicalIoType = logicalIoType;
       GCHelper.getGCHelper().addRefWatch(this);
    }
 
-   public MessageData(String name, int dataByteSize, int offset, DataType memType) {
-      this(name, name, dataByteSize, offset, memType);
-   }
-
-   public MessageData(byte[] data, int dataByteSize, int offset) {
-      this.mem = new MemoryResource(data, offset, dataByteSize - offset);
-      this.typeName = "";
-      this.name = "";
-      this.defaultDataByteSize = dataByteSize;
-      this.currentLength = dataByteSize;
-      this.memType = null;
-      GCHelper.getGCHelper().addRefWatch(this);
-   }
-
-   public MessageData(MemoryResource memoryResource) {
-      this("", memoryResource);
-   }
-
-   public MessageData(String name, MemoryResource memoryResource) {
-      this.mem = memoryResource;
-      this.typeName = "";
-      this.name = name;
-      this.defaultDataByteSize = memoryResource.getLength();
-      this.currentLength = memoryResource.getLength();
-      this.memType = null;
-      GCHelper.getGCHelper().addRefWatch(this);
+   public MessageData(String name, int dataByteSize, int offset, DataType physicalIoType) {
+      this(name, name, dataByteSize, offset, physicalIoType);
    }
 
    public abstract IMessageHeader getMsgHeader();
 
-   public DataType getType() {
-      return memType;
+   /**
+    * Represents the physical medium this data goes out on. Multiple Logical IO Types may flow into
+    * a single Physical IO Type. For instance you may have two ethernet boxes and have their own
+    * unique logical protocols but they still go out over physical ethernet.
+    * 
+    * @return The physical IO type for this message data
+    */
+   public DataType getPhysicalIoType() {
+      return physicalIoType;
+   }
+
+   /**
+    * Logical IO type represents the lowest level protocol going out over a physical medium.
+    * Multiple Logical IO Types may flow into a single Physical IO Type. For instance you may have
+    * two ethernet boxes and have their own unique logical protocols but they still go out over
+    * physical ethernet.
+    * 
+    * @return The Logical IO Type for this message data
+    */
+   public DataType getLogicalIoType() {
+      return logicalIoType;
    }
 
    /**
@@ -259,18 +260,18 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
     * @throws MessageSystemException 
     */
    public void notifyListeners() throws MessageSystemException {
-      final DataType memType = getType();
+      final DataType physicalIoType = getPhysicalIoType();
       Message[] ref = messages.get();
       for (int i = 0; i < ref.length; i++) {
          Message message = ref[i];
          try {
             if (!message.isDestroyed()) {
-               message.notifyListeners(this, memType);
+               message.notifyListeners(this, physicalIoType);
             }
          } catch (Throwable t) {
             final String msg =
-                  String.format("Problem during listener notification for message %s. Data=%s, MemType=%s",
-                        message.getName(), this.getName(), this.getType());
+                  String.format("Problem during listener notification for message %s. Data=%s, physicalIoType=%s",
+                        message.getName(), this.getName(), this.getPhysicalIoType());
             OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, msg, t);
          }
       }

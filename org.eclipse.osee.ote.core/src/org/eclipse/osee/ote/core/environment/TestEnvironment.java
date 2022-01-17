@@ -109,7 +109,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       this.associatedObjectListeners = new HashMap<>();
       this.associatedObjects = new HashMap<>(100);
       this.batchMode = OteProperties.isOseeOteInBatchModeEnabled();
-
+      
    }
 
    public void init(IServiceConnector connector) {
@@ -592,25 +592,25 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    public void prompt() {
       getRunManager().getCurrentScript().prompt();
    }
-   
+
    public void prompt(String message) {
       getRunManager().getCurrentScript().prompt(new TestPrompt(message, PromptResponseType.NONE));
    }
-   
+
    public void promptPassFail(String message) {
       getRunManager().getCurrentScript().promptPassFail(message);
    }
-   
+
    public void promptPause(String message) {
       getRunManager().getCurrentScript().promptPause(message);
    }
-   
+
    public void promptStep(String message) {
       getRunManager().getCurrentScript().prompt(new TestPrompt(message, PromptResponseType.SCRIPT_STEP));
    }
-   
+
    public String promptInput(String message) {
       return getRunManager().getCurrentScript().prompt(new TestPrompt(message, PromptResponseType.USER_INPUT));
    }
-   
+
 }

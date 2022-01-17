@@ -6,7 +6,7 @@
 	<parent>
       <groupId>org.eclipse.ote.build</groupId>
       <artifactId>core</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>0.26.3-SNAPSHOT</version>
       <relativePath>../org.eclipse.ote.build/maven/core</relativePath>
    </parent>
    
@@ -14,7 +14,7 @@
 	<artifactId>org.eclipse.ote.test.server.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>OTE TEST SERVER - Parent (Incubation)</name>
-	<version>0.26.0-SNAPSHOT</version>
+	<version>0.26.3-SNAPSHOT</version>
 
 	<modules>
 		<module>../org.eclipse.ote.test.server.external.feature</module>

@@ -22,6 +22,7 @@ public class OTEMasterServerImpl implements OTEMasterServer {
 
    public void bindJaxRsApi(JaxRsApi jaxRsApi) {
       this.jaxRsApi = jaxRsApi;
+      jaxRsApi.createClientFactory(null);
    }
 
    public void start(Map<String, Object> props) {

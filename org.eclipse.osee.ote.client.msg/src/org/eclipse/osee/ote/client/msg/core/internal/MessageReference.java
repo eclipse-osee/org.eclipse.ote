@@ -33,7 +33,7 @@ public class MessageReference {
    }
 
    public MessageReference(Message msg) {
-      this.type = msg.getDefaultMessageData().getType();
+      this.type = msg.getDefaultMessageData().getPhysicalIoType();
       this.mode = MessageMode.READER;
       this.msgClassName = msg.getMessageName();
    }

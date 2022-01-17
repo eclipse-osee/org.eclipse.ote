@@ -16,6 +16,7 @@ package org.eclipse.osee.ote.ui.output.editors;
 import java.io.File;
 import java.io.InputStream;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -533,11 +534,11 @@ public class ProcessOutfileOverview implements IExceptionableRunnable {
          @Override
          public void onEndElement(Object obj) {
             uutLog = uutLog.getParent();
-
          }
 
          @Override
          public void onStartElement(Object obj) {
+            lateLoadUutLogObject();
             SummaryData data = (SummaryData) obj;
             IOutfileTreeItem item = new BaseOutfileTreeItem(OutfileRowType.summary, "Summary",
                String.format("node id [%s]", data.getNodeId()),
@@ -548,7 +549,6 @@ public class ProcessOutfileOverview implements IExceptionableRunnable {
             uutLog.getChildren().add(item);
             item.setParent(uutLog);
             uutLog = item;
-
          }
 
       });
@@ -568,7 +568,7 @@ public class ProcessOutfileOverview implements IExceptionableRunnable {
 
          @Override
          public void onStartElement(Object obj) {
-
+            lateLoadUutLogObject();
             currentErrorEntryData = (UutErrorEntryData) obj;
 
          }
@@ -730,6 +730,13 @@ public class ProcessOutfileOverview implements IExceptionableRunnable {
 
       OseeLog.logf(Activator.class, Level.INFO, "It took %d ms total to process %s.", all, input.getName());
       return Status.OK_STATUS;
+   }
+
+   protected void lateLoadUutLogObject() {
+      if (this.uutLog == null) {
+         this.uutLog = new BaseOutfileTreeItem(OutfileRowType.unknown, "", "UUT Log Info", "",
+                                               null);
+      }
    }
 
    private String spaceProcessing(String expected) {

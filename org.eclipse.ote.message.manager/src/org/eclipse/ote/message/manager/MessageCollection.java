@@ -42,10 +42,9 @@ import org.eclipse.osee.ote.message.interfaces.Namespace;
 import org.eclipse.osee.ote.messaging.dds.service.TopicDescription;
 
 /**
- * Keeps both the collection of readers and writers but also handles the periodic publish tasks for
- * each periodic message writer. This class will create a task for each requested rate and add all
- * messages to that task that matches the rate. It will also switch tasks for a message when the
- * rate for that message is changed.
+ * Keeps both the collection of readers and writers but also handles the periodic publish tasks for each periodic
+ * message writer. This class will create a task for each requested rate and add all messages to that task that matches
+ * the rate. It will also switch tasks for a message when the rate for that message is changed.
  *
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
@@ -63,8 +62,8 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
    private final PeriodicPublishMap periodicPublicationTasks;
 
    private final ConsoleCommandTracker cmdTracker;
-   private List<MessageWriterSetupHandler> messageSetupHandlers;
-   private List<MessageRemoveHandler> messageRemoveHandlers;
+   private final List<MessageWriterSetupHandler> messageSetupHandlers;
+   private final List<MessageRemoveHandler> messageRemoveHandlers;
    private NamespaceMapper namespaceMapper;
    private IMessageManager manager;
 
@@ -83,7 +82,6 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
       cmdTracker.open(true);
    }
 
-   @SuppressWarnings("deprecation")
    public void init(TestEnvironmentInterface testEnv, NamespaceMapper nameSpaceMapper) {
       this.testEnv = new WeakReference<TestEnvironmentInterface>(testEnv);
       this.namespaceMapper = nameSpaceMapper;
@@ -97,9 +95,8 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
    }
 
    /**
-    * This method returns an instance of the specified class. It will return null if an instance
-    * does not already exist. If a message exists it also adds the message to the list of messages
-    * to be zeroized after a script completes.
+    * This method returns an instance of the specified class. It will return null if an instance does not already exist.
+    * If a message exists it also adds the message to the list of messages to be zeroized after a script completes.
     */
    public U get(Class<? extends U> clazz, Namespace namespace, boolean writer) {
       checkState();
@@ -143,12 +140,15 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
 
    public void add(Class<? extends U> clazz, Namespace namespace, boolean writer, U message) {
       checkState();
-      if (namespace == null)
+      if (namespace == null) {
          throw new IllegalArgumentException("the argument 'namespace' can not be null.");
-      if (clazz == null)
+      }
+      if (clazz == null) {
          throw new IllegalArgumentException("the argument 'clazz' can not be null.");
-      if (message == null)
+      }
+      if (message == null) {
          throw new IllegalArgumentException("the argument 'message' can not be null.");
+      }
 
       if (writer) {
          synchronized (messageWriters) {
@@ -156,8 +156,7 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
                messageWriters.put(namespace, clazz, message);
             } else {
                throw new TestException(String.format("Message [%s] exists more than once in namespace[%s]",
-                                                     clazz.getName(), namespace.toString()),
-                                       Level.SEVERE);
+                  clazz.getName(), namespace.toString()), Level.SEVERE);
             }
          }
       } else {
@@ -166,8 +165,7 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
                messageReaders.put(namespace, clazz, message);
             } else {
                throw new TestException(String.format("Message [%s] exists more than once in namespace[%s]",
-                                                     clazz.getName(), namespace.toString()),
-                                       Level.SEVERE);
+                  clazz.getName(), namespace.toString()), Level.SEVERE);
             }
             addMessageDataReader(message);
          }
@@ -208,9 +206,8 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
       if (o.size() == 1) {
          return o.get(0);
       } else if (o.size() > 1) {
-         throw new TestException(String.format("Message [%s] exists in more than one namespace.",
-                                               clazz.getName()),
-                                 Level.SEVERE);
+         throw new TestException(String.format("Message [%s] exists in more than one namespace.", clazz.getName()),
+            Level.SEVERE);
       }
       return null;
    }
@@ -232,8 +229,8 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
    private void addMessageToRateTask(Message message, double newHzRate) {
       PeriodicPublishTask task = null;
       if (newHzRate == 0) {
-         log(Level.SEVERE, "Trying to schedule a message at 0Hz. [" + message.getMessageName()
-                           + ", default Hz='" + message.getRate() + "']");
+         log(Level.SEVERE,
+            "Trying to schedule a message at 0Hz. [" + message.getMessageName() + ", default Hz='" + message.getRate() + "']");
       } else {
          if (periodicPublicationTasks.containsKey(newHzRate, 0)) {
             task = periodicPublicationTasks.get(newHzRate, 0);
@@ -256,9 +253,9 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
    }
 
    /**
-    * This method iterates through the list of periodic publish tasks and adds them to the
-    * environment task scheduler. This method must be called before a script begins to run so that
-    * all registered messages will be sent by the environment at the appropriate time.
+    * This method iterates through the list of periodic publish tasks and adds them to the environment task scheduler.
+    * This method must be called before a script begins to run so that all registered messages will be sent by the
+    * environment at the appropriate time.
     */
    public void startPeriodicMessages() {
       checkState();
@@ -323,8 +320,7 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
       Namespace namespace = namespaceMapper.getNamespace(type);
       synchronized (messageWriters) {
          if (namespace == null) {
-            OseeLog.log(MessageCollection.class, Level.FINEST,
-                        String.format("namespace for %s is null", type.name()));
+            OseeLog.log(MessageCollection.class, Level.FINEST, String.format("namespace for %s is null", type.name()));
          }
          Collection<U> currentList = messageWriters.get(namespace);
          if (currentList != null) {
@@ -340,8 +336,7 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
       Namespace namespace = namespaceMapper.getNamespace(type);
       synchronized (messageReaders) {
          if (namespace == null) {
-            OseeLog.log(MessageCollection.class, Level.FINEST,
-                        String.format("namespace for %s is null", type.name()));
+            OseeLog.log(MessageCollection.class, Level.FINEST, String.format("namespace for %s is null", type.name()));
          }
          Collection<U> currentList = messageReaders.get(namespace);
          if (currentList != null) {
@@ -377,8 +372,7 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
       periodicPublicationTasks.clear();
    }
 
-   public <CLASSTYPE extends U> void onMessageCreated(Class<CLASSTYPE> messageClass,
-         IMessageRequestor requestor, boolean writer, CLASSTYPE message, Namespace namespace) {
+   public <CLASSTYPE extends U> void onMessageCreated(Class<CLASSTYPE> messageClass, IMessageRequestor requestor, boolean writer, CLASSTYPE message, Namespace namespace) {
       if (requestor == null) {
          return;
       }
@@ -389,9 +383,9 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
             if (messageWriters.get(namespace, messageClass) == null) {
                messageWriters.put(namespace, messageClass, message);
             } else {
-               log(Level.WARNING,
-                   String.format("[%s] has already been added to the message collection, you have multiple instances in the environment.",
-                                 message.getName()));
+               log(Level.WARNING, String.format(
+                  "[%s] has already been added to the message collection, you have multiple instances in the environment.",
+                  message.getName()));
             }
          }
       } else {
@@ -409,25 +403,25 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
          }
       } else {
          throw new TestException(String.format("MessageData [%s] exists more than once in namespace[%s]",
-                                               messageData.getTopicName(),
-                                               messageData.getNamespace().toString()),
-                                 Level.SEVERE);
+            messageData.getTopicName(), messageData.getNamespace().toString()), Level.SEVERE);
       }
    }
 
    /**
     * @param topic
-    * @return true if this topic should copy the databuffer from the writer into the reader when
-    *         sent
+    * @return true if this topic should copy the databuffer from the writer into the reader when sent
     */
    private boolean topicShouldWrap(TopicDescription topic) {
-      // TODO: Add some sort of service call to do this correctly
-      return true;
+      boolean shouldWrap = true;
+      for (MessageWriterSetupHandler handler : messageSetupHandlers) {
+         shouldWrap = shouldWrap && handler.shouldWrap(topic);
+      }
+
+      return shouldWrap;
    }
 
    private TopicDescription createTopicDescription(MessageData messageData) {
-      return new TopicDescriptionImpl(messageData.getTopicName(),
-                                      messageData.getNamespace().toString());
+      return new TopicDescriptionImpl(messageData.getTopicName(), messageData.getNamespace().toString());
    }
 
    @SuppressWarnings("deprecation")
@@ -442,9 +436,11 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
       }
    }
 
+   @Override
    public void isScheduledChanged(boolean isScheduled) {
    }
 
+   @Override
    public void onRateChanged(Message message, double oldRate, double newRate) {
       checkState();
       removeMessageFromRateTask(message, oldRate);
@@ -464,8 +460,8 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
             Class clazz = innerit.next();
             Message msg = subHash.get(clazz);
             if (msg != null) {
-               sb.append(String.format("Reader.%s.%s [%d]\n", namespace, msg.getName(),
-                                       manager.getReferenceCount(msg)));
+               sb.append(
+                  String.format("Reader.%s.%s [%d]\n", namespace, msg.getName(), manager.getReferenceCount(msg)));
             }
          }
       }
@@ -478,8 +474,8 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
             Class clazz = innerit.next();
             Message msg = subHash.get(clazz);
             if (msg != null) {
-               sb.append(String.format("Writer.%s.%s [%d]\n", namespace, msg.getName(),
-                                       manager.getReferenceCount(msg)));
+               sb.append(
+                  String.format("Writer.%s.%s [%d]\n", namespace, msg.getName(), manager.getReferenceCount(msg)));
             }
          }
       }
@@ -489,7 +485,8 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
 
    private class MessageCollectionConsole extends ConsoleCommand {
 
-      private static final String DESCRIPTION = "Prints the messages that exist in the environment and their reference count.";
+      private static final String DESCRIPTION =
+         "Prints the messages that exist in the environment and their reference count.";
       private static final String NAME = "mc";
 
       protected MessageCollectionConsole() {
@@ -541,24 +538,20 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
             removeHandler.writerRemoveHandler(msg);
          }
          log(Level.FINEST,
-             String.format("disposing the message [%s][writer] because it's reference count is 0.",
-                           msg.getName()));
+            String.format("disposing the message [%s][writer] because it's reference count is 0.", msg.getName()));
       } else {
          msg = messageReaders.remove(namespace, class1);
          for (MessageRemoveHandler removeHandler : messageRemoveHandlers) {
             removeHandler.readerRemoveHandler(msg);
          }
          log(Level.FINEST,
-             String.format("disposing the message [%s][reader] because it's reference count is 0.",
-                           msg.getName()));
-         log(Level.FINEST, String.format("%d messages related",
-                                         msg.getDefaultMessageData().getMessages().size()));
+            String.format("disposing the message [%s][reader] because it's reference count is 0.", msg.getName()));
+         log(Level.FINEST, String.format("%d messages related", msg.getDefaultMessageData().getMessages().size()));
 
          MessageData removed = messageDataReaders.remove(createTopicDescription(msg.getDefaultMessageData()));
          if (removed == null) {
-            log(Level.WARNING,
-                String.format("Failed to remove reader %s.%s -- %s", namespace.toString(),
-                              msg.getDefaultMessageData().getTopicName(), namespace.toString()));
+            log(Level.WARNING, String.format("Failed to remove reader %s.%s -- %s", namespace.toString(),
+               msg.getDefaultMessageData().getTopicName(), namespace.toString()));
          }
       }
       msg.destroy();

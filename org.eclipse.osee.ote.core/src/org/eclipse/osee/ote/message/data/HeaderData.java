@@ -18,7 +18,7 @@ import org.eclipse.osee.ote.message.IMessageHeader;
 public class HeaderData extends MessageData {
 
    public HeaderData(String name, MemoryResource memoryResource) {
-      super(name, memoryResource);
+      super(name, name, memoryResource, null, null);
    }
 
    public HeaderData(MemoryResource memoryResource) {

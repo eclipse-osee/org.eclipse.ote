@@ -13,16 +13,18 @@
 
 package org.eclipse.osee.ote.core;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -43,6 +45,8 @@ import org.eclipse.osee.ote.core.log.record.TestDescriptionRecord;
 import org.eclipse.osee.ote.core.log.record.TestRecord;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * TestCase is the abstract base class for all test cases. This class provides the interfaces necessary for a TestCase
@@ -127,11 +131,14 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
    }
 
    /**
-    * Called by baseDoTestCase(). This is implemented by the tester's in each test case in the test script.
+    * Called by baseDoTestCase(). This is implemented by the tester's in each test case in the test
+    * script.
     *
     * @param environment The Test environment.
+    * @param logger
+    * @throws InterruptedException
     */
-   public abstract void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger);
+   public abstract void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) throws InterruptedException;
 
    public Element getTastCaseNumberXml(Document doc) {
       return Jaxp.createElement(doc, "Number", String.valueOf(number));
@@ -299,7 +306,11 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       environment.getTestScript().setTestCase(this);
       OseeLog.logf(TestEnvironment.class, OteLevel.TEST_EVENT, "Starting Test Case %s.%s",
          this.getTestScript().getClass().getSimpleName(), this.getClass().getSimpleName());
-      doTestCase(environment, environment.getLogger());
+      try {
+         doTestCase(environment, environment.getLogger());
+      } catch (InterruptedException e) {
+         OseeCoreException.wrapAndThrow(e);
+      }
    }
 
    @Override

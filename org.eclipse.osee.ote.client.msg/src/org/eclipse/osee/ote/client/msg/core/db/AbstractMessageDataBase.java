@@ -73,7 +73,7 @@ public abstract class AbstractMessageDataBase {
 		if (type == null) {
 			Class<? extends Message> msgClass = ExportClassLoader.getInstance().loadClass(name).asSubclass(Message.class);
 
-			type = msgClass.newInstance().getDefaultMessageData().getType();
+			type = msgClass.newInstance().getDefaultMessageData().getPhysicalIoType();
 		}
 		MessageReference reference = new MessageReference(type, mode, name);
 		MessageInstance instance = referenceToMsgMap.get(reference);
@@ -102,7 +102,7 @@ public abstract class AbstractMessageDataBase {
 
 		//Set<DataType> available = msg.getAvailableMemTypes();
 		Set<DataType> available = msg.getAssociatedMessages().keySet();
-		DataType requestDataType = msg.getDefaultMessageData().getType();
+		DataType requestDataType = msg.getDefaultMessageData().getPhysicalIoType();
 		for (DataType type : available) {
 			if (type.name().equals(dataType)) {
 				requestDataType = type;

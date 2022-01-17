@@ -45,7 +45,7 @@ public class SetDataSourceMenu extends XSubMenuManager implements IMenuListener 
 
    @Override
    public void menuAboutToShow(IMenuManager manager) {
-      add(new SetDataSourceAction(node, node.getSubscription().getMessage().getDefaultMessageData().getType()));
+      add(new SetDataSourceAction(node, node.getSubscription().getMessage().getDefaultMessageData().getPhysicalIoType()));
       for (DataType type : node.getSubscription().getAvailableTypes()) {
          add(new SetDataSourceAction(node, type));
       }

@@ -30,7 +30,7 @@ public class OteXNavigateItemProviders {
       Iterator<XNavigateItemProvider> iterator = providers.iterator();
       iterator.forEachRemaining(provider -> {
          String typeName = provider.getClass().getTypeName();
-         if (!typeName.contains(".ote.")) {
+         if (!typeName.startsWith("ote.") && !typeName.contains(".ote.")) {
             iterator.remove();
          }
       });

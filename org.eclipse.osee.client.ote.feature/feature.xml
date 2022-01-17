@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.osee.client.ote.feature"
       label="%featureName"
-      version="0.26.0.qualifier"
+      version="0.26.3.qualifier"
       provider-name="%providerName">
 
    <description>
@@ -58,12 +58,9 @@
       <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base" version="2.9.2" match="greaterOrEqual"/>
       <import plugin="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" version="2.9.2" match="greaterOrEqual"/>
       <import plugin="com.sun.xml.fastinfoset"/>
-      <import feature="org.eclipse.osee.client.all.feature"/>
-      <import feature="org.eclipse.osee.client.feature"/>
       <import feature="org.eclipse.osee.core.feature"/>
       <import feature="org.eclipse.osee.core.runtime.feature"/>
       <import feature="org.eclipse.osee.core.ui.feature"/>
-      <import feature="org.eclipse.osee.framework.ui.feature"/>
    </requires>
 
    <plugin

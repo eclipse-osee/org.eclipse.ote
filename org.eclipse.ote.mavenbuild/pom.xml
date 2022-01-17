@@ -6,7 +6,7 @@
 	   <parent>
       <groupId>org.eclipse.ote.build</groupId>
       <artifactId>core</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>0.26.3-SNAPSHOT</version>
       <relativePath>../org.eclipse.ote.build/maven/core</relativePath>
    </parent>
 
@@ -14,7 +14,7 @@
 	<artifactId>org.eclipse.ote.mavenbuild</artifactId>
 	<packaging>pom</packaging>
 	<name>Eclipse OTE Maven Repos Parent</name>
-	<version>0.11.0-SNAPSHOT</version>
+	<version>0.26.3-SNAPSHOT</version>
 
 	<profiles>
 	    <profile>

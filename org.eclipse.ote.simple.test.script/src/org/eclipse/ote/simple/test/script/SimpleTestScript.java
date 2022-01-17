@@ -19,13 +19,11 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestException;
-import org.eclipse.osee.ote.core.TestScript;
+import org.eclipse.osee.ote.core.annotations.Order;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
-import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
-import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
 import org.eclipse.osee.ote.core.environment.jini.ITestEnvironmentCommandCallback;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 import org.eclipse.ote.io.mux.MuxHeader;
@@ -34,6 +32,8 @@ import org.eclipse.ote.simple.io.SimpleMuxReceiver;
 import org.eclipse.ote.simple.io.message.HELLO_WORLD;
 import org.eclipse.ote.simple.io.message.SIMPLE_MUX_R_MSG;
 import org.eclipse.ote.simple.io.message.lookup.SimpleMuxReceiverHeader;
+import org.eclipse.ote.simple.test.environment.SimpleOteApi;
+import org.junit.Test;
 
 /**
  * @author Andy Jury
@@ -46,91 +46,52 @@ public class SimpleTestScript extends SimpleTestScriptType {
       super(testEnvironment, callback);
 
       this.writer = getMessageWriter(HELLO_WORLD.class);
-
-      new TestCase1(this);
-      new TestCase2(this);
-      new TestCaseSend(this);
+      setupTestScript((SimpleOteApi) testEnvironment.getOteApi());
    }
 
-   private class LocalSetupTestCase extends TestCase {
-
-      protected LocalSetupTestCase(TestScript parent) {
-
-         super(parent, false, false);
-      }
-
-      @Override
-      public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
-         // Intentionally empty block
-      }
+   protected void setupTestScript(SimpleOteApi oteApi) {
+      // Intentionally empty block
    }
 
-   @Override
-   protected TestCase getSetupTestCase() {
-
-      return new LocalSetupTestCase(this);
+   @Test
+   @Order(1)
+   public void testCase1(SimpleOteApi oteApi) {
+      prompt("In TestCase1");
+      promptPause("In TestCase1");
+      promptPassFail("Pass/Fail?");
    }
 
-   public class TestCase1 extends TestCase {
-
-      public TestCase1(TestScript parent) {
-
-         super(parent);
-      }
-
-      @Override
-      public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
-         prompt("In TestCase1");
-         promptPause("In TestCase1");
-         promptPassFail("Pass/Fail?");
-      }
+   @Test
+   @Order(2)
+   public void testCase2(SimpleOteApi oteApi) {
+      // This test case will fail when running in an environment with Mux
+      // unless you uncomment the following line to force the message mem type
+      writer.setMemSource(SimpleDataType.SIMPLE);
+      prompt("In the LocalSetupTestCase");
+      writer.PRINT_ME.setNoLog("TEST1");
+      testWait(1000);
+      writer.PRINT_ME.setNoLog("TEST2");
+      testWait(1000);
+      writer.PRINT_ME.setNoLog("TEST3");
+      testWait(1000);
+      writer.PRINT_ME.setNoLog("TEST4");
+      writer.ONLY_IN_SIMPLE.setNoLog(64);
+      writer.send();
+      testWait(1000);
+      writer.unschedule();
    }
 
-   public class TestCase2 extends TestCase {
+   @Test
+   @Order(3)
+   public void testCaseSend(SimpleOteApi oteApi) {
+      try {
+         MuxChannelSender sender = new MuxChannelSender();
+         environment.addTask(sender);
 
-      public TestCase2(TestScript parent) {
-
-         super(parent);
-      }
-
-      @Override
-      public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
-         // This test case will fail when running in an environment with Mux
-         // unless you uncomment the following line to force the message mem type
-         writer.setMemSource(SimpleDataType.SIMPLE);
-         prompt("In the LocalSetupTestCase");
-         writer.PRINT_ME.set(this, "TEST1");
-         testWait(1000);
-         writer.PRINT_ME.setNoLog("TEST2");
-         testWait(1000);
-         writer.PRINT_ME.setNoLog("TEST3");
-         testWait(1000);
-         writer.PRINT_ME.setNoLog("TEST4");
-         writer.ONLY_IN_SIMPLE.set(this, 64);
-         writer.send();
-         testWait(1000);
-         writer.unschedule();
-      }
-   }
-
-   public class TestCaseSend extends TestCase {
-
-      public TestCaseSend(TestScript parent) {
-
-         super(parent);
-      }
-
-      @Override
-      public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) {
-         try {
-            MuxChannelSender sender = new MuxChannelSender();
-            environment.addTask(sender);
-
-            testWait(10000);
-            sender.disable();
-         } catch (IOException ex) {
-            logTestPoint(false, "Error starting packet sender", "N/A", ex.getMessage());
-         }
+         testWait(10000);
+         sender.disable();
+      } catch (IOException ex) {
+         logTestPoint(false, "Error starting packet sender", "N/A", ex.getMessage());
       }
    }
 
