@@ -14,9 +14,9 @@ import org.eclipse.osee.ote.core.environment.interfaces.IScriptControl;
 
 public class ScriptControl implements IScriptControl {
 
-   protected boolean isOfpPaused = false;
-   protected boolean isScriptPaused = false;
-   protected boolean isScriptReady = false;
+   private volatile boolean isOfpPaused = false;
+   private volatile boolean isScriptPaused = false;
+   private volatile boolean isScriptReady = false;
 
    public ScriptControl() {
    }
