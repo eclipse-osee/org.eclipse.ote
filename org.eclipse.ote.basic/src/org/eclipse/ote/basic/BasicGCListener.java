@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2019 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,9 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.ote.simple.test.environment.listener;
+package org.eclipse.ote.basic;
 
 import java.util.List;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.OteLevel;
@@ -28,7 +29,7 @@ import org.eclipse.osee.ote.core.framework.event.IEventData;
 /**
  * @author Andy Jury
  */
-public class SimpleGCListener implements ITestLifecycleListener {
+public class BasicGCListener implements ITestLifecycleListener {
    /**
     * @return MB of used memory
     */

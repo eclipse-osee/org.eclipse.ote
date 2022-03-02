@@ -21,6 +21,7 @@
 		<module>../org.eclipse.ote.message.manager</module>
 		<module>../org.eclipse.ote.io</module>
 		<module>../org.eclipse.ote.io.test</module>
+		<module>../org.eclipse.ote.io.pubsub</module>
 		<module>../org.eclipse.ote.io.mux</module>
 		<module>../org.eclipse.ote.io.mux.test</module>
 		<module>../org.eclipse.ote.osgi.configuration</module>
@@ -44,6 +45,8 @@
 		<module>../org.eclipse.ote.ui.message</module>
 		<module>../org.eclipse.ote.ui.message.search</module>
 		<module>../org.eclipse.ote.ui.mux</module>
+		<module>../org.eclipse.ote.basic</module>
+		
 
 		<module>../org.eclipse.ote.serverclient.feature</module>
 		<module>../org.eclipse.ote.server.feature</module>

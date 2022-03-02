@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.ote.simple.test.environment.listener;
+package org.eclipse.ote.basic;
 
 import java.util.Date;
 import java.util.logging.Level;
@@ -29,17 +29,16 @@ import org.eclipse.osee.ote.core.framework.outfile.xml.SystemInfo;
 import org.eclipse.osee.ote.core.framework.outfile.xml.TestPointResults;
 import org.eclipse.osee.ote.core.framework.outfile.xml.TimeSummary;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
-import org.eclipse.ote.simple.test.environment.SimpleTestEnvironment;
 
 /**
  * @author Andrew M. Finkbeiner
  * @author Andy Jury
  */
-public final class SimpleTestLifeCycleListener implements ITestLifecycleListener {
+public final class BasicTestLifeCycleListener implements ITestLifecycleListener {
 
    private Date startTime;
 
-   public SimpleTestLifeCycleListener() {
+   public BasicTestLifeCycleListener() {
    }
 
    @Override
@@ -49,7 +48,7 @@ public final class SimpleTestLifeCycleListener implements ITestLifecycleListener
 
    @Override
    public IMethodResult postInstantiation(IEventData eventData, TestEnvironment env) {
-      eventData.getTest().addTestRunListener(new SimpleTestRunListener(env));
+      eventData.getTest().addTestRunListener(new BasicTestRunListener(env));
       eventData.getTest().addScriptSummary(env.getRuntimeManager());
       startTime = new Date();
       return new MethodResultImpl(ReturnCode.OK);
@@ -74,7 +73,7 @@ public final class SimpleTestLifeCycleListener implements ITestLifecycleListener
 
          eventData.getTest().getLogger().log(eventData.getTest().getScriptResultRecord());
 
-         OseeLog.log(SimpleTestEnvironment.class, OteLevel.TEST_EVENT,
+         OseeLog.log(BasicTestLifeCycleListener.class, OteLevel.TEST_EVENT,
             String.format("%s Pass[%d] Fail[%d] interactive[%d] Aborted[%b]",
                eventData.getTest().getClass().getSimpleName(), eventData.getTest().getPasses(),
                eventData.getTest().getFails(), eventData.getTest().getInteractives(), eventData.getTest().isAborted()));
@@ -82,7 +81,7 @@ public final class SimpleTestLifeCycleListener implements ITestLifecycleListener
          env.onScriptComplete();
       } catch (InterruptedException ex) {
          result = new MethodResultImpl(ReturnCode.ERROR);
-         result.addStatus(new BaseStatus(SimpleTestEnvironment.class.getName(), Level.SEVERE, ex));
+         result.addStatus(new BaseStatus(BasicTestLifeCycleListener.class.getName(), Level.SEVERE, ex));
       }
 
       return result;

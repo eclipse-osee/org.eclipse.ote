@@ -38,9 +38,9 @@ import org.eclipse.osee.ote.core.framework.testrun.ITestResultCollectorFactory;
 import org.eclipse.osee.ote.core.framework.testrun.ITestRunListenerProviderFactory;
 import org.eclipse.osee.ote.core.framework.testrun.ITestRunManager;
 import org.eclipse.osee.ote.core.log.TestLogger;
-import org.eclipse.ote.simple.test.environment.SimpleTestResultCollectorFactory;
-import org.eclipse.ote.simple.test.environment.listener.SimpleGCListener;
-import org.eclipse.ote.simple.test.environment.listener.SimpleTestLifeCycleListener;
+import org.eclipse.ote.basic.BasicGCListener;
+import org.eclipse.ote.basic.BasicTestLifeCycleListener;
+import org.eclipse.ote.basic.BasicTestResultCollectorFactory;
 
 /**
  * @author Michael P. Masterson
@@ -71,8 +71,8 @@ public class SimpleMuxTestEnvironmentFactory implements IEnvironmentFactory {
       this.runManager = createRunManager();
 
       timerCtrl.setRunManager(runManager);
-      runManager.addListener(new SimpleTestLifeCycleListener());
-      runManager.addListener(new SimpleGCListener());
+      runManager.addListener(new BasicTestLifeCycleListener());
+      runManager.addListener(new BasicGCListener());
    }
 
    private BaseRunManager createRunManager() {
@@ -80,7 +80,7 @@ public class SimpleMuxTestEnvironmentFactory implements IEnvironmentFactory {
       // Create test life-cycle manager
       IEventDataProvider eventDataProvider = new BaseEventDataProvider();
       ITestLifecycleListenerProvider lifeCycleListenerProvider = new BaseTestLifecycleListenerProvider(eventDataProvider);
-      ITestResultCollectorFactory resultCollectorFactory = new SimpleTestResultCollectorFactory();
+      ITestResultCollectorFactory resultCollectorFactory = new BasicTestResultCollectorFactory();
       return new BaseRunManager(testRunManager, lifeCycleListenerProvider, resultCollectorFactory);
    }
 

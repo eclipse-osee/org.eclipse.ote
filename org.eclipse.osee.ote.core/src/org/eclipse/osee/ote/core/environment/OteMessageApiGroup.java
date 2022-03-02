@@ -10,19 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 package org.eclipse.osee.ote.core.environment;
 
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
-
 /**
- * This interface is generally meant to provide test specific API. It is preferred to provide this rather than access to
- * the entire test environment.
- *
  * @author Michael P. Masterson
  */
-public interface OteApi {
-   void logTestPoint(boolean isPassed, String testPointName, String expected, String actual);
+public interface OteMessageApiGroup {
 
-   void logTestPoint(boolean isPassed, String testPointName, NamedId expected, NamedId actual);
 }

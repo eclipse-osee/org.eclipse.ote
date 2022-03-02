@@ -19,6 +19,7 @@ import org.eclipse.osee.ote.message.enums.DataType;
  * @author Michael P. Masterson
  */
 public enum GenericOteIoType implements DataType {
+   PUB_SUB(5, 1024 * 64),
    MUX(64, 128);
 
    private final int depth;
@@ -28,7 +29,7 @@ public enum GenericOteIoType implements DataType {
       this.depth = depth;
       this.bufferSize = bufferSize;
    }
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.ote.message.enums.DataType#getToolingDepth()
     */

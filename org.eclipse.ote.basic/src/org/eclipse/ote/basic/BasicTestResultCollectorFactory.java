@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.ote.simple.test.environment;
+package org.eclipse.ote.basic;
 
 import org.eclipse.osee.ote.core.framework.testrun.ITestResultCollector;
 import org.eclipse.osee.ote.core.framework.testrun.ITestResultCollectorFactory;
@@ -20,10 +20,10 @@ import org.eclipse.osee.ote.core.framework.testrun.ITestResultCollectorFactory;
  * @author Roberto E. Escobar
  * @author Andy Jury
  */
-public class SimpleTestResultCollectorFactory implements ITestResultCollectorFactory {
+public class BasicTestResultCollectorFactory implements ITestResultCollectorFactory {
 
    @Override
    public ITestResultCollector createCollector() {
-      return new SimpleTestResultCollector();
+      return new BasicTestResultCollector();
    }
 }

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.ote.simple.test.environment;
+package org.eclipse.ote.basic;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.core.enums.OteRunTestsKeys;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -37,13 +36,12 @@ import org.eclipse.osee.ote.core.log.record.TestRecord;
 /**
  * @author Andy Jury
  */
-public class SimpleTestResultCollector implements ITestResultCollector {
+public class BasicTestResultCollector implements ITestResultCollector {
    private ILoggerListener loggerListener;
    private ScriptStreamOutLogHandler handlerStream;
    private ScriptJsonOutLogHandler jsonHandler;
    private final Matcher fileNumberMatcher = Pattern.compile("(.*)\\.(\\d+)\\.tmo").matcher("");
 
-   @Deprecated
    @Override
    public void initialize(IPropertyStore propertyStore, TestEnvironment testEnvironment) throws Exception {
       initialize(propertyStore, testEnvironment.getOutDir(), testEnvironment.getLogger(), testEnvironment.getRunManager());
@@ -89,7 +87,7 @@ public class SimpleTestResultCollector implements ITestResultCollector {
             }
          }
       } catch (IllegalArgumentException ex) {
-         OseeLog.log(SimpleTestResultCollector.class, Level.SEVERE, "Unable to set outfile log level.", ex);
+         OseeLog.log(BasicTestResultCollector.class, Level.SEVERE, "Unable to set outfile log level.", ex);
       }
       testLogger.log(new PropertyStoreRecord(propertyStore));
       OseeLog.registerLoggerListener(loggerListener);
@@ -148,8 +146,8 @@ public class SimpleTestResultCollector implements ITestResultCollector {
    }
 
    private static final class DefaultLoggingListener implements ILoggerListener {
-      private ITestLogger testLogger;
-      private IRunManager runManager;
+      private final ITestLogger testLogger;
+      private final IRunManager runManager;
 
       public DefaultLoggingListener(ITestLogger testLogger, IRunManager runManager) {
          this.testLogger = testLogger;

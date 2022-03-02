@@ -67,8 +67,8 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    private static long debugTimeout = OtePropertiesCore.timeDebugTimeout.getLongValue();
    private static boolean debugTime = OtePropertiesCore.timeDebug.getBooleanValue();
 
-   private DataWriter writer;
-   private DataReader reader;
+   protected DataWriter writer;
+   protected DataReader reader;
    private final DataSample myDataSample;
 
    private final MemoryResource mem;

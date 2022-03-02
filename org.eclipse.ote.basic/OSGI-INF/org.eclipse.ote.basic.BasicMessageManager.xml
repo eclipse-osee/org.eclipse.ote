@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" immediate="true" name="org.eclipse.ote.basic.BasicMessageManager">
+   <service>
+      <provide interface="org.eclipse.osee.ote.message.interfaces.IMessageManager"/>
+   </service>
+   <reference bind="addDataTypeProvider" cardinality="0..n" interface="org.eclipse.ote.message.manager.DataTypeProvider" name="DataTypeProvider" policy="dynamic" unbind="removeDataTypeProvider"/>
+   <reference bind="bindEnv" cardinality="1..1" interface="org.eclipse.osee.ote.core.environment.TestEnvironmentInterface" name="Env" policy="static"/>
+   <reference bind="bindNamespaceMapper" cardinality="1..1" interface="org.eclipse.ote.message.manager.NamespaceMapper" name="NamespaceMapper" policy="static"/>
+   <implementation class="org.eclipse.ote.basic.BasicMessageManager"/>
+</scr:component>

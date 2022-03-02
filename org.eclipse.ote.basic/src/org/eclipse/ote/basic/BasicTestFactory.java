@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.ote.simple.test.environment;
+package org.eclipse.ote.basic;
 
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
@@ -21,9 +21,9 @@ import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 /**
  * @author Andy Jury
  */
-public class SimpleTestFactory extends OteTestFactory {
+public class BasicTestFactory extends OteTestFactory {
 
-   public SimpleTestFactory(IRuntimeLibraryManager rtLibManager) {
+   public BasicTestFactory(IRuntimeLibraryManager rtLibManager) {
       super(rtLibManager);
    }
 

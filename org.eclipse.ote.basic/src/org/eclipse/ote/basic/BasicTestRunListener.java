@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.ote.simple.test.environment.listener;
+package org.eclipse.ote.basic;
 
 import java.util.logging.Level;
 
@@ -32,19 +32,18 @@ import org.eclipse.osee.ote.core.framework.testrun.ITestRunListener;
 import org.eclipse.osee.ote.core.log.record.ScriptConfigRecord;
 import org.eclipse.osee.ote.core.log.record.ScriptInitRecord;
 import org.eclipse.ote.services.core.ServiceUtility;
-import org.eclipse.ote.simple.test.environment.SimpleTestEnvironment;
 
 /**
  * @author Andrew M. Finkbeiner
  * @author Andy Jury
  */
-public class SimpleTestRunListener implements ITestRunListener {
+public class BasicTestRunListener implements ITestRunListener {
 
    private final TestEnvironment env;
 
    private OSEEPerson1_4 validUser = new OSEEPerson1_4("ERROR", "ERROR", "ERROR");
 
-   public SimpleTestRunListener(TestEnvironment env) {
+   public BasicTestRunListener(TestEnvironment env) {
       this.env = env;
    }
 
@@ -88,19 +87,18 @@ public class SimpleTestRunListener implements ITestRunListener {
       }
       scriptConfig.setExecutedBy(validUser.getName(), validUser.getEmail(), validUser.getId());
       ScriptVersionConfig version = new ScriptVersionConfig(eventData.getProperties().get(RunTestsKeys.version_repositoryType.name()),
-            eventData.getProperties().get(RunTestsKeys.version_location.name()),
-            eventData.getProperties().get(RunTestsKeys.version_revision.name()),
-            eventData.getProperties().get(RunTestsKeys.version_lastAuthor.name()),
-            eventData.getProperties().get(RunTestsKeys.version_lastModificationDate.name()),
-            eventData.getProperties().get(RunTestsKeys.version_modifiedFlag.name()));
+         eventData.getProperties().get(RunTestsKeys.version_location.name()),
+         eventData.getProperties().get(RunTestsKeys.version_revision.name()),
+         eventData.getProperties().get(RunTestsKeys.version_lastAuthor.name()),
+         eventData.getProperties().get(RunTestsKeys.version_lastModificationDate.name()),
+         eventData.getProperties().get(RunTestsKeys.version_modifiedFlag.name()));
       scriptConfig.setScriptVersion(version);
       eventData.getTest().getLogger().log(scriptConfig);
 
       env.getScriptCtrl().lock();
 
       try {
-         eventData.getTest().getLogger().log(new ScriptInitRecord(eventData.getTest(), true)); // Outfile
-                                                                                               // logging
+         eventData.getTest().getLogger().log(new ScriptInitRecord(eventData.getTest(), true));
          IScriptInitializer initializer = eventData.getTest().getScriptInitializer();
          if (initializer != null) {
             initializer.doScriptInitialProcessing();
@@ -110,9 +108,9 @@ public class SimpleTestRunListener implements ITestRunListener {
       } catch (Exception ex) {
          if (result.getReturnCode() == ReturnCode.OK) {
             result.setReturnCode(ReturnCode.ERROR);
-            result.addStatus(new BaseStatus(SimpleTestEnvironment.class.getName(), Level.SEVERE, ex));
+            result.addStatus(new BaseStatus(BasicTestRunListener.class.getName(), Level.SEVERE, ex));
          } else {
-            result.addStatus(new BaseStatus(SimpleTestEnvironment.class.getName(), Level.SEVERE, ex));
+            result.addStatus(new BaseStatus(BasicTestRunListener.class.getName(), Level.SEVERE, ex));
          }
       }
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" immediate="true" name="org.eclipse.ote.io.pubsub.service.StartComponent">
+   <service>
+      <provide interface="org.eclipse.ote.io.pubsub.service.StartComponent"/>
+   </service>
+   <reference bind="bindInitializeEnvironment" cardinality="1..1" interface="org.eclipse.osee.ote.core.environment.InitializeEnvironment" name="InitializeEnvironment" policy="static" target="(org.eclipse.ote.io.pubsub=true)"/>
+   <reference bind="bindMessageManager" cardinality="1..1" interface="org.eclipse.osee.ote.message.interfaces.IMessageManager" name="MessageManager" policy="static" unbind="unbindMessageManager"/>
+   <reference bind="bindNamespaceMapper" cardinality="1..1" interface="org.eclipse.ote.message.manager.NamespaceMapper" name="NamespaceMapper" policy="static" unbind="unbindNamespaceMapper"/>
+   <reference bind="bindPubSubConfigurationService" cardinality="1..1" interface="org.eclipse.ote.io.pubsub.config.PubSubEthernetConfigurationProvider" name="PubSubConfigurationService" policy="static"/>
+   <reference bind="bindTestEnvironmentInterface" cardinality="1..1" interface="org.eclipse.osee.ote.core.environment.TestEnvironment" name="TestEnvironmentInterface" policy="static" unbind="unbindTestEnvironmentInterface"/>
+   <implementation class="org.eclipse.ote.io.pubsub.service.StartComponent"/>
+</scr:component>

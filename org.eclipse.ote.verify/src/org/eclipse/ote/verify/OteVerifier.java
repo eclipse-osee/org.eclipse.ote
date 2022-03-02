@@ -14,6 +14,8 @@ package org.eclipse.ote.verify;
 
 import org.eclipse.osee.ote.core.environment.OteInternalApi;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
+import org.eclipse.osee.ote.core.testPoint.CheckGroup;
+import org.eclipse.osee.ote.core.testPoint.CheckPoint;
 
 /**
  * @author Michael P. Masterson
@@ -39,6 +41,23 @@ public abstract class OteVerifier<T extends OteVerifier<T>> {
    
    public void logResults(ITestPoint tp) {
       api.testLogger().testpoint(api, tp);
+   }
+
+   /**
+    * Adds a new test point to the checkgroup comparing the expected and actual ONLY IF the attributes are used or
+    * required
+    * 
+    * @param expected
+    * @param actual
+    * @param groupToUpdate
+    */
+   protected void addToCheckGroup(OteVerifierAttribute expected, OteVerifierAttribute actual, CheckGroup groupToUpdate) {
+      OteMatchResult matches = expected.matches(actual);
+   
+      if (!matches.equals(OteMatchResult.NOT_USED)) {
+         groupToUpdate.add(new CheckPoint(expected.getName(), expected.toString(), actual.toString(),
+            matches.equals(OteMatchResult.PASSED)));
+      }
    }
    
 }

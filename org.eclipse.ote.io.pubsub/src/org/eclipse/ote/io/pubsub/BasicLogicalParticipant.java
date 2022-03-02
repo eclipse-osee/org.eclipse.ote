@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,16 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ote.core.environment.interfaces;
-
-import java.util.List;
+package org.eclipse.ote.io.pubsub;
 
 /**
- * @author Robert A. Fisher
+ * @author Michael P. Masterson
  */
-public interface ITestStation {
+public interface BasicLogicalParticipant {
+   int getId();
 
-   public List<IOTypeHandlerDefinition> getSupportedDriverTypes();
+   String getName();
 
-   public boolean isPhysicalTypeAvailable(IOTypeDefinition physicalType);
+   boolean isEnabled();
+
+   void setEnabled(boolean isEnabled);
 }

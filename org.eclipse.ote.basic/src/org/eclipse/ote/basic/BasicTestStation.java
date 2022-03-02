@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2019 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,26 +11,19 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.ote.simple.test.environment;
+package org.eclipse.ote.basic;
 
 import java.util.List;
-
 import org.eclipse.osee.ote.core.environment.interfaces.IOTypeDefinition;
 import org.eclipse.osee.ote.core.environment.interfaces.IOTypeHandlerDefinition;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestStation;
 
 /**
- * @author Andy Jury
+ * This is a basic test station implementation that provides no unique driver types.
+ *
+ * @author Michael P. Masterson
  */
-public class SimpleTestStation implements ITestStation {
-
-   private String outletIp;
-   private int outletPort;
-   protected String vmeConnectionName;
-
-   public SimpleTestStation() {
-      this.vmeConnectionName = "NA";
-   }
+public class BasicTestStation implements ITestStation {
 
    @Override
    public List<IOTypeHandlerDefinition> getSupportedDriverTypes() {
@@ -42,33 +35,4 @@ public class SimpleTestStation implements ITestStation {
       return false;
    }
 
-   @Override
-   public String getOutletIp() {
-      return outletIp;
-   }
-
-   @Override
-   public void setOutletIp(String outletIp) {
-      this.outletIp = outletIp;
-   }
-
-   @Override
-   public int getOutletPort() {
-      return outletPort;
-   }
-
-   @Override
-   public void setOutletPort(int outletPort) {
-      this.outletPort = outletPort;
-   }
-
-   @Override
-   public String getVmeConnectionName() {
-      return vmeConnectionName;
-   }
-
-   @Override
-   public void turnPowerSupplyOnOff(boolean turnOn) {
-      // Intentionally empty block
-   }
 }
