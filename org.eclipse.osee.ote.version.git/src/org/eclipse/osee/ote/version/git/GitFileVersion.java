@@ -20,50 +20,54 @@ import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.osee.ote.version.FileVersion;
 
+/**
+ * @author Michael P. Masterson
+ */
 public class GitFileVersion implements FileVersion {
 
-	private RevCommit commit;
-	private boolean modified;
+   private final RevCommit commit;
+   private final boolean modified;
 
-	GitFileVersion(GitVersion gitVersion) throws NoHeadException, IOException, GitAPIException{
-		this.commit = gitVersion.getLastCommit();
-		if(commit == null){
-			throw new IOException("Not a git repo");
-		}
-	}
-	
-	GitFileVersion(RevCommit commit) {
-		this.commit = commit;
-	}
-	
-	@Override
-	public String getLastChangedRevision() {
-		return commit.getId().getName();
-	}
+   GitFileVersion(GitVersion gitVersion) throws NoHeadException, IOException, GitAPIException{
+      this(gitVersion.getLastCommit(), gitVersion.getModified());
+      if(commit == null){
+         throw new IOException("Not a git repo");
+      }
+   }
 
-	@Override
-	public String getURL() {
-		return null;
-	}
+   GitFileVersion(RevCommit commit, boolean modified) {
+      this.commit = commit;
+      this.modified = modified;
+   }
 
-	@Override
-	public String getVersionControlSystem() {
-		return "GIT";
-	}
+   @Override
+   public String getLastChangedRevision() {
+      return commit.getId().getName();
+   }
 
-	@Override
-	public String getModifiedFlag() {
-		return "N/A";
-	}
+   @Override
+   public String getURL() {
+      return null;
+   }
 
-	@Override
-	public String getLastModificationDate() {
-		return commit.getAuthorIdent().getWhen().toString();
-	}
+   @Override
+   public String getVersionControlSystem() {
+      return "GIT";
+   }
 
-	@Override
-	public String getLastAuthor() {
-		return commit.getAuthorIdent().getName();
-	}
+   @Override
+   public String getModifiedFlag() {
+      return String.valueOf(modified);
+   }
+
+   @Override
+   public String getLastModificationDate() {
+      return commit.getAuthorIdent().getWhen().toString();
+   }
+
+   @Override
+   public String getLastAuthor() {
+      return commit.getAuthorIdent().getName();
+   }
 
 }

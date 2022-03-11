@@ -18,21 +18,34 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoHeadException;
-import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.version.FileVersion;
 import org.eclipse.osee.ote.version.FileVersionInformationProvider;
 
+/**
+ * @author Michael P. Masterson
+ */
 public class GitVersionProvider implements FileVersionInformationProvider {
 
-	@Override
-	public void getFileVersions(List<File> files, Map<File, FileVersion> versions) {
-		GitVersions gitVersions = new GitVersions(files);
-		Map<File, RevCommit> commits = gitVersions.getLastCommits();
-		for(Entry<File, RevCommit> entry:commits.entrySet()){
-			versions.put(entry.getKey(), new GitFileVersion(entry.getValue()));
-		}
-	}
+   @Override
+   public void getFileVersions(List<File> files, Map<File, FileVersion> versions) {
+      GitVersions gitVersions = new GitVersions(files);
+      Map<File, GitVersion> commits = gitVersions.getLastCommits();
+      for (Entry<File, GitVersion> entry : commits.entrySet()) {
+         try {
+            versions.put(entry.getKey(), new GitFileVersion(entry.getValue()));
+         } catch (NoHeadException ex) {
+            OseeLog.log(this.getClass(), Level.SEVERE, ex.toString(), ex);
+         } catch (IOException ex) {
+            OseeLog.log(this.getClass(), Level.SEVERE, ex.toString(), ex);
+         } catch (GitAPIException ex) {
+            OseeLog.log(this.getClass(), Level.SEVERE, ex.toString(), ex);
+         }
+      }
+   }
 
 }

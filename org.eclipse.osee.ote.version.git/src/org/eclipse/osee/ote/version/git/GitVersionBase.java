@@ -20,6 +20,9 @@ import java.io.IOException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
+/**
+ * @author Michael P. Masterson
+ */
 public class GitVersionBase {
 	
 	protected String getPathFilterFromFullPathAndGitFolder(File file, File gitFolder) {

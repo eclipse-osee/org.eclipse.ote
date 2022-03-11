@@ -30,58 +30,59 @@ import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 
+/**
+ * @author Michael P. Masterson
+ */
 public class GitVersion extends GitVersionBase {
 
-	private final File file;
-	
-	public GitVersion(File file){
-		this.file = file;
-	}
-	
-	public String getURL() throws MalformedURLException{
-		return this.file.toURI().toURL().toString();
-	}
-	
-	public boolean getModified() throws IOException, NoWorkTreeException, GitAPIException{
-		if(!file.exists()){
-			return false;
-		}
-		File gitFolder = findGitDirUp(file);
-		if(gitFolder == null){
-			return false;
-		}
-		Repository repository = buildRepository(gitFolder);
-		Git git = new Git(repository);
-		StatusCommand status = git.status();
-		String pathFilter = getPathFilterFromFullPathAndGitFolder(file, gitFolder);
-		Status result = status.call();
-		Set<String> modified = result.getModified();
-		if(modified.contains(pathFilter)){
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public  RevCommit getLastCommit() throws IOException, NoHeadException, GitAPIException{
-		if(!file.exists()){
-			return null;
-		}
-		File gitFolder = findGitDirUp(file);
-		if(gitFolder == null){
-			return null;
-		}
-		Repository repository = buildRepository(gitFolder);
-		Git git = new Git(repository);
-		LogCommand log = git.log();
-		String pathFilter = getPathFilterFromFullPathAndGitFolder(file, gitFolder);
-		log.addPath(pathFilter);
-		Iterable<RevCommit> iterable = log.call();
-		Iterator<RevCommit> it = iterable.iterator();
-		if(it.hasNext()){
-			return it.next(); 
-		} else {
-			return null;
-		}
-	}
+   private final File file;
+
+   public GitVersion(File file){
+      this.file = file;
+   }
+
+   public String getURL() throws MalformedURLException{
+      return this.file.toURI().toURL().toString();
+   }
+
+   public boolean getModified() throws IOException, NoWorkTreeException, GitAPIException{
+      if(!file.exists()){
+         return false;
+      }
+      File gitFolder = findGitDirUp(file);
+      if(gitFolder == null){
+         return false;
+      }
+
+      Repository repository = buildRepository(gitFolder);
+      Git git = new Git(repository);
+      StatusCommand status = git.status();
+      String pathFilter = getPathFilterFromFullPathAndGitFolder(file, gitFolder);
+      Status result = status.call();
+      Set<String> modified = result.getModified();
+      return modified.contains(pathFilter);
+   }
+
+   public  RevCommit getLastCommit() throws IOException, NoHeadException, GitAPIException{
+      if(!file.exists()){
+         return null;
+      }
+      File gitFolder = findGitDirUp(file);
+      if(gitFolder == null){
+         return null;
+      }
+      Repository repository = buildRepository(gitFolder);
+      Git git = new Git(repository);
+      LogCommand log = git.log();
+      log.setMaxCount(1);
+      String pathFilter = getPathFilterFromFullPathAndGitFolder(file, gitFolder);
+      log.addPath(pathFilter);
+      Iterable<RevCommit> iterable = log.call();
+      Iterator<RevCommit> it = iterable.iterator();
+      if(it.hasNext()){
+         return it.next();
+      } else {
+         return null;
+      }
+   }
 }

@@ -12,6 +12,7 @@ Import-Package: org.eclipse.jgit.api,
  org.eclipse.jgit.storage.file,
  org.eclipse.jgit.treewalk,
  org.eclipse.jgit.treewalk.filter,
+ org.eclipse.osee.framework.logging,
  org.eclipse.osee.ote.version
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
