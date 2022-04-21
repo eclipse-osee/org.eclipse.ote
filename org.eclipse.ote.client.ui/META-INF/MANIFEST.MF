@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.nebula.widgets.xviewer,
  org.eclipse.e4.ui.model.workbench,
  org.eclipse.e4.ui.workbench,
- net.jini
+ jsk-lib,
+ jsk-platform
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.ote.client.ui,
  org.eclipse.ote.client.ui.actions,
@@ -42,6 +43,6 @@ Import-Package: net.jini.export,
  org.eclipse.osee.ote.rest.client,
  org.eclipse.osee.ote.rest.model,
  org.eclipse.ote.client
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: The Boeing Company

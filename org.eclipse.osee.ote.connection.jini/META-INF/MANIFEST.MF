@@ -5,14 +5,27 @@ Bundle-SymbolicName: org.eclipse.osee.ote.connection.jini;singleton:=true
 Bundle-Version: 0.26.3.qualifier
 Bundle-Activator: org.eclipse.osee.ote.connection.jini.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Require-Bundle: org.eclipse.core.runtime,
- net.jini,
- org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.logging
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.connection.service,
+Require-Bundle: jsk-lib, jsk-platform
+Import-Package: org.eclipse.core.runtime,
+ org.osgi.framework,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.framework.plugin.core.util,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.connection.service,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.network,
- org.eclipse.osee.ote.properties
+ org.eclipse.osee.ote.properties,
+ net.jini.core.discovery,
+ net.jini.core.lookup,
+ net.jini.core.lease,
+ net.jini.core.entry,
+ net.jini.id,
+ net.jini.jeri,
+ net.jini.jeri.tcp,
+ net.jini.entry,
+ net.jini.export,
+ net.jini.core.constraint,
+ net.jini.security.proxytrust
 Export-Package: org.eclipse.osee.ote.connection.jini
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

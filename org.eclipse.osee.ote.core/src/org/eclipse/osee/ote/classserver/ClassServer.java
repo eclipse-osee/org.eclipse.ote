@@ -29,7 +29,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 
 public class ClassServer extends Thread {
@@ -41,7 +40,7 @@ public class ClassServer extends Thread {
 
    /**
     * Construct a server
-    * 
+    *
     * @param port the port to use
     * @throws IOException if the server socket cannot be created
     */
@@ -56,11 +55,11 @@ public class ClassServer extends Thread {
             return th;
          }
       });
-      if(address instanceof Inet6Address){
-    	 hostName = new URL("http://[" + address.getHostAddress() + "]:" + server.getLocalPort() + "/"); 
-      } else { 
+      if (address instanceof Inet6Address) {
+         hostName = new URL("http://[" + address.getHostAddress() + "]:" + server.getLocalPort() + "/");
+      } else {
          hostName = new URL("http://" + address.getHostAddress() + ":" + server.getLocalPort() + "/");
-   	  }
+      }
       this.setName("OSEE ClassServer");
       this.resourceFinders = new ArrayList<>();
    }
@@ -160,7 +159,7 @@ public class ClassServer extends Thread {
 
    /**
     * This method provides a way for subclasses to be notified when a file has been completely downloaded.
-    * 
+    *
     * @param fp The path to the file that was downloaded.
     */
    protected void fileDownloaded(String fp, InetAddress addr) {
@@ -258,7 +257,6 @@ public class ClassServer extends Thread {
                out.flush();
                return;
             }
-            String[] args = null;
             boolean get = req.startsWith("GET ");
             if (!get && !req.startsWith("HEAD ")) {
                OseeLog.log(ClassServer.class, Level.FINE, "bad request \"{0}\" from {1}:{2}");
@@ -278,11 +276,7 @@ public class ClassServer extends Thread {
                out.flush();
                return;
             }
-            if (args != null) {
-               args[0] = path;
-            }
-            OseeLog.log(ClassServer.class, Level.FINER,
-               get ? "{0} requested from {1}:{2}" : "{0} probed from {1}:{2}");
+            OseeLog.log(ClassServer.class, Level.FINER, get ? "{0} requested from {1}:{2}" : "{0} probed from {1}:{2}");
             byte[] bytes;
             try {
                bytes = getBytes(path);

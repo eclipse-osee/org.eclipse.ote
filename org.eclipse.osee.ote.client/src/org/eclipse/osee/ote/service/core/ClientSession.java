@@ -19,7 +19,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -46,13 +45,13 @@ public class ClientSession extends AbstractRemoteSession {
    private final InetAddress address;
    private SessionDelegate sessionDelegate = null;
    private final ReentrantLock lock = new ReentrantLock();
-//   private final OteClientEndpointReceive receive;
-   private UUID id;
+   //   private final OteClientEndpointReceive receive;
+   private final UUID id;
 
    public ClientSession(OSEEPerson1_4 user, InetAddress address) {
       super(user);
       this.address = address;
-//      this.receive = receive;
+      //      this.receive = receive;
       this.id = UUID.randomUUID();
       Activator.log(Level.INFO,
          String.format("Created OTE session for %s. Address=%s\n ", user.getName(), address.toString()));
@@ -170,7 +169,7 @@ public class ClientSession extends AbstractRemoteSession {
 
    TestHostConnection connect(IServiceConnector connector, IHostTestEnvironment testHost, TestEnvironmentConfig config) throws Exception {
       // intentionally package-private
-       if (lock.tryLock(TIMEOUT, TimeUnit.MINUTES)) {
+      if (lock.tryLock(TIMEOUT, TimeUnit.MINUTES)) {
          try {
             IRemoteUserSession exportedSession = (IRemoteUserSession) connector.export(this);
             UUID id = UUID.randomUUID();
@@ -178,12 +177,14 @@ public class ClientSession extends AbstractRemoteSession {
             ConnectionRequestResult result = testHost.requestEnvironment(exportedSession, id, config);
             if (result != null && result.getStatus().getStatus()) {
                connector.setConnected(true);
-               return new TestHostConnection(connector, testHost, result.getEnvironment(), result.getSessionKey(), false);
+               return new TestHostConnection(connector, testHost, result.getEnvironment(), result.getSessionKey(),
+                  false);
             } else if (result != null && result.getStatus().isUnauthorizedUser()) {
                return new TestHostConnection(null, testHost, null, null, true);
             } else {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error Connecting to the OTE Test Server.",
-                     new Exception(result.getStatus().getMessage()));
+                  new Exception(
+                     result != null ? result.getStatus().getMessage() : "ConnectionRequestResult result is null)"));
             }
             return null;
          } finally {

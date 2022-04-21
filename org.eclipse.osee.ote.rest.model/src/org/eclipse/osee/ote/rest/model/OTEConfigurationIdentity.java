@@ -13,27 +13,27 @@
 
 package org.eclipse.osee.ote.rest.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Roberto E. Escobar
  */
 @XmlRootElement
 public class OTEConfigurationIdentity {
-	private String uuid;
-	private String name;
+   private String uuid;
+   private String name;
 
    public String getUuid() {
-		return uuid;
-	}
+      return uuid;
+   }
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+   public void setUuid(String uuid) {
+      this.uuid = uuid;
+   }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+   public void setName(String name) {
+      this.name = name;
+   }
 
    public String getName() {
       return name;

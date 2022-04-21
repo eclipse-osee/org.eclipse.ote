@@ -32,13 +32,18 @@
 								<plugin id="ch.qos.logback.core" />
 								<plugin id="ch.qos.logback.classic" />
 								<plugin id="com.google.guava" />
+								<plugin id="com.google.gson" />
 								<plugin id="javax.activation" />
 								<plugin id="javax.annotation" />
-								<plugin id="javax.servlet" />
+								<plugin id="javax.servlet" />	
 								<plugin id="javax.ws.rs" />
 								<plugin id="javax.xml" />
+								<plugin id="javax.xml.ws" />
+								<plugin id="javax.xml.soap" />
+								<plugin id="javax.transaction" />
 								<plugin id="jms.libraries" />
-								<plugin id="net.jini" />
+								<plugin id="jsk-lib" />
+								<plugin id="jsk-platform" />
 								<plugin id="org.apache.aries.proxy" />
 								<plugin id="org.apache.aries.util" />
 								<plugin id="org.apache.commons.codec" />
@@ -85,6 +90,7 @@
 								<plugin id="org.eclipse.equinox.event" />
 								<plugin id="javax.mail.glassfish" />
 								<plugin id="org.apache.commons.io" />
+								<plugin id="com.google.inject" />
 							</excludes>
 						</configuration>
 					</execution>

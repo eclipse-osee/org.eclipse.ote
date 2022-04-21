@@ -1,4 +1,7 @@
 org.eclipse.equinox.cm
+					org.eclipse.osee.ote.rest
+					org.eclipse.osee.ote.rest.model
+					org.eclipse.osee.ote.rest.client
 					org.eclipse.ote.basic
 					org.eclipse.ote.bytemessage
 					org.eclipse.ote.io

@@ -37,30 +37,30 @@ public class OteEndpointReceiveRunnable implements Runnable {
    private static final int DATA_SIZE = 65536;
    private static final int UDP_TIMEOUT = 240000; // 4 MINUTES
    private static final int ONE_MEG = 1024 * 1024;
-   
-   private volatile boolean run = true; 
+
+   private volatile boolean run = true;
    private volatile boolean debugOutput = false;
-   private Class<OteEndpointReceiveRunnable> logger = OteEndpointReceiveRunnable.class;
+   private final Class<OteEndpointReceiveRunnable> logger = OteEndpointReceiveRunnable.class;
    private final InetSocketAddress address;
    private static final int MAGIC_NUMBER = ByteBuffer.wrap(OteEndpointSendRunnable.MAGIC_NUMBER).getInt();
    private final Inflater inflater = new Inflater();
-   
-   private CopyOnWriteArrayList<EndpointDataProcessor> dataProcessors = new CopyOnWriteArrayList<>();
 
-   public OteEndpointReceiveRunnable(InetSocketAddress address){
+   private final CopyOnWriteArrayList<EndpointDataProcessor> dataProcessors = new CopyOnWriteArrayList<>();
+
+   public OteEndpointReceiveRunnable(InetSocketAddress address) {
       this.address = address;
    }
-   
-   public void stop(){
+
+   public void stop() {
       run = false;
    }
-   
+
    @Override
    public void run() {
       ByteBuffer buffer = ByteBuffer.allocate(DATA_SIZE);
       DatagramChannel channel = null;
-      try{
-         while(run){
+      try {
+         while (run) {
             try {
                channel = DatagramChannel.open();
                channel.socket().setReuseAddress(true);
@@ -68,28 +68,30 @@ public class OteEndpointReceiveRunnable implements Runnable {
                channel.socket().setSoTimeout(UDP_TIMEOUT);
                channel.socket().setReceiveBufferSize(ONE_MEG);
                channel.configureBlocking(true);
-             
+
                while (run) {
-                  try{
+                  try {
                      buffer.clear();
                      channel.receive(buffer);
                      buffer.flip();
                      processBuffer(buffer);
-                  } catch(ClosedByInterruptException ex){
+                  } catch (ClosedByInterruptException ex) {
                      stop();
-                  } catch (Throwable th){
+                  } catch (Throwable th) {
                      th.printStackTrace();
                   }
                }
             } catch (BindException ex) {
-               if(debugOutput){
+               if (debugOutput) {
                   OseeLog.log(logger, Level.FINEST, ex);
                }
-               channel.close();
+               if (channel != null) {
+                  channel.close();
+               }
                Thread.sleep(1000);
             }
          }
-      }catch (InterruptedIOException ex) {
+      } catch (InterruptedIOException ex) {
          Thread.interrupted();
          if (run && debugOutput) {
             OseeLog.log(logger, Level.WARNING, "Unexpected interruption", ex);
@@ -107,7 +109,7 @@ public class OteEndpointReceiveRunnable implements Runnable {
                channel.close();
             }
          } catch (IOException ex) {
-            if(debugOutput){
+            if (debugOutput) {
                ex.printStackTrace();
             }
          }
@@ -116,11 +118,11 @@ public class OteEndpointReceiveRunnable implements Runnable {
 
    private void processBuffer(ByteBuffer buffer) {
       int magicNumber = 0;
-      if(buffer.remaining() > 4) {
+      if (buffer.remaining() > 4) {
          magicNumber = buffer.getInt(0);
       }
       // compressed stream
-      if(magicNumber == MAGIC_NUMBER) {
+      if (magicNumber == MAGIC_NUMBER) {
          inflater.reset();
          inflater.setInput(buffer.array(), 4, buffer.remaining() - 4);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream(buffer.remaining() - 4);
@@ -132,34 +134,34 @@ public class OteEndpointReceiveRunnable implements Runnable {
             }
             outputStream.close();
             buffer = ByteBuffer.wrap(outputStream.toByteArray());
-         }
-         catch (DataFormatException e) {
+         } catch (DataFormatException e) {
             OseeLog.log(getClass(), Level.SEVERE, e);
-         }
-         catch (IOException e) {
+         } catch (IOException e) {
             OseeLog.log(getClass(), Level.SEVERE, e);
          }
       }
       int typeId = buffer.getShort(0) & 0xFFFF;
-      if(typeId == OteEventMessageHeader.MARKER_VALUE){
+      if (typeId == OteEventMessageHeader.MARKER_VALUE) {
          byte[] data = new byte[buffer.remaining()];
          buffer.get(data);
-         OteEventMessage msg = new OteEventMessage((byte[])data);
+         OteEventMessage msg = new OteEventMessage(data);
          msg.getHeader().TTL.setNoLog(1);
-         if(debugOutput){
+         if (debugOutput) {
             try {
-               System.out.printf("[%s] received: [%s][%d] from [%s:%d]\n", new Date(), msg.getHeader().TOPIC.getValue(), msg.getData().length, msg.getHeader().ADDRESS.getAddress().getHostAddress(), msg.getHeader().ADDRESS.getPort());
+               System.out.printf("[%s] received: [%s][%d] from [%s:%d]\n", new Date(), msg.getHeader().TOPIC.getValue(),
+                  msg.getData().length, msg.getHeader().ADDRESS.getAddress().getHostAddress(),
+                  msg.getHeader().ADDRESS.getPort());
             } catch (UnknownHostException e) {
                e.printStackTrace();
             }
          }
          OteEventMessageUtil.postEvent(msg);
       } else {
-         for(EndpointDataProcessor processor: dataProcessors){
-            if(processor.getTypeId() == typeId){
-               try{
+         for (EndpointDataProcessor processor : dataProcessors) {
+            if (processor.getTypeId() == typeId) {
+               try {
                   processor.processBuffer(buffer);
-               } catch (Throwable th){
+               } catch (Throwable th) {
                   th.printStackTrace();
                }
             }
@@ -168,7 +170,7 @@ public class OteEndpointReceiveRunnable implements Runnable {
    }
 
    public void setDebugOutput(boolean enable) {
-      debugOutput  = enable;
+      debugOutput = enable;
    }
 
    public InetSocketAddress getAddress() {

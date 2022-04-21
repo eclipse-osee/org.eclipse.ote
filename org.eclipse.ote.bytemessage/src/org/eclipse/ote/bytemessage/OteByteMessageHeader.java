@@ -15,7 +15,6 @@ package org.eclipse.ote.bytemessage;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-
 import org.eclipse.osee.ote.message.IMessageHeader;
 import org.eclipse.osee.ote.message.data.HeaderData;
 import org.eclipse.osee.ote.message.data.MemoryResource;
@@ -25,9 +24,9 @@ import org.eclipse.osee.ote.message.elements.LongIntegerElement;
 import org.eclipse.osee.ote.message.elements.StringElement;
 import org.eclipse.osee.ote.message.event.SOCKET_ADDRESS_RECORD;
 
-public class OteByteMessageHeader implements IMessageHeader{
+public class OteByteMessageHeader implements IMessageHeader {
 
-   public static final int HEADER_SIZE = 164+53; 
+   public static final int HEADER_SIZE = 164 + 53;
    public static final int MARKER_VALUE = 0xFADE;
    private final HeaderData headerData;
    private final Object[] paths;
@@ -41,24 +40,24 @@ public class OteByteMessageHeader implements IMessageHeader{
    public final IntegerElement TTL;
    public final StringElement RESPONSE_TOPIC;
    public final IntegerElement RESPONSE_ID;
-   public final SOCKET_ADDRESS_RECORD ADDRESS;   
-   
+   public final SOCKET_ADDRESS_RECORD ADDRESS;
+
    private final String name;
 
    public OteByteMessageHeader(OteByteMessage msg, String topic, int messageId, MemoryResource data) {
-     this.name = msg.getName();
-     headerData = new HeaderData("OteEventMessageHeader", data);
-      paths = new Object[]{(msg == null ? "message" : msg.getClass().getName()), "HEADER(OteEventMessageHeader)"};
+      this.name = (msg == null) ? "null" : msg.getName();
+      headerData = new HeaderData("OteEventMessageHeader", data);
+      paths = new Object[] {(msg == null ? "message" : msg.getClass().getName()), "HEADER(OteEventMessageHeader)"};
       MARKER = new IntegerElement(msg, "MARKER", headerData, 0, 0, 15);
-      TOPIC = new StringElement(msg, "TOPIC", headerData, 2, 0, 8*96);
-      MESSAGE_ID = new IntegerElement(msg, "MESSAGE_ID", headerData, 66+32, 0, 31);
-      MESSAGE_SEQUENCE_NUMBER = new IntegerElement(msg, "MESSAGE_ID", headerData, 66+32, 0, 31);
-      UUID_LOW = new LongIntegerElement(msg, "UUID_LOW", headerData, 74+32, 0, 63);
-      UUID_HIGH = new LongIntegerElement(msg, "UUID_HIGH", headerData, 82+32, 0, 63);
-      TTL = new IntegerElement(msg, "TTL", headerData, 90+32, 0, 31);
-      RESPONSE_TOPIC = new StringElement(msg, "TOPIC", headerData, 94+32, 0, 8*64);
-      RESPONSE_ID = new IntegerElement(msg, "RESPONSE_ID", headerData, 158+32, 0, 31);
-      ADDRESS = new SOCKET_ADDRESS_RECORD(msg, "ADDRESS", headerData, 164+32, 0, SOCKET_ADDRESS_RECORD.SIZE*8-1);
+      TOPIC = new StringElement(msg, "TOPIC", headerData, 2, 0, 8 * 96);
+      MESSAGE_ID = new IntegerElement(msg, "MESSAGE_ID", headerData, 66 + 32, 0, 31);
+      MESSAGE_SEQUENCE_NUMBER = new IntegerElement(msg, "MESSAGE_ID", headerData, 66 + 32, 0, 31);
+      UUID_LOW = new LongIntegerElement(msg, "UUID_LOW", headerData, 74 + 32, 0, 63);
+      UUID_HIGH = new LongIntegerElement(msg, "UUID_HIGH", headerData, 82 + 32, 0, 63);
+      TTL = new IntegerElement(msg, "TTL", headerData, 90 + 32, 0, 31);
+      RESPONSE_TOPIC = new StringElement(msg, "TOPIC", headerData, 94 + 32, 0, 8 * 64);
+      RESPONSE_ID = new IntegerElement(msg, "RESPONSE_ID", headerData, 158 + 32, 0, 31);
+      ADDRESS = new SOCKET_ADDRESS_RECORD(msg, "ADDRESS", headerData, 164 + 32, 0, SOCKET_ADDRESS_RECORD.SIZE * 8 - 1);
 
       TOPIC.setValue(topic);
       MARKER.setValue(MARKER_VALUE);
@@ -67,7 +66,7 @@ public class OteByteMessageHeader implements IMessageHeader{
       addElement(TOPIC);
       addElement(MESSAGE_ID);
    }
-   
+
    private <T extends Element> T addElement(T instance) {
       instance.addPath(paths);
       return instance;
@@ -85,7 +84,7 @@ public class OteByteMessageHeader implements IMessageHeader{
 
    @Override
    public Element[] getElements() {
-      return new Element[]{MARKER, TOPIC};
+      return new Element[] {MARKER, TOPIC};
    }
 
    @Override
@@ -96,11 +95,9 @@ public class OteByteMessageHeader implements IMessageHeader{
    @Override
    public String toXml() {
       StringBuilder builder = new StringBuilder(256);
-      builder.append("<OteEventMessageHeader> ").
-         append("MARKER=\"").append(MARKER.getValue()).append("\" ").
-         append("TOPIC=\"").append(TOPIC.getValue()).append("\" ").
-         append("MESSAGE_ID=\"").append(MESSAGE_ID.getValue()).append("\" ").
-      append("</OteEventMessageHeader>");
+      builder.append("<OteEventMessageHeader> ").append("MARKER=\"").append(MARKER.getValue()).append("\" ").append(
+         "TOPIC=\"").append(TOPIC.getValue()).append("\" ").append("MESSAGE_ID=\"").append(
+            MESSAGE_ID.getValue()).append("\" ").append("</OteEventMessageHeader>");
       return builder.toString();
    }
 

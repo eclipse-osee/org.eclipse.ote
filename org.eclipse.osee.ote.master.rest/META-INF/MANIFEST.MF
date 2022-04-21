@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.ote.master.rest;singleton:=true
 Bundle-Version: 0.26.3.qualifier
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: javax.ws.rs,
  javax.ws.rs.core,
  javax.ws.rs.ext,

@@ -162,14 +162,14 @@ public class MessageRecordDetailContentProvider implements ITreeContentProvider 
          if (o1 instanceof WatchedElementNode && o2 instanceof WatchedElementNode) {
             Integer int1 = ((WatchedElementNode) o1).getByteOffset();
             Integer int2 = ((WatchedElementNode) o2).getByteOffset();
-            
-            if( int1 == null ) {
-               if( int2 == null ) {
+
+            if (int1 == null) {
+               if (int2 == null) {
                   return 0;
                } else {
                   return -1;
                }
-            } else if( int2 == null ) {
+            } else if (int2 == null) {
                return 1;
             } else {
                int byte1 = int1.intValue();
@@ -187,31 +187,19 @@ public class MessageRecordDetailContentProvider implements ITreeContentProvider 
                }
             }
          } else if (o1 instanceof HeaderElementNode && o2 instanceof HeaderElementNode) {
-            Integer int1 = ((HeaderElementNode) o1).getByteOffset();
-            Integer int2 = ((HeaderElementNode) o2).getByteOffset();
-            if( int1 == null ) {
-               if( int2 == null ) {
-                  return 0;
-               } else {
-                  return -1;
-               }
-            } else if( int2 == null ) {
-               return 1;
+
+            int byte1 = ((HeaderElementNode) o1).getByteOffset();
+            int byte2 = ((HeaderElementNode) o2).getByteOffset();
+            if (byte1 == byte2) {
+               int msb1 = ((HeaderElementNode) o1).getMsb();
+               int msb2 = ((HeaderElementNode) o2).getMsb();
+
+               return msb1 - msb2;
+
             } else {
-               int byte1 = int1.intValue();
-               int byte2 = int2.intValue();
-               if (byte1 == byte2) {
-                  Integer msb1 = ((HeaderElementNode) o1).getMsb();
-                  Integer msb2 = ((HeaderElementNode) o2).getMsb();
-                  if (msb1 == null || msb2 == null) {
-                     return byte1 - byte2;
-                  } else {
-                     return msb1.intValue() - msb2.intValue();
-                  }
-               } else {
-                  return byte1 - byte2;
-               }
+               return byte1 - byte2;
             }
+
          } else {
             return 0;
          }

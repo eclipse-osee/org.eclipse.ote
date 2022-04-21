@@ -4,11 +4,12 @@ Bundle-Name: OSEE OTE Rest Model (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.rest.model
 Bundle-Version: 0.26.3.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.osee.ote.rest.model
-Import-Package: javax.xml.bind.annotation,
- org.eclipse.osee.framework.core.exception,
+Import-Package: org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.util,
- org.eclipse.osee.framework.jdk.core.util
+ org.eclipse.osee.framework.jdk.core.util,
+ jakarta.xml.bind,
+ jakarta.xml.bind.annotation
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core

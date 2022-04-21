@@ -4,7 +4,7 @@ Bundle-Name: OSEE OTE Rest (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.rest
 Bundle-Version: 0.26.3.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/*.xml
 Import-Package: com.google.gson,
  javax.ws.rs,

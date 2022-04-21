@@ -13,12 +13,11 @@
 
 package org.eclipse.osee.ote.rest.model;
 
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -28,29 +27,29 @@ public class OTETestRun {
 
    private OTEConfiguration jarConfiguration;
    private Properties globalProperties;
-   private List<Properties> tests;
- 
-   public OTETestRun(){
+   private final List<Properties> tests;
+
+   public OTETestRun() {
       tests = new ArrayList<>();
       globalProperties = new Properties();
    }
-   
-   public Properties getGlobalProperties(){
-	   return globalProperties;
+
+   public Properties getGlobalProperties() {
+      return globalProperties;
    }
-   
+
    @XmlElementWrapper
-   @XmlElement(name="Properties")
-   public List<Properties> getTests(){
-	   return tests;
+   @XmlElement(name = "Properties")
+   public List<Properties> getTests() {
+      return tests;
    }
 
    public void setGlobalProperties(Properties globalProperties) {
-	   this.globalProperties = globalProperties;
+      this.globalProperties = globalProperties;
    }
 
-   public void addTest(Properties test){
-	   tests.add(test);
+   public void addTest(Properties test) {
+      tests.add(test);
    }
 
    public OTEConfiguration getJarConfiguration() {
@@ -61,5 +60,4 @@ public class OTETestRun {
       this.jarConfiguration = jarConfiguration;
    }
 
-   
 }

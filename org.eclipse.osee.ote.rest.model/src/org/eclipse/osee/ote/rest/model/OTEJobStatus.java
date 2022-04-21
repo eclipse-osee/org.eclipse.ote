@@ -12,34 +12,33 @@
  **********************************************************************/
 package org.eclipse.osee.ote.rest.model;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.net.URL;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class OTEJobStatus {
 
    private URL updatedJobStatus;
    private String jobId;
-   
+
    private int totalUnitsOfWork;
    private int unitsWorked;
    private String errorLog;
    private boolean jobComplete;
    private boolean success;
-   
-   public OTEJobStatus(){
+
+   public OTEJobStatus() {
       errorLog = "";
       jobComplete = false;
       success = true;
       totalUnitsOfWork = 0;
       unitsWorked = 0;
    }
-   
+
    public int getTotalUnitsOfWork() {
       return totalUnitsOfWork;
    }
-   
+
    public int getUnitsWorked() {
       return unitsWorked;
    }
@@ -63,7 +62,7 @@ public class OTEJobStatus {
    public void incrememtUnitsWorked() {
       unitsWorked++;
    }
-   
+
    public void setUnitsWorked(int unitsWorked) {
       this.unitsWorked = unitsWorked;
    }
@@ -75,7 +74,7 @@ public class OTEJobStatus {
    public void setJobComplete(boolean jobComplete) {
       this.jobComplete = jobComplete;
    }
-   
+
    public boolean isSuccess() {
       return success;
    }
@@ -99,5 +98,5 @@ public class OTEJobStatus {
    public void setJobId(String jobId) {
       this.jobId = jobId;
    }
-   
+
 }

@@ -3,6 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Util
 Bundle-SymbolicName: org.eclipse.ote.util
 Bundle-Version: 0.26.3.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.eclipse.osee.framework.jdk.core.text,
  org.eclipse.osee.framework.jdk.core.text.rules
