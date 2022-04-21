@@ -12,26 +12,24 @@
  **********************************************************************/
 package org.eclipse.osee.ote.rest.model;
 
-import java.util.Arrays;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class KeyValue {
 
    private String key;
    private String value;
-   
+
    private List<String> values;
-   
-   public KeyValue(){
-      
+
+   public KeyValue() {
+
    }
-   
-   public KeyValue(String key, String value){
+
+   public KeyValue(String key, String value) {
       this.key = key;
       this.value = value;
    }
@@ -56,13 +54,13 @@ public class KeyValue {
    public void setValue(String value) {
       this.value = value;
    }
-   
+
    @XmlElementWrapper
-   @XmlElement(name="Values")
+   @XmlElement(name = "Values")
    public List<String> getValues() {
       return values;
    }
-   
+
    public List<String> setValues(List<String> values) {
       return this.values = values;
    }

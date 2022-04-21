@@ -4,5 +4,5 @@ Bundle-Name: OTE IO Mux Unit Tests
 Bundle-SymbolicName: org.eclipse.ote.io.mux.test
 Bundle-Version: 0.26.3.qualifier
 Fragment-Host: org.eclipse.ote.io.mux
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit

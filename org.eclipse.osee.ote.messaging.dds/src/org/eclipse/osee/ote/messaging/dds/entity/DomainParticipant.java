@@ -43,7 +43,7 @@ import org.eclipse.osee.ote.messaging.dds.service.TypeSupport;
  * interact with middleware which could be used to link this with another data system. The middleware is provided a
  * special publisher to inject data into this system, and receives data from all other publishers by means of the
  * {@link DomainParticipantListener}.
- * 
+ *
  * @author Robert A. Fisher
  * @author David Diepenbrock
  */
@@ -61,16 +61,17 @@ public class DomainParticipant extends Entity implements EntityFactory {
    private final Subscriber builtinSubscriber;
 
    /**
-    * @param domainId The domain this participant will belong to
-    * @param domain A reference to the collection of all participants in this domain.
-    * @param enabled Flag which indicates if this is enabled.
-    * @param listener The listener attached to this.
-    * @param parentFactory A reference to the factory that is creating this.
+    * @param domainId           The domain this participant will belong to
+    * @param domain             A reference to the collection of all participants in this domain.
+    * @param enabled            Flag which indicates if this is enabled.
+    * @param listener           The listener attached to this.
+    * @param parentFactory      A reference to the factory that is creating this.
     * @param threadedPublishing <code>True</code> if we should create a separate thread for processing published data.
-    * If <code>False</code>, the published data will be processed within the thread which makes the call to write data
-    * into the system (or resume publications).
-    * @param typeCapacity The initial capacity to use when creating the <code>Map</code> for the {@link TypeRegistry}.
-    * @param typeFactor The load factor to use when creating the <code>Map</code> for the {@link TypeRegistry}.
+    *                           If <code>False</code>, the published data will be processed within the thread which
+    *                           makes the call to write data into the system (or resume publications).
+    * @param typeCapacity       The initial capacity to use when creating the <code>Map</code> for the
+    *                           {@link TypeRegistry}.
+    * @param typeFactor         The load factor to use when creating the <code>Map</code> for the {@link TypeRegistry}.
     */
    DomainParticipant(DomainId domainId, Collection<DomainParticipant> domain, boolean enabled, DomainParticipantListener listener, EntityFactory parentFactory, boolean threadedPublishing, int typeCapacity, float typeFactor) {
       super(enabled, listener, parentFactory);
@@ -87,9 +88,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
 
    /**
     * Creates the DomainParticipant with default settings for typeCapacity and typeFactor.
-    * 
+    *
     * @see DomainParticipant#DomainParticipant(DomainId, Collection, boolean, DomainParticipantListener, EntityFactory,
-    * boolean, int, float)
+    *      boolean, int, float)
     */
    DomainParticipant(DomainId domainId, Collection<DomainParticipant> domain, boolean enabled, DomainParticipantListener listener, EntityFactory parentFactory, boolean threadedPublishing) {
       this(domainId, domain, enabled, listener, parentFactory, threadedPublishing, 256, .75f);
@@ -98,7 +99,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
    /**
     * This method is here for future functionality that is described in the DDS specification but has not been
     * implemented or used.
-    * 
+    *
     * @return Returns the builtinSubscriber.
     */
    public Subscriber getBuiltinSubscriber() {
@@ -118,9 +119,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
 
    /**
     * Sets the listener attached to this <code>DomainParticipant</code>. This replaces the existing listener.
-    * 
+    *
     * @param listener The listener to attach.
-    * @param mask A mask identifying which communication statuses the listener should be invoked.
+    * @param mask     A mask identifying which communication statuses the listener should be invoked.
     * @return The {@link ReturnCode}returned by {@link Entity#setBaseListener(Listener, StatusKind)}.
     * @see Entity#setBaseListener(Listener, StatusKind)
     */
@@ -130,7 +131,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
 
    /**
     * Creates a publisher with the passed listener attached.
-    * 
+    *
     * @param publisherListener The listener to attach to the newly created Publisher.
     * @return The newly created publisher, or null if an error occurred in creation.
     */
@@ -151,11 +152,11 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * Creates a middlewarePublisher. If a middlewarePublisher has already been created this will return a reference to
     * the existing middlewarePublisher. The middlewarePublisher is provided as a link for an outside system to be able
     * to inject data into this system.
-    * 
+    *
     * @param publisherListener The listener to attach to the newly created <code>Publisher</code>. Note that this can be
-    * null.
+    *                          null.
     * @return A <code>Publisher</code> with the passed in listener assigned to it, or null if an error occurred in
-    * creation.
+    *         creation.
     */
    public Publisher getMiddlewarePublisherInstance(PublisherListener publisherListener) {
       if (middlewarePublisher == null) {
@@ -168,7 +169,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * Creates a new <code>Publisher</code> with a particular listener assigned to it. The publisher will be created
     * enabled iff this <code>DomainParticipant</code> is enabled. If an OutOfMemoryError is thrown while attempting get
     * the new publisher, <b>null </b> will be returned.
-    * 
+    *
     * @param publisherListener The listener to be attached.
     * @return The newly created <code>Publisher</code>, or null if an error occurred in creation.
     */
@@ -183,10 +184,10 @@ public class DomainParticipant extends Entity implements EntityFactory {
    /**
     * Removes the passed <code>Publisher</code> iff the publisher was created by this <code>DomainParticipant</code> and
     * does not have any attached <code>DataWriter</code> 's.
-    * 
+    *
     * @param publisher The publisher to be removed.
     * @return {@link ReturnCode#OK}if the publisher was successfully removed, {@link ReturnCode#PRECONDITION_NOT_MET}if
-    * the publisher had writers or was not created by this DomainParticipant, or {@link ReturnCode#ERROR}.
+    *         the publisher had writers or was not created by this DomainParticipant, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode deletePublisher(Publisher publisher) {
 
@@ -216,7 +217,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
 
    /**
     * Creates a <code>Subscriber</code> with the provided listener attached.
-    * 
+    *
     * @param subscriberListener The listener to be attached.
     * @return The newly created <code>Subscriber</code>, or null if an error occurred in creation.
     */
@@ -235,10 +236,10 @@ public class DomainParticipant extends Entity implements EntityFactory {
    /**
     * Removes the passed <code>Subscriber</code> iff the subscriber was created by this <code>DomainParticipant</code>
     * and does not have any attached <code>DataReader</code> 's.
-    * 
+    *
     * @param subscriber The subscriber to be removed.
     * @return {@link ReturnCode#OK}if the subscriber was successfully removed, {@link ReturnCode#PRECONDITION_NOT_MET}if
-    * the subscriber had readers or was not created by this DomainParticipant, or {@link ReturnCode#ERROR}.
+    *         the subscriber had readers or was not created by this DomainParticipant, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode deleteSubscriber(Subscriber subscriber) {
 
@@ -270,13 +271,13 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * Creates a <code>Topic</code> on this <code>DomainParticipant</code> with the give name. If a <code>Topic</code>
     * already exists with the given name, then the existing topic will be returned IF the typeName matches that of the
     * existing <code>Topic</code>. If the type's do not match, <b>null </b> is returned.
-    * 
-    * @param name The name of the topic to create.
-    * @param typeName The name of the type associated with the topic.
+    *
+    * @param name          The name of the topic to create.
+    * @param typeName      The name of the type associated with the topic.
     * @param topicListener The listener to be attached to the created topic if it is newly created. If the topic already
-    * exists, the provided listener is ignored.
+    *                      exists, the provided listener is ignored.
     * @return A new <code>Topic</code> if one does not already exist, or an existing topic with the same
-    * <code>name</code> and <code>typeName</code>, otherwise <b>null </b>
+    *         <code>name</code> and <code>typeName</code>, otherwise <b>null </b>
     */
    public Topic createTopic(String name, String namespace, String typeName, TopicListener topicListener) {
 
@@ -301,10 +302,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
             } else {
                // There is a violation, and no topic will be returned since a topic
                // with this name already exists, but the types do not match
-               throw new RuntimeException(
-                  String.format(
-                     "found topic name:[%s] namespace:[%s] but there was a type incompatibility between [%s] (from topic [%s]) and [%s].",
-                     name, namespace, topic.getTypeName(), topic.getName(), typeName));
+               throw new RuntimeException(String.format(
+                  "found topic name:[%s] namespace:[%s] but there was a type incompatibility between [%s] (from topic [%s]) and [%s].",
+                  name, namespace, topic.getTypeName(), topic.getName(), typeName));
             }
          } else { // Otherwise, the topic did not already exist
             topic = new Topic(this, typeSignature, name, namespace, this.isEnabled(), topicListener, this);
@@ -318,17 +318,22 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * This method deletes a <code>Topic</code> previously created by this <code>DomainParticipant</code>. No action will
     * be taken if the topic still has data readers/writers attached to it, or if it was not created by this
     * <code>DomainParticipant</code>.
-    * 
+    *
     * @param topic The topic to delete.
     * @return {@link ReturnCode#OK}if the topic was successfully removed, {@link ReturnCode#PRECONDITION_NOT_MET}if the
-    * topic has readers/writers or was not created by this DomainParticipant, {@link ReturnCode#NOT_ENABLED}if this
-    * DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
+    *         topic has readers/writers or was not created by this DomainParticipant, {@link ReturnCode#NOT_ENABLED}if
+    *         this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode deleteTopic(Topic topic) {
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
       if (!isEnabled()) {
          return ReturnCode.NOT_ENABLED;
+      }
+
+      // Check that a topic was supplied
+      if (topic == null) {
+         return ReturnCode.ERROR;
       }
 
       // Check the pre-condition
@@ -338,11 +343,6 @@ public class DomainParticipant extends Entity implements EntityFactory {
       // Check the pre-condition
       if (topic.hasDataWriters()) {
          return ReturnCode.PRECONDITION_NOT_MET;
-      }
-
-      // Check that a topic was supplied
-      if (topic == null) {
-         return ReturnCode.ERROR;
       }
 
       // Attempt to remove, if it did not exist in our list then return an error,
@@ -366,7 +366,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * Get a <code>TopicDescription</code> that matches a particular name. PARTIAL: Since the
     * <code>ContentFilteredTopic</code> and <code>MultiTopic</code> classes are not implemented, this method simply
     * searches the list of <code>Topic</code> classes.
-    * 
+    *
     * @param namespace The name to match against the <code>TopicDescription</code>.
     * @return The <code>TopicDescription</code> that has the specified name, <b>null </b> if no such one exists.
     */
@@ -378,7 +378,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
    /**
     * Searches the current list of Topics for this DomainParticipant for a topic whose name matches the provided
     * topicName
-    * 
+    *
     * @param topicName The topic name to match
     * @return A reference to the existing topic whose name matches topicName, or null if no such topic exists.
     */
@@ -389,9 +389,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
    /**
     * This method is here for future functionality that is described in the DDS specification but has not been
     * implemented or used.
-    * 
+    *
     * @return {@link ReturnCode#OK}if the participant was successfully set to be ignored, {@link ReturnCode#NOT_ENABLED}
-    * if this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
+    *         if this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode ignoreParticipant() {
       // UNSURE this is stubbed for now, until we determine it's necessity
@@ -407,9 +407,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
    /**
     * This method is here for future functionality that is described in the DDS specification but has not been
     * implemented or used.
-    * 
+    *
     * @return {@link ReturnCode#OK}if the topic was successfully set to be ignored, {@link ReturnCode#NOT_ENABLED}if
-    * this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
+    *         this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode ignoreTopic() {
       // UNSURE This method has not been implemented, but is called out in the spec
@@ -428,9 +428,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
    /**
     * This method is here for future functionality that is described in the DDS specification but has not been
     * implemented or used.
-    * 
+    *
     * @return {@link ReturnCode#OK}if the publication was successfully set to be ignored, {@link ReturnCode#NOT_ENABLED}
-    * if this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
+    *         if this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode ignorePublication() {
       // UNSURE This method has not been implemented, but is called out in the spec
@@ -449,9 +449,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
    /**
     * This method is here for future functionality that is described in the DDS specification but has not been
     * implemented or used.
-    * 
+    *
     * @return {@link ReturnCode#OK}if the subscription was successfully set to be ignored,
-    * {@link ReturnCode#NOT_ENABLED}if this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
+    *         {@link ReturnCode#NOT_ENABLED}if this DomainParticipant is not enabled, or {@link ReturnCode#ERROR}.
     */
    public ReturnCode ignoreSubscription() {
       // UNSURE This method has not been implemented, but is called out in the spec
@@ -469,7 +469,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
 
    /**
     * Gets the <code>DomainId</code> that this <code>DomainParticipant</code> belongs to.
-    * 
+    *
     * @return The <code>DomainId</code> of this participant.
     */
    public DomainId getDomainId() {
@@ -480,9 +480,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * Performs a deep deletion of contained entities (Publishers, Subscribers, Topics). This will cause a recursive call
     * of <code>deleteContainedEntities</code> through out all of the contained entities. This can only be performed if
     * the <code>DomainParticipant</code> is enabled.
-    * 
+    *
     * @return {@link ReturnCode#OK}if the all entities were successfully deleted, or {@link ReturnCode#NOT_ENABLED}if
-    * this DomainParticipant is not enabled.
+    *         this DomainParticipant is not enabled.
     */
    public ReturnCode deleteContainedEntities() {
 
@@ -523,7 +523,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
 
    /**
     * Returns true iff this <code>DomainParticipant</code> contains at least one publisher, subscriber or topic.
-    * 
+    *
     * @return <b>true </b> if this contains an entity, <b>false </b> otherwise.
     */
    public boolean hasEntities() {
@@ -535,9 +535,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * middleware (by means of the {@link DomainParticipantListener}of the new data unless it originated from the
     * middlewarePublisher. The middleware is only notified of data originating from this <code>DomainPariticipant</code>
     * , that is, data published from other participants in the domain will not be sent to the middleware.
-    * 
-    * @param destination TODO
-    * @param source TODO
+    *
+    * @param destination   TODO
+    * @param source        TODO
     * @param dataStoreItem The <code>DataStoreItem</code> that was published.
     */
    void processPublishedData(IDestination destination, ISource source, DataStoreItem dataStoreItem) { // package scope since it is a
@@ -562,7 +562,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
 
       }
 
-      if (writer == null || writer != null && writer.isPublishBackToLocalDDSReaders()) {
+      if (writer == null || writer.isPublishBackToLocalDDSReaders()) {
          // Notify all of the subscribers in our domain
          for (Subscriber domainSubscribers : subscribers) {
             domainSubscribers.processNewData(dataStoreItem);
@@ -573,7 +573,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
    /**
     * Gets the <code>TypeRegistry</code> used by {@link TypeSupport}to store the types registered for this
     * <code>DomainParticipant</code>.
-    * 
+    *
     * @return Returns the typeRegistry.
     */
    public TypeRegistry getTypeRegistry() {
@@ -582,7 +582,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
 
    /**
     * Gets the Middleware <code>Publisher</code> if one has been created.
-    * 
+    *
     * @return Returns the <code>Publisher</code> for the middleware, or null if it has not been created.
     * @see DomainParticipant
     */
@@ -592,13 +592,14 @@ public class DomainParticipant extends Entity implements EntityFactory {
 
    /**
     * Gets the current <code>Collection</code> of <code>Publisher</code>'s for this <code>DomainPariticpant</code>.
-    * 
+    *
     * @return Returns the <code>Collection</code> of <code>Publisher</code> 's.
     */
    public CopyOnWriteArrayList<Publisher> getPublishers() {
       return publishers;
    }
 
+   @Override
    public void dispose() {
       for (Topic topic : topics.values()) {
          topic.clearDataReaders();

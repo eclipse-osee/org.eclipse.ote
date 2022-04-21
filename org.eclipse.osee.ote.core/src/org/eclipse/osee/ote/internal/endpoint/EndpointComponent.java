@@ -88,7 +88,7 @@ public class EndpointComponent implements OteUdpEndpoint {
    @Override
    public synchronized OteUdpEndpointSender getOteEndpointThreadedSender(InetSocketAddress address) {
       OteUdpEndpointSender sender = senders.get(address);
-      if (sender == null || (sender != null && sender.isClosed())) {
+      if (sender == null || sender.isClosed()) {
          sender = new OteUdpEndpointSender(address);
          sender.setDebug(debug);
          sender.start();

@@ -41,7 +41,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.ote.message.lookup.MessageLookup;
@@ -50,9 +49,9 @@ import org.eclipse.ote.message.lookup.MessageLookupProvider;
 import org.eclipse.ote.message.lookup.MessageLookupResult;
 import org.osgi.framework.FrameworkUtil;
 
-
 /**
  * Uses an in-memory SQL database to store message information
+ *
  * @author Michael P. Masterson
  */
 public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
@@ -67,15 +66,17 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
    private static final String USER_NAME = "sa";
    private static final String USER_PW = "";
 
-   private HashMap<String, Integer> messageTypeMap;
-   private HashMap<String, Integer> suMap;
-   private List<String> descriptiveProviderNames;
+   private final HashMap<String, Integer> messageTypeMap;
+   private final HashMap<String, Integer> suMap;
+   private final List<String> descriptiveProviderNames;
    private File dbTempDir;
 
-   private final String DROP_TABLES = "DROP TABLE messages IF EXISTS; DROP TABLE elements IF EXISTS; DROP TABLE sources IF EXISTS; DROP TABLE destinations IF EXISTS; DROP TABLE types IF EXISTS; DROP TABLE sus IF EXISTS;";
+   private final String DROP_TABLES =
+      "DROP TABLE messages IF EXISTS; DROP TABLE elements IF EXISTS; DROP TABLE sources IF EXISTS; DROP TABLE destinations IF EXISTS; DROP TABLE types IF EXISTS; DROP TABLE sus IF EXISTS;";
    private final String DISABLE_LOGGING = "SET FILES LOG FALSE";
 
-   private final String MESSAGES_INSERT = "INSERT INTO messages (class, messageName, typeId, messageId, byteSize, phase, rate, scheduled, providerId) VALUES(?,?,?,?,?,?,?,?,?);";
+   private final String MESSAGES_INSERT =
+      "INSERT INTO messages (class, messageName, typeId, messageId, byteSize, phase, rate, scheduled, providerId) VALUES(?,?,?,?,?,?,?,?,?);";
    private final String MESSAGES_ID_SELECT = "select msg.id from messages msg where msg.class = ?;";
    private final String MESSAGES_DELETE = "DELETE FROM messages where providerId = ?;";
    private final String ELEMENTS_INSERT = "INSERT INTO elements (id, elementName, providerId) VALUES(?,?,?);";
@@ -90,29 +91,43 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
    private final String TYPE_SEARCH = "SELECT * from types where messageType = ?;";
    private final String SU_SEARCH = "SELECT * from sus where suName = ?;";
 
-   private final String MESSAGE_SEARCH = "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId from messages msg1, types type1 where msg1.messagename like ? and  msg1.typeid = type1.typeid;";
-   private final String MESSAGE_SEARCH_ID = "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId from messages msg1, types type1 where msg1.messageId = ? and msg1.typeid = type1.typeid;";
-   private final String MESSAGE_SEARCH_TYPE = "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId from messages msg1, types type1 where msg1.messagename like ? and msg1.typeid = type1.typeid and messageType in (%s);";
-   private final String MESSAGE_SEARCH_CLASS = "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId, msg1.byteSize, msg1.phase, msg1.rate, msg1.scheduled from messages msg1, types type1 where msg1.class = ? and msg1.typeid = type1.typeid;";
+   private final String MESSAGE_SEARCH =
+      "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId from messages msg1, types type1 where msg1.messagename like ? and  msg1.typeid = type1.typeid;";
+   private final String MESSAGE_SEARCH_ID =
+      "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId from messages msg1, types type1 where msg1.messageId = ? and msg1.typeid = type1.typeid;";
+   private final String MESSAGE_SEARCH_TYPE =
+      "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId from messages msg1, types type1 where msg1.messagename like ? and msg1.typeid = type1.typeid and messageType in (%s);";
+   private final String MESSAGE_SEARCH_CLASS =
+      "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId, msg1.byteSize, msg1.phase, msg1.rate, msg1.scheduled from messages msg1, types type1 where msg1.class = ? and msg1.typeid = type1.typeid;";
 
-   private final String ELEMENT_SEARCH = "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId, el1.elementName from elements el1, messages msg1, types type1 where el1.id = msg1.id and type1.typeId = msg1.typeId and el1.elementname like ?;";
-   private final String ELEMENT_SEARCH_TYPE = "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId, el1.elementName from elements el1, messages msg1, types type1 where el1.id = msg1.id and type1.typeId = msg1.typeId and el1.elementname like ? and type1.messageType in (%s);";
+   private final String ELEMENT_SEARCH =
+      "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId, el1.elementName from elements el1, messages msg1, types type1 where el1.id = msg1.id and type1.typeId = msg1.typeId and el1.elementname like ?;";
+   private final String ELEMENT_SEARCH_TYPE =
+      "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId, el1.elementName from elements el1, messages msg1, types type1 where el1.id = msg1.id and type1.typeId = msg1.typeId and el1.elementname like ? and type1.messageType in (%s);";
 
-   private final String MESSAGE_SEARCH_ELEMENT_JOIN = "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId, el1.elementName "
-                                                    + "from elements el1, messages msg1, types type1 "
-                                                    + "where el1.id = msg1.id and type1.typeId = msg1.typeId and msg1.messageName LIKE ?;";
+   private final String MESSAGE_SEARCH_ELEMENT_JOIN =
+      "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId, el1.elementName "
+         + "from elements el1, messages msg1, types type1 "
+         + "where el1.id = msg1.id and type1.typeId = msg1.typeId and msg1.messageName LIKE ?;";
 
-   private final String MESSAGE_SEARCH_ELEMENT_JOIN_TYPE = "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId,  el1.elementName "
-                                                    + "from elements el1, messages msg1, types type1 "
-                                                    + "where el1.id = msg1.id and type1.typeId = msg1.typeId and msg1.messageName LIKE ? and type1.messageType in (%s);";
-   
-   private final String ALL_MESSAGE_SEARCH = "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId from messages msg1, types type1 where type1.typeId = msg1.typeId";
-   private final String ALL_MESSAGE_SEARCH_TYPES = "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId from messages msg1, types type1 where type1.typeId = msg1.typeId and type1.messageType in (%s)";
+   private final String MESSAGE_SEARCH_ELEMENT_JOIN_TYPE =
+      "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId,  el1.elementName "
+         + "from elements el1, messages msg1, types type1 "
+         + "where el1.id = msg1.id and type1.typeId = msg1.typeId and msg1.messageName LIKE ? and type1.messageType in (%s);";
 
-   private final String SOURCES_FOR_MSG_SEARCH = "select su1.suName from sus su1, sources src1 where src1.messageId = ? and su1.suId = src1.suId";
-   private final String DESTINATIONS_FOR_MSG_SEARCH = "select su1.suName from sus su1, destinations dest1 where dest1.messageId = ? and su1.suId = dest1.suId";
-   private final String MSGS_FOR_SOURCES_SEARCH = "select src1.messageId from sus su1, sources src1 where su1.suName like ? and su1.suId = src1.suId";
-   private final String MSGS_FOR_DESTINATIONS_SEARCH = "select dest1.messageId from sus su1, destinations dest1 where su1.suName like ? and su1.suId = dest1.suId";
+   private final String ALL_MESSAGE_SEARCH =
+      "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId from messages msg1, types type1 where type1.typeId = msg1.typeId";
+   private final String ALL_MESSAGE_SEARCH_TYPES =
+      "select msg1.class, msg1.messageName, type1.messageType, msg1.messageId from messages msg1, types type1 where type1.typeId = msg1.typeId and type1.messageType in (%s)";
+
+   private final String SOURCES_FOR_MSG_SEARCH =
+      "select su1.suName from sus su1, sources src1 where src1.messageId = ? and su1.suId = src1.suId";
+   private final String DESTINATIONS_FOR_MSG_SEARCH =
+      "select su1.suName from sus su1, destinations dest1 where dest1.messageId = ? and su1.suId = dest1.suId";
+   private final String MSGS_FOR_SOURCES_SEARCH =
+      "select src1.messageId from sus su1, sources src1 where su1.suName like ? and su1.suId = src1.suId";
+   private final String MSGS_FOR_DESTINATIONS_SEARCH =
+      "select dest1.messageId from sus su1, destinations dest1 where su1.suName like ? and su1.suId = dest1.suId";
 
    private PreparedStatement messageInsert;
    private PreparedStatement messageIdSelect;
@@ -141,8 +156,8 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
    private HashMap<Integer, PreparedStatement> messageElementTypeMap;
 
    private boolean readyToAddEntries = false;
-   private Object addLock = new Object();
-   private List<MessageLookupProvider> messageLookupProviders = new ArrayList<MessageLookupProvider>();
+   private final Object addLock = new Object();
+   private final List<MessageLookupProvider> messageLookupProviders = new ArrayList<MessageLookupProvider>();
 
    private ExecutorService startupAndLookupThread;
    private Future<?> initialization;
@@ -164,35 +179,34 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
 
    public void start() {
       createStartupAndLookupThread();
-      initialization = startupAndLookupThread.submit(
-            new Runnable() {
-               @Override
-               public void run() {
-                  try {
-                     initialize();
-                  } catch (IOException e) {
-                     OseeLog.log(getClass(), Level.SEVERE, "Failure during start of MessageLookupComponent", e);
-                  } catch (ClassNotFoundException e) {
-                     OseeLog.log(getClass(), Level.SEVERE, "Failure during start of MessageLookupComponent", e);
-                  } catch (SQLException e) {
-                     OseeLog.log(getClass(), Level.SEVERE, "Failure during start of MessageLookupComponent", e);
-                  }
-               }
-            });
+      initialization = startupAndLookupThread.submit(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               initialize();
+            } catch (IOException e) {
+               OseeLog.log(getClass(), Level.SEVERE, "Failure during start of MessageLookupComponent", e);
+            } catch (ClassNotFoundException e) {
+               OseeLog.log(getClass(), Level.SEVERE, "Failure during start of MessageLookupComponent", e);
+            } catch (SQLException e) {
+               OseeLog.log(getClass(), Level.SEVERE, "Failure during start of MessageLookupComponent", e);
+            }
+         }
+      });
    }
 
    public synchronized void stop() {
-      if(startupAndLookupThread != null) {
+      if (startupAndLookupThread != null) {
          startupAndLookupThread.shutdownNow();
          try {
-            if(!startupAndLookupThread.awaitTermination(10, TimeUnit.SECONDS)) {
+            if (!startupAndLookupThread.awaitTermination(10, TimeUnit.SECONDS)) {
                OseeLog.log(getClass(), Level.WARNING, "Message startupAndLookupThread still running");
             }
          } catch (InterruptedException e) {
             OseeLog.log(getClass(), Level.SEVERE, "Failure during stop of MessageLookupComponent", e);
          }
       }
-      
+
       if (connection != null) {
          try {
             Statement stmt = connection.createStatement();
@@ -202,7 +216,7 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
          }
          connection = null;
       }
-      
+
       if (dbTempDir != null) {
          Lib.deleteDir(dbTempDir);
       }
@@ -211,6 +225,7 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
    public void addMessageLookupProvider(final MessageLookupProvider messageLookupProvider) {
       startupAndLookupThread.submit(new Runnable() {
 
+         @Override
          public void run() {
             synchronized (addLock) {
                if (readyToAddEntries) {
@@ -231,6 +246,7 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
    public void removeMessageLookupProvider(final MessageLookupProvider messageLookupProvider) {
       startupAndLookupThread.submit(new Runnable() {
 
+         @Override
          public void run() {
             synchronized (addLock) {
                if (readyToAddEntries) {
@@ -291,11 +307,14 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
          messageClassSearch.setString(1, className);
          ResultSet classResults = messageClassSearch.executeQuery();
          if (classResults.next()) {
-            result = new MessageLookupResult(classResults.getString(1), classResults.getString(2), classResults.getString(3), classResults.getInt(4), classResults.getInt(5), classResults.getString(6), classResults.getString(7), classResults.getString(8));
+            result = new MessageLookupResult(classResults.getString(1), classResults.getString(2),
+               classResults.getString(3), classResults.getInt(4), classResults.getInt(5), classResults.getString(6),
+               classResults.getString(7), classResults.getString(8));
             addPubsSubs(result);
          }
          if (classResults.next()) {
-            OseeLog.log(getClass(), Level.INFO, new Exception("Found more than one message for classname: " + className));
+            OseeLog.log(getClass(), Level.INFO,
+               new Exception("Found more than one message for classname: " + className));
          }
          classResults.close();
       } catch (SQLException ex) {
@@ -331,7 +350,8 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
             // first check elements
             PreparedStatement elementSearchType = elementSearchTypeMap.get(types.length);
             if (elementSearchType == null) {
-               elementSearchType = connection.prepareStatement(String.format(ELEMENT_SEARCH_TYPE, getSqlArgs(types.length)));
+               elementSearchType =
+                  connection.prepareStatement(String.format(ELEMENT_SEARCH_TYPE, getSqlArgs(types.length)));
                elementSearchTypeMap.put(types.length, elementSearchType);
             }
             elementSearchType.setString(1, wildcardSearch);
@@ -347,7 +367,8 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
 
             PreparedStatement messageSearchType = messageSearchTypeMap.get(types.length);
             if (messageSearchType == null) {
-               messageSearchType = connection.prepareStatement(String.format(MESSAGE_SEARCH_TYPE, getSqlArgs(types.length)));
+               messageSearchType =
+                  connection.prepareStatement(String.format(MESSAGE_SEARCH_TYPE, getSqlArgs(types.length)));
                messageSearchTypeMap.put(types.length, messageSearchType);
             }
             messageSearchType.setString(1, wildcardSearch);
@@ -362,7 +383,8 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
                String clazz = results.getString(1);
                MessageLookupResult messageLookupResult = uniqueResults.get(clazz);
                if (messageLookupResult == null) {
-                  messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2), results.getString(3), results.getInt(4));
+                  messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2),
+                     results.getString(3), results.getInt(4));
                   uniqueResults.put(messageLookupResult.getClassName(), messageLookupResult);
                }
             }
@@ -380,13 +402,14 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
                messageElementJoinUpdated.setString(index, type);
                index++;
             }
-            
+
             results = messageElementJoinUpdated.executeQuery();
             while (results.next()) {
                String clazz = results.getString(1);
                MessageLookupResult messageLookupResult = uniqueResults.get(clazz);
                if (messageLookupResult == null) {
-                  messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2), results.getString(3), results.getInt(4));
+                  messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2),
+                     results.getString(3), results.getInt(4));
                   uniqueResults.put(messageLookupResult.getClassName(), messageLookupResult);
                }
                messageLookupResult.addElement(results.getString(5));
@@ -420,7 +443,8 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
          try {
             PreparedStatement allMessageSearchType = allMessageSearchTypeMap.get(types.length);
             if (allMessageSearchType == null) {
-               allMessageSearchType = connection.prepareStatement(String.format(ALL_MESSAGE_SEARCH_TYPES, getSqlArgs(types.length)));
+               allMessageSearchType =
+                  connection.prepareStatement(String.format(ALL_MESSAGE_SEARCH_TYPES, getSqlArgs(types.length)));
                allMessageSearchTypeMap.put(types.length, allMessageSearchType);
             }
             int index = 1;
@@ -430,7 +454,8 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
             }
             results = allMessageSearchType.executeQuery();
             while (results.next()) {
-               MessageLookupResult messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2), results.getString(3), results.getInt(4));
+               MessageLookupResult messageLookupResult = new MessageLookupResult(results.getString(1),
+                  results.getString(2), results.getString(3), results.getInt(4));
                uniqueResults.put(messageLookupResult.getClassName(), messageLookupResult);
             }
          } catch (SQLException e) {
@@ -462,7 +487,8 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
       messageIdSearch.setInt(1, id);
       ResultSet results = messageIdSearch.executeQuery();
       while (results.next()) {
-         MessageLookupResult messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2), results.getString(3), results.getInt(4));
+         MessageLookupResult messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2),
+            results.getString(3), results.getInt(4));
          uniqueResults.put(messageLookupResult.getClassName(), messageLookupResult);
       }
       results.close();
@@ -492,7 +518,8 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
                String clazz = results.getString(1);
                MessageLookupResult messageLookupResult = uniqueResults.get(clazz);
                if (messageLookupResult == null) {
-                  messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2), results.getString(3), results.getInt(4));
+                  messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2),
+                     results.getString(3), results.getInt(4));
                   uniqueResults.put(messageLookupResult.getClassName(), messageLookupResult);
                }
             }
@@ -504,7 +531,8 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
                String clazz = results.getString(1);
                MessageLookupResult messageLookupResult = uniqueResults.get(clazz);
                if (messageLookupResult == null) {
-                  messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2), results.getString(3), results.getInt(4));
+                  messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2),
+                     results.getString(3), results.getInt(4));
                   uniqueResults.put(messageLookupResult.getClassName(), messageLookupResult);
                }
                messageLookupResult.addElement(results.getString(5));
@@ -584,7 +612,8 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
          String clazz = results.getString(1);
          MessageLookupResult messageLookupResult = uniqueResults.get(clazz);
          if (messageLookupResult == null) {
-            messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2), results.getString(3), results.getInt(4));
+            messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2),
+               results.getString(3), results.getInt(4));
             uniqueResults.put(messageLookupResult.getClassName(), messageLookupResult);
          }
          messageLookupResult.addElement(results.getString(5));
@@ -621,7 +650,8 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
 
    @Override
    public void addToLookup(int uniqueProviderId, String messageClass, String messageName, String messageType, int messageId, int byteSize, String phase, String rate, String scheduled, List<String> elements) {
-      addToLookup(uniqueProviderId, messageClass, messageName, messageType, messageId, byteSize, phase, rate, scheduled, elements, null, null);
+      addToLookup(uniqueProviderId, messageClass, messageName, messageType, messageId, byteSize, phase, rate, scheduled,
+         elements, null, null);
    }
 
    @Override
@@ -711,7 +741,13 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
          }
          results.close();
       }
-      return id;
+
+      if (id != null) {
+         return id;
+      } else {
+         // TODO: Return non used id to help with errors down the line instead of 0
+         return Integer.MIN_VALUE;
+      }
    }
 
    private int getTypeId(String messageType) throws SQLException {
@@ -731,7 +767,13 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
          }
          results.close();
       }
-      return id;
+
+      if (id != null) {
+         return id;
+      } else {
+         // TODO: Return non used id to help with errors down the line instead of 0
+         return Integer.MIN_VALUE;
+      }
    }
 
    private void createDb() throws IOException, ClassNotFoundException, SQLException {
@@ -815,14 +857,17 @@ public class MessageLookupImpl implements MessageLookup, MessageLookupOperator {
       try {
          results = allMessageNoElements.executeQuery();
          while (results.next()) {
-            MessageLookupResult messageLookupResult = new MessageLookupResult(results.getString(1), results.getString(2), results.getString(3), results.getInt(4));
+            MessageLookupResult messageLookupResult = new MessageLookupResult(results.getString(1),
+               results.getString(2), results.getString(3), results.getInt(4));
             uniqueResults.put(messageLookupResult.getClassName(), messageLookupResult);
          }
       } catch (SQLException e) {
          OseeLog.log(getClass(), Level.SEVERE, e);
       } finally {
          try {
-            results.close();
+            if (results != null) {
+               results.close();
+            }
          } catch (SQLException e) {
             OseeLog.log(getClass(), Level.SEVERE, e);
          }

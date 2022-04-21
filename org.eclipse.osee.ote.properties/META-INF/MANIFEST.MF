@@ -4,7 +4,7 @@ Bundle-Name: OTE Properties
 Bundle-SymbolicName: org.eclipse.osee.ote.properties
 Bundle-Version: 0.26.3.qualifier
 Require-Bundle: org.eclipse.core.runtime
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.osee.ote.properties
 Import-Package: org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.plugin.core

@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ote.server.internal;
 
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -51,7 +50,7 @@ import org.osgi.framework.FrameworkUtil;
  * @author Andrew M. Finkbeiner
  */
 public class OteServiceStarterImpl implements OteServiceStarter {
-   
+
 //	private PackageAdmin packageAdmin;
 	private IRuntimeLibraryManager runtimeLibraryManager;
 	private IConnectionService connectionService;
@@ -62,50 +61,50 @@ public class OteServiceStarterImpl implements OteServiceStarter {
 //	private final ListenForHostRequest listenForHostRequest;
 
 	private IServiceConnector serviceSideConnector;
-   private OTESessionManager oteSessions;
-   private OTEMasterServer masterServer;
+	private OTESessionManager oteSessions;
+	private OTEMasterServer masterServer;
 
-   private ScheduledExecutorService executor;
-   private OTEServer oteServerEntry;
-   private ScheduledFuture<?> taskToCancel;
-   private LookupRegistration lookupRegistration;
-   private URI masterURI;
+	private ScheduledExecutorService executor;
+	private OTEServer oteServerEntry;
+	private ScheduledFuture<?> taskToCancel;
+	private LookupRegistration lookupRegistration;
+	private URI masterURI;
 //   private NodeInfo nodeInfo;
 //   private int brokerPort = 0;
-   private OteUdpEndpoint receiver;
+	private OteUdpEndpoint receiver;
 //   private boolean ENABLE_BROKER;
-   
-   public OteServiceStarterImpl() {
-//      listenForHostRequest = new ListenForHostRequest();
-      executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory(){
-         
-         @Override
-         public Thread newThread(Runnable arg0) {
-            Thread th = new Thread(arg0);
-            th.setName("OTE Lookup Registration");
-            th.setDaemon(true);
-            return th;
-         }
-         
-      });
-   }
 
-   public void bindOTESessionManager(OTESessionManager oteSessions){
-      this.oteSessions = oteSessions;
-   }
-   
-   public void unbindOTESessionManager(OTESessionManager oteSessions){
-      this.oteSessions = null;
-   } 
-   
-	public void bindIRuntimeLibraryManager(IRuntimeLibraryManager runtimeLibraryManager){
-	   this.runtimeLibraryManager = runtimeLibraryManager;
+	public OteServiceStarterImpl() {
+//      listenForHostRequest = new ListenForHostRequest();
+		executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
+
+			@Override
+			public Thread newThread(Runnable arg0) {
+				Thread th = new Thread(arg0);
+				th.setName("OTE Lookup Registration");
+				th.setDaemon(true);
+				return th;
+			}
+
+		});
 	}
-	
-	public void unbindIRuntimeLibraryManager(IRuntimeLibraryManager runtimeLibraryManager){
-      this.runtimeLibraryManager = null;
-   } 
-	
+
+	public void bindOTESessionManager(OTESessionManager oteSessions) {
+		this.oteSessions = oteSessions;
+	}
+
+	public void unbindOTESessionManager(OTESessionManager oteSessions) {
+		this.oteSessions = null;
+	}
+
+	public void bindIRuntimeLibraryManager(IRuntimeLibraryManager runtimeLibraryManager) {
+		this.runtimeLibraryManager = runtimeLibraryManager;
+	}
+
+	public void unbindIRuntimeLibraryManager(IRuntimeLibraryManager runtimeLibraryManager) {
+		this.runtimeLibraryManager = null;
+	}
+
 //	public void bindMessageService(MessageService messageService){
 //	   this.messageService = messageService;
 //	}
@@ -113,23 +112,23 @@ public class OteServiceStarterImpl implements OteServiceStarter {
 //	public void unbindMessageService(MessageService messageService){
 //	   this.messageService = null;
 //	}
-	
-	public void bindIConnectionService(IConnectionService connectionService){
-	   this.connectionService = connectionService;
+
+	public void bindIConnectionService(IConnectionService connectionService) {
+		this.connectionService = connectionService;
 	}
-	
-	public void unbindIConnectionService(IConnectionService connectionService){
-	   this.connectionService = null;
+
+	public void unbindIConnectionService(IConnectionService connectionService) {
+		this.connectionService = null;
 	}
-	
-	public void bindOTEMasterServer(OTEMasterServer masterServer){
-	   this.masterServer = masterServer;
+
+	public void bindOTEMasterServer(OTEMasterServer masterServer) {
+		this.masterServer = masterServer;
 	}
-	
-	public void unbindOTEMasterServer(OTEMasterServer masterServer){
-      this.masterServer = null;
-   }
-	
+
+	public void unbindOTEMasterServer(OTEMasterServer masterServer) {
+		this.masterServer = null;
+	}
+
 //	public void bindPackageAdmin(PackageAdmin packageAdmin){
 //	   this.packageAdmin = packageAdmin;
 //	}
@@ -137,26 +136,30 @@ public class OteServiceStarterImpl implements OteServiceStarter {
 //	public void unbindPackageAdmin(PackageAdmin packageAdmin){
 //      this.packageAdmin = null;
 //   }
-	
-	public void bindOteUdpEndpoint(OteUdpEndpoint receiver){
-	   this.receiver = receiver;
+
+	public void bindOteUdpEndpoint(OteUdpEndpoint receiver) {
+		this.receiver = receiver;
 	}
-	
-	public void unbindOteUdpEndpoint(OteUdpEndpoint receiver){
-	   this.receiver = receiver;
+
+	public void unbindOteUdpEndpoint(OteUdpEndpoint receiver) {
+		this.receiver = receiver;
 	}
-	
+
 	@Override
-	public IHostTestEnvironment start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, String environmentFactoryClass) throws Exception {
+	public IHostTestEnvironment start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config,
+			PropertyParamter propertyParameter, String environmentFactoryClass) throws Exception {
 		return start(serviceSideConnector, config, propertyParameter, null, environmentFactoryClass);
 	}
 
 	@Override
-	public IHostTestEnvironment start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, TestEnvironmentFactory factory) throws Exception {
+	public IHostTestEnvironment start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config,
+			PropertyParamter propertyParameter, TestEnvironmentFactory factory) throws Exception {
 		return start(serviceSideConnector, config, propertyParameter, factory, null);
 	}
 
-	private IHostTestEnvironment start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, TestEnvironmentFactory factory, String environmentFactoryClass) throws Exception {
+	private IHostTestEnvironment start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config,
+			PropertyParamter propertyParameter, TestEnvironmentFactory factory, String environmentFactoryClass)
+			throws Exception {
 		if (service != null) {
 			throw new OseeStateException("An ote Server has already been started.");
 		}
@@ -199,61 +202,64 @@ public class OteServiceStarterImpl implements OteServiceStarter {
 ////		   nodeInfo = new NodeInfo("OTEEmbeddedBroker", uri);
 //		}
 		OteUdpEndpoint oteEndpoint = ServiceUtility.getService(OteUdpEndpoint.class);
-		System.out.printf("SERVER CONNECTION URI[\n\ttcp://%s:%d\n]\n", oteEndpoint.getLocalEndpoint().getAddress().getHostAddress(), oteEndpoint.getLocalEndpoint().getPort());
+		System.out.printf("SERVER CONNECTION URI[\n\ttcp://%s:%d\n]\n",
+				oteEndpoint.getLocalEndpoint().getAddress().getHostAddress(), oteEndpoint.getLocalEndpoint().getPort());
 
-		EnvironmentCreationParameter environmentCreationParameter =
-				new EnvironmentCreationParameter(runtimeLibraryManager, serviceSideConnector, config, factory,
-						environmentFactoryClass);
+		EnvironmentCreationParameter environmentCreationParameter = new EnvironmentCreationParameter(
+				runtimeLibraryManager, serviceSideConnector, config, factory, environmentFactoryClass);
 
-		service =
-				new OteService(environmentCreationParameter, oteSessions, propertyParameter,
-						serviceSideConnector.getProperties(), receiver);
+		service = new OteService(environmentCreationParameter, oteSessions, propertyParameter,
+				serviceSideConnector.getProperties(), receiver);
 
 		serviceSideConnector.init(service);
 
-		
-		
 		if (propertyParameter.isLocalConnector()) {
 			connectionService.addConnector(serviceSideConnector);
 		}
 		if (!propertyParameter.isLocalConnector()) {
 			String masterURIStr = OtePropertiesCore.masterURI.getValue();
-			if(masterURIStr != null){
-			   try{
-			      masterURI = new URI(masterURIStr);
-			      oteServerEntry = createOTEServer(environmentCreationParameter, propertyParameter, service.getServiceID().toString());
-			      lookupRegistration = new LookupRegistration(masterURI, masterServer, oteServerEntry, service);
-			      taskToCancel = executor.scheduleWithFixedDelay(lookupRegistration, 0, 30, TimeUnit.SECONDS);
-			   } catch(Throwable th){
-			      OseeLog.log(getClass(), Level.SEVERE, th);
-			   }
+			if (masterURIStr != null) {
+				try {
+					masterURI = new URI(masterURIStr);
+					oteServerEntry = createOTEServer(environmentCreationParameter, propertyParameter,
+							service.getServiceID().toString());
+					lookupRegistration = new LookupRegistration(masterURI, masterServer, oteServerEntry, service);
+					taskToCancel = executor.scheduleWithFixedDelay(lookupRegistration, 0, 30, TimeUnit.SECONDS);
+				} catch (Throwable th) {
+					OseeLog.log(getClass(), Level.SEVERE, th);
+				}
 			} else {
-				OseeLog.log(getClass(), Level.WARNING, "'ote.master.uri' was not set.  You must use direct connect from the client.");
+				OseeLog.log(getClass(), Level.WARNING,
+						"'ote.master.uri' was not set.  You must use direct connect from the client.");
 			}
-			
+
 		} else {
 //			serviceSideConnector.setProperty("OTEEmbeddedBroker", nodeInfo);
 		}
-		
-		FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(IHostTestEnvironment.class, service, null);
+
+		FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(IHostTestEnvironment.class, service,
+				null);
 		System.out.printf("TEST SERVER INITIALIZATION COMPLETE\n");
 
 		return service;
 	}
-	
-	private OTEServer createOTEServer(EnvironmentCreationParameter environmentCreationParameter, PropertyParamter propertyParameter, String uuid) throws NumberFormatException, UnknownHostException{
-	   OTEServer server = new OTEServer();
-	   server.setName(environmentCreationParameter.getServerTitle().toString());
-	   server.setStation(propertyParameter.getStation());
-	   server.setVersion(propertyParameter.getVersion());
-	   server.setType(propertyParameter.getType());
-	   server.setComment(propertyParameter.getComment());
-	   server.setStartTime(new Date().toString());
-	   server.setOwner(OtePropertiesCore.userName.getValue());
-	   server.setUUID(uuid);
-	   server.setOteRestServer(String.format("tcp://%s:%d", receiver.getLocalEndpoint().getAddress().getHostAddress(), receiver.getLocalEndpoint().getPort()));
-	   server.setOteActivemqServer(String.format("tcp://%s:%d", receiver.getLocalEndpoint().getAddress().getHostAddress(), receiver.getLocalEndpoint().getPort()));
-	   return server;
+
+	private OTEServer createOTEServer(EnvironmentCreationParameter environmentCreationParameter,
+			PropertyParamter propertyParameter, String uuid) throws NumberFormatException, UnknownHostException {
+		OTEServer server = new OTEServer();
+		server.setName(environmentCreationParameter.getServerTitle().toString());
+		server.setStation(propertyParameter.getStation());
+		server.setVersion(propertyParameter.getVersion());
+		server.setType(propertyParameter.getType());
+		server.setComment(propertyParameter.getComment());
+		server.setStartTime(new Date().toString());
+		server.setOwner(OtePropertiesCore.userName.getValue());
+		server.setUUID(uuid);
+		server.setOteRestServer(String.format("tcp://%s:%d", receiver.getLocalEndpoint().getAddress().getHostAddress(),
+				receiver.getLocalEndpoint().getPort()));
+		server.setOteActivemqServer(String.format("tcp://%s:%d",
+				receiver.getLocalEndpoint().getAddress().getHostAddress(), receiver.getLocalEndpoint().getPort()));
+		return server;
 	}
 
 //	private int getServerPort() throws IOException {
@@ -306,22 +312,22 @@ public class OteServiceStarterImpl implements OteServiceStarter {
 				OseeLog.log(getClass(), Level.SEVERE, ex);
 			}
 		}
-		if(oteServerEntry != null) {
-		   try{
-		      lookupRegistration.stop();
-		      taskToCancel.cancel(true);
-		   } finally {
-		      Future<OTEMasterServerResult> removeServer = masterServer.removeServer(masterURI, oteServerEntry);
-		      try {
-               removeServer.get(1000, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException e) {
-               OseeLog.log(getClass(), Level.INFO, e);
-            } catch (ExecutionException e) {
-               OseeLog.log(getClass(), Level.INFO, e);
-            } catch (TimeoutException e) {
-               OseeLog.log(getClass(), Level.INFO, e);
-            }
-		   }
+		if (oteServerEntry != null) {
+			try {
+				lookupRegistration.stop();
+				taskToCancel.cancel(true);
+			} finally {
+				Future<OTEMasterServerResult> removeServer = masterServer.removeServer(masterURI, oteServerEntry);
+				try {
+					removeServer.get(1000, TimeUnit.MILLISECONDS);
+				} catch (InterruptedException e) {
+					OseeLog.log(getClass(), Level.INFO, e);
+				} catch (ExecutionException e) {
+					OseeLog.log(getClass(), Level.INFO, e);
+				} catch (TimeoutException e) {
+					OseeLog.log(getClass(), Level.INFO, e);
+				}
+			}
 		}
 		brokerService = null;
 	}
@@ -385,43 +391,43 @@ public class OteServiceStarterImpl implements OteServiceStarter {
 //	
 	private static class LookupRegistration implements Runnable {
 
-      private final OTEMasterServer masterServer;
-      private final OTEServer server;
-      private final URI uri;
-      private volatile boolean run = true;
-      private final OteService service;
+		private final OTEMasterServer masterServer;
+		private final OTEServer server;
+		private final URI uri;
+		private volatile boolean run = true;
+		private final OteService service;
 
-      public LookupRegistration(URI uri, OTEMasterServer masterServer, OTEServer server, OteService service) {
-         this.masterServer = masterServer;
-         this.server = server;
-         this.uri = uri;
-         this.service = service;
-      }
+		public LookupRegistration(URI uri, OTEMasterServer masterServer, OTEServer server, OteService service) {
+			this.masterServer = masterServer;
+			this.server = server;
+			this.uri = uri;
+			this.service = service;
+		}
 
-      @Override
-      public void run() {
-         try{
-            if(run){
-               server.setConnectedUsers(service.getProperties().getProperty("user_list", "N.A.").toString());
-               Future<OTEMasterServerResult> result = masterServer.addServer(uri, server);
-               OTEMasterServerResult addServerResult = result.get(30, TimeUnit.SECONDS);
-               if(!(addServerResult != null && addServerResult.isSuccess())){
-                  try{
-                     Thread.sleep(1000*60*3);//wait 3 minutes before trying again
-                  } catch(Throwable th){
-                     //don't care if we're woken up
-                  }
-               }
-            }
-         } catch (Throwable th){
-            th.printStackTrace();
-         }
-      }
-      
-      public void stop(){
-         run = false;
-      }
-      
+		@Override
+		public void run() {
+			try {
+				if (run) {
+					server.setConnectedUsers(service.getProperties().getProperty("user_list", "N.A.").toString());
+					Future<OTEMasterServerResult> result = masterServer.addServer(uri, server);
+					OTEMasterServerResult addServerResult = result.get(30, TimeUnit.SECONDS);
+					if (!(addServerResult != null && addServerResult.isSuccess())) {
+						try {
+							Thread.sleep(1000 * 60 * 3);// wait 3 minutes before trying again
+						} catch (Throwable th) {
+							// don't care if we're woken up
+						}
+					}
+				}
+			} catch (Throwable th) {
+				th.printStackTrace();
+			}
+		}
+
+		public void stop() {
+			run = false;
+		}
+
 	}
 
 }

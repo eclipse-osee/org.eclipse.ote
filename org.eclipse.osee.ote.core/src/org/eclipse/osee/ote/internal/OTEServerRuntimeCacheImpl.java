@@ -25,26 +25,24 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
-
-import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamPumper;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.OTEServerRuntimeCache;
 import org.eclipse.osee.ote.io.OTEServerFolder;
 
-public class OTEServerRuntimeCacheImpl implements OTEServerRuntimeCache  {
-   
-   private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd___kk_mm_ss"); 
+public class OTEServerRuntimeCacheImpl implements OTEServerRuntimeCache {
+
+   private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd___kk_mm_ss");
 
    private File folder;
    private OTEServerFolder oteServerFolder;
 
-   public OTEServerRuntimeCacheImpl(){
+   public OTEServerRuntimeCacheImpl() {
    }
-   
+
    /**
     * ds component method
     */
-   public void start(){
+   public void start() {
       folder = oteServerFolder.getCacheFolder();
       if (!folder.exists()) {
          if (!folder.mkdirs()) {
@@ -56,39 +54,39 @@ public class OTEServerRuntimeCacheImpl implements OTEServerRuntimeCache  {
       }
       clean();
    }
-   
+
    /**
     * ds component method
     */
-   public void stop(){
+   public void stop() {
    }
-   
+
    /**
     * ds component method
     */
-   public void bindOTEServerFolder(OTEServerFolder oteServerFolder){
+   public void bindOTEServerFolder(OTEServerFolder oteServerFolder) {
       this.oteServerFolder = oteServerFolder;
    }
-   
+
    /**
     * ds component method
     */
-   public void unbindOTEServerFolder(OTEServerFolder oteServerFolder){
+   public void unbindOTEServerFolder(OTEServerFolder oteServerFolder) {
       this.oteServerFolder = oteServerFolder;
    }
-   
+
    @Override
    public void clearJarCache() {
       File[] bundleFolders = folder.listFiles();
-      for(File bundleFolder: bundleFolders){
-         if(bundleFolder.isDirectory()){
+      for (File bundleFolder : bundleFolders) {
+         if (bundleFolder.isDirectory()) {
             File[] jars = bundleFolder.listFiles(new FileFilter() {
                @Override
                public boolean accept(File file) {
                   return file.getAbsolutePath().endsWith(".jar");
                }
             });
-            for(File jar:jars){
+            for (File jar : jars) {
                jar.delete();
             }
          } else {
@@ -96,18 +94,18 @@ public class OTEServerRuntimeCacheImpl implements OTEServerRuntimeCache  {
          }
       }
    }
-   
+
    @Override
    public File save(String symbolicName, String md5Digest, InputStream servedBundleIn) throws IOException {
       File namedFolder = new File(folder, symbolicName);
-      if(namedFolder.exists() && !namedFolder.isDirectory()){
+      if (namedFolder.exists() && !namedFolder.isDirectory()) {
          namedFolder.delete();
       }
       namedFolder.mkdirs();
-      
+
       File newCachedFile = new File(namedFolder, md5Digest + ".jar");
       OutputStream cachedFileOut = new FileOutputStream(newCachedFile);
-      StreamPumper.pumpData(servedBundleIn, cachedFileOut);
+      servedBundleIn.transferTo(cachedFileOut);
       cachedFileOut.close();
       servedBundleIn.close();
       writeDateFile(newCachedFile);
@@ -117,29 +115,30 @@ public class OTEServerRuntimeCacheImpl implements OTEServerRuntimeCache  {
    @Override
    public File get(String symbolicName, String md5Digest) throws FileNotFoundException {
       File foundFile = new File(new File(folder, symbolicName), md5Digest + ".jar");
-      if(foundFile.exists()){
+      if (foundFile.exists()) {
          writeDateFile(foundFile);
-         return foundFile; 
+         return foundFile;
       }
       return null;
    }
 
    /**
-    * Write out a file that has the date a cached file was last accessed.  This file will be used to determine when it is ok to remove a file.
-    * 
+    * Write out a file that has the date a cached file was last accessed. This file will be used to determine when it is
+    * ok to remove a file.
+    *
     * @param foundFile
     */
    private void writeDateFile(File foundFile) {
-      File dateFile = new File(foundFile.getParentFile(), foundFile.getName()+ ".date");
+      File dateFile = new File(foundFile.getParentFile(), foundFile.getName() + ".date");
       FileOutputStream fos = null;
-      try{
+      try {
          fos = new FileOutputStream(dateFile);
          fos.write(formatter.format(new Date()).getBytes());
          fos.flush();
-      } catch(IOException ex) {
+      } catch (IOException ex) {
          OseeLog.log(getClass(), Level.SEVERE, ex);
       } finally {
-         if(fos != null){
+         if (fos != null) {
             try {
                fos.close();
             } catch (IOException e) {
@@ -147,33 +146,33 @@ public class OTEServerRuntimeCacheImpl implements OTEServerRuntimeCache  {
          }
       }
    }
-   
-   private void clean(){
-      if(folder.exists()){
+
+   private void clean() {
+      if (folder.exists()) {
          File[] bundleFolders = folder.listFiles();
-         if(bundleFolders != null){
-            for(File bundleFolder: bundleFolders){
-               if(bundleFolder.isDirectory()){
+         if (bundleFolders != null) {
+            for (File bundleFolder : bundleFolders) {
+               if (bundleFolder.isDirectory()) {
                   File[] jars = bundleFolder.listFiles(new FileFilter() {
                      @Override
                      public boolean accept(File file) {
                         return file.getAbsolutePath().endsWith(".jar");
                      }
                   });
-                  if(jars.length == 0){
-                     if(bundleFolder.listFiles().length == 0){
+                  if (jars.length == 0) {
+                     if (bundleFolder.listFiles().length == 0) {
                         bundleFolder.delete();
                      }
                   } else {
-                     for(File jar:jars){
+                     for (File jar : jars) {
                         File dateFile = new File(jar.getAbsolutePath() + ".date");
-                        if(dateFile.exists()){
-                           if(isDateFileOld(dateFile)){//delete files that haven't been recently used
-                              if(jar.exists()){
+                        if (dateFile.exists()) {
+                           if (isDateFileOld(dateFile)) {//delete files that haven't been recently used
+                              if (jar.exists()) {
                                  jar.delete();
                               }
                               dateFile.delete();
-                           }  
+                           }
                         } else { //delete a jar without a ".date" file
                            jar.delete();
                         }
@@ -196,25 +195,25 @@ public class OTEServerRuntimeCacheImpl implements OTEServerRuntimeCache  {
          return true;
       }
       Date oldDate = getOldDate();
-      if(date.before(oldDate)){
+      if (date.before(oldDate)) {
          return true;
       } else {
          return false;
       }
    }
-   
-   private String getDateFromFile(File dateFile){
+
+   private String getDateFromFile(File dateFile) {
       FileInputStream fis = null;
       String dateStr = null;
-      try{
+      try {
          byte[] buffer = new byte[1024];
          fis = new FileInputStream(dateFile);
          fis.read(buffer);
          dateStr = new String(buffer);
-      } catch(IOException ex) {
+      } catch (IOException ex) {
          OseeLog.log(getClass(), Level.SEVERE, ex);
       } finally {
-         if(fis != null){
+         if (fis != null) {
             try {
                fis.close();
             } catch (IOException e) {
@@ -223,8 +222,8 @@ public class OTEServerRuntimeCacheImpl implements OTEServerRuntimeCache  {
       }
       return dateStr;
    }
-   
-   private Date getOldDate(){
+
+   private Date getOldDate() {
       Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
       cal.add(Calendar.DAY_OF_MONTH, -7);

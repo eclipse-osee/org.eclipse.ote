@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public class UnzipJob extends Job {
 
-   private File sourceZip;
-   private File destFolder;
+   private final File sourceZip;
+   private final File destFolder;
 
    /**
     * @param sourceZip
@@ -51,13 +51,12 @@ public class UnzipJob extends Job {
       try {
          unzip(sourceZip, destFolder, monitor);
          monitor.done();
-      }
-      catch (IOException ex) {
+      } catch (IOException ex) {
          ex.printStackTrace();
       }
       return Status.OK_STATUS;
    }
-   
+
    private boolean unzip(File zipFile, File directory, IProgressMonitor monitor) throws IOException {
       int BUFFER_LEN = 2048;
       BufferedOutputStream dest = null;
@@ -66,73 +65,73 @@ public class UnzipJob extends Job {
       SubMonitor subMonitor = SubMonitor.convert(monitor, getZipSize(zipFile));
       subMonitor.setTaskName("Unzipping " + zipFile.getName());
       try {
-          ZipFile zipfile = new ZipFile(zipFile.getAbsolutePath());
-          Enumeration<? extends ZipEntry> e = zipfile.entries();
-          while (e.hasMoreElements()) {
-              entry = e.nextElement();
-              is = new BufferedInputStream(zipfile.getInputStream(entry));
-              int count;
-              byte data[] = new byte[BUFFER_LEN];
-              File fileDir = new File(directory, entry.getName());
-              if (entry.isDirectory()) {
-                  fileDir.mkdirs();
-                  continue;
-              } else {
-                  fileDir.getParentFile().mkdirs();
-              }
+         ZipFile zipfile = new ZipFile(zipFile.getAbsolutePath());
+         Enumeration<? extends ZipEntry> e = zipfile.entries();
+         while (e.hasMoreElements()) {
+            entry = e.nextElement();
+            is = new BufferedInputStream(zipfile.getInputStream(entry));
+            int count;
+            byte data[] = new byte[BUFFER_LEN];
+            File fileDir = new File(directory, entry.getName());
+            if (entry.isDirectory()) {
+               fileDir.mkdirs();
+               continue;
+            } else {
+               fileDir.getParentFile().mkdirs();
+            }
 
-              if (!fileDir.exists() || fileDir.exists() && fileDir.canWrite()) {
-                  FileOutputStream fos = new FileOutputStream(fileDir.getAbsolutePath());
-                  dest = new BufferedOutputStream(fos, BUFFER_LEN);
-                  try {
-                      while ((count = is.read(data, 0, BUFFER_LEN)) != -1) {
-                          dest.write(data, 0, count);
-                          subMonitor.worked(count);
-                          if (subMonitor.isCanceled()) {
-                              return false;
-                          }
-                      }
-                  } finally {
-                          dest.flush();
-                          Lib.close(dest);
+            if (!fileDir.exists() || fileDir.exists() && fileDir.canWrite()) {
+               FileOutputStream fos = new FileOutputStream(fileDir.getAbsolutePath());
+               dest = new BufferedOutputStream(fos, BUFFER_LEN);
+               try {
+                  while ((count = is.read(data, 0, BUFFER_LEN)) != -1) {
+                     dest.write(data, 0, count);
+                     subMonitor.worked(count);
+                     if (subMonitor.isCanceled()) {
+                        return false;
+                     }
                   }
-              }
+               } finally {
+                  dest.flush();
+                  Lib.close(dest);
+               }
+            }
 
-              if (fileDir.getAbsolutePath().endsWith(".lnk")) {
-                  if (fileDir.canWrite()) {
-                      fileDir.setReadOnly();
-                  }
-              }
-          }
-          zipfile.close();
+            if (fileDir.getAbsolutePath().endsWith(".lnk")) {
+               if (fileDir.canWrite()) {
+                  fileDir.setReadOnly();
+               }
+            }
+         }
+         zipfile.close();
       } catch (RuntimeException ex) {
-          String information = "ZipFile: " + (zipFile.getAbsolutePath()) + "\n"
-                  + "DestinationDir: " + (directory != null ? directory.getAbsolutePath() : "NULL") + "\n"
-                  + "Entry Processed: " + (entry != null ? entry.toString() : "NULL") + "\n";
-          throw new IOException(information + ex.getMessage());
+         String information = "ZipFile: " + (zipFile.getAbsolutePath()) + "\n" + "DestinationDir: "
+            + (directory != null ? directory.getAbsolutePath() : "NULL") + "\n" + "Entry Processed: "
+            + (entry != null ? entry.toString() : "NULL") + "\n";
+         throw new IOException(information + ex.getMessage());
       } finally {
-          Lib.close(is);
+         Lib.close(is);
       }
       return true;
-  }
-   
+   }
+
    private int getZipSize(File zipFile) throws IOException {
       int size = 0;
       ZipEntry entry = null;
       ZipFile zf = null;
       try {
-          zf = new ZipFile(zipFile);
-          Enumeration<? extends ZipEntry> e = zf.entries();
-          while (e.hasMoreElements()) {
-              entry = e.nextElement();
-              size += entry.getSize();
-          }
+         zf = new ZipFile(zipFile);
+         Enumeration<? extends ZipEntry> e = zf.entries();
+         while (e.hasMoreElements()) {
+            entry = e.nextElement();
+            size += entry.getSize();
+         }
       } finally {
-          if (zipFile != null) {
-              zf.close();
-          }
+         if (zf != null) {
+            zf.close();
+         }
       }
       return size;
-  }
+   }
 
 }

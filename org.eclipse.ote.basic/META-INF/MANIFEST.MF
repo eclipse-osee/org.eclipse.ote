@@ -4,7 +4,7 @@ Bundle-Name: Basic OTE Environment
 Bundle-SymbolicName: org.eclipse.ote.basic
 Bundle-Version: 0.26.3.qualifier
 Automatic-Module-Name: org.eclipse.ote.basic
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.jdk.core.persistence,
  org.eclipse.osee.framework.jdk.core.type,

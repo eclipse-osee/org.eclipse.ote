@@ -16,5 +16,5 @@ Require-Bundle: org.eclipse.osee.ote.core,
  org.eclipse.osee.ote.connection.service,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.logging
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy

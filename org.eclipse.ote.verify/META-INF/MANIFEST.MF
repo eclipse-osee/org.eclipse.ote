@@ -9,4 +9,4 @@ Import-Package: org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.ote.core.testPoint
 Export-Package: org.eclipse.ote.verify,
  org.eclipse.ote.verify.display
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11

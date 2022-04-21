@@ -20,7 +20,8 @@ import java.util.List;
  */
 public interface ITestStation {
 
-   public List<IOTypeHandlerDefinition> getSupportedDriverTypes();
+	public List<IOTypeHandlerDefinition> getSupportedDriverTypes();
 
-   public boolean isPhysicalTypeAvailable(IOTypeDefinition physicalType);
+	public boolean isPhysicalTypeAvailable(IOTypeDefinition physicalType);
+
 }

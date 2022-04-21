@@ -54,14 +54,14 @@ public final class RowUpdate {
          for (int i = 0; i < size; i++) {
             ViewerColumn col = allColumns.get(i);
             if (col instanceof ViewerColumnElement) {
-               ViewerColumnElement elementCol = (ViewerColumnElement)col;
+               ViewerColumnElement elementCol = (ViewerColumnElement) col;
                if (elementCol.getColumnElement().getAndClearUpdateState()) {
                   Object value = elementCol.getValue();
                   newValues[i] = value;
                   // even though a update flag is set, the value may have
                   // reverted to the same value of the last visual update
                   // which can happen in inactive columns
-                  if(value != null){
+                  if (value != null) {
                      newDeltaSet.set(i, !value.equals(values[i]));
                   }
                }
@@ -93,9 +93,11 @@ public final class RowUpdate {
    public Object getValue(ViewerColumn column) {
       Integer index = valueMap.get(column);
       if (index == null || index >= values.length) {
-    	  return "invalid index: " + index;
+         return "invalid index: " + index;
+      } else {
+         return values[index];
       }
-      return index != null ? values[index] : null;
+
    }
 
    public boolean isChanged(ViewerColumn column) {

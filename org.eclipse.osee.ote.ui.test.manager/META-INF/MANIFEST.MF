@@ -43,7 +43,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.ui.ws,
  org.eclipse.osee.ote.runtimeManager,
  org.eclipse.osee.framework.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/*.xml
 Import-Package: org.apache.xml.serialize,

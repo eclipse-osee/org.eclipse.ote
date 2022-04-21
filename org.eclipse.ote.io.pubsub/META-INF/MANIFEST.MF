@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.ote.io.pubsub
 Bundle-Version: 0.26.3.qualifier
 Bundle-Vendor: Boeing
 Automatic-Module-Name: org.eclipse.ote.message.pubsub
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,

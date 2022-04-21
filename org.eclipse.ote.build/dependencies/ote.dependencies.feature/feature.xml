@@ -678,13 +678,6 @@
          unpack="false"/>
 
    <plugin
-         id="rest.assured"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.zest.core"
          download-size="0"
          install-size="0"
@@ -874,13 +867,6 @@
          unpack="false"/>
 
    <plugin
-         id="com.google.inject.multibindings"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.aries.util"
          download-size="0"
          install-size="0"
@@ -972,6 +958,34 @@
          unpack="false"/>
 
    <plugin
+         id="jsk-lib"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jsk-platform"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.xml.ws"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.xml.soap"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.emf.transaction"
          download-size="0"
          install-size="0"
@@ -1003,7 +1017,7 @@
          id="org.apache.batik.anim"
          download-size="0"
          install-size="0"
-         version="1.13.0.v20201130-1756"
+         version="1.14.0.v20210324-0332"
          unpack="false"/>
 
    <plugin
@@ -1031,7 +1045,7 @@
          id="org.apache.batik.bridge"
          download-size="0"
          install-size="0"
-         version="1.13.0.v20201124-1840"
+         version="1.14.0.v20210324-0332"
          unpack="false"/>
 
    <plugin
@@ -1052,7 +1066,7 @@
          id="org.apache.batik.constants"
          download-size="0"
          install-size="0"
-         version="1.13.0.v20200622-2037"
+         version="1.14.0.v20210324-0332"
          unpack="false"/>
 
    <plugin
@@ -1073,7 +1087,7 @@
          id="org.apache.batik.dom"
          download-size="0"
          install-size="0"
-         version="1.13.0.v20201124-1839"
+         version="1.14.0.v20210324-0332"
          unpack="false"/>
 
    <plugin
@@ -1101,21 +1115,21 @@
          id="org.apache.batik.gvt"
          download-size="0"
          install-size="0"
-         version="1.13.0.v20201124-1835"
+         version="1.14.0.v20210324-0332"
          unpack="false"/>
-         
+
    <plugin
          id="org.apache.batik.gvt"
          download-size="0"
          install-size="0"
          version="1.9.1.v20190730-1743"
          unpack="false"/>
-         
+
    <plugin
          id="org.apache.batik.i18n"
          download-size="0"
          install-size="0"
-         version="1.13.0.v20200622-2037"
+         version="1.14.0.v20210324-0332"
          unpack="false"/>
 
    <plugin
@@ -1136,7 +1150,7 @@
          id="org.apache.batik.parser"
          download-size="0"
          install-size="0"
-         version="1.13.0.v20201124-1833"
+         version="1.14.0.v20210324-0332"
          unpack="false"/>
 
    <plugin
@@ -1164,7 +1178,7 @@
          id="org.apache.batik.transcoder"
          download-size="0"
          install-size="0"
-         version="1.13.0.v20201124-1841"
+         version="1.14.0.v20210324-0332"
          unpack="false"/>
 
    <plugin
@@ -1173,7 +1187,7 @@
          install-size="0"
          version="1.9.1.v20181015-1528"
          unpack="false"/>
-         
+
    <plugin
          id="org.apache.batik.util"
          download-size="0"
@@ -1192,7 +1206,7 @@
          id="org.apache.batik.xml"
          download-size="0"
          install-size="0"
-         version="1.13.0.v20201124-1831"
+         version="1.14.0.v20210324-0332"
          unpack="false"/>
 
    <plugin
@@ -1920,7 +1934,7 @@
          id="javax.activation"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.1.0.v201211130549"
          unpack="false"/>
 
    <plugin
@@ -1932,6 +1946,13 @@
 
    <plugin
          id="javax.wsdl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.xml.soap"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1971,20 +1992,49 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.jst.j2ee"
          download-size="0"
          install-size="0"
          version="1.2.301.v201903222025"
          unpack="false"/>
-                  
+
    <plugin
          id="org.eclipse.jst.j2ee.core"
          download-size="0"
          install-size="0"
          version="1.4.1.v201903222024"
-         unpack="false"/>                  
+         unpack="false"/>
+
+   <plugin
+         id="org.glassfish.corba.glassfish-corba-omgapi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jakarta.activation-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jakarta.xml.bind-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.transaction"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
 
    <plugin
          id="net.sourceforge.tess4j"

@@ -20,7 +20,8 @@
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.apache.commons.net"/>
-      <import plugin="net.jini" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="jsk-lib"/>
+      <import plugin="jsk-platform"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.osgi.services"/>

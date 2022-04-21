@@ -3,6 +3,13 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+	<!--<parent>
+		<groupId>org.eclipse.ote</groupId>
+		<artifactId>org.eclipse.ote.mavenbuild</artifactId>
+		<version>0.26.3-SNAPSHOT</version>
+		<relativePath>../org.eclipse.ote.mavenbuild</relativePath>
+	</parent>-->
+
 	<groupId>org.eclipse.osee</groupId>
 	<artifactId>org.eclipse.osee.ote.parent</artifactId>
 	<packaging>pom</packaging>
@@ -85,14 +92,15 @@
 
 		<platform-version-name>neon</platform-version-name>
 		<!-- <orbit-version>R20150124073747</orbit-version> -->
-		<orbit-version>R20160520211859</orbit-version>
+		<!-- orbit-version>R20160520211859</orbit-version -->
+		<orbit-version>R20201130205003</orbit-version>
 		<xtext-version>2.0.0</xtext-version>
 		<subversive-version>1.0</subversive-version>
 		<polarion-version>3.0</polarion-version>
 
-		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
+		<!-- <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
-		<itemis-site>http://download.itemis.com/updates/releases/${xtext-version}</itemis-site>
+		<itemis-site>http://download.itemis.com/updates/releases/${xtext-version}</itemis-site> -->
 
 		<osee-create-help-docs>false</osee-create-help-docs>
 
@@ -340,7 +348,7 @@
 				<eclipse-ip-site>${git-repo-root}/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
 			</properties>
 			<repositories>
-				<repository>
+				<!--  <repository>
 					<id>orbit</id>
 					<layout>p2</layout>
 					<url>${orbit-site}</url>
@@ -354,7 +362,7 @@
 					<id>itemis</id>
 					<layout>p2</layout>
 					<url>${itemis-site}</url>
-				</repository>
+				</repository>  -->
 
 				<repository>
 					<id>eclipse-ip</id>

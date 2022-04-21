@@ -28,7 +28,8 @@
 						</goals>
 						<configuration>
 							<excludes>
-								<plugin id="net.jini" />
+								<plugin id="jsk-lib" />
+								<plugin id="jsk-platform" />
 								<plugin id="jms.libraries" />
 								<plugin id="org.eclipse.osee.framework.plugin.core" />
 								<plugin id="org.eclipse.osee.framework.core" />

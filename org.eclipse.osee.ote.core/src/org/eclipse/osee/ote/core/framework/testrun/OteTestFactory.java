@@ -75,10 +75,12 @@ public abstract class OteTestFactory implements ITestFactory {
          if (scriptClassLoaderTh != null) {
             throw new Exception(scriptClassLoaderTh);
          }
+      } else {
+         Constructor<?> constructor =
+            scriptClass.getConstructor(new Class[] {getTestEnvironmentClass(), ITestEnvironmentCommandCallback.class});
+         return (TestScript) constructor.newInstance(env, null);
       }
-      Constructor<?> constructor =
-         scriptClass.getConstructor(new Class[] {getTestEnvironmentClass(), ITestEnvironmentCommandCallback.class});
-      return (TestScript) constructor.newInstance(env, null);
+      return null;
    }
 
    List<BundleWiring> fastCache = new ArrayList<BundleWiring>();

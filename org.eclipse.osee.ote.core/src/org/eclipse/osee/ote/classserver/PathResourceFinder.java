@@ -104,7 +104,7 @@ public class PathResourceFinder extends ResourceFinder {
       }
 
       if (exists) {
-         if (perm.implies(new FilePermission(f.getPath(), "read"))) {
+         if (f != null && perm.implies(new FilePermission(f.getPath(), "read"))) {
             try {
                return getBytes(new FileInputStream(f), f.length());
             } catch (FileNotFoundException e) {
@@ -201,7 +201,7 @@ public class PathResourceFinder extends ResourceFinder {
 
    /**
     * Finds the jarFile if it is being served.
-    * 
+    *
     * @param name The name of the jar file
     * @return The jar represented as a File, or null if the jar was not found.
     */

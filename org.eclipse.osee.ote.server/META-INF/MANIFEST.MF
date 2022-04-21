@@ -4,8 +4,11 @@ Bundle-Name: OTE Server Launching Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.server;singleton:=true
 Bundle-Version: 0.26.3.qualifier
 Bundle-Description: OTE Server
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
+Require-Bundle: jms.libraries,
+ jsk-lib,
+ jsk-platform
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.connection.service,
  org.eclipse.osee.framework.core.enums,
@@ -14,7 +17,6 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jdk.core.reportdata,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.framework.jdk.core.util.io.streams,
  org.eclipse.osee.framework.jdk.core.util.network,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.plugin.core.util,
@@ -47,10 +49,10 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.ote.properties,
  org.osgi.framework,
  org.osgi.service.packageadmin,
- org.osgi.util.tracker
+ org.osgi.util.tracker,
+ org.apache.activemq.broker,
+ org.apache.felix.service.command,
+ net.jini.core.lookup
 Export-Package: org.eclipse.osee.ote.server
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
-Require-Bundle: net.jini,
- jms.libraries,
- org.apache.felix.gogo.runtime
