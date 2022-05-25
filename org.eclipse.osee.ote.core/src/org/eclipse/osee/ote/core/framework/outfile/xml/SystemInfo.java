@@ -13,10 +13,9 @@
 
 package org.eclipse.osee.ote.core.framework.outfile.xml;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
@@ -59,7 +58,7 @@ public class SystemInfo implements Xmlizable, XmlizableStream {
    }
 
    @JsonProperty
-   public String getOperatingSystem() {
+   public String getOperatingSystemName() {
       return System.getProperty("os.name");
    }
 
@@ -69,7 +68,7 @@ public class SystemInfo implements Xmlizable, XmlizableStream {
    }
 
    @JsonProperty
-   public String getArchitecture() {
+   public String getOperatingSystemArchitecture() {
       return System.getProperty("os.arch");
    }
 

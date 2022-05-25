@@ -27,41 +27,34 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
-import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
-import org.eclipse.osee.ote.core.framework.outfile.xml.TestPointResults;
-import org.eclipse.osee.ote.core.framework.outfile.xml.TimeSummary;
 import org.eclipse.osee.ote.core.log.record.ScriptResultRecord;
-import org.eclipse.osee.ote.core.log.record.TestPointRecord;
 import org.eclipse.osee.ote.core.log.record.json.LogRecordModule;
-import org.eclipse.osee.ote.core.testPoint.CheckGroup;
-import org.eclipse.osee.ote.core.testPoint.CheckPoint;
-import org.eclipse.osee.ote.core.testPoint.Operation;
 
 /**
  * @author Andy Jury
  */
 public class ScriptJsonOutLogHandler extends Handler {
    private final Map<String, Object> minimum = new HashMap<String, Object>();
+   private final MinimumPublisher minimumPublisher;
    private final ObjectMapper mapper = new ObjectMapper();
    private final File outfile;
    private ZipOutputStream zip;
    private final String distrStatement;
+   private final StringBuilder testRunTransactionEndpointJson = new StringBuilder();
+   private final TestRunTransactionEndpointPublisher testRunTransactionEndpointPublisher;
 
    public ScriptJsonOutLogHandler(final File outFile, final String distributionStatement) {
       super();
       outfile = outFile;
       distrStatement = distributionStatement;
+      this.minimumPublisher = new MinimumPublisher(minimum);
+      this.testRunTransactionEndpointPublisher = new TestRunTransactionEndpointPublisher();
    }
 
    public ScriptJsonOutLogHandler(File outFile) {
@@ -72,82 +65,14 @@ public class ScriptJsonOutLogHandler extends Handler {
    public synchronized void publish(final LogRecord logRecord) {
       if (isLoggable(logRecord)) {
          try {
-            publisihMinimum(logRecord);
-         } catch (Exception ex) {
-            logError(ex);
-         }
-      }
-   }
-
-   private void publisihMinimum(LogRecord logRecord) {
-      try {
-         minimum.put("machineName", InetAddress.getLocalHost().getHostName());
-      } catch (UnknownHostException ex) {
-         logError(ex, "Unable to determine machine name");
-      }
-      if (logRecord instanceof ScriptResultRecord) {
-         ScriptResultRecord srr = (ScriptResultRecord) logRecord;
-         minimum.put("ScriptName", logRecord.getMessage());
-         for (XmlizableStream rec : srr.getResults()) {
-            if (rec instanceof TimeSummary) {
-               TimeSummary ts = (TimeSummary) rec;
-               minimum.put("elapsedTime", ts.getElapsedTime());
-               minimum.put("startTime", ts.getStartTime());
-               minimum.put("endTime", ts.getEndTime());
-            } else if (rec instanceof TestPointResults) {
-               Map<String, Object> results = new HashMap<String, Object>();
-               results.put("passes", ((TestPointResults) rec).getPasses());
-               results.put("fails", ((TestPointResults) rec).getFails());
-               results.put("interactives", ((TestPointResults) rec).getInteractives());
-               results.put("aborted", ((TestPointResults) rec).isAborted());
-               results.put("total", ((TestPointResults) rec).getTotal());
-               minimum.put("results", results);
+            minimumPublisher.publish(logRecord);
+            if (logRecord instanceof ScriptResultRecord) {
+               testRunTransactionEndpointJson.append(testRunTransactionEndpointPublisher.publish(logRecord));
             }
-         }
-      } else if (logRecord instanceof TestPointRecord) {
-         @SuppressWarnings("unchecked")
-         List<Object> testPoints = (List<Object>) minimum.get("testPoints");
-         if (testPoints == null) {
-            testPoints = new ArrayList<Object>();
-            minimum.put("testPoints", testPoints);
-         }
-         ITestPoint testPoint = ((TestPointRecord) logRecord).getTestPoint();
-         int number = ((TestPointRecord) logRecord).getNumber();
-         boolean overall = testPoint.isPass();
-         handleTestPoint(testPoint, testPoints, number, "", overall, String.valueOf(number));
-      }
-   }
-
-   private void handleTestPoint(ITestPoint testPoint, List<Object> testPoints, int number, String groupName, boolean overallPass, String levelNum) {
-      if (testPoint instanceof CheckPoint) {
-         Map<String, Object> point = convertCheckPoint((CheckPoint) testPoint, number, groupName, overallPass, levelNum);
-         testPoints.add(point);
-      } else if (testPoint instanceof CheckGroup) {
-         CheckGroup group = (CheckGroup) testPoint;
-         ArrayList<ITestPoint> groupPoints = group.getTestPoints();
-         Operation op = group.getOperation();
-         String curGroupName = group.getGroupName() + " [" + op.getName() + "]";
-         for (int i = 0; i < groupPoints.size(); i++) {
-            ITestPoint tp = groupPoints.get(i);
-            handleTestPoint(tp, testPoints, number, curGroupName, overallPass, levelNum + "." + (i + 1));
+         } catch (Exception ex) {
+            logError(ex, "Exception publishing items from outfile to json entries!");
          }
       }
-   }
-
-   private Map<String, Object> convertCheckPoint(CheckPoint checkPoint, int number, String groupName, boolean overallPass, String levelNum) {
-      Map<String, Object> tpMap = new HashMap<String, Object>();
-      tpMap.put("name", checkPoint.getTestPointName());
-      tpMap.put("expected", checkPoint.getExpected());
-      tpMap.put("actual", checkPoint.getActual());
-      tpMap.put("pass", checkPoint.isPass());
-      tpMap.put("isInteractive", checkPoint.isInteractive());
-      tpMap.put("number", number);
-      tpMap.put("overall", overallPass);
-      if (!groupName.isEmpty()) {
-         tpMap.put("groupName", groupName);
-      }
-      tpMap.put("tpLevel", levelNum);
-      return tpMap;
    }
 
    private boolean prepareToFlush() {
@@ -187,7 +112,7 @@ public class ScriptJsonOutLogHandler extends Handler {
             result = false;
          }
       } catch (IOException ex) {
-         logError(ex, "Failed to get canaonical path from outFile");
+         logError(ex, "Failed to get canonical path from outFile");
          result = false;
       }
       return result;
@@ -197,6 +122,19 @@ public class ScriptJsonOutLogHandler extends Handler {
       if (prepareToFlush()) {
          writeZipEntry("Minimum", minimum);
          writeZipEntry("DistributionStatement", distrStatement);
+         writeZipEntrySB("TestRunTransactionEndpoint", testRunTransactionEndpointJson);
+      }
+   }
+
+   private void writeZipEntrySB(String basename, StringBuilder testRunTransactionEndpointJson2) {
+      try {
+         ZipEntry entry = new ZipEntry(basename + ".json");
+         zip.putNextEntry(entry);
+
+         byte[] data = testRunTransactionEndpointJson2.toString().getBytes();
+         zip.write(data, 0, data.length);
+      } catch (IOException ex) {
+         logError(ex, "Exception generating zip archive with json files in it!");
       }
    }
 
@@ -215,11 +153,11 @@ public class ScriptJsonOutLogHandler extends Handler {
          input.close();
          temp.delete();
       } catch (JsonGenerationException ex) {
-         logError(ex);
+         logError(ex, "Exception generating json!");
       } catch (JsonMappingException ex) {
-         logError(ex);
+         logError(ex, "Exception mapping json!");
       } catch (IOException ex) {
-         logError(ex);
+         logError(ex, "Exception generating zip archive with json files in it!");
       }
    }
 
@@ -228,17 +166,13 @@ public class ScriptJsonOutLogHandler extends Handler {
       try {
          zip.close();
       } catch (Exception ex) {
-         logError(ex);
+         logError(ex, "Exception closing zip archive!");
       }
    }
 
    @Override
    public void flush() {
       // don't call this method
-   }
-
-   private void logError(final Exception ex) {
-      logError(ex);
    }
 
    private void logError(final Exception ex, final String message) {

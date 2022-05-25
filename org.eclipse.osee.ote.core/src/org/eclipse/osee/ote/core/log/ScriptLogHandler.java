@@ -58,7 +58,7 @@ public class ScriptLogHandler extends Handler {
    /**
     * ScriptLogHandler Constructor. Sets the outfile to log to and the test script that will be logged. It also
     * establishes the xml format to be used.
-    * 
+    *
     * @param outFile Reference to the outfile that will be used to output the log.
     */
    public ScriptLogHandler(File outFile, TestEnvironment testEnvironment) {
@@ -74,13 +74,12 @@ public class ScriptLogHandler extends Handler {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
       }
 
-      ProcessingInstruction processingInstruction =
-         document.createProcessingInstruction("xml-stylesheet",
-            "type=\"text/xsl\" href=\"" + getXSLTransformName() + "\"");
+      ProcessingInstruction processingInstruction = document.createProcessingInstruction("xml-stylesheet",
+         "type=\"text/xsl\" href=\"" + getXSLTransformName() + "\"");
       document.appendChild(processingInstruction);
       records = new ArrayList<>();
 
-      document.appendChild(document.createComment("OUTFILE_COMMNET"));
+      document.appendChild(document.createComment("OUTFILE_COMMENT"));
 
       this.testScriptElement = document.createElement("TestScript");
       this.scriptInitElement = document.createElement("ScriptInit");
