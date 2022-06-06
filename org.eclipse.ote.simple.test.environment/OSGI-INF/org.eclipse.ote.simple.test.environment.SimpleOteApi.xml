@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="zzz_activate" immediate="true" name="org.eclipse.ote.simple.test.environment.SimpleOteApi">
+   <service>
+      <provide interface="org.eclipse.ote.simple.test.environment.SimpleOteApi"/>
+   </service>
+   <reference bind="zzz_bindJaxRsApi" cardinality="1..1" interface="org.eclipse.osee.framework.core.JaxRsApi" name="zzz_bindJaxRsApi" policy="static"/>
+   <reference bind="zzz_bindRestConfig" cardinality="1..1" interface="org.eclipse.osee.ote.rest.OteRestConfigurationProvider" name="zzz_bindRestConfig" policy="static"/>
+   <reference bind="zzz_bindTestEnv" cardinality="1..1" interface="org.eclipse.ote.simple.test.environment.SimpleTestEnvironment" name="zzz_bindTestEnv" policy="static"/>
+   <implementation class="org.eclipse.ote.simple.test.environment.SimpleOteApi"/>
+</scr:component>

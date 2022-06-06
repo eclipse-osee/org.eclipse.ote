@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.eclipse.ote.simple.io;singleton:=true
 Bundle-Version: 0.26.3.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*
-Import-Package: org.eclipse.osee.framework.logging,
+Import-Package: org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.logging,
  org.eclipse.osee.ote.core,
  org.eclipse.osee.ote.core.environment,
  org.eclipse.osee.ote.core.environment.console,
@@ -21,6 +22,7 @@ Import-Package: org.eclipse.osee.framework.logging,
  org.eclipse.osee.ote.message.interfaces,
  org.eclipse.osee.ote.message.io,
  org.eclipse.osee.ote.message.listener,
+ org.eclipse.osee.ote.rest,
  org.eclipse.ote.bytemessage,
  org.eclipse.ote.io,
  org.eclipse.ote.io.mux,
@@ -29,6 +31,7 @@ Import-Package: org.eclipse.osee.framework.logging,
  org.eclipse.ote.message.manager,
  org.eclipse.ote.services.core,
  org.osgi.framework,
+ org.osgi.service.component.annotations,
  org.osgi.util.tracker
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.osee.framework.jdk.core,

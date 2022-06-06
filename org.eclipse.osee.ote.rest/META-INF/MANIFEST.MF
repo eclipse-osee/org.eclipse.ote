@@ -7,15 +7,21 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
 Import-Package: javax.ws.rs,
+ javax.ws.rs.client,
  javax.ws.rs.core,
  javax.ws.rs.ext,
+ org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.ote,
+ org.eclipse.osee.ote.api,
  org.eclipse.osee.ote.core,
  org.eclipse.osee.ote.core.environment,
  org.eclipse.osee.ote.core.framework.command,
  org.eclipse.osee.ote.io,
+ org.eclipse.osee.ote.message.interfaces,
  org.eclipse.osee.ote.rest.model
 Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.eclipse.core.runtime
+Export-Package: org.eclipse.osee.ote.rest

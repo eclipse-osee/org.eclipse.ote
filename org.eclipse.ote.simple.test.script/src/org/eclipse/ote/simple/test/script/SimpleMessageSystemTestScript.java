@@ -15,11 +15,11 @@ package org.eclipse.ote.simple.test.script;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.ote.core.TestCase;
-import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.enums.ScriptTypeEnum;
 import org.eclipse.osee.ote.core.environment.OteApi;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
@@ -27,24 +27,24 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
 import org.eclipse.osee.ote.core.environment.jini.ITestEnvironmentCommandCallback;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
+import org.eclipse.osee.ote.message.MessageSystemTestScript;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMessageRequestor;
-import org.eclipse.ote.simple.test.environment.SimpleOteApi;
 
 /**
  * @author Michael P. Masterson
  */
-public class SimpleTestScriptType extends TestScript {
+public class SimpleMessageSystemTestScript extends MessageSystemTestScript {
 
    protected IMessageRequestor<Message> messageRequestor;
    protected OteApi oteApi;
 
    @SuppressWarnings("unchecked")
-   public SimpleTestScriptType(MessageSystemTestEnvironment testEnvironment, ITestEnvironmentCommandCallback callback) {
+   public SimpleMessageSystemTestScript(MessageSystemTestEnvironment testEnvironment, ITestEnvironmentCommandCallback callback) {
       super(testEnvironment, null, ScriptTypeEnum.FUNCTIONAL_TEST, true);
 
       messageRequestor = testEnvironment.getMsgManager().createMessageRequestor(getClass().getName());
-      this.oteApi = new SimpleOteApi();
-      testEnvironment.setOteApi(oteApi);
+      this.oteApi = testEnvironment.getOteApi();
    }
 
    protected <CLASSTYPE extends Message> CLASSTYPE getMessageWriter(Class<CLASSTYPE> type) {
@@ -87,5 +87,15 @@ public class SimpleTestScriptType extends TestScript {
       } else {
          System.out.println("NOT RUNNING TEST CASE BASED ON CONFIGURATION NOT MATCHING - " + method.getName());
       }
+   }
+
+   @Override
+   public Set<? extends DataType> getDataTypes() {
+      return null;
+   }
+
+   @Override
+   public Set<Class<?>> getAssociatedObjects() {
+      return null;
    }
 }

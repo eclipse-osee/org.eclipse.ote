@@ -20,12 +20,16 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.logging.Level;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.core.annotations.Order;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
 import org.eclipse.osee.ote.core.environment.jini.ITestEnvironmentCommandCallback;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
+import org.eclipse.osee.ote.rest.OteRestResponse;
 import org.eclipse.ote.io.mux.MuxHeader;
 import org.eclipse.ote.simple.io.SimpleDataType;
 import org.eclipse.ote.simple.io.SimpleMuxReceiver;
@@ -33,12 +37,13 @@ import org.eclipse.ote.simple.io.message.HELLO_WORLD;
 import org.eclipse.ote.simple.io.message.SIMPLE_MUX_R_MSG;
 import org.eclipse.ote.simple.io.message.lookup.SimpleMuxReceiverHeader;
 import org.eclipse.ote.simple.test.environment.SimpleOteApi;
+import org.eclipse.ote.simple.test.script.endpoints.CustomSimpleEndpoint;
 import org.junit.Test;
 
 /**
  * @author Andy Jury
  */
-public class SimpleTestScript extends SimpleTestScriptType {
+public class SimpleTestScript extends SimpleMessageSystemTestScript {
 
    HELLO_WORLD writer;
 
@@ -46,19 +51,14 @@ public class SimpleTestScript extends SimpleTestScriptType {
       super(testEnvironment, callback);
 
       this.writer = getMessageWriter(HELLO_WORLD.class);
-      setupTestScript((SimpleOteApi) testEnvironment.getOteApi());
-   }
-
-   protected void setupTestScript(SimpleOteApi oteApi) {
-      // Intentionally empty block
    }
 
    @Test
    @Order(1)
    public void testCase1(SimpleOteApi oteApi) {
-      prompt("In TestCase1");
-      promptPause("In TestCase1");
-      promptPassFail("Pass/Fail?");
+      oteApi.prompt("In TestCase1");
+      oteApi.promptPause("In TestCase1");
+      oteApi.promptPassFail("Pass/Fail?");
    }
 
    @Test
@@ -67,17 +67,17 @@ public class SimpleTestScript extends SimpleTestScriptType {
       // This test case will fail when running in an environment with Mux
       // unless you uncomment the following line to force the message mem type
       writer.setMemSource(SimpleDataType.SIMPLE);
-      prompt("In the LocalSetupTestCase");
+      oteApi.prompt("In the LocalSetupTestCase");
       writer.PRINT_ME.setNoLog("TEST1");
-      testWait(1000);
+      oteApi.testWait(1000);
       writer.PRINT_ME.setNoLog("TEST2");
-      testWait(1000);
+      oteApi.testWait(1000);
       writer.PRINT_ME.setNoLog("TEST3");
-      testWait(1000);
+      oteApi.testWait(1000);
       writer.PRINT_ME.setNoLog("TEST4");
       writer.ONLY_IN_SIMPLE.setNoLog(64);
       writer.send();
-      testWait(1000);
+      oteApi.testWait(1000);
       writer.unschedule();
    }
 
@@ -88,21 +88,42 @@ public class SimpleTestScript extends SimpleTestScriptType {
          MuxChannelSender sender = new MuxChannelSender();
          environment.addTask(sender);
 
-         testWait(10000);
+         oteApi.testWait(1000);
          sender.disable();
       } catch (IOException ex) {
          logTestPoint(false, "Error starting packet sender", "N/A", ex.getMessage());
       }
    }
 
+   @Test
+   @Order(4)
+   public void restTestCase(SimpleOteApi oteApi) {
+      prompt("Running REST Test Case");
+
+      OteRestResponse dataOne = oteApi.rest().endpoint1().getDataOne(this);
+      String content = dataOne.getContents(String.class);
+      prompt(content);
+
+      dataOne.verifyResponseCode(this, Status.OK);
+      dataOne.verifyResponseFamily(this, Response.Status.Family.SUCCESSFUL);
+      dataOne.verifyContentsContains(this, "linux");
+
+      // Should Fail
+      dataOne.verifyContentsEquals(this, "linux");
+
+      CustomSimpleEndpoint mySpecialEndpoint = new CustomSimpleEndpoint(oteApi);
+      OteRestResponse customData = mySpecialEndpoint.getCustomData();
+      customData.verifyResponseCode(this, Status.NOT_FOUND);
+   }
+
    private class MuxChannelSender extends EnvironmentTask {
 
-      private SIMPLE_MUX_R_MSG sendMsg = new SIMPLE_MUX_R_MSG();
-      private SimpleMuxReceiverHeader header = new SimpleMuxReceiverHeader();
+      private final SIMPLE_MUX_R_MSG sendMsg = new SIMPLE_MUX_R_MSG();
+      private final SimpleMuxReceiverHeader header = new SimpleMuxReceiverHeader();
       private int counter = 1;
-      private DatagramChannel datagramChannel;
-      private ByteBuffer buffer;
-      private InetSocketAddress socket;
+      private final DatagramChannel datagramChannel;
+      private final ByteBuffer buffer;
+      private final InetSocketAddress socket;
 
       public MuxChannelSender() throws IOException {
          super(1.0);

@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.ote.core;singleton:=true
 Bundle-Version: 0.26.3.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.ote,
+ org.eclipse.osee.ote.api,
  org.eclipse.osee.ote.classserver,
  org.eclipse.osee.ote.core,
  org.eclipse.osee.ote.core.annotations,
@@ -77,6 +78,7 @@ Import-Package: com.fasterxml.jackson.annotation;version="2.9.2",
  javax.ws.rs.client,
  javax.xml.parsers,
  org.apache.xml.serialize,
+ org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.executor,

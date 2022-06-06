@@ -12,24 +12,52 @@
  **********************************************************************/
 package org.eclipse.ote.simple.test.environment;
 
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
-import org.eclipse.osee.ote.core.environment.OteApi;
-import org.eclipse.osee.ote.core.environment.TestEnvironment;
+import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.ote.rest.OteRestApiBase;
+import org.eclipse.osee.ote.rest.OteRestConfigurationProvider;
+import org.eclipse.ote.simple.test.environment.rest.SimpleRestApiGroup;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 /**
  * @author Nydia Delgado
  */
-public class SimpleOteApi implements OteApi {
+@Component(service = {SimpleOteApi.class}, immediate = true)
+public class SimpleOteApi extends OteRestApiBase {
 
-   private TestEnvironment testEnv;
+   private SimpleRestApiGroup endpoints;
+   private OteRestConfigurationProvider restConfig;
 
-   @Override
-   public void logTestPoint(boolean isPassed, String testPointName, String expected, String actual) {
-      testEnv.getTestScript().logTestPoint(isPassed, testPointName, expected, actual);
+   @Activate
+   public void zzz_activate() {
+      this.endpoints = new SimpleRestApiGroup(zzz_getJaxRsApi(), restConfig);
+   }
+
+   @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
+   public void zzz_bindTestEnv(SimpleTestEnvironment testEnv) {
+      super.zzz_bindTestEnv(testEnv);
+      testEnv.setOteApi(this);
    }
 
    @Override
-   public void logTestPoint(boolean isPassed, String testPointName, NamedId expected, NamedId actual) {
-      logTestPoint(isPassed, testPointName, expected.getName(), actual.getName());
+   @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
+   public void zzz_bindJaxRsApi(JaxRsApi jaxRsApi) {
+      super.zzz_bindJaxRsApi(jaxRsApi);
+   }
+
+   @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
+   public void zzz_bindRestConfig(OteRestConfigurationProvider restConfig) {
+      this.restConfig = restConfig;
+   }
+
+   public SimpleRestApiGroup rest() {
+      return this.endpoints;
+   }
+
+   public OteRestConfigurationProvider zzz_getRestConfig() {
+      return this.restConfig;
    }
 }
