@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.ote.rest;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.Status.Family;
@@ -20,8 +21,9 @@ import javax.ws.rs.core.Response.StatusType;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
 /**
- * Wrapper class to generic {@link Response} objects provided via a REST request. This class
- * provides an API intended to simplify test script verifications.
+ * Wrapper class to generic {@link Response} objects provided via a REST
+ * request. This class provides an API intended to simplify test script
+ * verifications.
  * 
  * @author Michael P. Masterson
  */
@@ -34,10 +36,11 @@ public class OteRestResponse {
    }
 
    /**
-    * Verifies the response code from the REST request is exactly equal to the code parameter
+    * Verifies the response code from the REST request is exactly equal to the code
+    * parameter
     * 
     * @param accessor For logging
-    * @param code Expected status code
+    * @param code     Expected status code
     */
    public void verifyResponseCode(ITestAccessor accessor, Status code) {
 
@@ -45,27 +48,40 @@ public class OteRestResponse {
       int actualCode = statusInfo.getStatusCode();
       int expectedCode = code.getStatusCode();
       accessor.getTestScript().logTestPoint(actualCode == expectedCode, "verifyResponseCode",
-                                            Integer.toString(expectedCode),
-                                            Integer.toString(actualCode));
+            Integer.toString(expectedCode), Integer.toString(actualCode));
    }
 
    /**
-    * Verifies the response code family from the REST request is exactly equal to the expectedFamily
-    * parameter
+    * Verifies the response code family from the REST request is exactly equal to
+    * the expectedFamily parameter
     * 
-    * @param accessor For logging
+    * @param accessor       For logging
     * @param expectedFamily Expected status code family
     */
    public void verifyResponseFamily(ITestAccessor accessor, Family expectedFamily) {
       Family actualFamily = response.getStatusInfo().getFamily();
       accessor.getTestScript().logTestPoint(actualFamily == expectedFamily, "verifyResponseFamily",
-                                            expectedFamily.toString(), actualFamily.toString());
+            expectedFamily.toString(), actualFamily.toString());
+   }
+
+   /**
+    * Logs a test point verifying that the REST response content type is exactly
+    * equal to the expected REST response content type
+    * 
+    * @param accessor
+    * @param expected
+    */
+   public void verifyResponseContentType(ITestAccessor accessor, MediaType expected) {
+      MediaType actual = response.getMediaType();
+      accessor.getTestScript().logTestPoint(expected.equals(actual), "verifyContentType", expected.toString(),
+            actual.toString());
    }
 
    /**
     * @param <T>
-    * @param clazz Type expected in the response. Must be compatible with the MediaType of the REST
-    *           request or a Runtime Exception will be thrown.
+    * @param clazz Type expected in the response. Must be compatible with the
+    *              MediaType of the REST request or a Runtime Exception will be
+    *              thrown.
     * @return The contents (body) of the REST request as the type parameter
     */
    public <T> T getContents(Class<T> clazz) {
@@ -80,31 +96,30 @@ public class OteRestResponse {
    }
 
    /**
-    * Logs a test point verifying that the string contents of the REST Response contains the
-    * substring
+    * Logs a test point verifying that the string contents of the REST Response
+    * contains the substring
     * 
-    * @param accessor For Logging
+    * @param accessor  For Logging
     * @param subString
     */
    public void verifyContentsContains(ITestAccessor accessor, String subString) {
       String content = getContents(String.class);
       boolean matches = content.contains(subString);
-      accessor.getTestScript().logTestPoint(matches, "verifyContentsContains",
-                                            "Contains '" + subString + "'",
-                                            matches ? "FOUND" : "NOT FOUND");
+      accessor.getTestScript().logTestPoint(matches, "verifyContentsContains", "Contains '" + subString + "'",
+            matches ? "FOUND" : "NOT FOUND");
    }
 
    /**
-    * Logs a test point verifying that the string contents of the REST Response is exactly equal to
-    * the expected string.
+    * Logs a test point verifying that the string contents of the REST Response is
+    * exactly equal to the expected string.
     * 
     * @param accessor For Logging
     * @param expected
     */
    public <T> void verifyContentsEquals(ITestAccessor accessor, T expected) {
       Object actual = response.readEntity(expected.getClass());
-      accessor.getTestScript().logTestPoint(expected.equals(actual), "verifyContentsEquals",
-                                            expected.toString(), actual.toString());
+      accessor.getTestScript().logTestPoint(expected.equals(actual), "verifyContentsEquals", expected.toString(),
+            actual.toString());
    }
 
 }
