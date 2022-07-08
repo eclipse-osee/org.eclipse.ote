@@ -20,6 +20,8 @@
 		<module>../org.eclipse.ote.simple.io</module>
 		<module>../org.eclipse.ote.simple.test.environment</module>
 		<module>../org.eclipse.ote.simple.test.script</module>
+		<module>../org.eclipse.ote.basic</module>
+		
 		<module>../org.eclipse.ote.simple.feature</module>
 		<module>../org.eclipse.ote.simple.p2</module>
 	</modules>

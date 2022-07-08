@@ -45,7 +45,6 @@
 		<module>../org.eclipse.ote.ui.message</module>
 		<module>../org.eclipse.ote.ui.message.search</module>
 		<module>../org.eclipse.ote.ui.mux</module>
-		<module>../org.eclipse.ote.basic</module>
 		
 
 		<module>../org.eclipse.ote.serverclient.feature</module>
