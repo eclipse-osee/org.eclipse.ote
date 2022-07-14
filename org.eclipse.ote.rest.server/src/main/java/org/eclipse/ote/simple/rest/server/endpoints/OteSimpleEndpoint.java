@@ -37,5 +37,4 @@ public class OteSimpleEndpoint {
 
       return obj;
    }
-
 }

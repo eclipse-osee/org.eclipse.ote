@@ -14,6 +14,7 @@
 package org.eclipse.ote.simple.test.script;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -23,6 +24,7 @@ import java.util.logging.Level;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.core.annotations.Order;
@@ -114,6 +116,10 @@ public class SimpleTestScript extends SimpleMessageSystemTestScript {
       CustomSimpleEndpoint mySpecialEndpoint = new CustomSimpleEndpoint(oteApi);
       OteRestResponse customData = mySpecialEndpoint.getCustomData();
       customData.verifyResponseCode(this, Status.NOT_FOUND);
+
+      InputStream inputStream = OseeInf.getResourceAsStream("RestPostFile.txt", getClass());
+      OteRestResponse postResponse = oteApi.rest().endpoint1().postFile(this, inputStream);
+      postResponse.verifyResponseCode(this, Status.OK);
    }
 
    private class MuxChannelSender extends EnvironmentTask {

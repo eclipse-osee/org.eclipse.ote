@@ -33,7 +33,7 @@ public class SimpleApp {
 
       // Tells the Jersey Servlet which REST service/class to load.
       jerseyServlet.setInitParameter("jersey.config.server.provider.classnames",
-            OteSimpleEndpoint.class.getCanonicalName());
+         OteSimpleEndpoint.class.getCanonicalName() + ",org.glassfish.jersey.media.multipart.MultiPartFeature");
 
       try {
          jettyServer.start();
