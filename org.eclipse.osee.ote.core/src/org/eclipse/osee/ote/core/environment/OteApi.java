@@ -16,8 +16,8 @@ package org.eclipse.osee.ote.core.environment;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
- * This interface is generally meant to provide test specific API. It is preferred to provide this rather than access to
- * the entire test environment.
+ * This interface is generally meant to provide test specific API. It is preferred to provide this
+ * rather than access to the entire test environment.
  *
  * @author Michael P. Masterson
  */
@@ -55,7 +55,7 @@ public interface OteApi {
     * 
     * @param promptMessage
     */
-   void promptInput(String promptMessage);
+   String promptInput(String promptMessage);
 
    /**
     * This method will display the message input to the console. It also pauses the script running,

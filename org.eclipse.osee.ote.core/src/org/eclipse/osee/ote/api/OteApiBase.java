@@ -24,14 +24,12 @@ public class OteApiBase implements OteApi {
    private TestEnvironment testEnv;
 
    @Override
-   public void logTestPoint(boolean isPassed, String testPointName, String expected,
-         String actual) {
+   public void logTestPoint(boolean isPassed, String testPointName, String expected, String actual) {
       testEnv.getRunManager().getCurrentScript().logTestPoint(isPassed, testPointName, expected, actual);
    }
 
    @Override
-   public void logTestPoint(boolean isPassed, String testPointName, NamedId expected,
-         NamedId actual) {
+   public void logTestPoint(boolean isPassed, String testPointName, NamedId expected, NamedId actual) {
       logTestPoint(isPassed, testPointName, expected.getName(), actual.getName());
    }
 
@@ -41,8 +39,8 @@ public class OteApiBase implements OteApi {
    }
 
    @Override
-   public void promptInput(String promptMessage) {
-      testEnv.promptInput(promptMessage);
+   public String promptInput(String promptMessage) {
+      return testEnv.promptInput(promptMessage);
    }
 
    @Override
