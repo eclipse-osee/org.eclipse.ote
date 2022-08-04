@@ -13,8 +13,9 @@
 
 package org.eclipse.osee.ote.core.framework.outfile;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Andy Jury
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 public class CreateArtifactsJsonPojo {
 
    private String typeName;
-   private String scriptName;
+   private String name;
    private ArrayList<AttributeJsonPojo> attribute;
 
    public String getTypeName() {
@@ -33,15 +34,15 @@ public class CreateArtifactsJsonPojo {
       this.typeName = typeName;
    }
 
-   public String getScriptName() {
-      return scriptName;
+   public String getName() {
+      return name;
    }
 
-   public void setScriptName(String scriptName) {
-      this.scriptName = scriptName;
+   public void setName(String name) {
+      this.name = name;
    }
 
-   @JsonProperty("attribute")
+   @JsonProperty("attributes")
    public ArrayList<AttributeJsonPojo> getAttributes() {
       return attribute;
    }

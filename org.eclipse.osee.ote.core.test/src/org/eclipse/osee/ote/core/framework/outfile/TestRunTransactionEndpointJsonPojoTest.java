@@ -37,7 +37,7 @@ public class TestRunTransactionEndpointJsonPojoTest {
 
       CreateArtifactsJsonPojo createArtifacts = new CreateArtifactsJsonPojo();
       createArtifacts.setTypeName("TestRun");
-      createArtifacts.setScriptName("TBD");
+      createArtifacts.setName("TBD");
 
       AttributeJsonPojo attribute1 = new AttributeJsonPojo();
       attribute1.setTypeName("Outfile URL");

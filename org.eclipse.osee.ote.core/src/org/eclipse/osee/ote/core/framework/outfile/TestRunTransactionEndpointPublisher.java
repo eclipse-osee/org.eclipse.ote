@@ -14,6 +14,7 @@
 package org.eclipse.osee.ote.core.framework.outfile;
 
 import java.util.logging.LogRecord;
+
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.ote.core.framework.outfile.xml.SystemInfo;
@@ -40,19 +41,18 @@ public class TestRunTransactionEndpointPublisher {
       testRunTransactionEndpointJsonPojo.setBranch(branchName);
       testRunTransactionEndpointJsonPojo.setTxComment("Created by TestRunTransactionEndpointPublisher");
 
-      createArtifacts.setTypeName("TestRun");
+      createArtifacts.setTypeName("Test Run");
 
       if (logRecord instanceof ScriptResultRecord) {
          ScriptResultRecord srr = (ScriptResultRecord) logRecord;
-         createArtifacts.setScriptName(logRecord.getMessage());
-         AttributeJsonPojo attribute = new AttributeJsonPojo();
+         createArtifacts.setName(logRecord.getMessage());
 
          for (XmlizableStream rec : srr.getResults()) {
             if (rec instanceof TimeSummary) {
                TimeSummary timeSummary = (TimeSummary) rec;
                addAttributeToCreateArtifacts("Elapsed Date", timeSummary.getElapsed());
-               addAttributeToCreateArtifacts("End Date", timeSummary.getEndTime().toString());
-               addAttributeToCreateArtifacts("Start Date", timeSummary.getStartTime().toString());
+               addAttributeToCreateArtifacts("End Date", Long.toString(timeSummary.getEndTime().getTime()));
+               addAttributeToCreateArtifacts("Start Date", Long.toString(timeSummary.getStartTime().getTime()));
             } else if (rec instanceof TestPointResults) {
                TestPointResults testPointResults = (TestPointResults) rec;
 

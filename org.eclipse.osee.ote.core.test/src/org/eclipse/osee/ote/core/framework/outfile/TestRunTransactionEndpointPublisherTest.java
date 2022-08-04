@@ -38,7 +38,7 @@ public class TestRunTransactionEndpointPublisherTest {
 
       CreateArtifactsJsonPojo createArtifacts = new CreateArtifactsJsonPojo();
       createArtifacts.setTypeName("TestRun");
-      createArtifacts.setScriptName("org.eclipse.ote.simple.test.script.SimpleTestScript");
+      createArtifacts.setName("org.eclipse.ote.simple.test.script.SimpleTestScript");
 
       AttributeJsonPojo attribute1 = new AttributeJsonPojo();
       attribute1.setTypeName("Elapsed Date");
