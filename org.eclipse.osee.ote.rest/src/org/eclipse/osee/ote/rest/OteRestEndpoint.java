@@ -14,20 +14,23 @@ package org.eclipse.osee.ote.rest;
 
 import java.io.InputStream;
 import java.net.URI;
+
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.ote.rest.multipart.FileStreamPart;
 import org.eclipse.osee.ote.rest.multipart.MultiPartMessage;
 import org.eclipse.osee.ote.rest.multipart.MultipartMessageBodyWriter;
 
 /**
- * Provides generic REST request methods for use by OTE API implementations. All REST requests will be careful to not
- * propagate HTTP exceptions from the JaxRS calls and instead wrap them in {@link OteResResponseException}.
+ * Provides generic REST request methods for use by OTE API implementations. All
+ * REST requests will be careful to not propagate HTTP exceptions from the JaxRS
+ * calls and instead wrap them in {@link OteRestResponseException}.
  *
  * @author Michael P. Masterson
  */
@@ -37,7 +40,7 @@ public abstract class OteRestEndpoint {
 
    /**
     * @param jaxRsApi
-    * @param uri Base path for this endpoint
+    * @param uri      Base path for this endpoint
     */
    public OteRestEndpoint(JaxRsApi jaxRsApi, URI uri) {
       this.jaxRsApi = jaxRsApi;
@@ -53,13 +56,15 @@ public abstract class OteRestEndpoint {
    }
 
    /**
-    * This method should never throw a RuntimeException caused by HTTP issues contacting the target URI. All such
-    * exceptions are wrapped in a {@link OteResResponseException} for ease of testing.
+    * This method should never throw a RuntimeException caused by HTTP issues
+    * contacting the target URI. All such exceptions are wrapped in a
+    * {@link OteRestResponseException} for ease of testing.
     *
-    * @param target Full path to REST target
+    * @param target    Full path to REST target
     * @param mediaType Use constants defined in {@link javax.ws.rs.core.MediaType}
-    * @return Working {@link OteRestResponse} if no exceptions while performing GET, otherwise an
-    * {@link OteResResponseException} that fails every verification gracefully.
+    * @return Working {@link OteRestResponse} if no exceptions while performing
+    *         GET, otherwise an {@link OteRestResponseException} that fails every
+    *         verification gracefully.
     */
    protected OteRestResponse performGetRequest(URI target, String mediaType) {
       Response response;
@@ -75,15 +80,17 @@ public abstract class OteRestEndpoint {
    }
 
    /**
-    * This method should never throw a RuntimeException caused by HTTP issues contacting the target URI. All such
-    * exceptions are wrapped in a {@link OteResResponseException} for ease of testing.
-    *
-    * @param target Full path to REST target
-    * @param input Data to post
-    * @param fileName The simple name of the file represented in the input stream
+    * This method should never throw a RuntimeException caused by HTTP issues
+    * contacting the target URI. All such exceptions are wrapped in a
+    * {@link OteRestResponseException} for ease of testing.
+    * 
+    * @param target    Full path to REST target
+    * @param input     Data to post
+    * @param fileName  The simple name of the file represented in the input stream
     * @param mediaType The MIME type to be declared in the HTTP Header
-    * @return Working {@link OteRestResponse} if no exceptions while performing POST, otherwise an
-    * {@link OteResResponseException} that fails every verification gracefully.
+    * @return Working {@link OteRestResponse} if no exceptions while performing
+    *         POST, otherwise an {@link OteRestResponseException} that fails every
+    *         verification gracefully.
     */
    protected OteRestResponse performPostFile(URI target, InputStream input, String fileName, String mediaType) {
       Response response;
@@ -116,6 +123,34 @@ public abstract class OteRestEndpoint {
 
          retVal = new OteRestResponse(response);
       } catch (RuntimeException ex) {
+         retVal = new OteRestResponseException(ex);
+      }
+      return retVal;
+   }
+
+   /**
+    * This method should never throw a RuntimeException caused by HTTP issues
+    * contacting the target URI. All such exceptions are wrapped in a
+    * {@link OteRestResponseException} for ease of testing.
+    *
+    * @param target    Full path to REST target
+    * @param mediaType Use constants defined in {@link javax.ws.rs.core.MediaType}
+    * @return Working {@link OteRestResponse} if no exceptions while performing
+    *         DELETE, otherwise an {@link OteRestResponseException} that fails
+    *         every verification gracefully.
+    */
+   protected OteRestResponse performDeleteFile(URI target) {
+      Response response;
+      OteRestResponse retVal;
+
+      try {
+         WebTarget webTarget = jaxRsApi.newTarget(target.toString());
+         response = webTarget.request().delete();
+
+         retVal = new OteRestResponse(response);
+      } catch (RuntimeException ex) {
+         System.err.println(ex.getLocalizedMessage());
+         ex.printStackTrace();
          retVal = new OteRestResponseException(ex);
       }
       return retVal;
