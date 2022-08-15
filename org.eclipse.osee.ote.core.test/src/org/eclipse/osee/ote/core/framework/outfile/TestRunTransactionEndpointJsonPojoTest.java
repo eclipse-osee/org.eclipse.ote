@@ -14,10 +14,13 @@
 package org.eclipse.osee.ote.core.framework.outfile;
 
 import static org.junit.Assert.assertEquals;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Andy Jury
@@ -36,7 +39,7 @@ public class TestRunTransactionEndpointJsonPojoTest {
       testRunTransactionEndpoint.setTxComment("Created by ScriptJsonOutLogHandler");
 
       CreateArtifactsJsonPojo createArtifacts = new CreateArtifactsJsonPojo();
-      createArtifacts.setTypeName("TestRun");
+      createArtifacts.setTypeName("Test Run");
       createArtifacts.setName("TBD");
 
       AttributeJsonPojo attribute1 = new AttributeJsonPojo();
@@ -50,7 +53,7 @@ public class TestRunTransactionEndpointJsonPojoTest {
       createArtifacts.addAttribute(attribute1);
       createArtifacts.addAttribute(attribute2);
 
-      testRunTransactionEndpoint.setCreateArtifacts(createArtifacts);
+      testRunTransactionEndpoint.addCreateArtifacts(createArtifacts);
 
       ObjectMapper objectMapper = new ObjectMapper();
       String inputJson = objectMapper.writeValueAsString(testRunTransactionEndpoint);

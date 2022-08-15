@@ -107,6 +107,20 @@ public abstract class OteRestEndpoint {
       return retVal;
    }
 
+   protected OteRestResponse performPostJsonString(URI target, String jsonString) {
+      Response response;
+      OteRestResponse retVal;
+      try {
+         response =
+            jaxRsApi.newTargetUrl(target.toString()).request(MediaType.APPLICATION_JSON).post(Entity.json(jsonString));
+
+         retVal = new OteRestResponse(response);
+      } catch (RuntimeException ex) {
+         retVal = new OteRestResponseException(ex);
+      }
+      return retVal;
+   }
+
    /**
     * Utility method for building up a multi-step URI path.
     *

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" immediate="true" name="org.eclipse.osee.ote.rest.OseeOutfileSender">
+   <service>
+      <provide interface="org.eclipse.osee.ote.rest.OseeOutfileSender"/>
+   </service>
+   <reference bind="bindJaxRs" cardinality="1..1" interface="org.eclipse.osee.framework.core.JaxRsApi" name="JaxRs" policy="static"/>
+   <reference bind="bindTestEnv" cardinality="1..1" interface="org.eclipse.osee.ote.core.environment.TestEnvironmentInterface" name="TestEnv" policy="static"/>
+   <implementation class="org.eclipse.osee.ote.rest.OseeOutfileSender"/>
+</scr:component>

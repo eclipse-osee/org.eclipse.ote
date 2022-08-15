@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ote.core.framework.outfile;
 
+import java.util.ArrayList;
+
 /**
  * @author Andy Jury
  */
@@ -21,7 +23,7 @@ public class TestRunTransactionEndpointJsonPojo {
    private String branch;
    private String txComment;
 
-   private CreateArtifactsJsonPojo createArtifacts;
+   private ArrayList<CreateArtifactsJsonPojo> createArtifacts;
 
    public String getBranch() {
       return branch;
@@ -39,11 +41,19 @@ public class TestRunTransactionEndpointJsonPojo {
       this.txComment = txComment;
    }
 
-   public CreateArtifactsJsonPojo getCreateArtifacts() {
+   public ArrayList<CreateArtifactsJsonPojo> getCreateArtifacts() {
       return createArtifacts;
    }
 
-   public void setCreateArtifacts(CreateArtifactsJsonPojo createArtifacts) {
+   public void setCreateArtifacts(ArrayList<CreateArtifactsJsonPojo> createArtifacts) {
       this.createArtifacts = createArtifacts;
+   }
+
+   public void addCreateArtifacts(CreateArtifactsJsonPojo createArtifact) {
+
+      if (createArtifacts == null) {
+         createArtifacts = new ArrayList<CreateArtifactsJsonPojo>();
+      }
+      this.createArtifacts.add(createArtifact);
    }
 }

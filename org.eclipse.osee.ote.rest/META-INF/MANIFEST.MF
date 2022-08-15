@@ -16,6 +16,8 @@ Import-Package: javax.ws.rs,
  org.apache.cxf.message,
  org.apache.cxf.transport.http,
  org.eclipse.osee.framework.core,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.logging,
@@ -23,10 +25,15 @@ Import-Package: javax.ws.rs,
  org.eclipse.osee.ote.api,
  org.eclipse.osee.ote.core,
  org.eclipse.osee.ote.core.environment,
+ org.eclipse.osee.ote.core.environment.interfaces,
+ org.eclipse.osee.ote.core.framework,
  org.eclipse.osee.ote.core.framework.command,
+ org.eclipse.osee.ote.core.framework.event,
  org.eclipse.osee.ote.io,
  org.eclipse.osee.ote.message.interfaces,
- org.eclipse.osee.ote.rest.model
+ org.eclipse.osee.ote.rest.model,
+ org.osgi.service.component.annotations
 Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.eclipse.core.runtime
 Export-Package: org.eclipse.osee.ote.rest
+Bundle-ActivationPolicy: lazy

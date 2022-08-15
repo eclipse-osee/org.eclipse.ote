@@ -28,7 +28,8 @@ public enum OtePropertiesCore implements OteSimpleProperties {
    userName("user.name"),
    oteServerFolder("osee.ote.server.folder"),
    oteStationName("osee.ote.station.name"),
-   useLookup("osee.ote.use.lookup");
+   useLookup("osee.ote.use.lookup"), 
+   oseeBranch("osee.ote.outfile.branch");
       
    private String key;
    private long defaultLong;

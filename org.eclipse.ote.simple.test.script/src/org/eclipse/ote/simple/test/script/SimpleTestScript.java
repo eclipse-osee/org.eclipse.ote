@@ -104,6 +104,7 @@ public class SimpleTestScript extends SimpleMessageSystemTestScript {
 
       OteRestResponse dataOne = oteApi.rest().endpoint1().getDataOne(this);
       String content = dataOne.getContents(String.class);
+      prompt(content);
 
       dataOne.verifyResponseCode(this, Status.OK);
       dataOne.verifyResponseFamily(this, Response.Status.Family.SUCCESSFUL);

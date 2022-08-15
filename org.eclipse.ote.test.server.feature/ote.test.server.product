@@ -3,6 +3,7 @@
 
 <product name="OteTestServer" uid="ote.test.server.product" id="org.eclipse.osee.ote.core.server" application="org.eclipse.osee.ote.core.server" useFeatures="true" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -23,7 +24,6 @@
    </launcherArgs>
 
    <launcher>
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>

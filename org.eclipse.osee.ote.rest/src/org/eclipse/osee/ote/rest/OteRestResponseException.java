@@ -33,8 +33,13 @@ public class OteRestResponseException extends OteRestResponse {
     * @param response
     */
    public OteRestResponseException(Exception ex) {
-      super(null);
+      super(createExceptionResponse(ex));
       this.ex = ex;
+   }
+
+   private static Response createExceptionResponse(Exception ex) {
+      return Response.status(Status.SERVICE_UNAVAILABLE).entity("Error sending REST request.\n"
+                                                                + ex.getLocalizedMessage()).build();
    }
 
    @Override
@@ -52,7 +57,7 @@ public class OteRestResponseException extends OteRestResponse {
 
    @Override
    public <T> T getContents(Class<T> clazz) {
-      return null;
+      return super.getContents(clazz);
    }
 
    @Override

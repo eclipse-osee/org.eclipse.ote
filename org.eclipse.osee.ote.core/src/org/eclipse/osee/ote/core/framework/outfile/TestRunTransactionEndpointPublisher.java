@@ -14,13 +14,15 @@
 package org.eclipse.osee.ote.core.framework.outfile;
 
 import java.util.logging.LogRecord;
-
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ote.core.OteLevel;
 import org.eclipse.osee.ote.core.framework.outfile.xml.SystemInfo;
 import org.eclipse.osee.ote.core.framework.outfile.xml.TestPointResults;
 import org.eclipse.osee.ote.core.framework.outfile.xml.TimeSummary;
 import org.eclipse.osee.ote.core.log.record.ScriptResultRecord;
+import org.eclipse.osee.ote.properties.OtePropertiesCore;
 
 /**
  * This class collects info from the outfile records that will be used in calling class to create the
@@ -30,14 +32,18 @@ import org.eclipse.osee.ote.core.log.record.ScriptResultRecord;
  */
 public class TestRunTransactionEndpointPublisher {
 
+   private final String DEFAULT_BRANCH_NAME = "no_ote_branch_provided";
    private final TestRunTransactionEndpointJsonPojo testRunTransactionEndpointJsonPojo =
       new TestRunTransactionEndpointJsonPojo();
    private String testRunTransactionEndpointJson = new String();
-   private final String branchName = "ote_test_run_transaction_endpoint_HARDCODED"; //This should be connected to user supplied branch in future
+   private final String branchName = OtePropertiesCore.oseeBranch.getValue(DEFAULT_BRANCH_NAME); //This should be connected to user supplied branch in future
    private final CreateArtifactsJsonPojo createArtifacts = new CreateArtifactsJsonPojo();
 
    public String publish(LogRecord logRecord) {
 
+      if (branchName.equals(DEFAULT_BRANCH_NAME)) {
+         OseeLog.log(getClass(), OteLevel.WARNING, "No OTE Branch was provided to send OSEE outfile.");
+      }
       testRunTransactionEndpointJsonPojo.setBranch(branchName);
       testRunTransactionEndpointJsonPojo.setTxComment("Created by TestRunTransactionEndpointPublisher");
 
@@ -73,7 +79,7 @@ public class TestRunTransactionEndpointPublisher {
          }
       }
 
-      testRunTransactionEndpointJsonPojo.setCreateArtifacts(createArtifacts);
+      testRunTransactionEndpointJsonPojo.addCreateArtifacts(createArtifacts);
 
       testRunTransactionEndpointJson = JsonUtil.toJson(testRunTransactionEndpointJsonPojo);
       return testRunTransactionEndpointJson;

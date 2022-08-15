@@ -100,7 +100,7 @@ public class TestRunTransactionEndpointPublisherTest {
       attribute12.setValue("OTE_CI");
       createArtifacts.addAttribute(attribute12);
 
-      testRunTransactionEndpoint.setCreateArtifacts(createArtifacts);
+      testRunTransactionEndpoint.addCreateArtifacts(createArtifacts);
 
       ObjectMapper objectMapper = new ObjectMapper();
       String inputJson = objectMapper.writeValueAsString(testRunTransactionEndpoint);

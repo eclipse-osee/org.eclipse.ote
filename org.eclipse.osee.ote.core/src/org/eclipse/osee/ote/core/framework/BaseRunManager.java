@@ -98,9 +98,9 @@ public class BaseRunManager implements IRunManager {
             }
             rb.append(lifecycleListenerProvider.notifyPreDispose(propertyStore, testRunManager.getTest(), env));
             rb.append(testRunManager.dispose());
-            rb.append(lifecycleListenerProvider.notifyPostDispose(propertyStore, env));
          }
          this.resultCollector.dispose(env);
+         rb.append(lifecycleListenerProvider.notifyPostDispose(propertyStore, env));
          this.resultCollector = null;
          if (!rb.isReturnStatusOK()) {
             OseeLog.log(BaseRunManager.class, Level.SEVERE, rb.toString());
