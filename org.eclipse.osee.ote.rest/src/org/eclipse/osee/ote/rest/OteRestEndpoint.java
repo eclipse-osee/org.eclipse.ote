@@ -18,6 +18,7 @@ import java.net.URI;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -118,13 +119,68 @@ public abstract class OteRestEndpoint {
       Response response;
       OteRestResponse retVal;
       try {
-         response =
-            jaxRsApi.newTargetUrl(target.toString()).request(MediaType.APPLICATION_JSON).post(Entity.json(jsonString));
+         response = jaxRsApi.newTargetUrl(target.toString()).request(MediaType.APPLICATION_JSON)
+               .post(Entity.json(jsonString));
 
          retVal = new OteRestResponse(response);
       } catch (RuntimeException ex) {
          retVal = new OteRestResponseException(ex);
       }
+      return retVal;
+   }
+
+   /**
+    * This method should never throw a RuntimeException caused by HTTP issues
+    * contacting the target URI. All such exceptions are wrapped in a
+    * {@link OteRestResponseException} for ease of testing.
+    * 
+    * @param target      Full path to REST target
+    * @param contentType Header string defining content-type. Example:
+    *                    "Content-Type:application/json"
+    * @param data        Data to post
+    * @return Working {@link OteRestResponse} if no exceptions while performing
+    *         POST, otherwise an {@link OteResResponseException} that fails every
+    *         verification gracefully.
+    */
+   protected OteRestResponse performPostRequest(URI target, String contentType, String data) {
+      OteRestResponse retVal;
+      try {
+         Response response = jaxRsApi.newTargetUrl(target.toString()).request()
+               .post(Entity.entity(data, MediaType.valueOf(contentType)));
+         retVal = new OteRestResponse(response);
+      } catch (RuntimeException ex) {
+         retVal = new OteRestResponseException(ex);
+      }
+
+      return retVal;
+   }
+
+   /**
+    * This method should never throw a RuntimeException caused by HTTP issues
+    * contacting the target URI. All such exceptions are wrapped in a
+    * {@link OteRestResponseException} for ease of testing.
+    * 
+    * @param target     Full path to REST target
+    * @param mediaType  Use constants defined in {@link javax.ws.rs.core.MediaType}
+    * @param data       Data to post
+    * @param headerType Use constants defined in
+    *                   {@link javax.ws.rs.core.HttpHeaders}
+    * @param header     Value of header
+    * @return Working {@link OteRestResponse} if no exceptions while performing
+    *         POST, otherwise an {@link OteResResponseException} that fails every
+    *         verification gracefully.
+    */
+   protected OteRestResponse performPostRequest(URI target, String mediaType, String data, HttpHeaders headerType,
+         String headerValue) {
+      OteRestResponse retVal;
+      try {
+         Response response = jaxRsApi.newTargetUrl(target.toString()).request()
+               .header(headerType.toString(), headerValue).post(Entity.entity(data, mediaType));
+         retVal = new OteRestResponse(response);
+      } catch (RuntimeException ex) {
+         retVal = new OteRestResponseException(ex);
+      }
+
       return retVal;
    }
 
