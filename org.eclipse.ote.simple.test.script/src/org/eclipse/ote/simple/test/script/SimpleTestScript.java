@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ote.api.local.LocalProcessResponse;
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.core.annotations.Order;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
@@ -92,7 +93,8 @@ public class SimpleTestScript extends SimpleMessageSystemTestScript {
 
          oteApi.testWait(1000);
          sender.disable();
-      } catch (IOException ex) {
+      }
+      catch (IOException ex) {
          logTestPoint(false, "Error starting packet sender", "N/A", ex.getMessage());
       }
    }
@@ -120,6 +122,33 @@ public class SimpleTestScript extends SimpleMessageSystemTestScript {
       InputStream inputStream = OseeInf.getResourceAsStream("RestPostFile.txt", getClass());
       OteRestResponse postResponse = oteApi.rest().endpoint1().postFile(this, inputStream);
       postResponse.verifyResponseCode(this, Status.OK);
+   }
+
+   @Test
+   @Order(5)
+   public void localProcessTestCase(SimpleOteApi oteApi) {
+      LocalProcessResponse executeProcess = oteApi.localProcess().executeProcess("java",
+                                                                                 "-version");
+      executeProcess.verifyExitCode(this, LocalProcessResponse.OK_CODE);
+      executeProcess.verifyErrorStreamContains(this, "SE Runtime Environment");
+      // This will fail
+      executeProcess.verifyOutputStreamContains(this, "SE Runtime Environment");
+
+      // Extra dash will cause jvm to throw exception
+      executeProcess = oteApi.localProcess().executeProcess("java", "--version");
+      executeProcess.verifyExitCode(this, 1);
+      // These should all fail
+      executeProcess.verifyErrorStreamContains(this, "SE Runtime Environment");
+      executeProcess.verifyOutputStreamContains(this, "SE Runtime Environment");
+
+      // This will test the timeout as this ssh will take a long time to resolve
+      executeProcess = oteApi.localProcess().executeProcess("ssh",
+                                                            "www.github.com");
+      // These should all fail
+      executeProcess.verifyExitCode(this, 1);
+      executeProcess.verifyErrorStreamContains(this, "SE Runtime Environment");
+      executeProcess.verifyOutputStreamContains(this, "SE Runtime Environment");
+
    }
 
    private class MuxChannelSender extends EnvironmentTask {

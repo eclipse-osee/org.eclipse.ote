@@ -13,6 +13,7 @@
 package org.eclipse.ote.simple.test.environment;
 
 import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.ote.api.local.LocalProcessApi;
 import org.eclipse.osee.ote.rest.OteRestApiBase;
 import org.eclipse.osee.ote.rest.OteRestConfigurationProvider;
 import org.eclipse.ote.simple.test.environment.rest.SimpleRestApiGroup;
@@ -30,10 +31,12 @@ public class SimpleOteApi extends OteRestApiBase {
 
    private SimpleRestApiGroup endpoints;
    private OteRestConfigurationProvider restConfig;
+   private LocalProcessApi localProcessApi;
 
    @Activate
    public void zzz_activate() {
       this.endpoints = new SimpleRestApiGroup(zzz_getJaxRsApi(), restConfig);
+      this.localProcessApi = new LocalProcessApi();
    }
 
    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
@@ -48,6 +51,7 @@ public class SimpleOteApi extends OteRestApiBase {
       super.zzz_bindJaxRsApi(jaxRsApi);
    }
 
+   @Override
    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
    public void zzz_bindRestConfig(OteRestConfigurationProvider restConfig) {
       this.restConfig = restConfig;
@@ -57,6 +61,11 @@ public class SimpleOteApi extends OteRestApiBase {
       return this.endpoints;
    }
 
+   public LocalProcessApi localProcess() {
+      return this.localProcessApi;
+   }
+
+   @Override
    public OteRestConfigurationProvider zzz_getRestConfig() {
       return this.restConfig;
    }
