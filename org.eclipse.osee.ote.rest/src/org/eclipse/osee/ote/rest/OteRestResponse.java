@@ -12,6 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.ote.rest;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -20,8 +23,7 @@ import javax.ws.rs.core.Response.StatusType;
 
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
 
 /**
  * Wrapper class to generic {@link Response} objects provided via a REST
@@ -138,4 +140,25 @@ public class OteRestResponse {
             actual.toString());
    }
 
+   /**
+    * Logs a test point verifying that the actual data of the REST Response is
+    * exactly equal to the expected data.
+    * 
+    * @param accessor For Logging
+    * @param value    Value from param to obtain
+    * @param expected
+    * @param param    Data parameter to verify
+    */
+   public void verifyResponseData(ITestAccessor accessor, String expected, String param, String value) {
+       String strResponse = getContents(String.class);
+       JsonParser parser = new JsonParser();
+       JsonObject jsonObj = parser.parse(strResponse).getAsJsonObject();
+       JsonElement jsonElement = jsonObj.get(value);
+       String actual = jsonElement.isJsonNull() ? "null" : jsonElement.getAsString();
+       
+       if (expected != null && actual != null) {
+           accessor.getTestScript().logTestPoint(expected.equals(actual), "verifyResponseData() - " + param, expected, actual);
+       }
+   }
+   
 }
