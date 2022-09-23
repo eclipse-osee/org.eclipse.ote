@@ -20,6 +20,9 @@ import javax.ws.rs.core.Response.StatusType;
 
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 /**
  * Wrapper class to generic {@link Response} objects provided via a REST
  * request. This class provides an API intended to simplify test script
@@ -93,6 +96,19 @@ public class OteRestResponse {
     */
    public Response getResponse() {
       return response;
+   }
+
+   /**
+    * Returns the contents (body) of the REST response as a JSON object if the
+    * response is of type JSON. Returns empty JSON if media type is not json.
+    * 
+    * @return REST response as a JSON object
+    */
+   public JsonObject getResponseJson() {
+      if (response.getMediaType().equals(MediaType.APPLICATION_JSON_TYPE))
+         return new JsonParser().parse((String) response.readEntity(String.class)).getAsJsonObject();
+      else
+         return new JsonObject();
    }
 
    /**
