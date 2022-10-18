@@ -147,13 +147,73 @@ public abstract class OteRestEndpoint {
     */
    protected OteRestResponse performPostRequest(URI target, String header, String jsonString) {
       OteRestResponse retVal;
-      try {
-         String[] headerString = header.split(":", 2);
-         String headerType = headerString[0];
-         String headerValue = headerString[1];
+      Response response;
+      if (target == null) {
+         return new OteRestResponseException(new NullPointerException("URI cannot be null"));
+      }
+      if (jsonString == null) {
+         return new OteRestResponseException(new NullPointerException("Json Data String cannot be null"));
+      }
 
-         Response response = jaxRsApi.newTargetUrl(target.toString()).request().header(headerType, headerValue)
-               .post(Entity.json(jsonString));
+      try {
+         if (header == null || header.equals("")) {
+            response = jaxRsApi.newTargetUrl(target.toString()).request().put(Entity.json(jsonString));
+         } else {
+            String[] headerString = header.split(":", 2);
+            String headerType = headerString[0];
+            String headerValue = headerString[1];
+
+            response = jaxRsApi.newTargetUrl(target.toString()).request().header(headerType, headerValue)
+                  .post(Entity.json(jsonString));
+         }
+         retVal = new OteRestResponse(response);
+      } catch (RuntimeException ex) {
+         retVal = new OteRestResponseException(ex);
+      }
+
+      return retVal;
+   }
+
+   /**
+    * Performs REST PUT Request with defined Header.
+    * 
+    * This method should never throw a RuntimeException caused by HTTP issues
+    * contacting the target URI. All such exceptions are wrapped in a
+    * {@link OteRestResponseException} for ease of testing.
+    * 
+    * @param target     Full path to REST target
+    * @param header     Header string defining request body. Note, if defining
+    *                   'content-type' in header, only JSON can be used as
+    *                   mediatype for request. Example of header string:
+    *                   "Content-Type:application/json"
+    * @param jsonString Data to put as JSON string
+    * @return Working {@link OteRestResponse} if no exceptions while performing
+    *         POST, otherwise an {@link OteResResponseException} that fails every
+    *         verification gracefully.
+    */
+   protected OteRestResponse performPutRequest(URI target, String header, String jsonString) {
+
+      OteRestResponse retVal;
+      Response response;
+
+      if (target == null) {
+         return new OteRestResponseException(new NullPointerException("URI cannot be null"));
+      }
+      if (jsonString == null) {
+         return new OteRestResponseException(new NullPointerException("Json Data String cannot be null"));
+      }
+
+      try {
+         if (header == null || header.equals("")) {
+            response = jaxRsApi.newTargetUrl(target.toString()).request().put(Entity.json(jsonString));
+         } else {
+            String[] headerString = header.split(":", 2);
+            String headerType = headerString[0];
+            String headerValue = headerString[1];
+
+            response = jaxRsApi.newTargetUrl(target.toString()).request().header(headerType, headerValue)
+                  .put(Entity.json(jsonString));
+         }
          retVal = new OteRestResponse(response);
       } catch (RuntimeException ex) {
          retVal = new OteRestResponseException(ex);
