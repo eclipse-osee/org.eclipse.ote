@@ -68,6 +68,20 @@ public class OteRestResponse {
       accessor.getTestScript().logTestPoint(actualFamily == expectedFamily, "verifyResponseFamily",
             expectedFamily.toString(), actualFamily.toString());
    }
+   
+   /**
+    * Verifies the response code family from the REST request is exactly equal to
+    * the expectedFamily parameter
+    * 
+    * @param accessor       For logging
+    * @param expectedFamily Expected status code family
+    * @param testPointName
+    */
+   public void verifyResponseFamily(ITestAccessor accessor, Family expectedFamily, String testPointName) {
+      Family actualFamily = response.getStatusInfo().getFamily();
+      accessor.getTestScript().logTestPoint(actualFamily == expectedFamily, testPointName,
+            expectedFamily.toString(), actualFamily.toString());
+   }
 
    /**
     * Logs a test point verifying that the REST response content type is exactly
@@ -79,6 +93,20 @@ public class OteRestResponse {
    public void verifyResponseContentType(ITestAccessor accessor, MediaType expected) {
       MediaType actual = response.getMediaType();
       accessor.getTestScript().logTestPoint(expected.equals(actual), "verifyContentType", expected.toString(),
+            actual.toString());
+   }
+   
+   /**
+    * Logs a test point verifying that the REST response content type is exactly
+    * equal to the expected REST response content type
+    * 
+    * @param accessor
+    * @param expected
+    * @param testPointName
+    */
+   public void verifyResponseContentType(ITestAccessor accessor, MediaType expected, String testPointName) {
+      MediaType actual = response.getMediaType();
+      accessor.getTestScript().logTestPoint(expected.equals(actual), testPointName, expected.toString(),
             actual.toString());
    }
 
@@ -137,6 +165,20 @@ public class OteRestResponse {
    public <T> void verifyContentsEquals(ITestAccessor accessor, T expected) {
       Object actual = response.readEntity(expected.getClass());
       accessor.getTestScript().logTestPoint(expected.equals(actual), "verifyContentsEquals", expected.toString(),
+            actual.toString());
+   }
+   
+   /**
+    * Logs a test point verifying that the string contents of the REST Response is
+    * exactly equal to the expected string.
+    * 
+    * @param accessor For Logging
+    * @param expected
+    * @param testPointName
+    */
+   public <T> void verifyContentsEquals(ITestAccessor accessor, T expected, String testPointName) {
+      Object actual = response.readEntity(expected.getClass());
+      accessor.getTestScript().logTestPoint(expected.equals(actual), testPointName, expected.toString(),
             actual.toString());
    }
 
