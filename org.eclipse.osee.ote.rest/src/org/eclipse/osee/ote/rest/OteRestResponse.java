@@ -48,12 +48,27 @@ public class OteRestResponse {
     * @param code     Expected status code
     */
    public void verifyResponseCode(ITestAccessor accessor, Status code) {
-
       StatusType statusInfo = response.getStatusInfo();
       int actualCode = statusInfo.getStatusCode();
       int expectedCode = code.getStatusCode();
       accessor.getTestScript().logTestPoint(actualCode == expectedCode, "verifyResponseCode",
-            Integer.toString(expectedCode), Integer.toString(actualCode));
+         Integer.toString(expectedCode), Integer.toString(actualCode));
+   }
+   
+   /**
+    * Verifies the response code from the REST request is exactly equal to the code
+    * parameter
+    * 
+    * @param accessor For logging
+    * @param code     Expected status code
+    * @param testPointName
+    */
+   public void verifyResponseCode(ITestAccessor accessor, Status code, String testPointName) {
+      StatusType statusInfo = response.getStatusInfo();
+      int actualCode = statusInfo.getStatusCode();
+      int expectedCode = code.getStatusCode();
+      accessor.getTestScript().logTestPoint(actualCode == expectedCode, (testPointName == null || testPointName.isEmpty()) ? "verifyResponseCode" : testPointName,
+         Integer.toString(expectedCode), Integer.toString(actualCode));
    }
 
    /**
@@ -66,7 +81,7 @@ public class OteRestResponse {
    public void verifyResponseFamily(ITestAccessor accessor, Family expectedFamily) {
       Family actualFamily = response.getStatusInfo().getFamily();
       accessor.getTestScript().logTestPoint(actualFamily == expectedFamily, "verifyResponseFamily",
-            expectedFamily.toString(), actualFamily.toString());
+         expectedFamily.toString(), actualFamily.toString());
    }
    
    /**
@@ -79,8 +94,8 @@ public class OteRestResponse {
     */
    public void verifyResponseFamily(ITestAccessor accessor, Family expectedFamily, String testPointName) {
       Family actualFamily = response.getStatusInfo().getFamily();
-      accessor.getTestScript().logTestPoint(actualFamily == expectedFamily, testPointName,
-            expectedFamily.toString(), actualFamily.toString());
+      accessor.getTestScript().logTestPoint(actualFamily == expectedFamily, (testPointName == null || testPointName.isEmpty()) ? "verifyResponseFamily" : testPointName,
+         expectedFamily.toString(), actualFamily.toString());
    }
 
    /**
@@ -93,7 +108,7 @@ public class OteRestResponse {
    public void verifyResponseContentType(ITestAccessor accessor, MediaType expected) {
       MediaType actual = response.getMediaType();
       accessor.getTestScript().logTestPoint(expected.equals(actual), "verifyContentType", expected.toString(),
-            actual.toString());
+         actual.toString());
    }
    
    /**
@@ -106,8 +121,9 @@ public class OteRestResponse {
     */
    public void verifyResponseContentType(ITestAccessor accessor, MediaType expected, String testPointName) {
       MediaType actual = response.getMediaType();
-      accessor.getTestScript().logTestPoint(expected.equals(actual), testPointName, expected.toString(),
-            actual.toString());
+      accessor.getTestScript().logTestPoint(expected.equals(actual), (testPointName == null || testPointName.isEmpty()) ? "verifyContentType" : testPointName,
+         expected.toString(), actual.toString());
+         
    }
 
    /**
@@ -152,7 +168,22 @@ public class OteRestResponse {
       String content = getContents(String.class);
       boolean matches = content.contains(subString);
       accessor.getTestScript().logTestPoint(matches, "verifyContentsContains", "Contains '" + subString + "'",
-            matches ? "FOUND" : "NOT FOUND");
+         matches ? "FOUND" : "NOT FOUND");
+   }
+   
+   /**
+    * Logs a test point verifying that the string contents of the REST Response
+    * contains the substring
+    * 
+    * @param accessor  For Logging
+    * @param subString
+    * @param testPointName
+    */
+   public void verifyContentsContains(ITestAccessor accessor, String subString, String testPointName) {
+      String content = getContents(String.class);
+      boolean matches = content.contains(subString);
+      accessor.getTestScript().logTestPoint(matches, (testPointName == null || testPointName.isEmpty()) ? "verifyContentsContains" : testPointName,
+         "Contains '" + subString + "'", matches ? "FOUND" : "NOT FOUND");
    }
 
    /**
@@ -165,7 +196,7 @@ public class OteRestResponse {
    public <T> void verifyContentsEquals(ITestAccessor accessor, T expected) {
       Object actual = response.readEntity(expected.getClass());
       accessor.getTestScript().logTestPoint(expected.equals(actual), "verifyContentsEquals", expected.toString(),
-            actual.toString());
+         actual.toString());
    }
    
    /**
@@ -178,8 +209,8 @@ public class OteRestResponse {
     */
    public <T> void verifyContentsEquals(ITestAccessor accessor, T expected, String testPointName) {
       Object actual = response.readEntity(expected.getClass());
-      accessor.getTestScript().logTestPoint(expected.equals(actual), testPointName, expected.toString(),
-            actual.toString());
+      accessor.getTestScript().logTestPoint(expected.equals(actual), (testPointName == null || testPointName.isEmpty()) ? "verifyContentsEquals" : testPointName,
+         expected.toString(), actual.toString());
    }
 
    /**
@@ -192,15 +223,15 @@ public class OteRestResponse {
     * @param param    Data parameter to verify
     */
    public void verifyResponseData(ITestAccessor accessor, String expected, String param, String value) {
-       String strResponse = getContents(String.class);
-       JsonParser parser = new JsonParser();
-       JsonObject jsonObj = parser.parse(strResponse).getAsJsonObject();
-       JsonElement jsonElement = jsonObj.get(value);
-       String actual = jsonElement.isJsonNull() ? "null" : jsonElement.getAsString();
-       
-       if (expected != null && actual != null) {
-           accessor.getTestScript().logTestPoint(expected.equals(actual), "verifyResponseData() - " + param, expected, actual);
-       }
+      String strResponse = getContents(String.class);
+      JsonParser parser = new JsonParser();
+      JsonObject jsonObj = parser.parse(strResponse).getAsJsonObject();
+      JsonElement jsonElement = jsonObj.get(value);
+      String actual = jsonElement.isJsonNull() ? "null" : jsonElement.getAsString();
+      
+      if (expected != null && actual != null) {
+         accessor.getTestScript().logTestPoint(expected.equals(actual), "verifyResponseData() - " + param, expected, actual);
+      }
    }
    
 }
