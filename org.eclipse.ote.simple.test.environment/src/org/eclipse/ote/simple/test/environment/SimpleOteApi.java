@@ -14,6 +14,8 @@ package org.eclipse.ote.simple.test.environment;
 
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.ote.api.local.LocalProcessApi;
+import org.eclipse.osee.ote.remote.terminal.OteRemoteTerminal;
+import org.eclipse.osee.ote.remote.terminal.OteRemoteTerminalImpl;
 import org.eclipse.osee.ote.rest.OteRestApiBase;
 import org.eclipse.osee.ote.rest.OteRestConfigurationProvider;
 import org.eclipse.ote.simple.test.environment.rest.SimpleRestApiGroup;
@@ -26,17 +28,19 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 /**
  * @author Nydia Delgado
  */
-@Component(service = {SimpleOteApi.class}, immediate = true)
+@Component(service = { SimpleOteApi.class }, immediate = true)
 public class SimpleOteApi extends OteRestApiBase {
 
    private SimpleRestApiGroup endpoints;
    private OteRestConfigurationProvider restConfig;
    private LocalProcessApi localProcessApi;
+   private OteRemoteTerminal remoteTerminal;
 
    @Activate
    public void zzz_activate() {
       this.endpoints = new SimpleRestApiGroup(zzz_getJaxRsApi(), restConfig);
       this.localProcessApi = new LocalProcessApi();
+      this.remoteTerminal = new OteRemoteTerminalImpl();
    }
 
    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
@@ -65,8 +69,13 @@ public class SimpleOteApi extends OteRestApiBase {
       return this.localProcessApi;
    }
 
+   public OteRemoteTerminal remoteTerminal() {
+      return this.remoteTerminal;
+   }
+
    @Override
    public OteRestConfigurationProvider zzz_getRestConfig() {
       return this.restConfig;
    }
+
 }

@@ -4,7 +4,8 @@ Bundle-Name: OTE Simple Test Script
 Bundle-SymbolicName: org.eclipse.ote.simple.test.script
 Bundle-Version: 0.26.3.qualifier
 Require-Bundle: org.eclipse.core.runtime,
- org.junit
+ org.junit,
+ org.eclipse.ote.simple.test.environment
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.ote.simple.test.script
@@ -28,6 +29,7 @@ Import-Package: javax.ws.rs.client,
  org.eclipse.osee.ote.message.elements,
  org.eclipse.osee.ote.message.enums,
  org.eclipse.osee.ote.message.interfaces,
+ org.eclipse.osee.ote.remote.terminal,
  org.eclipse.osee.ote.rest,
  org.eclipse.ote.bytemessage,
  org.eclipse.ote.io.mux,

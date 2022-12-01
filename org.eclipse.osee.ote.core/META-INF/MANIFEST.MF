@@ -61,13 +61,15 @@ Export-Package: org.eclipse.osee.ote,
  org.eclipse.osee.ote.message.tool,
  org.eclipse.osee.ote.message.tool.rec,
  org.eclipse.osee.ote.message.tool.rec.entry,
- org.eclipse.osee.ote.remote.messages
+ org.eclipse.osee.ote.remote.messages,
+ org.eclipse.osee.ote.remote.terminal
 Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.eclipse.core.runtime,
  org.apache.commons.net,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.ote.connection.service,
- net.jini;bundle-version="2.1.0"
+ net.jini;bundle-version="2.1.0",
+ com.jcraft.jsch
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Activator: org.eclipse.osee.ote.core.internal.Activator

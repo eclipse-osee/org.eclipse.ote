@@ -32,6 +32,7 @@ import org.eclipse.osee.ote.core.annotations.Order;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
 import org.eclipse.osee.ote.core.environment.jini.ITestEnvironmentCommandCallback;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
+import org.eclipse.osee.ote.remote.terminal.OteRemoteTerminal;
 import org.eclipse.osee.ote.rest.OteRestResponse;
 import org.eclipse.ote.io.mux.MuxHeader;
 import org.eclipse.ote.simple.io.SimpleDataType;
@@ -93,8 +94,7 @@ public class SimpleTestScript extends SimpleMessageSystemTestScript {
 
          oteApi.testWait(1000);
          sender.disable();
-      }
-      catch (IOException ex) {
+      } catch (IOException ex) {
          logTestPoint(false, "Error starting packet sender", "N/A", ex.getMessage());
       }
    }
@@ -127,8 +127,7 @@ public class SimpleTestScript extends SimpleMessageSystemTestScript {
    @Test
    @Order(5)
    public void localProcessTestCase(SimpleOteApi oteApi) {
-      LocalProcessResponse executeProcess = oteApi.localProcess().executeProcess("java",
-                                                                                 "-version");
+      LocalProcessResponse executeProcess = oteApi.localProcess().executeProcess("java", "-version");
       executeProcess.verifyExitCode(this, LocalProcessResponse.OK_CODE);
       executeProcess.verifyErrorStreamContains(this, "SE Runtime Environment");
       // This will fail
@@ -142,13 +141,24 @@ public class SimpleTestScript extends SimpleMessageSystemTestScript {
       executeProcess.verifyOutputStreamContains(this, "SE Runtime Environment");
 
       // This will test the timeout as this ssh will take a long time to resolve
-      executeProcess = oteApi.localProcess().executeProcess("ssh",
-                                                            "www.github.com");
+      executeProcess = oteApi.localProcess().executeProcess("ssh", "www.github.com");
       // These should all fail
       executeProcess.verifyExitCode(this, 1);
       executeProcess.verifyErrorStreamContains(this, "SE Runtime Environment");
       executeProcess.verifyOutputStreamContains(this, "SE Runtime Environment");
 
+   }
+
+   @Test
+   @Order(6)
+   public void remoteTerminalTestCase(SimpleOteApi simpleApi) throws Exception {
+      OteRemoteTerminal rt = simpleApi.remoteTerminal();
+
+      simpleApi.promptPause("Open new remote terminal session");
+      rt.open();
+
+      simpleApi.promptPause("Close remote terminal session");
+      rt.close();
    }
 
    private class MuxChannelSender extends EnvironmentTask {
