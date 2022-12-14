@@ -15,6 +15,7 @@ package org.eclipse.ote.basic;
 
 import java.util.Date;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.OteLevel;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ote.core.framework.ITestLifecycleListener;
 import org.eclipse.osee.ote.core.framework.MethodResultImpl;
 import org.eclipse.osee.ote.core.framework.ReturnCode;
 import org.eclipse.osee.ote.core.framework.event.IEventData;
+import org.eclipse.osee.ote.core.framework.outfile.xml.FormalityLevelRecord;
 import org.eclipse.osee.ote.core.framework.outfile.xml.SystemInfo;
 import org.eclipse.osee.ote.core.framework.outfile.xml.TestPointResults;
 import org.eclipse.osee.ote.core.framework.outfile.xml.TimeSummary;
@@ -48,15 +50,35 @@ public final class BasicTestLifeCycleListener implements ITestLifecycleListener 
 
    @Override
    public IMethodResult postInstantiation(IEventData eventData, TestEnvironment env) {
+      logFormalityLevel(eventData);
       eventData.getTest().addTestRunListener(new BasicTestRunListener(env));
       eventData.getTest().addScriptSummary(env.getRuntimeManager());
       startTime = new Date();
       return new MethodResultImpl(ReturnCode.OK);
    }
 
+   private void logFormalityLevel(IEventData eventData) {
+      String formalityLevel;
+      String buildId;
+      String[] runnerNames;
+      String[] witnessNames;
+      String notes;
+      runnerNames = eventData.getProperties().getArray("DemoExecutedBy");
+      witnessNames = eventData.getProperties().getArray("DemoWitnesses");
+      buildId = eventData.getProperties().get("DemoBuildId");
+      notes = eventData.getProperties().get("DemoNotes");
+      formalityLevel = eventData.getProperties().get("FormalTestType");
+
+      if (runnerNames != null && witnessNames != null && formalityLevel != null) {
+         FormalityLevelRecord record = new FormalityLevelRecord(formalityLevel, buildId,
+                                                                runnerNames, witnessNames, notes);
+         eventData.getTest().getLogger().log(record);
+      }
+   }
+
    /**
-    * The contract we're assuming is that preDispose is too late for messaging to still be done after the conclusion of
-    * the script running. To do that use postRun from ITestRunListener.
+    * The contract we're assuming is that preDispose is too late for messaging to still be done
+    * after the conclusion of the script running. To do that use postRun from ITestRunListener.
     */
 
    @SuppressWarnings("deprecation")
