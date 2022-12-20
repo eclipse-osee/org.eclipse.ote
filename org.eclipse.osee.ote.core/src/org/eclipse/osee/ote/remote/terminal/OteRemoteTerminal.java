@@ -16,7 +16,11 @@ package org.eclipse.osee.ote.remote.terminal;
  * @author Nydia Delgado
  */
 public interface OteRemoteTerminal {
-   public boolean open() throws Exception;
+   public OteRemoteTerminalResponse open() throws Exception;
 
-   public boolean close() throws Exception;
+   public OteRemoteTerminalResponse close() throws Exception;
+
+   public OteRemoteTerminalResponse command(String command);
+
+   public String getHostName();
 }

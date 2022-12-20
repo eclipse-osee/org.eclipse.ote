@@ -12,6 +12,10 @@
  **********************************************************************/
 package org.eclipse.osee.ote.remote.terminal;
 
+import java.io.InputStream;
+
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 
@@ -24,16 +28,20 @@ public class OteRemoteTerminalImpl implements OteRemoteTerminal {
    private final String password = System.getProperty("remote.terminal.password");
    private final String host = System.getProperty("remote.terminal.host");
    private final int port = Integer.parseInt(System.getProperty("remote.terminal.port"));
-
    private static Session session = null;
 
    /**
     * Opens a remote terminal session
     * 
+    * @return {@link OteRemoteTerminalResponse} if no exceptions while starting
+    *         remote terminal session, otherwise an
+    *         {@link OteRemoteTerminalResponseException} that fails all
+    *         verifications
     * @throws Exception
     */
    @Override
-   public boolean open() throws Exception {
+   public OteRemoteTerminalResponse open() throws Exception {
+      OteRemoteTerminalResponse retVal;
       try {
          java.util.Properties config = new java.util.Properties();
          config.put("StrictHostKeyChecking", "no");
@@ -44,36 +52,87 @@ public class OteRemoteTerminalImpl implements OteRemoteTerminal {
          session.setConfig(config);
          session.connect();
 
-         if (session.isConnected()) {
-            return true;
-         } else {
-            return false;
-         }
+         retVal = new OteRemoteTerminalResponse("");
       } catch (Exception e) {
          e.printStackTrace();
+         retVal = new OteRemoteTerminalResponseException(e);
       }
-      return false;
+      return retVal;
    }
 
    /**
     * Closes remote terminal session
     * 
+    * @return {@link OteRemoteTerminalResponse} if no exceptions while closing
+    *         remote terminal connection, otherwise an
+    *         {@link OteRemoteTerminalResponseException} that fails all
+    *         verifications
     * @throws Exception
     */
    @Override
-   public boolean close() throws Exception {
+   public OteRemoteTerminalResponse close() throws Exception {
+      OteRemoteTerminalResponse retVal;
       try {
-         session.disconnect();
-
-         if (!session.isConnected()) {
-            return true;
-         } else {
-            return false;
+         if (session != null && session.isConnected()) {
+            session.disconnect();
          }
+         retVal = new OteRemoteTerminalResponse("");
       } catch (Exception e) {
          e.printStackTrace();
+         retVal = new OteRemoteTerminalResponseException(e);
       }
-      return false;
+      return retVal;
    }
 
+   /**
+    * Issues command to open remote terminal session
+    * 
+    * @param command
+    * @return {@link OteRemoteTerminalResponse} if no exceptions while sending
+    *         command to remote terminal session, otherwise an
+    *         {@link OteRemoteTerminalResponseException} that fails all
+    *         verifications
+    */
+   @Override
+   public OteRemoteTerminalResponse command(String command) {
+      OteRemoteTerminalResponse retVal;
+      String responseString = "";
+      try {
+         Channel channel = session.openChannel("exec");
+         ((ChannelExec) channel).setCommand(command);
+         channel.setInputStream(null);
+         ((ChannelExec) channel).setErrStream(System.err);
+
+         InputStream in = channel.getInputStream();
+         channel.connect();
+         byte[] tmp = new byte[1024];
+         while (true) {
+            while (in.available() > 0) {
+               int i = in.read(tmp, 0, 1024);
+               if (i < 0)
+                  break;
+               responseString = new String(tmp, 0, i);
+            }
+            if (channel.isClosed()) {
+               break;
+            }
+            Thread.sleep(1000);
+         }
+         retVal = new OteRemoteTerminalResponse(responseString);
+      } catch (Exception e) {
+         e.printStackTrace();
+         retVal = new OteRemoteTerminalResponseException(e);
+      }
+      return retVal;
+   }
+
+   /**
+    * Returns host name
+    * 
+    * @return
+    */
+   @Override
+   public String getHostName() {
+      return host;
+   }
 }
