@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.ote.properties.OtePropertiesCore;
 
@@ -196,7 +197,7 @@ public class RunTestArguments {
    }
 
    public String getUserEmail() {
-      return "anon@boeing.com";
+      return "anon@email.com";
    }
 
    public String getUserId() {

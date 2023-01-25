@@ -15,6 +15,7 @@ package org.eclipse.osee.ote.message;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.condition.ICondition;
 import org.eclipse.osee.ote.message.data.MessageData;
@@ -26,9 +27,9 @@ import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAccessor;
 
 /**
- * This class wraps the Message Object to limit the exposed API and make it simpler for the F18 test writer. This
- * class will contain both the reader and writer instance of a message and will decide which object is needed for each
- * function.
+ * This class wraps the Message Object to limit the exposed API and make it simpler for the test
+ * writer. This class will contain both the reader and writer instance of a message and will decide
+ * which object is needed for each function.
  * 
  * @author Michael P. Masterson
  * @param <M> The concrete Message type this class is wrapping

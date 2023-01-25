@@ -1,10 +1,21 @@
+/*********************************************************************
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
 package org.eclipse.osee.ote.io.internal;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream.GetField;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,6 +51,7 @@ public class OTEFolderImpl implements OTEServerFolder{
    private static final String RUNLIST_FILE = ".runlist";
    private static final String RESULTS_FILE = ".result";
    private static final String RUNNING_MARKER = ".running";
+   private static final String DEFAULT_HOME_DIR = System.getProperty("ote.home.dir", "~");
    
    private static File OTESERVER = determineOteServerFolder();
    private static File BATCHES = new File(OTESERVER, "batches");
@@ -53,8 +65,11 @@ public class OTEFolderImpl implements OTEServerFolder{
    
    private static File determineOteServerFolder() {
       String userHome = OtePropertiesCore.userHome.getValue();
+      /**
+       * If running as root, use a user provided directory instead of /root
+       */
       if (userHome.equals("/root")){
-         userHome = "/home/mptest";
+         userHome = DEFAULT_HOME_DIR;
       }
       File oteServerFolder = new File(userHome, "/OTESERVER");
       try {
