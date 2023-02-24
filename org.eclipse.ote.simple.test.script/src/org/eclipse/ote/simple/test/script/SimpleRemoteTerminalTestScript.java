@@ -37,8 +37,23 @@ public class SimpleRemoteTerminalTestScript extends SimpleMessageSystemTestScrip
       rt.open();
 
       OteRemoteTerminalResponse resp = rt.command("cat /proc/sys/kernel/hostname");
-      String stdOut = resp.getStandardOutput();
       resp.verifyStandardOut(this, rt.getHostName() + "\n");
+      resp.verifyExitCode(this, 0);
+
+      rt.close();
+   }
+
+   @Test
+   @Order(2)
+   public void remoteTerminalStdErrTestCase(SimpleOteApi simpleApi) throws Exception {
+      simpleApi.promptPause("Starting Remote Terminal StdErr Test Case");
+
+      OteRemoteTerminal rt = simpleApi.remoteTerminal();
+      rt.open();
+
+      OteRemoteTerminalResponse resp = rt.command("some bad command");
+      resp.verifyStandardErrorContains(this, "ksh: some: not found");
+      resp.verifyExitCode(this, 127);
 
       rt.close();
    }

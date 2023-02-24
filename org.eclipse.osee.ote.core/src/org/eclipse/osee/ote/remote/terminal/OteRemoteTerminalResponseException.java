@@ -14,18 +14,16 @@ package org.eclipse.osee.ote.remote.terminal;
 
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
+/**
+ * @author Nydia Delgado
+ */
 public class OteRemoteTerminalResponseException extends OteRemoteTerminalResponse {
 
    private final Exception ex;
 
    public OteRemoteTerminalResponseException(Exception ex) {
-      super(ex.toString());
+      super();
       this.ex = ex;
-   }
-
-   @Override
-   public String getStandardOutput() {
-      return super.getStandardOutput();
    }
 
    @Override
@@ -37,6 +35,24 @@ public class OteRemoteTerminalResponseException extends OteRemoteTerminalRespons
    @Override
    public void verifyStandardOutContains(ITestAccessor accessor, String subString) {
       accessor.getTestScript().logTestPoint(false, "verifyStandardOutContains", subString,
+            "Exception thrown: " + ex.getLocalizedMessage());
+   }
+
+   @Override
+   public void verifyStandardError(ITestAccessor accessor, String expected) {
+      accessor.getTestScript().logTestPoint(false, "verifyStandardError", expected,
+            "Exception thrown: " + ex.getLocalizedMessage());
+   }
+
+   @Override
+   public void verifyStandardErrorContains(ITestAccessor accessor, String subString) {
+      accessor.getTestScript().logTestPoint(false, "verifyStandardErrorContains", subString,
+            "Exception thrown: " + ex.getLocalizedMessage());
+   }
+
+   @Override
+   public void verifyExitCode(ITestAccessor accessor, int expected) {
+      accessor.getTestScript().logTestPoint(false, "verifyExitCode", String.valueOf(expected),
             "Exception thrown: " + ex.getLocalizedMessage());
    }
 }

@@ -16,11 +16,23 @@ package org.eclipse.osee.ote.remote.terminal;
  * @author Nydia Delgado
  */
 public interface OteRemoteTerminal {
+
    public OteRemoteTerminalResponse open() throws Exception;
 
    public OteRemoteTerminalResponse close() throws Exception;
 
+   /**
+    * Issues command to open remote terminal session
+    * 
+    * @param command
+    * @return {@link OteRemoteTerminalResponse} if no exceptions while sending
+    *         command to remote terminal session, otherwise an
+    *         {@link OteRemoteTerminalResponseException} that fails all
+    *         verifications
+    */
    public OteRemoteTerminalResponse command(String command);
 
    public String getHostName();
+
+   public boolean isConnected();
 }

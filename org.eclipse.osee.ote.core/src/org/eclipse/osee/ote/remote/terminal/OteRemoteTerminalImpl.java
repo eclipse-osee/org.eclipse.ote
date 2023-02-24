@@ -12,11 +12,13 @@
  **********************************************************************/
 package org.eclipse.osee.ote.remote.terminal;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
-import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 /**
@@ -52,7 +54,7 @@ public class OteRemoteTerminalImpl implements OteRemoteTerminal {
          session.setConfig(config);
          session.connect();
 
-         retVal = new OteRemoteTerminalResponse("");
+         retVal = new OteRemoteTerminalResponse();
       } catch (Exception e) {
          e.printStackTrace();
          retVal = new OteRemoteTerminalResponseException(e);
@@ -76,7 +78,7 @@ public class OteRemoteTerminalImpl implements OteRemoteTerminal {
          if (session != null && session.isConnected()) {
             session.disconnect();
          }
-         retVal = new OteRemoteTerminalResponse("");
+         retVal = new OteRemoteTerminalResponse();
       } catch (Exception e) {
          e.printStackTrace();
          retVal = new OteRemoteTerminalResponseException(e);
@@ -93,46 +95,90 @@ public class OteRemoteTerminalImpl implements OteRemoteTerminal {
     *         {@link OteRemoteTerminalResponseException} that fails all
     *         verifications
     */
-   @Override
    public OteRemoteTerminalResponse command(String command) {
       OteRemoteTerminalResponse retVal;
-      String responseString = "";
-      try {
-         Channel channel = session.openChannel("exec");
-         ((ChannelExec) channel).setCommand(command);
-         channel.setInputStream(null);
-         ((ChannelExec) channel).setErrStream(System.err);
 
-         InputStream in = channel.getInputStream();
+      try {
+         ChannelExec channel = (ChannelExec) session.openChannel("exec");
+         channel.setCommand(command);
          channel.connect();
-         byte[] tmp = new byte[1024];
-         while (true) {
-            while (in.available() > 0) {
-               int i = in.read(tmp, 0, 1024);
-               if (i < 0)
-                  break;
-               responseString = new String(tmp, 0, i);
-            }
-            if (channel.isClosed()) {
-               break;
-            }
-            Thread.sleep(1000);
-         }
-         retVal = new OteRemoteTerminalResponse(responseString);
-      } catch (Exception e) {
-         e.printStackTrace();
+
+         retVal = getOutput(channel);
+
+         channel.disconnect();
+      } catch (IOException e) {
+         retVal = new OteRemoteTerminalResponseException(e);
+      } catch (JSchException e) {
          retVal = new OteRemoteTerminalResponseException(e);
       }
       return retVal;
    }
 
    /**
-    * Returns host name
+    * Returns OteRemoteTerminalResponse containing remote terminal session channel
+    * output after a command is issued.
+    * 
+    * @param channel
+    * @return
+    * @throws IOException
+    */
+   private OteRemoteTerminalResponse getOutput(ChannelExec channel) throws IOException {
+      OteRemoteTerminalResponse retVal = null;
+
+      InputStream in = channel.getInputStream();
+      InputStream err = channel.getErrStream();
+
+      ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+      ByteArrayOutputStream errorBuffer = new ByteArrayOutputStream();
+
+      byte[] tmpOutBuf = new byte[in.available() + 1];
+      byte[] tmpErrBuf = new byte[err.available() + 1];
+      while (true) {
+         while (in.available() > 0) {
+            int i = in.read(tmpOutBuf);
+            if (i < 0)
+               break;
+            outputBuffer.write(tmpOutBuf);
+         }
+         while (err.available() > 0) {
+            int i = err.read(tmpErrBuf);
+            if (i < 0)
+               break;
+            errorBuffer.write(tmpErrBuf);
+         }
+
+         if (channel.isClosed()) {
+            if ((in.available() > 0) || (err.available() > 0))
+               continue;
+            else
+               break;
+         }
+         try {
+            Thread.sleep(1000);
+         } catch (InterruptedException e) {
+            retVal = new OteRemoteTerminalResponseException(e);
+         }
+      }
+      retVal = new OteRemoteTerminalResponse(outputBuffer.toString(), errorBuffer.toString(), channel.getExitStatus());
+      return retVal;
+   }
+
+   /**
+    * Returns host name of remote terminal session
     * 
     * @return
     */
    @Override
    public String getHostName() {
       return host;
+   }
+
+   /**
+    * Returns true if remote terminal session is connected
+    * 
+    * @return
+    */
+   public boolean isConnected() {
+      return session.isConnected();
    }
 }
