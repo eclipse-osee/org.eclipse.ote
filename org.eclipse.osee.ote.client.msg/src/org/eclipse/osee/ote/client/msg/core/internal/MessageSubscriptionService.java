@@ -28,6 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -60,6 +61,8 @@ import org.osgi.service.event.EventHandler;
  * @author Ken J. Aguilar
  */
 public class MessageSubscriptionService implements IOteMessageService, ITestConnectionListener, IMsgToolServiceClient, EventHandler {
+
+   private static final int TRANSFER_BLOCK_COUNT = 16777216; // 16 MB
 
    /** * Static Fields ** */
    private static final int MAX_CONCURRENT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 4);
@@ -318,7 +321,7 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
       // setup a transfer from a socket to a file
       TransferConfig config = new TransferConfig(fileName, recorderOutputAddress,
          new InetSocketAddress(OteProperties.getDefaultIpAddress(), port), TransferConfig.Direction.SOCKET_TO_FILE,
-         128000);
+         TRANSFER_BLOCK_COUNT);
       IFileTransferHandle handle = fileTransferHandler.registerTransfer(config);
 
       // send the command to start recording
