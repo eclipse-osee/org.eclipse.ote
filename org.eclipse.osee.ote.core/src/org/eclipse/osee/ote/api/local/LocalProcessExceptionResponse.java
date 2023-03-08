@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.ote.api.local;
 
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
 /**
@@ -29,23 +30,27 @@ public class LocalProcessExceptionResponse extends LocalProcessResponse {
    }
 
    @Override
-   public void verifyExitCode(ITestAccessor accessor, int expectedCode) {
-      accessor.getTestScript().logTestPoint(false, "verifyExitCode:" + getCommandStr(),
-                                            Integer.toString(expectedCode),
-                                            "Exception thrown: " + exception.getLocalizedMessage());
+   public void verifyExitCode(ITestAccessor accessor, String testPointName, int expectedCode) {
+      accessor.getTestScript().logTestPoint(false,
+              (Strings.isValid(testPointName) ? testPointName : "verifyExitCode:") + " " + getCommandStr(),
+              Integer.toString(expectedCode),
+              "Exception thrown: " + exception.getLocalizedMessage());
    }
 
    @Override
-   public void verifyOutputStreamContains(ITestAccessor accessor, String str) {
-      accessor.getTestScript().logTestPoint(false, "verifyOutputStreamContains:" + getCommandStr(),
-                                            str,
-                                            "Exception thrown: " + exception.getLocalizedMessage());
+   public void verifyOutputStreamContains(ITestAccessor accessor, String testPointName, String str) {
+      accessor.getTestScript().logTestPoint(false,
+              (Strings.isValid(testPointName) ? testPointName : "verifyOutputStreamContains:") + " " + getCommandStr(),
+              str,
+              "Exception thrown: " + exception.getLocalizedMessage());
    }
 
    @Override
-   public void verifyErrorStreamContains(ITestAccessor accessor, String str) {
-      accessor.getTestScript().logTestPoint(false, "verifyErrorStreamContains:" + getCommandStr(), str,
-                                            "Exception thrown: " + exception.getLocalizedMessage());
+   public void verifyErrorStreamContains(ITestAccessor accessor, String testPointName, String str) {
+      accessor.getTestScript().logTestPoint(false,
+              (Strings.isValid(testPointName) ? testPointName : "verifyErrorStreamContains:") + " " + getCommandStr(),
+              str,
+              "Exception thrown: " + exception.getLocalizedMessage());
    }
 
 }

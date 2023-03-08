@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
 
@@ -60,14 +61,14 @@ public class OteRestResponse {
     * parameter
     * 
     * @param accessor For logging
-    * @param code     Expected status code
     * @param testPointName
+    * @param code     Expected status code
     */
-   public void verifyResponseCode(ITestAccessor accessor, Status code, String testPointName) {
+   public void verifyResponseCode(ITestAccessor accessor, String testPointName, Status code) {
       StatusType statusInfo = response.getStatusInfo();
       int actualCode = statusInfo.getStatusCode();
       int expectedCode = code.getStatusCode();
-      accessor.getTestScript().logTestPoint(actualCode == expectedCode, (testPointName == null || testPointName.isEmpty()) ? "verifyResponseCode" : testPointName,
+      accessor.getTestScript().logTestPoint(actualCode == expectedCode, Strings.isValid(testPointName) ? testPointName : "verifyResponseCode",
          Integer.toString(expectedCode), Integer.toString(actualCode));
    }
 
@@ -89,12 +90,12 @@ public class OteRestResponse {
     * the expectedFamily parameter
     * 
     * @param accessor       For logging
-    * @param expectedFamily Expected status code family
     * @param testPointName
+    * @param expectedFamily Expected status code family
     */
-   public void verifyResponseFamily(ITestAccessor accessor, Family expectedFamily, String testPointName) {
+   public void verifyResponseFamily(ITestAccessor accessor, String testPointName, Family expectedFamily) {
       Family actualFamily = response.getStatusInfo().getFamily();
-      accessor.getTestScript().logTestPoint(actualFamily == expectedFamily, (testPointName == null || testPointName.isEmpty()) ? "verifyResponseFamily" : testPointName,
+      accessor.getTestScript().logTestPoint(actualFamily == expectedFamily, Strings.isValid(testPointName) ? testPointName : "verifyResponseFamily",
          expectedFamily.toString(), actualFamily.toString());
    }
 
@@ -116,12 +117,12 @@ public class OteRestResponse {
     * equal to the expected REST response content type
     * 
     * @param accessor
-    * @param expected
     * @param testPointName
+    * @param expected
     */
-   public void verifyResponseContentType(ITestAccessor accessor, MediaType expected, String testPointName) {
+   public void verifyResponseContentType(ITestAccessor accessor, String testPointName, MediaType expected) {
       MediaType actual = response.getMediaType();
-      accessor.getTestScript().logTestPoint(expected.equals(actual), (testPointName == null || testPointName.isEmpty()) ? "verifyContentType" : testPointName,
+      accessor.getTestScript().logTestPoint(expected.equals(actual), Strings.isValid(testPointName) ? testPointName : "verifyContentType",
          expected.toString(), actual.toString());
          
    }
@@ -176,13 +177,13 @@ public class OteRestResponse {
     * contains the substring
     * 
     * @param accessor  For Logging
-    * @param subString
     * @param testPointName
+    * @param subString
     */
-   public void verifyContentsContains(ITestAccessor accessor, String subString, String testPointName) {
+   public void verifyContentsContains(ITestAccessor accessor, String testPointName, String subString) {
       String content = getContents(String.class);
       boolean matches = content.contains(subString);
-      accessor.getTestScript().logTestPoint(matches, (testPointName == null || testPointName.isEmpty()) ? "verifyContentsContains" : testPointName,
+      accessor.getTestScript().logTestPoint(matches, Strings.isValid(testPointName) ? testPointName : "verifyContentsContains",
          "Contains '" + subString + "'", matches ? "FOUND" : "NOT FOUND");
    }
 
@@ -204,12 +205,12 @@ public class OteRestResponse {
     * exactly equal to the expected string.
     * 
     * @param accessor For Logging
-    * @param expected
     * @param testPointName
+    * @param expected
     */
-   public <T> void verifyContentsEquals(ITestAccessor accessor, T expected, String testPointName) {
+   public <T> void verifyContentsEquals(ITestAccessor accessor, String testPointName, T expected) {
       Object actual = response.readEntity(expected.getClass());
-      accessor.getTestScript().logTestPoint(expected.equals(actual), (testPointName == null || testPointName.isEmpty()) ? "verifyContentsEquals" : testPointName,
+      accessor.getTestScript().logTestPoint(expected.equals(actual), Strings.isValid(testPointName) ? testPointName : "verifyContentsEquals",
          expected.toString(), actual.toString());
    }
 

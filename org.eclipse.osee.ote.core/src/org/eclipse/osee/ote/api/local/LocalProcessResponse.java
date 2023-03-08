@@ -69,14 +69,15 @@ public class LocalProcessResponse {
     * Verifies the exit code from the local process is exactly equal to the code parameter
     * 
     * @param accessor For logging
+    * @param testPointName
     * @param expectedCode Expected status code
     */
-   public void verifyExitCode(ITestAccessor accessor, int expectedCode) {
+   public void verifyExitCode(ITestAccessor accessor, String testPointName, int expectedCode) {
 
       accessor.getTestScript().logTestPoint(exitCode == expectedCode,
-                                            "verifyExitCode:" + getCommandStr(),
-                                            Integer.toString(expectedCode),
-                                            Integer.toString(exitCode));
+              (Strings.isValid(testPointName) ? testPointName : "verifyExitCode:") + " " + getCommandStr(),                              
+              Integer.toString(expectedCode),
+              Integer.toString(exitCode));
    }
 
    private String surroundInQuotes(String str) {
@@ -87,19 +88,20 @@ public class LocalProcessResponse {
     * Verifies the output stream from the local process contains the provided string
     * 
     * @param accessor For logging
+    * @param testPointName
     * @param str Substring to match in the output stream
     */
-   public void verifyOutputStreamContains(ITestAccessor accessor, String str) {
+   public void verifyOutputStreamContains(ITestAccessor accessor, String testPointName, String str) {
 
       if (Strings.isInValid(this.output)) {
-         accessor.getTestScript().logTestPoint(false, "verifyOutputStreamContains:" + getCommandStr(),
-                                               surroundInQuotes(str), surroundInQuotes(output));
+         accessor.getTestScript().logTestPoint(false,
+                 (Strings.isValid(testPointName) ? testPointName : "verifyOutputStreamContains:") + " " + getCommandStr(),
+                 surroundInQuotes(str), surroundInQuotes(output));
       }
       else {
-
          accessor.getTestScript().logTestPoint(this.output.contains(str),
-                                               "verifyOutputStreamContains:" + getCommandStr(),
-                                               surroundInQuotes(str), surroundInQuotes(output));
+                 (Strings.isValid(testPointName) ? testPointName : "verifyOutputStreamContains:") + " " + getCommandStr(),
+                 surroundInQuotes(str), surroundInQuotes(output));
       }
    }
 
@@ -107,20 +109,20 @@ public class LocalProcessResponse {
     * Verifies the error stream from the local process contains the provided string
     * 
     * @param accessor For logging
+    * @param testPointName
     * @param str Substring to match in the error stream
     */
-   public void verifyErrorStreamContains(ITestAccessor accessor, String str) {
+   public void verifyErrorStreamContains(ITestAccessor accessor, String testPointName, String str) {
       if (Strings.isInValid(this.error)) {
          accessor.getTestScript().logTestPoint(false,
-                                               "verifyErrorStreamContains:" + getCommandStr(),
-                                               surroundInQuotes(str), surroundInQuotes(error));
+                 (Strings.isValid(testPointName) ? testPointName : "verifyErrorStreamContains:") + " " + getCommandStr(),
+                 surroundInQuotes(str), surroundInQuotes(error));
       }
       else {
-
          accessor.getTestScript().logTestPoint(this.error.contains(str),
-                                               "verifyErrorStreamContains:" + getCommandStr(),
-                                               surroundInQuotes(str),
-                                               surroundInQuotes(error));
+                 (Strings.isValid(testPointName) ? testPointName : "verifyErrorStreamContains:") + " " + getCommandStr(),
+                 surroundInQuotes(str),
+                 surroundInQuotes(error));
       }
    }
 }
