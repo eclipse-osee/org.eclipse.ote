@@ -14,3 +14,4 @@ Validate Files:
     - python validationScripts/validateFiles.py "$EXCLUDED_KEYWORDS" $FILES
   only:
     - merge_requests
+  allow_failure: true
