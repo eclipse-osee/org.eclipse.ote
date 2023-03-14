@@ -17,6 +17,7 @@
    <version>0.26.3-SNAPSHOT</version>
 
    <modules>
+      <module>../../../net.sourceforge.tess4j</module>
       <module>../ote.dependencies.feature</module>
       <module>../ote.dependencies.p2</module>
    </modules>
