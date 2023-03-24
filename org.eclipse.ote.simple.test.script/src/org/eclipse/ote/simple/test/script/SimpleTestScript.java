@@ -127,24 +127,24 @@ public class SimpleTestScript extends SimpleMessageSystemTestScript {
    @Order(5)
    public void localProcessTestCase(SimpleOteApi oteApi) {
       LocalProcessResponse executeProcess = oteApi.localProcess().executeProcess("java", "-version");
-      executeProcess.verifyExitCode(this, LocalProcessResponse.OK_CODE);
-      executeProcess.verifyErrorStreamContains(this, "SE Runtime Environment");
+      executeProcess.verifyExitCode(this, "", LocalProcessResponse.OK_CODE);
+      executeProcess.verifyErrorStreamContains(this, "", "SE Runtime Environment");
       // This will fail
-      executeProcess.verifyOutputStreamContains(this, "SE Runtime Environment");
+      executeProcess.verifyOutputStreamContains(this, "", "SE Runtime Environment");
 
       // Extra dash will cause jvm to throw exception
       executeProcess = oteApi.localProcess().executeProcess("java", "--version");
-      executeProcess.verifyExitCode(this, 1);
+      executeProcess.verifyExitCode(this, "", 1);
       // These should all fail
-      executeProcess.verifyErrorStreamContains(this, "SE Runtime Environment");
-      executeProcess.verifyOutputStreamContains(this, "SE Runtime Environment");
+      executeProcess.verifyErrorStreamContains(this, "", "SE Runtime Environment");
+      executeProcess.verifyOutputStreamContains(this, "", "SE Runtime Environment");
 
       // This will test the timeout as this ssh will take a long time to resolve
       executeProcess = oteApi.localProcess().executeProcess("ssh", "www.github.com");
       // These should all fail
-      executeProcess.verifyExitCode(this, 1);
-      executeProcess.verifyErrorStreamContains(this, "SE Runtime Environment");
-      executeProcess.verifyOutputStreamContains(this, "SE Runtime Environment");
+      executeProcess.verifyExitCode(this, "", 1);
+      executeProcess.verifyErrorStreamContains(this, "", "SE Runtime Environment");
+      executeProcess.verifyOutputStreamContains(this, "", "SE Runtime Environment");
 
    }
 

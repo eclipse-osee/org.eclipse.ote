@@ -24,13 +24,28 @@ import com.jcraft.jsch.Session;
 /**
  * @author Nydia Delgado
  */
-public class OteRemoteTerminalImpl implements OteRemoteTerminal {
+public class BasicRemoteTerminal implements OteRemoteTerminal {
 
-   private final String user = System.getProperty("remote.terminal.username");
-   private final String password = System.getProperty("remote.terminal.password");
-   private final String host = System.getProperty("remote.terminal.host");
-   private final int port = Integer.parseInt(System.getProperty("remote.terminal.port"));
-   private static Session session = null;
+   protected String hostname;
+   protected int port;
+   protected String username;
+   protected String password;
+
+   private Session session = null;
+
+   public BasicRemoteTerminal() {
+      hostname = System.getProperty("remote.terminal.host", "");
+      port = Integer.parseInt(System.getProperty("remote.terminal.port", "22"));
+      username = System.getProperty("remote.terminal.username", "");
+      password = System.getProperty("remote.terminal.password", "");
+   }
+
+   public BasicRemoteTerminal(String hostname, int port, String username, String password) {
+      this.hostname = hostname;
+      this.port = port;
+      this.username = username;
+      this.password = password;
+   }
 
    /**
     * Opens a remote terminal session
@@ -41,7 +56,6 @@ public class OteRemoteTerminalImpl implements OteRemoteTerminal {
     *         verifications
     * @throws Exception
     */
-   @Override
    public OteRemoteTerminalResponse open() throws Exception {
       OteRemoteTerminalResponse retVal;
       try {
@@ -49,7 +63,7 @@ public class OteRemoteTerminalImpl implements OteRemoteTerminal {
          config.put("StrictHostKeyChecking", "no");
 
          JSch jsch = new JSch();
-         session = jsch.getSession(user, host, port);
+         session = jsch.getSession(username, hostname, port);
          session.setPassword(password);
          session.setConfig(config);
          session.connect();
@@ -71,7 +85,6 @@ public class OteRemoteTerminalImpl implements OteRemoteTerminal {
     *         verifications
     * @throws Exception
     */
-   @Override
    public OteRemoteTerminalResponse close() throws Exception {
       OteRemoteTerminalResponse retVal;
       try {
@@ -168,9 +181,8 @@ public class OteRemoteTerminalImpl implements OteRemoteTerminal {
     * 
     * @return
     */
-   @Override
    public String getHostName() {
-      return host;
+      return hostname;
    }
 
    /**

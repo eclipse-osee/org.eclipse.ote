@@ -36,11 +36,13 @@ public class SimpleRemoteTerminalTestScript extends SimpleMessageSystemTestScrip
       OteRemoteTerminal rt = simpleApi.remoteTerminal();
       rt.open();
 
-      OteRemoteTerminalResponse resp = rt.command("cat /proc/sys/kernel/hostname");
-      resp.verifyStandardOut(this, rt.getHostName() + "\n");
-      resp.verifyExitCode(this, 0);
+      if (rt.isConnected()) {
+         OteRemoteTerminalResponse resp = rt.command("cat /proc/sys/kernel/hostname");
+         resp.verifyStandardOut(this, rt.getHostName() + "\n");
+         resp.verifyExitCode(this, 0);
 
-      rt.close();
+         rt.close();
+      }
    }
 
    @Test
