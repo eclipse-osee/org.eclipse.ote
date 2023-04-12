@@ -44,6 +44,11 @@ public class UnsignedInteger64Element extends NumericElement<Long> {
    public Long getValue() {
       return getMsgData().getMem().getLong(byteOffset, msb, lsb);
    }
+   
+   @Override
+   public Long getBitValue(int msb, int lsb) {
+      return getMsgData().getMem().getLong(byteOffset, msb, lsb);
+   }
 
    @Override
    public String toString(Long obj) {

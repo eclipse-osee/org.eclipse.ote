@@ -57,6 +57,11 @@ public class SignedInteger16Element extends NumericElement<Short> {
    public Short getValue() {
       return Short.valueOf((short)getMsgData().getMem().getSignedInt(byteOffset, msb, lsb));
    }
+   
+   @Override
+   public Short getBitValue(int msb, int lsb) {
+      return Short.valueOf((short)getMsgData().getMem().getSignedInt(byteOffset, msb, lsb));
+   }
 
    @Override
    public Short valueOf(MemoryResource mem) {

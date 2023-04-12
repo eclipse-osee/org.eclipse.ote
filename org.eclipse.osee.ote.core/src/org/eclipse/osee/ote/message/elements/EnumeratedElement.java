@@ -137,6 +137,11 @@ public class EnumeratedElement<T extends Enum<T> & IEnumValue<T>> extends Discre
    public T getValue() {
       return toEnum(getMsgData().getMem().getInt(byteOffset, msb, lsb));
    }
+   
+   @Override
+   public T getBitValue(int msb, int lsb) {
+      return toEnum(getMsgData().getMem().getInt(byteOffset, msb, lsb));
+   }
 
    @Override
    public T valueOf(MemoryResource otherMem) {

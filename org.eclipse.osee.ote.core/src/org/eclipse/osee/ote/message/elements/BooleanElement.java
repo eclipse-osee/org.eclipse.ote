@@ -46,6 +46,11 @@ public class BooleanElement extends DiscreteElement<Boolean> {
    public Boolean getValue() {
       return Boolean.valueOf(getMsgData().getMem().getBoolean(byteOffset, msb, lsb));
    }
+   
+   @Override
+   public Boolean getBitValue(int msb, int lsb) {
+      return Boolean.valueOf(getMsgData().getMem().getBoolean(byteOffset, msb, lsb));
+   }
 
    @Override
    public void setValue(Boolean obj) {

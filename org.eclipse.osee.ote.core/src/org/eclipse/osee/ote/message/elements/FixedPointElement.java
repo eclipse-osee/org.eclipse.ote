@@ -95,7 +95,7 @@ public class FixedPointElement extends RealElement {
       setValue(value);
    }
 
-   private double toFixed(long value, boolean signed, double resolution, double offset) {
+   private double toFixed(long value, boolean signed, double resolution, double offset, int msb, int lsb) {
       int shift = 64 - (lsb - msb + 1);
       if (signed) {// two's compliment
          if (value >>> lsb - msb == 1) {// we've got a negative
@@ -112,14 +112,14 @@ public class FixedPointElement extends RealElement {
       return value * resolution + offset;
    }
 
-   private long toFixedLong(double value, boolean signed, double resolution, double offset) {
+   private long toFixedLong(double value, boolean signed, double resolution, double offset, int msb, int lsb) {
       long returnValue = Math.round((value - offset) / resolution);
 
-      if (value > 0 && toFixed(returnValue, signed, resolution, offset) < 0) {
+      if (value > 0 && toFixed(returnValue, signed, resolution, offset, msb, lsb) < 0) {
          returnValue = Math.round((value - resolution - offset) / resolution);
-         if (value > 0 && toFixed(returnValue, signed, resolution, offset) < 0) {
+         if (value > 0 && toFixed(returnValue, signed, resolution, offset, msb, lsb) < 0) {
             returnValue = Math.round((value - resolution * 2 - offset) / resolution);
-            if (value > 0 && toFixed(returnValue, signed, resolution, offset) < 0) {
+            if (value > 0 && toFixed(returnValue, signed, resolution, offset, msb, lsb) < 0) {
                OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, getName());
             } else {
                OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, getName());
@@ -142,7 +142,7 @@ public class FixedPointElement extends RealElement {
 
    @Override
    public void setValue(Double obj) {
-      getMsgData().getMem().setLong(toFixedLong(obj, signed, resolution, offset), byteOffset, msb, lsb);
+      getMsgData().getMem().setLong(toFixedLong(obj, signed, resolution, offset, msb, lsb), byteOffset, msb, lsb);
    }
 
    @Override
@@ -152,22 +152,27 @@ public class FixedPointElement extends RealElement {
 
    @Override
    public Double getValue() {
-      return toFixed(getRaw(), signed, resolution, offset);
+      return toFixed(getRaw(), signed, resolution, offset, msb, lsb);
+   }
+   
+   @Override
+   public Double getBitValue(int msb, int lsb) {
+      return toFixed(getRaw(), signed, resolution, offset, msb, lsb);
    }
 
    @Override
    public Double valueOf(MemoryResource mem) {
-      return toFixed(getRaw(mem), signed, resolution, offset);
+      return toFixed(getRaw(mem), signed, resolution, offset, msb, lsb);
    }
 
    @Override
    protected double toDouble(long value) {
-      return toFixed(value, signed, resolution, offset);
+      return toFixed(value, signed, resolution, offset, msb, lsb);
    }
 
    @Override
    protected long toLong(double value) {
-      return toFixedLong(value, signed, resolution, offset);
+      return toFixedLong(value, signed, resolution, offset, msb, lsb);
    }
 
    /**

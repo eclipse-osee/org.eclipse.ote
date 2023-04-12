@@ -68,7 +68,11 @@ public class Float32Element extends RealElement {
    @Override
    public Double getValue() {
       return new Double(Float.intBitsToFloat(getMsgData().getMem().getInt(byteOffset, msb, lsb)));
-
+   }
+   
+   @Override
+   public Double getBitValue(int msb, int lsb) {
+      return new Double(Float.intBitsToFloat(getMsgData().getMem().getInt(byteOffset, msb, lsb)));
    }
 
    @Override

@@ -73,6 +73,11 @@ public class Float64Element extends RealElement {
    public Double getValue() {
       return Double.longBitsToDouble(getMsgData().getMem().getLong(byteOffset, msb, lsb));
    }
+   
+   @Override
+   public Double getBitValue(int msb, int lsb) {
+      return Double.longBitsToDouble(getMsgData().getMem().getLong(byteOffset, msb, lsb));
+   }
 
    @Override
    public Double valueOf(MemoryResource mem) {

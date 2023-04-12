@@ -131,6 +131,25 @@ public abstract class MsgElementDiscrete<T extends Comparable<T>> {
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, T value) {
       return getElementToRead().check(accessor, checkGroup, value);
    }
+   
+   /**
+    * Verifies that the elements bits are set to "value".
+    * 
+    * @param accessor Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param msb
+    * @param lsb
+    * @param value Expected value
+    * @return if the check passed
+    */
+   public boolean checkBits(ITestAccessor accessor, CheckGroup checkGroup, int msb, int lsb, T value) {
+      return getElementToRead().checkBits(accessor, checkGroup, msb, lsb, value);
+   }
 
    public boolean checkNT(ITestAccessor accessor, CheckGroup checkGroup, T value) {
       return getElementToRead().checkNT(accessor, checkGroup, value);
@@ -155,6 +174,35 @@ public abstract class MsgElementDiscrete<T extends Comparable<T>> {
     */
    public final boolean check(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
       return check(accessor, (CheckGroup) null, value, milliseconds);
+   }
+   
+   /**
+    * Verifies that the elements bits are set to "value".
+    * 
+    * @param accessor
+    * @param msb
+    * @param lsb
+    * @param value Expected value.
+    * @return If the check passed.
+    * @throws InterruptedException
+    */
+   public final boolean checkBits(ITestAccessor accessor, int msb, int lsb, T value) throws InterruptedException {
+      return checkBits(accessor, (CheckGroup) null, msb, lsb, value);
+   }
+   
+   /**
+    * Verifies that the element bits are set to "value" within the number of "milliseconds" passed.
+    * 
+    * @param accessor
+    * @param msb
+    * @param lsb
+    * @param value Expected value.
+    * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
+    * @return If the check passed.
+    * @throws InterruptedException
+    */
+   public final boolean checkBits(ITestAccessor accessor, int msb, int lsb, T value, int milliseconds) throws InterruptedException {
+      return checkBits(accessor, (CheckGroup) null, msb, lsb, value, milliseconds);
    }
 
    /**
@@ -223,6 +271,26 @@ public abstract class MsgElementDiscrete<T extends Comparable<T>> {
       return getElementToRead().checkNot(accessor, checkGroup, value);
    }
 
+   /**
+    * Verifies that the element bits are NOT set to "value".
+    * 
+    * @param accessor Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param msb
+    * @param lsb
+    * @param value value to test against
+    * @return if the check passed
+    */
+   public boolean checkNotBits(ITestAccessor accessor, CheckGroup checkGroup, int msb, int lsb, T value) {
+
+      return getElementToRead().checkNotBits(accessor, checkGroup, msb, lsb, value);
+   }
+   
    /**
     * Verifies that the element is set to a value within the range specified for the entire time specified. Assumes
     * range is inclusive.
@@ -478,6 +546,27 @@ public abstract class MsgElementDiscrete<T extends Comparable<T>> {
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, T value, int milliseconds) throws InterruptedException {
       return getElementToRead().check(accessor, checkGroup, value, milliseconds);
    }
+   
+   /**
+    * Verifies that the element bits are set to "value" within the number of "milliseconds" passed.
+    * 
+    * @param accessor Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param value Expected value.
+    * @param msb
+    * @param lsb
+    * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
+    * @return If the check passed.
+    * @throws InterruptedException
+    */
+   public boolean checkBits(ITestAccessor accessor, CheckGroup checkGroup, int msb, int lsb, T value, int milliseconds) throws InterruptedException {
+      return getElementToRead().checkBits(accessor, checkGroup, msb, lsb, value, milliseconds);
+   }
 
    /**
     * Verifies that the element is set to a value within the range specified. Either end of the range can be set to be
@@ -603,6 +692,28 @@ public abstract class MsgElementDiscrete<T extends Comparable<T>> {
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, T value, int milliseconds) throws InterruptedException {
       return getElementToRead().checkNot(accessor, checkGroup, value, milliseconds);
    }
+   
+   /**
+    * Verifies that the element bits are set to some value other than "value" within the number of "milliseconds" passed.
+    * Passes if at any point with in the time allowed, the elment bits are set to a value other than "value".
+    * 
+    * @param accessor Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param msb
+    * @param lsb
+    * @param value value to test against.
+    * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
+    * @return If the check passed.
+    * @throws InterruptedException 
+    */
+   public boolean checkNotBits(ITestAccessor accessor, CheckGroup checkGroup, int msb, int lsb, T value, int milliseconds) throws InterruptedException {
+      return getElementToRead().checkNotBits(accessor, checkGroup, msb, lsb, value, milliseconds);
+   }
 
    /**
     * Verifies that the element is NOT set to "value".
@@ -627,6 +738,35 @@ public abstract class MsgElementDiscrete<T extends Comparable<T>> {
     */
    public final boolean checkNot(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
       return checkNot(accessor, (CheckGroup) null, value, milliseconds);
+   }
+   
+   /**
+    * Verifies that the element bits are NOT set to "value".
+    * 
+    * @param accessor for logging
+    * @param msb
+    * @param lsb
+    * @param value value to test against
+    * @return if the check passed
+    */
+   public final boolean checkNotBits(ITestAccessor accessor, int msb, int lsb, T value) {
+      return checkNotBits(accessor, (CheckGroup) null, msb, lsb, value);
+   }
+   
+   /**
+    * Verifies that the element bits are set to some value other than "value" within the number of "milliseconds" passed.
+    * Passes if at any point with in the time allowed, the element bits are set to a value other than "value".
+    * 
+    * @param accessor for logging
+    * @param msb
+    * @param lsb
+    * @param value value to test against.
+    * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
+    * @return If the check passed.
+    * @throws InterruptedException 
+    */
+   public final boolean checkNotBits(ITestAccessor accessor, int msb, int lsb, T value, int milliseconds) throws InterruptedException {
+      return checkNotBits(accessor, (CheckGroup) null, msb, lsb, value, milliseconds);
    }
 
    /**

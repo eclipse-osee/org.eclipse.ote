@@ -531,6 +531,11 @@ public class CharElement extends DiscreteElement<Character> {
 	public Character getValue() {
 		return (char) getMsgData().getMem().getInt(byteOffset, msb, lsb);
 	}
+	
+	@Override
+   public Character getBitValue(int msb, int lsb) {
+      return (char) getMsgData().getMem().getInt(byteOffset, msb, lsb);
+   }
 
 	@Override
 	public Character valueOf(MemoryResource otherMem) {

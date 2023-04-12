@@ -57,6 +57,11 @@ public class UnsignedInteger8Element extends NumericElement<Byte> {
    public Byte getValue() {
       return Byte.valueOf((byte) getMsgData().getMem().getInt(byteOffset, msb, lsb));
    }
+   
+   @Override
+   public Byte getBitValue(int msb, int lsb) {
+      return Byte.valueOf((byte) getMsgData().getMem().getInt(byteOffset, msb, lsb));
+   }
 
    @Override
    public Byte valueOf(MemoryResource mem) {

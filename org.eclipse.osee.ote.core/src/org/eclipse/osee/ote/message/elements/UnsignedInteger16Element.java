@@ -59,6 +59,11 @@ public class UnsignedInteger16Element extends NumericElement<Short> {
    }
 
    @Override
+   public Short getBitValue(int msb, int lsb) {
+      return Short.valueOf((short) getMsgData().getMem().getInt(byteOffset, msb, lsb));
+   }
+   
+   @Override
    public Short valueOf(MemoryResource mem) {
       return Short.valueOf((short) mem.getInt(byteOffset, msb, lsb));
    }

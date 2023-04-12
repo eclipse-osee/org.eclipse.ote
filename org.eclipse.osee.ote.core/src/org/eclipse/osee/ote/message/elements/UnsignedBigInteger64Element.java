@@ -45,6 +45,11 @@ public class UnsignedBigInteger64Element extends NumericElement<BigInteger> {
    public BigInteger getValue() {
       return getMsgData().getMem().getUnsigned64(byteOffset, msb, lsb);
    }
+   
+   @Override
+   public BigInteger getBitValue(int msb, int lsb) {
+      return getMsgData().getMem().getUnsigned64(byteOffset, msb, lsb);
+   }
 
    @Override
    public String toString(BigInteger obj) {

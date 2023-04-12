@@ -80,6 +80,11 @@ public class EmptyEnum_Element extends DiscreteElement<EmptyEnum> {
    public EmptyEnum getValue() {
       return toEnum(getMsgData().getMem().getInt(byteOffset, msb, lsb));
    }
+   
+   @Override
+   public EmptyEnum getBitValue(int msb, int lsb) {
+      return toEnum(getMsgData().getMem().getInt(byteOffset, msb, lsb));
+   }
 
    @Override
    public void setValue(EmptyEnum obj) {

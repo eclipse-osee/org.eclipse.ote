@@ -70,6 +70,11 @@ public class UnsignedInteger32Element extends NumericElement<Integer> {
    public Integer getValue() {
       return Integer.valueOf(getMsgData().getMem().getInt(byteOffset, msb, lsb));
    }
+   
+   @Override
+   public Integer getBitValue(int msb, int lsb) {
+      return Integer.valueOf(getMsgData().getMem().getInt(byteOffset, msb, lsb));
+   }
 
    @Override
    public Integer valueOf(MemoryResource mem) {

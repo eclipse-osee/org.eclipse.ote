@@ -65,6 +65,11 @@ public class UnsignedLongIntegerElement extends NumericElement<Long> {
    public Long getValue() {
       return Long.valueOf(getMsgData().getMem().getLong(byteOffset, msb, lsb));
    }
+   
+   @Override
+   public Long getBitValue(int msb, int lsb) {
+      return Long.valueOf(getMsgData().getMem().getLong(byteOffset, msb, lsb));
+   }
 
    @Override
    public Long valueOf(MemoryResource mem) {

@@ -79,6 +79,11 @@ public class StringElement extends DiscreteElement<String> {
    public String getValue() {
       return getMsgData().getMem().getASCIIString(byteOffset, msb, lsb);
    }
+   
+   @Override
+   public String getBitValue(int msb, int lsb) {
+      return getMsgData().getMem().getASCIIString(byteOffset, msb, lsb);
+   }
 
    /**
     * copies this elements chars into the given array. The array must be big enough to contain this elements data or an

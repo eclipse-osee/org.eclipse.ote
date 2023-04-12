@@ -20,6 +20,7 @@ import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
 import org.eclipse.osee.ote.core.testPoint.Operation;
 import org.eclipse.osee.ote.message.Message;
+import org.eclipse.osee.ote.message.condition.BitEqualsCondition;
 import org.eclipse.osee.ote.message.condition.EqualsCondition;
 import org.eclipse.osee.ote.message.condition.IDiscreteElementCondition;
 import org.eclipse.osee.ote.message.condition.InRangeCondition;
@@ -49,6 +50,8 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public abstract void setValue(T obj);
 
    public abstract T getValue();
+
+   public abstract T getBitValue(int msb, int lsb);
 
    public abstract String toString(T obj);
    
@@ -106,6 +109,45 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       }
 
       T actualValue = getValue();
+      CheckPoint passFail =
+         new CheckPoint(this.getFullName(), toString(value), toString(actualValue),
+            actualValue.equals(elementMask(value)), 0);
+
+      if (checkGroup == null) {
+         accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
+      } else {
+         checkGroup.add(passFail);
+      }
+
+      if (accessor != null) {
+         accessor.getLogger().methodEnded(accessor);
+      }
+      return passFail.isPass();
+   }
+   
+   /**
+    * Verifies that the element bits are set to "value".
+    * 
+    * @param accessor Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param value Expected value
+    * @param msb
+    * @param lsb
+    * @return if the check passed
+    */
+   public boolean checkBits(ITestAccessor accessor, CheckGroup checkGroup, int msb, int lsb, T value) {
+
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
+            getMessage());
+      }
+
+      T actualValue = getBitValue(msb, lsb);
       CheckPoint passFail =
          new CheckPoint(this.getFullName(), toString(value), toString(actualValue),
             actualValue.equals(elementMask(value)), 0);
@@ -249,6 +291,45 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       }
 
       T actualValue = getValue();
+
+      CheckPoint passFail =
+         new CheckPoint(this.getFullName(), "Not " + toString(value), toString(actualValue),
+            !actualValue.equals(value), 0);
+
+      if (checkGroup == null) {
+         accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
+      } else {
+         checkGroup.add(passFail);
+      }
+
+      if (accessor != null) {
+         accessor.getLogger().methodEnded(accessor);
+      }
+      return passFail.isPass();
+   }
+   
+   /**
+    * Verifies that the element bits are NOT set to "value".
+    * 
+    * @param accessor Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param msb
+    * @param lsb
+    * @param value value to test against
+    * @return if the check passed
+    */
+   public boolean checkNotBits(ITestAccessor accessor, CheckGroup checkGroup, int msb, int lsb, T value) {
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
+            getMessage());
+      }
+
+      T actualValue = getBitValue(msb, lsb);
 
       CheckPoint passFail =
          new CheckPoint(this.getFullName(), "Not " + toString(value), toString(actualValue),
@@ -546,6 +627,36 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
+    * Verifies that the element bits are set to "value" within the number of "milliseconds" passed.
+    * 
+    * @param accessor Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param msb
+    * @param lsb
+    * @param value Expected value.
+    * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
+    * @return If the check passed.
+    */
+   public boolean checkBits(ITestAccessor accessor, CheckGroup checkGroup, int msb, int lsb, T value, int milliseconds) throws InterruptedException {
+      checkAccessor(accessor);
+
+      accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
+         new MethodFormatter().add(value).add(milliseconds), getMessage());
+      
+      BitEqualsCondition<T> c = new BitEqualsCondition<>(this, msb, lsb, value);
+
+      CheckPoint cp = waitWithCheckPoint(accessor, checkGroup, toString(value), c, false, milliseconds);
+
+      accessor.getLogger().methodEnded(accessor);
+      return cp.isPass();
+   }
+   
+   /**
     * Verifies that the element is set to a value within the range specified. Either end of the range can be set to be
     * inclusive or not.
     * 
@@ -672,6 +783,34 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
          new MethodFormatter().add(value).add(milliseconds), getMessage());
       CheckPoint cp =
          waitWithCheckPoint(accessor, checkGroup, "Not " + toString(value), new EqualsCondition<T>(this, true, value),
+            false, milliseconds);
+      accessor.getLogger().methodEnded(accessor);
+      return cp.isPass();
+   }
+   
+   /**
+    * Verifies that the element bits are set to some value other than "value" within the number of "milliseconds" passed.
+    * Passes if at any point with in the time allowed, the elment is set to a value other than "value".
+    * 
+    * @param accessor Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param msb
+    * @param lsb
+    * @param value value to test against.
+    * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
+    * @return If the check passed.
+    */
+   public boolean checkNotBits(ITestAccessor accessor, CheckGroup checkGroup, int msb, int lsb, T value, int milliseconds) throws InterruptedException {
+      checkAccessor(accessor);
+      accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
+         new MethodFormatter().add(value).add(milliseconds), getMessage());
+      CheckPoint cp =
+         waitWithCheckPoint(accessor, checkGroup, "Not " + toString(value), new BitEqualsCondition<T>(this, true, msb, lsb, value),
             false, milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return cp.isPass();
