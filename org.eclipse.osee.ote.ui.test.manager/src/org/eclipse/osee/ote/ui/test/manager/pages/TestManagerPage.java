@@ -74,8 +74,10 @@ public abstract class TestManagerPage extends ScrolledComposite {
    public abstract String getErrorMessage();
 
    /**
-    * called when test manager is connected to a test host. A return value of true will cause test manager to prompt the
-    * user to check the log. Thus any problems that occur during connection processing should be handled and logged.
+    * called when test manager is connected to a test host. A return value of true
+    * will cause test manager to prompt the user to check the log. Thus any
+    * problems that occur during connection processing should be handled and
+    * logged.
     * 
     * @return true if there were problems during processing and false otherwise.
     */

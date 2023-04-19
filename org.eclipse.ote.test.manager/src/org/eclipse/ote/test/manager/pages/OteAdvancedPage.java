@@ -19,6 +19,8 @@ import org.eclipse.osee.ote.ui.test.manager.pages.AdvancedPage;
 import org.eclipse.ote.test.manager.editor.OteTestManagerEditor;
 import org.eclipse.ote.test.manager.internal.OteTestManagerModel;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -36,13 +38,14 @@ import org.eclipse.swt.widgets.Text;
  */
 public class OteAdvancedPage extends AdvancedPage {
    private OteTestManagerModel model;
-   
+
    public OteAdvancedPage(Composite parent, int style, TestManagerEditor parentTestManager) {
       super(parent, style, parentTestManager);
-      model = ((OteTestManagerEditor)parentTestManager).getTestManagerModel();
+      model = ((OteTestManagerEditor) parentTestManager).getTestManagerModel();
    }
 
    private Text distText;
+
    @Override
    public void createPage() {
       super.createPage();
@@ -53,10 +56,21 @@ public class OteAdvancedPage extends AdvancedPage {
       group.setLayout(layout);
       group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       group.setText("Distribution Statement");
-
       distText = new Text(group, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
       distText.setLayoutData(GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.FILL).hint(SWT.DEFAULT, 100).create());
-      
+
+      group.addControlListener(new ControlListener() {
+         @Override
+         public void controlResized(ControlEvent e) {
+
+         }
+
+         @Override
+         public void controlMoved(ControlEvent e) {
+            computeScrollSize();
+         }
+      });
+
       final Button saveButton = new Button(group, SWT.PUSH);
       saveButton.setText("Save");
       saveButton.setEnabled(false);
@@ -66,7 +80,7 @@ public class OteAdvancedPage extends AdvancedPage {
             model.setDistribution(distText.getText());
             saveButton.setEnabled(false);
          }
-         
+
          @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             // INTENTIONALLY EMPTY BLOCK
@@ -80,7 +94,7 @@ public class OteAdvancedPage extends AdvancedPage {
       });
       computeScrollSize();
    }
-   
+
    @Override
    public void restoreData() {
       super.restoreData();

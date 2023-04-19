@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.test.manager.TestManagerImage;
 import org.eclipse.swt.SWT;
@@ -100,8 +101,7 @@ public class UserNamePanel extends Composite {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            UserName newName =
-               new UserName(lastNameEntry.getText(), firstNameEntry.getText(), middleInitialEntry.getText());
+            UserName newName = new UserName(lastNameEntry.getText(), firstNameEntry.getText(), middleInitialEntry.getText());
             addName(newName);
             lastNameEntry.setText("");
             firstNameEntry.setText("");
@@ -145,10 +145,12 @@ public class UserNamePanel extends Composite {
       nameComp.getDisplay().update();
       getParent().getDisplay().update();
       nameComp.layout();
+
       getParent().layout();
       getParent().getParent().layout();
       getParent().getParent().getParent().getParent().layout();
       getParent().getParent().getParent().getParent().getParent().layout();
+      getParent().getParent().getParent().getParent().getParent().getParent().layout();
    }
 
    private void removeName(Composite composite, UserName name) {
