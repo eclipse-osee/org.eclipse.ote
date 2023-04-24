@@ -61,4 +61,8 @@ public class OteApiBase implements OteApi {
    public void zzz_bindTestEnv(TestEnvironment testEnv) {
       this.testEnv = testEnv;
    }
+   
+   protected TestEnvironment getTestEnv() {
+      return testEnv;
+   }
 }

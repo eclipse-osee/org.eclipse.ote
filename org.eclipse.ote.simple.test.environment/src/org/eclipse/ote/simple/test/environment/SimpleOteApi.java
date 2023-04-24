@@ -14,6 +14,8 @@ package org.eclipse.ote.simple.test.environment;
 
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.ote.api.local.LocalProcessApi;
+import org.eclipse.osee.ote.core.environment.TimerControl;
+import org.eclipse.osee.ote.core.environment.interfaces.ITimerControl;
 import org.eclipse.osee.ote.remote.terminal.BasicRemoteTerminal;
 import org.eclipse.osee.ote.remote.terminal.OteRemoteTerminal;
 import org.eclipse.osee.ote.rest.OteRestApiBase;
@@ -36,11 +38,13 @@ public class SimpleOteApi extends OteRestApiBase {
    private LocalProcessApi localProcessApi;
    private OteRemoteTerminal remoteTerminal;
 
+   
    @Activate
    public void zzz_activate() {
       this.endpoints = new SimpleRestApiGroup(zzz_getJaxRsApi(), restConfig);
+      ITimerControl timerControl = getTestEnv().getTimerCtrl();
       this.localProcessApi = new LocalProcessApi();
-      this.remoteTerminal = new BasicRemoteTerminal();
+      this.remoteTerminal = new BasicRemoteTerminal(timerControl);
    }
 
    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)

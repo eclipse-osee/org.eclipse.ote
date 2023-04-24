@@ -15,17 +15,27 @@ package org.eclipse.osee.ote.remote.terminal;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.lang.invoke.VolatileCallSite;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import org.eclipse.osee.ote.core.environment.interfaces.BasicTimeout;
+import org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer;
+import org.eclipse.osee.ote.core.environment.interfaces.ITimerControl;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 /**
- * @author Nydia Delgado
+ * @author Nydia Delgado, Dominic Leiner
  */
 public class BasicRemoteTerminal implements OteRemoteTerminal {
-
+   //wait this long in milliseconds between output updates
+   static final int SLEEP_TIME = 1000; 
+   private final BasicTimeout timeoutWaiter = new BasicTimeout();
+   private final ITimerControl timerControl;
+   
    protected String hostname;
    protected int port;
    protected String username;
@@ -33,18 +43,20 @@ public class BasicRemoteTerminal implements OteRemoteTerminal {
 
    private Session session = null;
 
-   public BasicRemoteTerminal() {
+   public BasicRemoteTerminal(ITimerControl timerControl) {
       hostname = System.getProperty("remote.terminal.host", "");
       port = Integer.parseInt(System.getProperty("remote.terminal.port", "22"));
       username = System.getProperty("remote.terminal.username", "");
       password = System.getProperty("remote.terminal.password", "");
+      this.timerControl = timerControl;
    }
 
-   public BasicRemoteTerminal(String hostname, int port, String username, String password) {
+   public BasicRemoteTerminal(String hostname, int port, String username, String password, ITimerControl timerControl) {
       this.hostname = hostname;
       this.port = port;
       this.username = username;
       this.password = password;
+      this.timerControl = timerControl;
    }
 
    /**
@@ -126,6 +138,107 @@ public class BasicRemoteTerminal implements OteRemoteTerminal {
       }
       return retVal;
    }
+   
+   /**
+    * Issues command to open remote terminal session & not wait for a response.
+    * Default no timeout.
+    * 
+    * @param command
+    * @return {@link OteRemoteTerminalResponseStream} 
+    *          this object is shared between the main thread & the thread updating the output,
+    *          Encapsulates an OteRemoteTerminalResponse.
+    */
+   public OteRemoteTerminalResponseStream commandAndContinue(String command) {
+      int noTimeout = 0;
+      return commandAndContinue(command, noTimeout);
+   }
+   
+   /**
+    * Issues command to open remote terminal session & not wait for a response.
+    * 
+    * @param command
+    * @param timeout - in seconds. ( noTimeout is <= 0 )
+    * @return {@link OteRemoteTerminalResponseStream} 
+    *          this object is shared between the main thread & the thread updating the output,
+    *          Encapsulates an OteRemoteTerminalResponse.
+    */
+   public OteRemoteTerminalResponseStream commandAndContinue(String command, int timeout) {
+      class CommandRunner implements Runnable {
+         volatile OteRemoteTerminalResponseStream responseStream;
+         
+         public CommandRunner(OteRemoteTerminalResponseStream responseStream) {
+            this.responseStream = responseStream;
+         }
+         
+         public void stop() {
+            if(!responseStream.isClosed())
+               this.responseStream.kill();
+         }
+         
+         public void run() {
+            ChannelExec channel = responseStream.getChannel();
+            try {
+               getOutputStream(responseStream);
+               responseStream.closed(channel.getExitStatus());
+            }
+            catch (IOException e) {
+               responseStream.exception(new OteRemoteTerminalResponseException(e));
+            } finally {
+               if(channel != null) 
+                  channel.disconnect();
+            }
+            
+         }
+      }
+      
+      OteRemoteTerminalResponseStream retVal = new OteRemoteTerminalResponseStream();
+      ChannelExec channel;
+      
+      try {
+         channel = (ChannelExec) session.openChannel("exec");
+         channel.setCommand(command);
+         channel.connect();
+         retVal.addChannel(channel);
+      }
+      catch (JSchException e) {
+         retVal.exception(new OteRemoteTerminalResponseException(e));
+         return retVal;
+      }
+      
+      CommandRunner commandRunner = new CommandRunner(retVal);
+      Thread commandThread = new Thread(commandRunner);
+      commandThread.start();
+         
+      if(timeout > 0) {
+         Thread threadStopper = new Thread(() -> {       
+            synchronized (timeoutWaiter) {
+               ICancelTimer timer = timerControl.setTimerFor(timeoutWaiter, timeout*1000);
+
+               boolean isDone = false;
+               try {
+                  while (!isDone) {
+                     timeoutWaiter.wait(SLEEP_TIME);
+                     isDone = (!commandThread.isAlive()) || timeoutWaiter.isTimedOut();
+                  }
+                  
+                  synchronized (commandThread) {
+                     if(commandThread.isAlive())
+                        commandRunner.stop();
+                  }
+               } catch (InterruptedException e) {
+                  e.printStackTrace();
+               } finally {
+                  timer.cancelTimer();
+               }
+            }
+         });
+         
+         threadStopper.setDaemon(true);
+         threadStopper.start(); 
+      }      
+
+      return retVal;
+   }
 
    /**
     * Returns OteRemoteTerminalResponse containing remote terminal session channel
@@ -147,6 +260,7 @@ public class BasicRemoteTerminal implements OteRemoteTerminal {
       byte[] tmpOutBuf = new byte[in.available() + 1];
       byte[] tmpErrBuf = new byte[err.available() + 1];
       while (true) {
+         
          while (in.available() > 0) {
             int i = in.read(tmpOutBuf);
             if (i < 0)
@@ -167,7 +281,7 @@ public class BasicRemoteTerminal implements OteRemoteTerminal {
                break;
          }
          try {
-            Thread.sleep(1000);
+            Thread.sleep(SLEEP_TIME);
          } catch (InterruptedException e) {
             retVal = new OteRemoteTerminalResponseException(e);
          }
@@ -175,7 +289,55 @@ public class BasicRemoteTerminal implements OteRemoteTerminal {
       retVal = new OteRemoteTerminalResponse(outputBuffer.toString(), errorBuffer.toString(), channel.getExitStatus());
       return retVal;
    }
+   
+   /**
+    * Updates the ouputStream & errorStream byteArrays in responseStream
+    * with the input from channel
+    * Ends when the channel is closed.
+    * 
+    * @param responseStream
+    * @throws IOException
+    */
+   private void getOutputStream(OteRemoteTerminalResponseStream responseStream) throws IOException {
+      ChannelExec channel = responseStream.getChannel();
+      InputStream in = channel.getInputStream();
+      InputStream err = channel.getErrStream();
+      
+      ByteArrayOutputStream outputStream = responseStream.getStdOutStream();
+      ByteArrayOutputStream errorStream = responseStream.getStdErrStream();
+      
+      //TODO: Replace with in.transferTo(outputStream); when updated to java 9+
+      
+      byte[] tmpOutBuf = new byte[in.available() + 1];
+      byte[] tmpErrBuf = new byte[err.available() + 1];
+      while (true) {         
+         while (in.available() > 0) {
+            int i = in.read(tmpOutBuf);
+            if (i < 0)
+               break;
+            outputStream.write(tmpOutBuf);
+         }
+         while (err.available() > 0) {
+            int i = err.read(tmpErrBuf);
+            if (i < 0)
+               break;
+            errorStream.write(tmpErrBuf);
+         }
 
+         if (channel.isClosed()) {
+            if ((in.available() > 0) || (err.available() > 0))
+               continue;
+            else
+               break;
+         }
+         try {
+            Thread.sleep(SLEEP_TIME);
+         } catch (InterruptedException e) {
+            responseStream.exception(new OteRemoteTerminalResponseException(e));
+         }
+      }
+   }
+   
    /**
     * Returns host name of remote terminal session
     * 

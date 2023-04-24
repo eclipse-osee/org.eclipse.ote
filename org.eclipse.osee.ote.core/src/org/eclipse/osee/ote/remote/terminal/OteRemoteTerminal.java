@@ -32,6 +32,15 @@ public interface OteRemoteTerminal {
     */
    public OteRemoteTerminalResponse command(String command);
 
+   /**
+    * Issues command to open remote terminal session
+    * Response is returned as a stream updated by another thread.
+    * 
+    * @param command
+    * @return {@link OteRemoteTerminalResponseStream} 
+    */
+   public OteRemoteTerminalResponseStream commandAndContinue(String command);
+   
    public String getHostName();
 
    public boolean isConnected();
