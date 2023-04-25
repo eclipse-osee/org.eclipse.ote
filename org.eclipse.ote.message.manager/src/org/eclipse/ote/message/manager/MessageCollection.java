@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.GCHelper;
@@ -383,7 +382,7 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
             if (messageWriters.get(namespace, messageClass) == null) {
                messageWriters.put(namespace, messageClass, message);
             } else {
-               log(Level.WARNING, String.format(
+               log(Level.INFO, String.format(
                   "[%s] has already been added to the message collection, you have multiple instances in the environment.",
                   message.getName()));
             }
