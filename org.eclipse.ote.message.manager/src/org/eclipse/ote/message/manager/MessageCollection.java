@@ -382,7 +382,7 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
             if (messageWriters.get(namespace, messageClass) == null) {
                messageWriters.put(namespace, messageClass, message);
             } else {
-               log(Level.WARNING, String.format(
+               log(Level.INFO, String.format(
                   "[%s] has already been added to the message collection, you have multiple instances in the environment.",
                   message.getName()));
             }
