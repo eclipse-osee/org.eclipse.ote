@@ -23,6 +23,7 @@ import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 public class LocalProcessResponse {
 
    public final static int OK_CODE = 0;
+   public final static int EXCEPTION = Integer.MIN_VALUE;
 
    private final String[] command;
    private final String output;
@@ -124,5 +125,12 @@ public class LocalProcessResponse {
                  surroundInQuotes(str),
                  surroundInQuotes(error));
       }
+   }
+   
+   public String toString() {
+      return getClass().getSimpleName() + " {\n\tCommand:" + getCommandStr() + 
+         "\n\tOutput: " + output.replace("\n", "\\n") + 
+         "\n\tError: " + error.replace("\n", "\\n") + 
+         "\n\tExit Code: " + exitCode + "\n}";
    }
 }
