@@ -14,51 +14,62 @@
 package org.eclipse.osee.ote.message.other;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.OteRecorder;
+import org.eclipse.osee.ote.message.listener.OteRecorderListener;
+import org.eclipse.osee.ote.message.mock.TestMemType;
 import org.eclipse.osee.ote.message.mock.TestMessage;
+import org.eclipse.osee.ote.message.mock.TestMessageData;
+import org.eclipse.osee.ote.message.mock.TestOteRecorderMessage;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author Shandeep Singh
  */
 public class TestOteRecorder {
-   private static List<Message> messages = new ArrayList<>();
+   private static Set<Message> messages = new HashSet<>();
    private static List<Message> messageRecordings = new ArrayList<>();;
    private OteRecorder oteRecorder;
-
-   @BeforeClass
-   public static void setUpBeforeClass() {
-      TestMessage oteMessage = new TestMessage();
-      TestMessage oteMessag2 = new TestMessage();
-      messages.add(oteMessage);
-      messages.add(oteMessag2);
-   }
 
    @Before
    public void setupBeforeTest() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
       messageRecordings.clear();
+      messages.clear();
+
+      TestMessage oteMessage = new TestMessage();
+      messages.add(oteMessage);
+
       TestMessage messageRecording = new TestMessage();
       TestMessage messageRecording2 = new TestMessage();
-      TestMessage messageRecording3 = new TestMessage();
+      TestOteRecorderMessage messageRecording3 = new TestOteRecorderMessage();
       TestMessage messageRecording4 = new TestMessage();
       messageRecordings.add(messageRecording);
       messageRecordings.add(messageRecording2);
       messageRecordings.add(messageRecording3);
       messageRecordings.add(messageRecording4);
 
-      oteRecorder = new OteRecorder(messages);
+      List<Message> oteMessages = new ArrayList<>();
+      oteMessages.addAll(messages);
+      oteRecorder = new OteRecorder(oteMessages);
       Field messageRecordingsField = OteRecorder.class.getDeclaredField("messageRecordings");
+      Field oteMessagesField = OteRecorder.class.getDeclaredField("oteMessages");
       messageRecordingsField.setAccessible(true);
+      oteMessagesField.setAccessible(true);
 
       messageRecordingsField.set(oteRecorder, messageRecordings);
+      oteMessagesField.set(oteRecorder, messages);
    }
 
    @Test
@@ -66,8 +77,8 @@ public class TestOteRecorder {
       boolean firstStart = oteRecorder.start();
       boolean secondStart = oteRecorder.start();
 
-      assertEquals(firstStart, true);
-      assertEquals(secondStart, false);
+      assertEquals(true, firstStart);
+      assertEquals(false, secondStart);
    }
 
    @Test
@@ -76,9 +87,9 @@ public class TestOteRecorder {
       boolean firstPause = oteRecorder.pause();
       boolean startAfterPause = oteRecorder.start();
 
-      assertEquals(firstStart, true);
-      assertEquals(firstPause, true);
-      assertEquals(startAfterPause, true);
+      assertEquals(true, firstStart);
+      assertEquals(true, firstPause);
+      assertEquals(true, startAfterPause);
    }
 
    @Test
@@ -87,57 +98,71 @@ public class TestOteRecorder {
       boolean firstPause = oteRecorder.pause();
       boolean secondPause = oteRecorder.pause();
 
-      assertEquals(firstStart, true);
-      assertEquals(firstPause, true);
-      assertEquals(secondPause, false);
+      assertEquals(true, firstStart);
+      assertEquals(true, firstPause);
+      assertEquals(false, secondPause);
    }
 
    @Test
    public void testPauseRecordingWithoutStart() {
       boolean firstPause = oteRecorder.pause();
 
-      assertEquals(firstPause, false);
+      assertEquals(false, firstPause);
    }
 
    @Test
    public void testAddMessageToRecorder() {
       oteRecorder.start();
 
-      List<?> allMessagesToRecord = oteRecorder.getCurrentOteMessagesToRecord();
-      assertEquals(allMessagesToRecord.size(), 2);
+      List<Message> allMessagesToRecord = oteRecorder.getCurrentOteMessagesToRecord();
+      assertEquals(1, allMessagesToRecord.size());
+
+      TestOteRecorderMessage messageToAdd = new TestOteRecorderMessage();
+      oteRecorder.addMessageToRecorder(messageToAdd);
+      List<Message> allMessagesToRecordAfterAdding = oteRecorder.getCurrentOteMessagesToRecord();
+
+      assertEquals(2, allMessagesToRecordAfterAdding.size());
+   }
+
+   @Test
+   public void testAddExistingMessageToRecorder() {
+      messages.clear();
 
       TestMessage messageToAdd = new TestMessage();
       oteRecorder.addMessageToRecorder(messageToAdd);
-      List<?> allMessagesToRecordAfterAdding = oteRecorder.getCurrentOteMessagesToRecord();
-      assertEquals(allMessagesToRecordAfterAdding.size(), 3);
+      oteRecorder.addMessageToRecorder(messageToAdd);
+      List<Message> allMessagesToRecordAfterAdding = oteRecorder.getCurrentOteMessagesToRecord();
+
+      assertEquals(1, allMessagesToRecordAfterAdding.size());
    }
 
    @Test
    public void testRemoveMessageFromRecorder() {
       oteRecorder.start();
 
-      List<?> allMessagesToRecord = oteRecorder.getCurrentOteMessagesToRecord();
-      assertEquals(allMessagesToRecord.size(), 2);
+      List<Message> allMessagesToRecord = oteRecorder.getCurrentOteMessagesToRecord();
+      assertEquals(1, allMessagesToRecord.size());
 
       TestMessage messageToRemove = (TestMessage) allMessagesToRecord.get(0);
       oteRecorder.removeMessageFromRecorder(messageToRemove);
-      List<?> allMessagesToRecordAfterRemoving = oteRecorder.getCurrentOteMessagesToRecord();
-      assertEquals(allMessagesToRecordAfterRemoving.size(), 1);
+      List<Message> allMessagesToRecordAfterRemoving = oteRecorder.getCurrentOteMessagesToRecord();
+
+      assertEquals(0, allMessagesToRecordAfterRemoving.size());
    }
 
    @Test
    public void testGetAllRecordedMessages() {
-      List<?> allRecordedMessages = oteRecorder.getAllRecordedMessages();
+      List<Message> allRecordedMessages = oteRecorder.getAllRecordedMessages();
 
-      assertEquals(allRecordedMessages.size(), 4);
+      assertEquals(4, allRecordedMessages.size());
    }
 
    @Test
    public void testGetAllMessagesOfType() {
       TestMessage secondRecordedMessage = (TestMessage) messageRecordings.get(1);
-      List<?> allMessagesOfTestMessageType = oteRecorder.getAllMessagesOfType(secondRecordedMessage);
+      List<Message> allMessagesOfTestMessageType = oteRecorder.getAllMessagesOfType(secondRecordedMessage);
 
-      assertEquals(allMessagesOfTestMessageType.size(), 4);
+      assertEquals(3, allMessagesOfTestMessageType.size());
    }
 
    @Test
@@ -145,7 +170,19 @@ public class TestOteRecorder {
       TestMessage secondRecordedMessage = (TestMessage) messageRecordings.get(1);
       int firstInstanceOfTestMessage = oteRecorder.getFirstIndexOf(secondRecordedMessage);
 
-      assertEquals(firstInstanceOfTestMessage, 0);
+      assertEquals(0, firstInstanceOfTestMessage);
+   }
+
+   @Test
+   public void testGetFirstIndexOfNoExistingMessage() {
+      messageRecordings.clear();
+      TestOteRecorderMessage recordedMessage = new TestOteRecorderMessage();
+      messageRecordings.add(recordedMessage);
+
+      TestMessage notRecordedMessage = new TestMessage();
+      int firstInstanceOfTestMessage = oteRecorder.getFirstIndexOf(notRecordedMessage);
+
+      assertEquals(-1, firstInstanceOfTestMessage);
    }
 
    @Test
@@ -155,8 +192,19 @@ public class TestOteRecorder {
       TestMessage firstMessageOfFirstRecordedMessage = oteRecorder.getFirstMessageOfType(firstRecordedMessage);
       TestMessage firstMessageOfSecondRecordedMessage = oteRecorder.getFirstMessageOfType(secondRecordedMessage);
 
-      assertEquals(firstMessageOfFirstRecordedMessage, firstRecordedMessage);
-      assertNotEquals(firstMessageOfSecondRecordedMessage, secondRecordedMessage);
+      assertEquals(firstRecordedMessage, firstMessageOfFirstRecordedMessage);
+      assertNotEquals(secondRecordedMessage, firstMessageOfSecondRecordedMessage);
+   }
+
+   @Test
+   public void testGetFirstMessageOfTypeNoExistingMessage() {
+      messageRecordings.clear();
+      TestOteRecorderMessage recordedMessage = new TestOteRecorderMessage();
+      messageRecordings.add(recordedMessage);
+
+      TestMessage nonExistingMessage = oteRecorder.getFirstMessageOfType(new TestMessage());
+
+      assertNull(nonExistingMessage);
    }
 
    @Test
@@ -165,8 +213,13 @@ public class TestOteRecorder {
       TestMessage secondRecordedMessage = (TestMessage) messageRecordings.get(1);
       Message secondRecordedMessageFromOteRecorder = oteRecorder.getMessageAtIndex(1);
 
-      assertNotEquals(secondRecordedMessageFromOteRecorder, firstRecordedMessage);
-      assertEquals(secondRecordedMessageFromOteRecorder, secondRecordedMessage);
+      assertNotEquals(firstRecordedMessage, secondRecordedMessageFromOteRecorder);
+      assertEquals(secondRecordedMessage, secondRecordedMessageFromOteRecorder);
+   }
+
+   @Test(expected = ClassCastException.class)
+   public void testGetMessageAtIndexClassCastException() {
+      TestMessage incorrectMessageCast = oteRecorder.getMessageAtIndex(2);
    }
 
    @Test
@@ -174,20 +227,21 @@ public class TestOteRecorder {
       messageRecordings.clear();
       Message secondRecordedMessageFromOteRecorder = oteRecorder.getMessageAtIndex(0);
 
-      assertEquals(secondRecordedMessageFromOteRecorder, null);
+      assertNull(secondRecordedMessageFromOteRecorder);
    }
 
    @Test
    public void testGetFirstMessageAfterOfType() {
       TestMessage firstRecordedMessage = (TestMessage) messageRecordings.get(0);
       TestMessage secondRecordedMessage = (TestMessage) messageRecordings.get(1);
-      TestMessage thirdRecordedMessage = (TestMessage) messageRecordings.get(2);
+      TestOteRecorderMessage thirdRecordedMessage = (TestOteRecorderMessage) messageRecordings.get(2);
+      TestMessage fourthRecordedMessage = (TestMessage) messageRecordings.get(3);
 
       Message firstMessageAfterSecondRecordedMessage =
          oteRecorder.getFirstMessageAfterOfType(firstRecordedMessage, secondRecordedMessage);
 
-      assertEquals(firstMessageAfterSecondRecordedMessage, thirdRecordedMessage);
-      assertNotEquals(firstMessageAfterSecondRecordedMessage, secondRecordedMessage);
+      assertEquals(fourthRecordedMessage, firstMessageAfterSecondRecordedMessage);
+      assertNotEquals(thirdRecordedMessage, firstMessageAfterSecondRecordedMessage);
    }
 
    @Test
@@ -197,7 +251,7 @@ public class TestOteRecorder {
       Message firstMessageAfterSecondRecordedMessage =
          oteRecorder.getFirstMessageAfterOfType(lastRecordedMessage, lastRecordedMessage);
 
-      assertEquals(firstMessageAfterSecondRecordedMessage, null);
+      assertNull(firstMessageAfterSecondRecordedMessage);
    }
 
    @Test
@@ -205,11 +259,21 @@ public class TestOteRecorder {
       TestMessage firstRecordedMessage = (TestMessage) messageRecordings.get(0);
       TestMessage secondRecordedMessage = (TestMessage) messageRecordings.get(1);
 
-      List<Message> allMessagesAfterSecondRecording = messageRecordings.subList(2, messageRecordings.size());
-      List<TestMessage> allMessagesAfterSecondRecordedMessage =
+      List<Message> allTestMessagesAfterSecondRecording = messageRecordings.subList(3, messageRecordings.size());
+      List<TestMessage> allTestMessagesAfterSecondRecordedMessage =
          oteRecorder.getAllMessagesAfterOfType(firstRecordedMessage, secondRecordedMessage);
 
-      assertEquals(allMessagesAfterSecondRecording, allMessagesAfterSecondRecordedMessage);
+      assertEquals(allTestMessagesAfterSecondRecordedMessage, allTestMessagesAfterSecondRecording);
+   }
+
+   @Test
+   public void testGetAllMessagesAfterOfTypeNoExistingMessage() {
+      TestOteRecorderMessage thirdRecordedMessage = (TestOteRecorderMessage) messageRecordings.get(2);
+
+      List<TestOteRecorderMessage> allTestOteRecordedMessagesAfterThirdRecordedMessage =
+         oteRecorder.getAllMessagesAfterOfType(thirdRecordedMessage, thirdRecordedMessage);
+
+      assertTrue(allTestOteRecordedMessagesAfterThirdRecordedMessage.isEmpty());
    }
 
    @Test
@@ -224,16 +288,40 @@ public class TestOteRecorder {
 
    @Test
    public void testGetCurrentOteMessagesToRecord() {
-      List<?> CurrentOteMessagesToRecord = oteRecorder.getCurrentOteMessagesToRecord();
+      List<Message> CurrentOteMessagesToRecord = oteRecorder.getCurrentOteMessagesToRecord();
 
-      assertEquals(CurrentOteMessagesToRecord, messages);
+      assertTrue(Collections.isEqual(CurrentOteMessagesToRecord, messages.stream().collect(Collectors.toList())));
    }
 
    @Test
    public void testClearAllMessageRecordings() {
-      assertTrue(!oteRecorder.getAllRecordedMessages().isEmpty());
+      assertFalse(oteRecorder.getAllRecordedMessages().isEmpty());
 
       oteRecorder.clearAllMessageRecordings();
+
       assertTrue(oteRecorder.getAllRecordedMessages().isEmpty());
+   }
+
+   @Test
+   public void testOteRecorderListener() {
+      messageRecordings.clear();
+      TestOteRecorderMessage firstMessageRecording = new TestOteRecorderMessage();
+      messageRecordings.add(firstMessageRecording);
+      OteRecorderListener oteRecorderListener = new OteRecorderListener(firstMessageRecording, messageRecordings);
+
+      TestOteRecorderMessage secondMessageRecording = new TestOteRecorderMessage();
+      secondMessageRecording.INT_ELEMENT_1.setValue(10);
+      TestMessageData messageData = (TestMessageData) secondMessageRecording.getDefaultMessageData();
+
+      oteRecorderListener.onDataAvailable(messageData, TestMemType.ETHERNET);
+
+      TestOteRecorderMessage originalMessage = (TestOteRecorderMessage) messageRecordings.get(0);
+      TestOteRecorderMessage originalMessageCopy = (TestOteRecorderMessage) messageRecordings.get(1);
+
+      int originalMessageIntElementValue = originalMessage.INT_ELEMENT_1.getValue();
+      int originalMessageCopyIntElementValue = originalMessageCopy.INT_ELEMENT_1.getValue();
+
+      assertEquals(0, originalMessageIntElementValue);
+      assertEquals(10, originalMessageCopyIntElementValue);
    }
 }

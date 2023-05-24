@@ -255,6 +255,9 @@ public class OteRecorder {
     * Clears the current list of all message recordings
     */
    public void clearAllMessageRecordings() {
-      messageRecordings.clear();
+      messageRecordings = new ArrayList<>();
+      for (Map.Entry<Message, OteRecorderListener> entrySet : messageListenerMap.entrySet()) {
+         entrySet.getValue().setMessageRecordings(messageRecordings);
+      }
    }
 }

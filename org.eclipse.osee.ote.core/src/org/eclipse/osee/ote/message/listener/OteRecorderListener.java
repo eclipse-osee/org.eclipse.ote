@@ -59,4 +59,8 @@ public class OteRecorderListener implements IOSEEMessageListener {
       // INTENTIONALLY EMPTY
    }
 
+   public void setMessageRecordings(List<Message> messageRecordings) {
+      this.messageRecordings = messageRecordings;
+   }
+
 }
