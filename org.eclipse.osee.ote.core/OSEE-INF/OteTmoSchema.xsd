@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Location">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" name="Stacktrace">
+					<xs:complexType>
+						<xs:attribute name="source" type="xs:string" use="required" />
+						<xs:attribute name="line" type="xs:int" use="required" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Time" type="xs:unsignedLong" />
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:integer" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="OteLog">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Message" type="xs:string" />
+				<xs:element minOccurs="0" name="Throwable" type="xs:string" />
+			</xs:sequence>
+			<xs:attribute name="Level" type="xs:string" />
+			<xs:attribute name="Logger" type="xs:int" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="CheckPoint">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="TestPointName" type="xs:string" />
+				<xs:element name="Expected" type="xs:string" />
+				<xs:element name="Actual" type="xs:string" />
+				<xs:element name="Result" type="xs:string" />
+				<xs:element name="ElapsedTime" type="xs:unsignedInt" />
+				<xs:element name="NumberOfTransmissions" type="xs:unsignedInt" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="TestPoint">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Number" type="xs:int" />
+				<xs:element name="Result" type="xs:string" />
+				<xs:element name="isInteractive" type="xs:boolean" />
+				<xs:element ref="Location" />
+				<xs:element minOccurs="0" name="CheckGroup">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="GroupName" type="xs:string" />
+							<xs:element name="Result" type="xs:string" />
+							<xs:element maxOccurs="unbounded" ref="CheckPoint">
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="Mode" type="xs:string" use="required" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element minOccurs="0" ref="CheckPoint" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="Attention">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" ref="Location" />
+				<xs:element name="Message" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="MethodArguments">
+		<xs:complexType mixed="true">
+			<xs:sequence minOccurs="0">
+				<xs:element name="Argument">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" name="Type" type="xs:string" />
+							<xs:element minOccurs="0" name="Value" type="xs:string" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="Trace">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice maxOccurs="unbounded">
+					<xs:element name="ObjectName" type="xs:string" />
+					<xs:element name="MethodName" type="xs:string" />
+					<xs:element ref="MethodArguments" />
+					<xs:element ref="Location" />
+					<xs:element ref="Attention" />
+					<xs:element ref="Trace" />
+					<xs:element name="TraceEnd" type="xs:string" />
+					<xs:element ref="TestPoint" />
+					<xs:element ref="OteLog" />
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="SystemInfo">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="osName" type="xs:string" use="required" />
+					<xs:attribute name="osVersion" type="xs:string" use="required" />
+					<xs:attribute name="osArch" type="xs:string" use="required" />
+					<xs:attribute name="oseeVersion" type="xs:string" use="required" />
+					<xs:attribute name="javaVersion" type="xs:string" use="required" />
+					<xs:attribute name="oseeServerTitle" type="xs:string" use="required" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="TestPointResults">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="pass" type="xs:unsignedInt" use="required" />
+					<xs:attribute name="fail" type="xs:unsignedInt" use="required" />
+					<xs:attribute name="interactive" type="xs:unsignedInt" use="optional" />
+					<xs:attribute name="aborted" type="xs:boolean" use="required" />
+					<xs:attribute name="total" type="xs:unsignedInt" use="required" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="TimeSummary">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="milliseconds" type="xs:unsignedInt" use="required" />
+					<xs:attribute name="startDate" type="xs:string" use="required" />
+					<xs:attribute name="endDate" type="xs:string" use="required" />
+					<xs:attribute name="elapsed" type="xs:string" use="required" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="ScriptResult">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" name="VersionInformation">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" name="Version">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:string" use="required" />
+											<xs:attribute name="version" type="xs:string" use="required" />
+											<xs:attribute name="versionUnit" type="xs:string" use="required" />
+											<xs:attribute name="underTest" type="xs:boolean" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="RuntimeVersions">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" name="Version" type="xs:string" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element minOccurs="0" name="CurrentProcessor">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="xs:string">
+								<xs:attribute name="proc" type="xs:string" use="required" />
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element minOccurs="0" name="UutLoggingInfo">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Summary">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element maxOccurs="unbounded" name="UutErrorEntry">
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute name="NODE_ID" type="xs:unsignedInt" use="required" />
+														<xs:attribute name="severity" type="xs:string" use="required" />
+														<xs:attribute name="version" type="xs:string" use="required" />
+														<xs:attribute name="count" type="xs:unsignedInt" use="required" />
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="NODE_ID" type="xs:unsignedInt" use="required" />
+									<xs:attribute name="START_NUMBER" type="xs:unsignedInt" use="required" />
+									<xs:attribute name="INFORMATIONAL_COUNT" type="xs:unsignedInt" use="required" />
+									<xs:attribute name="MINOR_COUNT" type="xs:unsignedInt" use="required" />
+									<xs:attribute name="SERIOUS_COUNT" type="xs:unsignedInt" use="required" />
+									<xs:attribute name="CRITICAL_COUNT" type="xs:unsignedInt" use="required" />
+									<xs:attribute name="EXCEPTION_COUNT" type="xs:unsignedInt" use="required" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="TimeSummary" />
+				<xs:element ref="TestPointResults" />
+				<xs:element ref="SystemInfo" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="TestCase">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice maxOccurs="unbounded">
+					<xs:element name="Number" type="xs:unsignedInt" />
+					<xs:element name="Name" type="xs:string" />
+					<xs:element name="Tracability">
+						<xs:complexType mixed="true">
+							<xs:sequence minOccurs="0">
+								<xs:element maxOccurs="unbounded" ref="OteLog" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element maxOccurs="unbounded" ref="OteLog" />
+					<xs:element minOccurs="0" maxOccurs="unbounded" ref="Trace" />
+					<xs:element ref="Attention" />
+					<xs:element minOccurs="0" maxOccurs="unbounded" ref="TestPoint" />
+					<xs:element ref="TestCase"/>
+					<xs:element name="ScriptResult"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="TestScript">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice maxOccurs="unbounded">
+					<xs:element name="PropertyStore">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element maxOccurs="unbounded" name="Property">
+									<xs:complexType>
+										<xs:simpleContent>
+											<xs:extension base="xs:string">
+												<xs:attribute name="key" type="xs:string" use="required" />
+											</xs:extension>
+										</xs:simpleContent>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Qualification">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:string">
+									<xs:attribute name="level" type="xs:string" use="required" />
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element ref="OteLog" />
+					<xs:element name="Config">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ScriptName" type="xs:string" />
+								<xs:element name="User">
+									<xs:complexType>
+										<xs:simpleContent>
+											<xs:extension base="xs:string">
+												<xs:attribute name="name" type="xs:string" use="required" />
+												<xs:attribute name="email" type="xs:string" use="required" />
+												<xs:attribute name="id" type="xs:string" use="required" />
+											</xs:extension>
+										</xs:simpleContent>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="ScriptVersion">
+									<xs:complexType>
+										<xs:simpleContent>
+											<xs:extension base="xs:string">
+												<xs:attribute name="revision" type="xs:string" use="required" />
+												<xs:attribute name="repositoryType" type="xs:string" use="required" />
+												<xs:attribute name="lastAuthor" type="xs:string" use="required" />
+												<xs:attribute name="lastModified" type="xs:string" use="required" />
+												<xs:attribute name="modifiedFlag" type="xs:string" use="required" />
+												<xs:attribute name="url" type="xs:string" use="required" />
+											</xs:extension>
+										</xs:simpleContent>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="ExecutionDate" type="xs:string" />
+								<xs:element name="Environment" type="xs:string" />
+							</xs:sequence>
+							<xs:attribute name="machineName" type="xs:string" use="required" />
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ScriptInit" type="xs:string" />
+					<xs:element maxOccurs="unbounded" ref="TestCase" />
+					<xs:element ref="ScriptResult"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

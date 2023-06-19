@@ -13,10 +13,20 @@
 
 package org.eclipse.osee.ote.core;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.xml.sax.SAXException;
 
 /**
  * @author Roberto E. Escobar
@@ -28,6 +38,7 @@ public class XmlSupport {
    private static final String CDATA_TEMPLATE = "<![CDATA[%s]]>";
    private static final String HEX_START = " 0x";
    private static final String CDATA_END = "]]>";
+   private static final File TMO_SCHEMA = OseeInf.getResourceAsFile("OteTmoSchema.xsd", XmlSupport.class);
 
    // Prevent Instantiation
    private XmlSupport() {
@@ -152,5 +163,31 @@ public class XmlSupport {
       }
 
       return buff.toString();
+   }
+   
+   public static boolean verifySchema(String xmlFile) {
+      return verifySchema(xmlFile, TMO_SCHEMA, false);
+   }
+   
+   public static boolean verifySchema(String xmlFile, File xsdFile, boolean printReason) {
+      try { 
+         //Setup schema validator
+         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+         Schema schema = schemaFactory.newSchema(xsdFile);
+         Validator validator = schema.newValidator();
+         
+         Source xmlSource = new StreamSource(new File(xmlFile)); 
+         
+         validator.validate(xmlSource);
+         
+         return true;
+      } catch(SAXException | IOException e) {
+         if(printReason) {
+            String reason =  e.getMessage().split("\\R",2)[0];
+            System.out.println(reason);
+            //For more information e.printStackTrace() prints the line and column number            
+         }
+         return false;
+      }
    }
 }
