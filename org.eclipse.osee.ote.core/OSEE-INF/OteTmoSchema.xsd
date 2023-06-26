@@ -22,7 +22,7 @@
 				<xs:element minOccurs="0" name="Throwable" type="xs:string" />
 			</xs:sequence>
 			<xs:attribute name="Level" type="xs:string" />
-			<xs:attribute name="Logger" type="xs:int" />
+			<xs:attribute name="Logger" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 
