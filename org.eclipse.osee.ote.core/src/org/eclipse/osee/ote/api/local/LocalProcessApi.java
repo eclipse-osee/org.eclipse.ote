@@ -28,11 +28,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class LocalProcessApi {
 
-   private static final long DEFAULT_TIMEOUT_SECONDS = 10000;
+   private static final long TEN_MINUTE_DEFAULT_TIMEOUT = 600000;
+   private static final long THREAD_SLEEP_TIME = 100;
 
    /**
-    * Calls {@link #executeProcess(long, String...)} using default timeout of
-    * {@value #DEFAULT_TIMEOUT_SECONDS} milliseconds.
+    * Calls {@link #executeProcess(long timoutInMs, String... command)} using default timeout of
+    * {@value #TEN_MINUTE_DEFAULT_TIMEOUT} milliseconds.
     * 
     * @param command Variable list of strings building the entire command. The first entry is
     *           assumed to be the externally executable program file and the rest of the entries the
@@ -40,7 +41,7 @@ public class LocalProcessApi {
     * @return A response object capable of verifying the various outputs of the execution.
     */
    public LocalProcessResponse executeProcess(String... command) {
-      return this.executeProcess(DEFAULT_TIMEOUT_SECONDS, command);
+      return this.executeProcess(TEN_MINUTE_DEFAULT_TIMEOUT, command);
    }
 
    /**
@@ -136,8 +137,8 @@ public class LocalProcessApi {
    }
    
    /**
-    * Calls {@link #executeProcessAndContinue(long, String...)} using default timeout of
-    * {@value #DEFAULT_TIMEOUT_SECONDS} milliseconds.
+    * Calls {@link #executeProcessAndContinue(long timoutInMs, String... command)} using default timeout of
+    * {@value #TEN_MINUTE_DEFAULT_TIMEOUT} milliseconds.
     * 
     * @param command Variable list of strings building the entire command. The first entry is
     *           assumed to be the externally executable program file and the rest of the entries the
@@ -145,15 +146,17 @@ public class LocalProcessApi {
     * @return A response object capable of verifying the various outputs of the execution.
     */
    public LocalProcessStream executeProcessAndContinue(String... command) {
-      return this.executeProcessAndContinue(DEFAULT_TIMEOUT_SECONDS, command);
+      return this.executeProcessAndContinue(TEN_MINUTE_DEFAULT_TIMEOUT, command);
    }
    
    /**
     * Executes the provided command and encapsulates the outputs into a {@link LocalProcessStream}
-    * for future verification. The execution must complete within the timeout alotted (in milliseconds)
+    * for future verification. The execution must complete within the timeout allotted (in milliseconds)
     * or an exception response will be logged<br>
     * <br>
     * Opens up the process and updates the stream on a separate thread, allowing tests to continue.
+    * <br>
+    * Process updates stream every {@value #THREAD_SLEEP_TIME} milliseconds.
     * 
     * @param timoutInMs Time, in milliseconds, to allow for the process to complete
     * @param command Variable list of strings building the entire command. The first entry is
@@ -275,7 +278,7 @@ public class LocalProcessApi {
                      break;
                }
                try {
-                  Thread.sleep(1000);
+                  Thread.sleep(THREAD_SLEEP_TIME);
                } catch (InterruptedException e) {
                   response.exception(e);
                }
