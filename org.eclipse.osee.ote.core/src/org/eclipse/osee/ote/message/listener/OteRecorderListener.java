@@ -28,17 +28,21 @@ public class OteRecorderListener implements IOSEEMessageListener {
 
    private final WeakReference<Message> message;
    private List<Message> messageRecordings;
+   private int maxMessageRecordings;
 
-   public OteRecorderListener(Message msg, List<Message> messageRecordings) {
+   public OteRecorderListener(Message msg, List<Message> messageRecordings, int maxMessageRecordings) {
       super();
       this.message = new WeakReference<>(msg);
       this.messageRecordings = messageRecordings;
+      this.maxMessageRecordings = maxMessageRecordings;
    }
 
    @Override
    public void onDataAvailable(MessageData data, DataType type) throws MessageSystemException {
       Message copiedMessage = copyMessage(data);
-      messageRecordings.add(copiedMessage);
+      if (messageRecordings.size() < maxMessageRecordings) {
+         messageRecordings.add(copiedMessage);
+      }
    }
 
    private Message copyMessage(MessageData data) {

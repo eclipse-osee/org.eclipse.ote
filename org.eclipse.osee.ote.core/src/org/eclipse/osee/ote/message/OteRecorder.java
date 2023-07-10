@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.ote.message;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +22,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ote.core.MethodFormatter;
+import org.eclipse.osee.ote.core.testPoint.CheckPoint;
+import org.eclipse.osee.ote.message.elements.DiscreteElement;
+import org.eclipse.osee.ote.message.elements.FixedPointElement;
+import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 import org.eclipse.osee.ote.message.listener.OteRecorderListener;
 
 /**
@@ -31,12 +37,21 @@ public class OteRecorder {
    private List<Message> messageRecordings;
    private Map<Message, OteRecorderListener> messageListenerMap;
    private boolean isRecordingStarted;
+   private List<Message> chainedFilters;
+   private OteRecorderChainedFilter oteRecorderChainedFilter;
+   private int maxMessageRecordings = -1;
 
    public OteRecorder(List<Message> oteMessages) {
       this.oteMessages = new HashSet<>();
       this.oteMessages.addAll(oteMessages);
       this.messageRecordings = new ArrayList<>();
       this.messageListenerMap = new HashMap<>();
+      this.oteRecorderChainedFilter = new OteRecorderChainedFilter();
+   }
+
+   public OteRecorder(int maxMessageRecordings, List<Message> oteMessages) {
+      this(oteMessages);
+      this.maxMessageRecordings = maxMessageRecordings;
    }
 
    /**
@@ -108,7 +123,8 @@ public class OteRecorder {
 
    private void addListenerToMessage(Message oteMessage) {
       if (!messageListenerMap.containsKey(oteMessage)) {
-         OteRecorderListener oteRecorderListener = new OteRecorderListener(oteMessage, messageRecordings);
+         OteRecorderListener oteRecorderListener =
+            new OteRecorderListener(oteMessage, messageRecordings, maxMessageRecordings);
          oteMessage.addListener(oteRecorderListener);
          messageListenerMap.put(oteMessage, oteRecorderListener);
       } else {
@@ -127,24 +143,35 @@ public class OteRecorder {
    }
 
    /**
-    * Returns a List of all recorded messages
+    * Returns an object which will contain all recorded messages
     * 
-    * @return List
+    * @return OteRecorderChainedFilter
     */
-   public List<Message> getAllRecordedMessages() {
-      return messageRecordings;
+   public OteRecorderChainedFilter getAllRecordedMessages() {
+      oteRecorderChainedFilter = setChainedFilters(messageRecordings);
+
+      return oteRecorderChainedFilter;
    }
 
    /**
-    * Returns a List of all recorded messages of a specific type of message
+    * Returns an object which will contain of all recorded messages of a specific type of message
     * 
     * @param oteMessage - A Message type
-    * @return List
+    * @return OteRecorderChainedFilter
     */
-   @SuppressWarnings("unchecked")
-   public <T extends Message> List<T> getAllMessagesOfType(T oteMessage) {
-      return (List<T>) messageRecordings.stream().filter(
+   public <T extends Message> OteRecorderChainedFilter getAllMessagesOfType(T oteMessage) {
+      chainedFilters = messageRecordings.stream().filter(
          message -> message.getMessageName().equals(oteMessage.getMessageName())).collect(Collectors.toList());
+
+      oteRecorderChainedFilter = setChainedFilters(chainedFilters);
+      return oteRecorderChainedFilter;
+   }
+
+   private OteRecorderChainedFilter setChainedFilters(List<Message> chainedFilters) {
+      oteRecorderChainedFilter = new OteRecorderChainedFilter();
+      oteRecorderChainedFilter.setChainedFilters(chainedFilters);
+
+      return oteRecorderChainedFilter;
    }
 
    /**
@@ -172,6 +199,7 @@ public class OteRecorder {
     * @param oteMessage - A generic Message type
     * @return T - first instance of type oteMessage
     */
+   @SuppressWarnings("unchecked")
    public <T extends Message> T getFirstMessageOfType(T oteMessage) {
       T firstMessageOfWantedType = null;
 
@@ -191,6 +219,7 @@ public class OteRecorder {
     * @param index
     * @return Message
     */
+   @SuppressWarnings("unchecked")
    public <T extends Message> T getMessageAtIndex(int index) {
       if (index >= messageRecordings.size()) {
          return null;
@@ -206,6 +235,7 @@ public class OteRecorder {
     * @param messageToFindAfter - The message to start at
     * @return T - first instance of the messageToFind
     */
+   @SuppressWarnings("unchecked")
    public <T extends Message> T getFirstMessageAfterOfType(T messageToFind, Message messageToFindAfter) {
       T firstMessagesAfter = null;
       int indexOfStartingMessage = messageRecordings.indexOf(messageToFindAfter) + 1;
@@ -221,25 +251,26 @@ public class OteRecorder {
    }
 
    /**
-    * Returns a List of all the specified messages to find after a specific message
+    * Returns an object which will contain all the specified messages to find after a specific message
     * 
     * @param messageToFind - A generic Message type to find
     * @param messageToFindAfter - The message to start at
-    * @return List - A List of all messageToFind
+    * @return OteRecorderChainedFilter
     */
-   public <T extends Message> List<T> getAllMessagesAfterOfType(T messageToFind, Message messageToFindAfter) {
-      List<T> messagesAfterList = new ArrayList<>();
+   public <T extends Message> OteRecorderChainedFilter getAllMessagesAfterOfType(T messageToFind, Message messageToFindAfter) {
+      List<Message> messagesAfterList = new ArrayList<>();
       int indexOfStartingMessage = messageRecordings.indexOf(messageToFindAfter) + 1;
 
       if (indexOfStartingMessage != -1) {
          for (int i = indexOfStartingMessage; i < messageRecordings.size(); i++) {
             if (messageRecordings.get(i).getMessageName() == ((Message) messageToFind).getMessageName()) {
-               messagesAfterList.add((T) messageRecordings.get(i));
+               messagesAfterList.add(messageRecordings.get(i));
             }
          }
       }
 
-      return messagesAfterList;
+      oteRecorderChainedFilter = setChainedFilters(messagesAfterList);
+      return oteRecorderChainedFilter;
    }
 
    /**
@@ -260,4 +291,127 @@ public class OteRecorder {
          entrySet.getValue().setMessageRecordings(messageRecordings);
       }
    }
+
+   /**
+    * Verifies an element with a given value exists in the recording list and logs a test point
+    * 
+    * @param accessor
+    * @param message - A generic message type
+    * @param element - The element to find
+    * @param value - The expected value for the element
+    */
+   public <T extends Message, U extends Comparable<U>> void verifyElementValueExists(ITestAccessor accessor, T message, DiscreteElement<U> element, U value) {
+      check(accessor, message, element, value);
+   }
+
+   private <T extends Message, U extends Comparable<U>> void check(ITestAccessor accessor, T message, DiscreteElement<U> element, U value) {
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, "verifyElementValueExists",
+            new MethodFormatter().add(message).add(element.getElementName()).add(value), message);
+      }
+
+      boolean isPass = false;
+      DiscreteElement actualElementValue;
+
+      if (element instanceof FixedPointElement) {
+         value = adjustDoubleValue(element, value);
+      }
+
+      for (Message messageRecording : messageRecordings) {
+         if (messageRecording.getMessageName().equals(((Message) message).getMessageName())) {
+
+            actualElementValue = getElementToRead(messageRecording, element);
+
+            if (value.equals(actualElementValue.getValue())) {
+               isPass = true;
+               break;
+            }
+         }
+      }
+
+      CheckPoint passFail =
+         new CheckPoint("verifyElementValueExists", String.valueOf(true), String.valueOf(isPass), isPass, 0);
+
+      accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
+
+      if (accessor != null) {
+         accessor.getLogger().methodEnded(accessor);
+      }
+   }
+
+   private <T extends Comparable<T>, U extends Message> DiscreteElement getElementToRead(Message message, DiscreteElement<T> element) {
+      DiscreteElement elementToRead = null;
+
+      Class<? extends DiscreteElement> clazz = element.getClass();
+      elementToRead = message.getElement(element.getElementName(), clazz);
+
+      // May be a record so use path instead
+      if (elementToRead == null) {
+         elementToRead = clazz.cast(message.getElement(element.getElementPath()));
+      }
+
+      return elementToRead;
+   }
+
+   @SuppressWarnings("unchecked")
+   private <T extends Comparable<T>> T adjustDoubleValue(DiscreteElement<T> element, T value) {
+      try {
+         if (element instanceof FixedPointElement) {
+            Method adjustMethod = element.getClass().getDeclaredMethod("adjust", Double.class);
+            adjustMethod.setAccessible(true);
+            Object adjustedValue = adjustMethod.invoke(element, value);
+            value = (T) adjustedValue;
+         }
+      } catch (Exception e) {
+         OseeLog.log(OteRecorder.class, Level.SEVERE, "Could not adjust element value for " + element.getElementName());
+      }
+
+      return value;
+   }
+
+   public class OteRecorderChainedFilter {
+      private List<Message> chainedFilters;
+
+      @SuppressWarnings("unchecked")
+      public <T extends Message> List<T> getList() {
+         return (List<T>) chainedFilters;
+      }
+
+      protected void setChainedFilters(List<Message> chainedFilters) {
+         this.chainedFilters = chainedFilters;
+      }
+
+      /**
+       * Filters the message recording list to only include the elements with the given value
+       * 
+       * @param element - The element to filter on
+       * @param value - The expected value for the element
+       * @return OteRecorderChainedFilter - Returns the same classes instance to allow for chaining multiple filters
+       */
+      public <T extends Comparable<T>> OteRecorderChainedFilter filterMessagesWithElement(DiscreteElement<T> element, T value) {
+         chainedFilters = addToChainedFilter(chainedFilters, element, value);
+         return this;
+      }
+
+      private <T extends Comparable<T>, U extends Message> List<Message> addToChainedFilter(List<U> messages, DiscreteElement<T> element, T value) {
+         chainedFilters = new ArrayList<>();
+         DiscreteElement actualElementValue;
+
+         if (element instanceof FixedPointElement) {
+            value = adjustDoubleValue(element, value);
+         }
+
+         for (Message message : messages) {
+
+            actualElementValue = getElementToRead(message, element);
+
+            if (value.equals(actualElementValue.getValue())) {
+               chainedFilters.add(message);
+            }
+         }
+
+         return chainedFilters;
+      }
+   }
+
 }

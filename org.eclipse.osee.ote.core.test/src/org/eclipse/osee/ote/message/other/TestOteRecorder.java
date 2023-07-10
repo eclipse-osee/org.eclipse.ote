@@ -152,7 +152,7 @@ public class TestOteRecorder {
 
    @Test
    public void testGetAllRecordedMessages() {
-      List<Message> allRecordedMessages = oteRecorder.getAllRecordedMessages();
+      List<Message> allRecordedMessages = oteRecorder.getAllRecordedMessages().getList();
 
       assertEquals(4, allRecordedMessages.size());
    }
@@ -160,7 +160,7 @@ public class TestOteRecorder {
    @Test
    public void testGetAllMessagesOfType() {
       TestMessage secondRecordedMessage = (TestMessage) messageRecordings.get(1);
-      List<Message> allMessagesOfTestMessageType = oteRecorder.getAllMessagesOfType(secondRecordedMessage);
+      List<Message> allMessagesOfTestMessageType = oteRecorder.getAllMessagesOfType(secondRecordedMessage).getList();
 
       assertEquals(3, allMessagesOfTestMessageType.size());
    }
@@ -261,7 +261,7 @@ public class TestOteRecorder {
 
       List<Message> allTestMessagesAfterSecondRecording = messageRecordings.subList(3, messageRecordings.size());
       List<TestMessage> allTestMessagesAfterSecondRecordedMessage =
-         oteRecorder.getAllMessagesAfterOfType(firstRecordedMessage, secondRecordedMessage);
+         oteRecorder.getAllMessagesAfterOfType(firstRecordedMessage, secondRecordedMessage).getList();
 
       assertEquals(allTestMessagesAfterSecondRecordedMessage, allTestMessagesAfterSecondRecording);
    }
@@ -271,7 +271,7 @@ public class TestOteRecorder {
       TestOteRecorderMessage thirdRecordedMessage = (TestOteRecorderMessage) messageRecordings.get(2);
 
       List<TestOteRecorderMessage> allTestOteRecordedMessagesAfterThirdRecordedMessage =
-         oteRecorder.getAllMessagesAfterOfType(thirdRecordedMessage, thirdRecordedMessage);
+         oteRecorder.getAllMessagesAfterOfType(thirdRecordedMessage, thirdRecordedMessage).getList();
 
       assertTrue(allTestOteRecordedMessagesAfterThirdRecordedMessage.isEmpty());
    }
@@ -281,7 +281,7 @@ public class TestOteRecorder {
       TestMessage lastRecordedMessage = (TestMessage) messageRecordings.get(messageRecordings.size() - 1);
 
       List<TestMessage> allMessagesAfterLastRecordedMessage =
-         oteRecorder.getAllMessagesAfterOfType(lastRecordedMessage, lastRecordedMessage);
+         oteRecorder.getAllMessagesAfterOfType(lastRecordedMessage, lastRecordedMessage).getList();
 
       assertTrue(allMessagesAfterLastRecordedMessage.isEmpty());
    }
@@ -295,11 +295,11 @@ public class TestOteRecorder {
 
    @Test
    public void testClearAllMessageRecordings() {
-      assertFalse(oteRecorder.getAllRecordedMessages().isEmpty());
+      assertFalse(oteRecorder.getAllRecordedMessages().getList().isEmpty());
 
       oteRecorder.clearAllMessageRecordings();
 
-      assertTrue(oteRecorder.getAllRecordedMessages().isEmpty());
+      assertTrue(oteRecorder.getAllRecordedMessages().getList().isEmpty());
    }
 
    @Test
@@ -307,7 +307,7 @@ public class TestOteRecorder {
       messageRecordings.clear();
       TestOteRecorderMessage firstMessageRecording = new TestOteRecorderMessage();
       messageRecordings.add(firstMessageRecording);
-      OteRecorderListener oteRecorderListener = new OteRecorderListener(firstMessageRecording, messageRecordings);
+      OteRecorderListener oteRecorderListener = new OteRecorderListener(firstMessageRecording, messageRecordings, 2);
 
       TestOteRecorderMessage secondMessageRecording = new TestOteRecorderMessage();
       secondMessageRecording.INT_ELEMENT_1.setValue(10);
@@ -323,5 +323,22 @@ public class TestOteRecorder {
 
       assertEquals(0, originalMessageIntElementValue);
       assertEquals(10, originalMessageCopyIntElementValue);
+   }
+
+   @Test
+   public void testOteRecorderListenerMaxRecordingSize() {
+      messageRecordings.clear();
+      TestOteRecorderMessage firstMessageRecording = new TestOteRecorderMessage();
+      messageRecordings.add(firstMessageRecording); // 1
+      OteRecorderListener oteRecorderListener = new OteRecorderListener(firstMessageRecording, messageRecordings, 4);
+      TestMessageData messageData = (TestMessageData) firstMessageRecording.getDefaultMessageData();
+
+      oteRecorderListener.onDataAvailable(messageData, TestMemType.ETHERNET); // 2
+      oteRecorderListener.onDataAvailable(messageData, TestMemType.ETHERNET); // 3
+      oteRecorderListener.onDataAvailable(messageData, TestMemType.ETHERNET); // 4
+      oteRecorderListener.onDataAvailable(messageData, TestMemType.ETHERNET); // 5
+      oteRecorderListener.onDataAvailable(messageData, TestMemType.ETHERNET); // 6
+
+      assertEquals(4, messageRecordings.size());
    }
 }
