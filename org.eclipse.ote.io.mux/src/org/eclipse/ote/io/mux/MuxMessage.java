@@ -64,15 +64,6 @@ public class MuxMessage extends Message implements IMuxMessage {
       getMuxDataSource().setWordCount(wc);
    }
 
-   @Override
-   public void destroy() {
-      if (isWriter()) {
-         zeroize();
-         send();
-      }
-      super.destroy();
-   }
-
    /**
     * If the list of associated messages includes both R and T messages, this will only return true if the 
     * current element is a member of a Writer T message or of a Reader R message.  This prevents an element

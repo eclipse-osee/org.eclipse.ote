@@ -627,6 +627,7 @@ public class MemoryResource {
     */
    public void zeroizeMask() {
       Arrays.fill(byteArray.getMask(), (byte) 0x00);
+      setDataHasChanged(true);
    }
 
    public static void printBinary(byte b, String label) {
