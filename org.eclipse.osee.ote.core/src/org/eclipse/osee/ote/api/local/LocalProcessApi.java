@@ -32,7 +32,7 @@ public class LocalProcessApi {
    private static final long THREAD_SLEEP_TIME = 100;
 
    /**
-    * Calls {@link #executeProcess(long timoutInMs, String... command)} using default timeout of
+    * Calls {@link #executeProcess(long timeoutInMs, String... command)} using default timeout of
     * {@value #TEN_MINUTE_DEFAULT_TIMEOUT} milliseconds.
     * 
     * @param command Variable list of strings building the entire command. The first entry is
@@ -52,7 +52,7 @@ public class LocalProcessApi {
     * <b>Please note that this process should NOT require any inputs from the user during execution
     * and any prompts awaiting keyboard response will cause a timeout.</b>
     * 
-    * @param timoutInMs Time, in milliseconds, to allow for the process to complete
+    * @param timeoutInMs Time, in milliseconds, to allow for the process to complete
     * @param command Variable list of strings building the entire command. The first entry is
     *           assumed to be the externally executable program file and the rest of the entries the
     *           arguments to that application. It is good practice to separate each argument into a
@@ -62,7 +62,7 @@ public class LocalProcessApi {
     *           Example call: executeProcess(2000, "java", "-version")
     * @return A response object capable of verifying the various outputs of the execution.
     */
-   public LocalProcessResponse executeProcess(long timoutInMs, String... command) {
+   public LocalProcessResponse executeProcess(long timeoutInMs, String... command) {
       final ExecutorService processThread = Executors.newSingleThreadExecutor();
       LocalProcessResponse response;
       LocalProcRunnable myRunnable = new LocalProcRunnable(command);
@@ -70,13 +70,13 @@ public class LocalProcessApi {
       processThread.shutdown();
       
       try {
-         boolean completed = processThread.awaitTermination(timoutInMs, TimeUnit.MILLISECONDS);
+         boolean completed = processThread.awaitTermination(timeoutInMs, TimeUnit.MILLISECONDS);
          if(completed) {
             response = myRunnable.getResponse();
          } else {
             myRunnable.stop();
             Exception ex = new OseeCoreException("Timed out executing local process after %d %s",
-                                                 timoutInMs, TimeUnit.MILLISECONDS);
+                                                 timeoutInMs, TimeUnit.MILLISECONDS);
             response = new LocalProcessExceptionResponse(ex, command, Strings.EMPTY_STRING,
                                                         Strings.EMPTY_STRING,
                                                         LocalProcessResponse.EXCEPTION);
@@ -137,7 +137,7 @@ public class LocalProcessApi {
    }
    
    /**
-    * Calls {@link #executeProcessAndContinue(long timoutInMs, String... command)} using default timeout of
+    * Calls {@link #executeProcessAndContinue(long timeoutInMs, String... command)} using default timeout of
     * {@value #TEN_MINUTE_DEFAULT_TIMEOUT} milliseconds.
     * 
     * @param command Variable list of strings building the entire command. The first entry is
@@ -158,7 +158,7 @@ public class LocalProcessApi {
     * <br>
     * Process updates stream every {@value #THREAD_SLEEP_TIME} milliseconds.
     * 
-    * @param timoutInMs Time, in milliseconds, to allow for the process to complete
+    * @param timeoutInMs Time, in milliseconds, to allow for the process to complete
     * @param command Variable list of strings building the entire command. The first entry is
     *           assumed to be the externally executable program file and the rest of the entries the
     *           arguments to that application. It is good practice to separate each argument into a
@@ -168,7 +168,7 @@ public class LocalProcessApi {
     *           Example call: executeProcess(2000, "java", "-version")
     * @return A response object capable of verifying the various outputs of the execution.
     */
-   public LocalProcessStream executeProcessAndContinue(long timoutInMs, String... command) {
+   public LocalProcessStream executeProcessAndContinue(long timeoutInMs, String... command) {
       final ExecutorService processThread = Executors.newSingleThreadExecutor();
       final ExecutorService timeoutExecutor = Executors.newSingleThreadExecutor();
       LocalProcContinueRunnable myRunnable = new LocalProcContinueRunnable(command);
@@ -179,7 +179,7 @@ public class LocalProcessApi {
          @Override
          public void run() {
             try {
-               boolean completed = processThread.awaitTermination(timoutInMs, TimeUnit.MILLISECONDS);
+               boolean completed = processThread.awaitTermination(timeoutInMs, TimeUnit.MILLISECONDS);
                if(completed) {
                   if(!response.isDone())
                      myRunnable.close();
@@ -187,7 +187,7 @@ public class LocalProcessApi {
                } else {
                   myRunnable.stop();
                   Exception ex = new OseeCoreException("Timed out executing local process after %d %s",
-                                                       timoutInMs, TimeUnit.MILLISECONDS);
+                                                       timeoutInMs, TimeUnit.MILLISECONDS);
                   response.exception(ex);
                }
             }
