@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ote.core.environment.interfaces;
 
+import java.util.List;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 
@@ -33,4 +34,12 @@ public interface ITestPoint extends Xmlizable, XmlizableStream {
    default boolean isInteractive() {
       return false;
    }
+   
+   /**
+    * Sets the requirement on the Test Point for coverage.
+    */
+   default void setRequirements(List<String> requirementIds) {
+      //Implement in implemented objects
+   }
+   
 }

@@ -22,6 +22,7 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 public class OteApiBase implements OteApi {
 
    private TestEnvironment testEnv;
+   private LoggerApiBase loggerApi;
 
    @Override
    public void logTestPoint(boolean isPassed, String testPointName, String expected, String actual) {
@@ -32,7 +33,7 @@ public class OteApiBase implements OteApi {
    public void logTestPoint(boolean isPassed, String testPointName, NamedId expected, NamedId actual) {
       logTestPoint(isPassed, testPointName, expected.getName(), actual.getName());
    }
-
+   
    @Override
    public void prompt(String promptMessage) {
       testEnv.prompt(promptMessage);
@@ -60,9 +61,16 @@ public class OteApiBase implements OteApi {
 
    public void zzz_bindTestEnv(TestEnvironment testEnv) {
       this.testEnv = testEnv;
+      this.loggerApi = new LoggerApiBase(testEnv);
    }
    
    protected TestEnvironment getTestEnv() {
       return testEnv;
    }
+   
+   @Override
+   public LoggerApiBase logger() {
+      return loggerApi;
+   }
+   
 }

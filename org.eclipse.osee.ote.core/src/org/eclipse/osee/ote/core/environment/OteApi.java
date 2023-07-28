@@ -14,6 +14,7 @@
 package org.eclipse.osee.ote.core.environment;
 
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.ote.api.LoggerApiBase;
 
 /**
  * This interface is generally meant to provide test specific API. It is preferred to provide this
@@ -79,5 +80,11 @@ public interface OteApi {
     * @param milliseconds time to pause
     */
    void testWait(int milliseconds);
-
+   
+   /**
+    * Api to provide logging features. 
+    */
+   LoggerApiBase logger();
+   
+   
 }

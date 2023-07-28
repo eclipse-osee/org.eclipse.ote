@@ -33,6 +33,7 @@
 				<xs:element name="Expected" type="xs:string" />
 				<xs:element name="Actual" type="xs:string" />
 				<xs:element name="Result" type="xs:string" />
+				<xs:element minOccurs="0" maxOccurs="unbounded" name="Requirement" type="xs:string" />
 				<xs:element name="ElapsedTime" type="xs:unsignedInt" />
 				<xs:element name="NumberOfTransmissions" type="xs:unsignedInt" />
 			</xs:sequence>

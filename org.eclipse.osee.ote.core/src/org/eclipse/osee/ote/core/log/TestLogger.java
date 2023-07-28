@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.ote.core.log;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -46,12 +49,15 @@ import org.eclipse.osee.ote.core.log.record.WarningRecord;
  */
 public class TestLogger extends Logger implements ITestLogger {
 
+   private ArrayList<String> requirementIds;
+
    /**
     * TestLogger Constructor. Sets logging level and filter.
     */
    public TestLogger() {
       super("osee.test.core.log", null);
       setLevel(Level.ALL);
+      this.requirementIds = new ArrayList<String>();
    }
 
    /**
@@ -130,21 +136,26 @@ public class TestLogger extends Logger implements ITestLogger {
 
    @Override
    public void testpoint(ITestEnvironmentAccessor env, TestScript script, TestCase testCase, boolean passed, String testPointName, String exp, String act) {
-      log(new TestPointRecord(env, script, testCase, testPointName, exp, act, passed));
+      TestPointRecord recordToLog = new TestPointRecord(env, script, testCase, testPointName, exp, act, passed);
+      recordToLog.setRequirments(requirementIds);
+      log(recordToLog);
    }
 
    @Override
    public void testpoint(TestPointRecord record) {
+      record.setRequirments(requirementIds);      
       log(record);
    }
 
    @Override
    public void testpoint(ITestEnvironmentAccessor env, TestScript script, TestCase testCase, ITestPoint testPoint) {
+      testPoint.setRequirements(requirementIds);
       log(new TestPointRecord(env, script, testCase, testPoint));
    }
    
    @Override
    public void testpoint(OteInternalApi api, ITestPoint testPoint) {
+      testPoint.setRequirements(requirementIds);
       log(new TestPointRecord(api, testPoint));
    }
 
@@ -327,5 +338,23 @@ public class TestLogger extends Logger implements ITestLogger {
       }
    }
 
+   /**
+    * Every testPoint log will get these requirementIds added to it.
+    */
+   public void addRequirementCoverage(String... requirementIds) {      
+      for(String req : requirementIds) {
+         this.requirementIds.add(req);  
+      }
+   }
  
+   public void removeRequirementCoverage(String... requirementId) {
+      for(String req : requirementId) {
+         this.requirementIds.remove(req);
+      }
+   }
+   
+   public void clearRequirementCoverage() {
+      this.requirementIds.clear();
+   }
+
 }

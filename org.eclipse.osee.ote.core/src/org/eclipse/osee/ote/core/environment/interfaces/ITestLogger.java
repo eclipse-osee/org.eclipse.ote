@@ -77,5 +77,10 @@ public interface ITestLogger {
 
    public void warning(String message);
 
+   public void addRequirementCoverage(String... requirementIds);
+   
+   public void removeRequirementCoverage(String... requirementIds);
+   
+   public void clearRequirementCoverage();
    
 }

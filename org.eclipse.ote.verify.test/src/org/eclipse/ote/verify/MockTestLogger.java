@@ -286,4 +286,19 @@ public class MockTestLogger implements ITestLogger {
 
    }
 
+   @Override
+   public void addRequirementCoverage(String... requirementIds) {
+      // TODO Auto-generated method stub
+   }
+
+   @Override
+   public void removeRequirementCoverage(String... requirementIds) {
+      // TODO Auto-generated method stub
+   }
+
+   @Override
+   public void clearRequirementCoverage() {
+      // TODO Auto-generated method stub
+   }
+
 }
