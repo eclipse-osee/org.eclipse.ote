@@ -51,7 +51,7 @@ public class SummaryReport {
    }
    
    public void importTmoDirectory(File tmoDirectory) {
-      addAllItems(TmoImporter.importTmoDirectory(tmoDirectory).getResultSummary());
+      addAllItems(SummaryReportGenerator.generate(tmoDirectory).getResultSummary());
    }
       
    public String buildSummaryTable() {
