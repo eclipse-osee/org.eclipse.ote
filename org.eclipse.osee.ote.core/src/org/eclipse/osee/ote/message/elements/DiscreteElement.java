@@ -31,19 +31,25 @@ import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
-public abstract class DiscreteElement<T extends Comparable<T>> extends Element implements Comparable<DiscreteElement<T>> {
+public abstract class DiscreteElement<T extends Comparable<T>> extends Element
+   implements Comparable<DiscreteElement<T>> {
 
    private static final String FOR_2_PULSES = " FOR 2 PULSES";
 
-   public DiscreteElement(Message msg, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalMsb, int originalLsb) {
+   public DiscreteElement(Message msg, String elementName, MessageData messageData, int byteOffset, int msb, int lsb,
+      int originalMsb, int originalLsb) {
+
       super(msg, elementName, messageData, byteOffset, msb, lsb, originalMsb, originalLsb);
    }
 
-   public DiscreteElement(Message msg, String elementName, MessageData messageData, int byteOffset, int msb, int lsb) {
+   public DiscreteElement(Message msg, String elementName, MessageData messageData, int byteOffset, int msb,
+      int lsb) {
+
       super(msg, elementName, messageData, byteOffset, msb, lsb);
    }
 
    public DiscreteElement(Message msg, String elementName, MessageData messageData, int bitOffset, int bitLength) {
+
       super(msg, elementName, messageData, bitOffset, bitLength);
    }
 
@@ -59,11 +65,13 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Zeroize both the data and mask for this element
     */
    public void unset() {
+
       zeroize();
       getMsgData().getMem().zeroizeMask(byteOffset, msb, lsb);
    }
 
    public String valueOf() {
+
       return getValue().toString();
    }
 
@@ -73,9 +81,10 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Sets the element to the "value" passed.
     *
     * @param accessor Reference to the accessor.
-    * @param value The value to set.
+    * @param value    The value to set.
     */
    public void set(ITestEnvironmentAccessor accessor, T value) {
+
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
             getMessage());
@@ -91,14 +100,14 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to "value".
     *
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param value Expected value
+    * @param accessor   Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going
+    *                      to log then the reference to the CheckGroup must be passed and this method
+    *                      will add the result of the check to the group with out logging a point.
+    *                      <p>
+    *                      If an outside method is not going to log the check then a <b>null </b>
+    *                      reference should be passed and this method will log the test point.
+    * @param value      Expected value
     * @return if the check passed
     */
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, T value) {
@@ -114,7 +123,8 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
       if (checkGroup == null && accessor != null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      } else if (checkGroup != null) {
+      }
+      else if (checkGroup != null) {
          checkGroup.add(passFail);
       }
 
@@ -123,18 +133,18 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       }
       return passFail.isPass();
    }
-   
+
    /**
     * Verifies that the element bits are set to "value".
     * 
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param value Expected value
+    * @param accessor   Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going
+    *                      to log then the reference to the CheckGroup must be passed and this method
+    *                      will add the result of the check to the group with out logging a point.
+    *                      <p>
+    *                      If an outside method is not going to log the check then a <b>null </b>
+    *                      reference should be passed and this method will log the test point.
+    * @param value      Expected value
     * @param msb
     * @param lsb
     * @return if the check passed
@@ -147,13 +157,13 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       }
 
       T actualValue = getBitValue(msb, lsb);
-      CheckPoint passFail =
-         new CheckPoint(this.getFullName(), toString(value), toString(actualValue),
-            actualValue.equals(elementMask(value)), 0);
+      CheckPoint passFail = new CheckPoint(this.getFullName(), toString(value), toString(actualValue),
+         actualValue.equals(elementMask(value)), 0);
 
       if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      } else {
+      }
+      else {
          checkGroup.add(passFail);
       }
 
@@ -164,6 +174,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    public boolean checkNT(ITestAccessor accessor, CheckGroup checkGroup, T value) {
+
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
          getMessage());
       boolean v = getValue().equals(elementMask(value));
@@ -172,6 +183,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    public boolean checkNotNT(ITestAccessor accessor, CheckGroup checkGroup, T value) {
+
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
          getMessage());
       boolean v = !getValue().equals(elementMask(value));
@@ -180,38 +192,42 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    public final boolean check(ITestAccessor accessor, T value) {
+
       return this.check(accessor, (CheckGroup) null, value);
    }
 
    /**
     * Verifies that the element is set to "value" within the number of "milliseconds" passed.
     *
-    * @param value Expected value.
+    * @param value        Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
     */
    public final boolean check(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
+
       return check(accessor, (CheckGroup) null, value, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified. Either end of the range can be set to be
-    * inclusive or not.
+    * Verifies that the element is set to a value within the range specified. Either end of the range
+    * can be set to be inclusive or not.
     *
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param minValue The minimum value of the range.
+    * @param accessor     Reference to the accessor.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param minValue     The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
-    * @param maxValue The maximum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @return if the check passed
     */
-   public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive) {
+   public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive,
+      T maxValue, boolean maxInclusive) {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive), getMessage());
@@ -225,14 +241,17 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
       if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      } else {
+      }
+      else {
          checkGroup.add(passFail);
       }
       accessor.getLogger().methodEnded(accessor);
       return passFail.isPass();
    }
 
-   public boolean checkRangeNT(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive) {
+   public boolean checkRangeNT(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue,
+      boolean maxInclusive) {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive), getMessage());
@@ -242,7 +261,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       return pass;
    }
 
-   public boolean checkRangeNT(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int millis) throws InterruptedException {
+   public boolean checkRangeNT(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue,
+      boolean maxInclusive, int millis) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive), getMessage());
@@ -253,37 +274,39 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified. Assumes that both ends of the range are
-    * inclusive.
+    * Verifies that the element is set to a value within the range specified. Assumes that both ends of
+    * the range are inclusive.
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param minValue The minimum value of the range.
-    * @param maxValue The maximum value of the range.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going
+    *                      to log then the reference to the CheckGroup must be passed and this method
+    *                      will add the result of the check to the group with out logging a point.
+    *                      <p>
+    *                      If an outside method is not going to log the check then a <b>null </b>
+    *                      reference should be passed and this method will log the test point.
+    * @param minValue   The minimum value of the range.
+    * @param maxValue   The maximum value of the range.
     * @return if the check passed
     */
    public final boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue) {
+
       return checkRange(accessor, checkGroup, minValue, true, maxValue, true);
    }
 
    /**
     * Verifies that the element is NOT set to "value".
     *
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param value value to test against
+    * @param accessor   Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going
+    *                      to log then the reference to the CheckGroup must be passed and this method
+    *                      will add the result of the check to the group with out logging a point.
+    *                      <p>
+    *                      If an outside method is not going to log the check then a <b>null </b>
+    *                      reference should be passed and this method will log the test point.
+    * @param value      value to test against
     * @return if the check passed
     */
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, T value) {
+
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
             getMessage());
@@ -296,7 +319,8 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
       if (checkGroup == null && accessor != null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      } else if (checkGroup != null) {
+      }
+      else if (checkGroup != null) {
          checkGroup.add(passFail);
       }
 
@@ -305,23 +329,24 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       }
       return passFail.isPass();
    }
-   
+
    /**
     * Verifies that the element bits are NOT set to "value".
     * 
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
+    * @param accessor   Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going
+    *                      to log then the reference to the CheckGroup must be passed and this method
+    *                      will add the result of the check to the group with out logging a point.
+    *                      <p>
+    *                      If an outside method is not going to log the check then a <b>null </b>
+    *                      reference should be passed and this method will log the test point.
     * @param msb
     * @param lsb
-    * @param value value to test against
+    * @param value      value to test against
     * @return if the check passed
     */
    public boolean checkNotBits(ITestAccessor accessor, CheckGroup checkGroup, int msb, int lsb, T value) {
+
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
             getMessage());
@@ -329,13 +354,13 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
       T actualValue = getBitValue(msb, lsb);
 
-      CheckPoint passFail =
-         new CheckPoint(this.getFullName(), "Not " + toString(value), toString(actualValue),
-            !actualValue.equals(value), 0);
+      CheckPoint passFail = new CheckPoint(this.getFullName(), "Not " + toString(value), toString(actualValue),
+         !actualValue.equals(value), 0);
 
       if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      } else {
+      }
+      else {
          checkGroup.add(passFail);
       }
 
@@ -346,135 +371,153 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified for the entire time specified. Assumes
-    * range is inclusive.
+    * Verifies that the element is set to a value within the range specified for the entire time
+    * specified. Assumes range is inclusive.
     *
-    * @param minValue The minimum value of the range.
-    * @param maxValue The maximum value of the range.
+    * @param minValue     The minimum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public final T checkMaintainRange(ITestAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
+   public final T checkMaintainRange(ITestAccessor accessor, T minValue, T maxValue,
+      int milliseconds) throws InterruptedException {
+
       return checkMaintainRange(accessor, null, minValue, true, maxValue, true, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified for the entire time specified.
+    * Verifies that the element is set to a value within the range specified for the entire time
+    * specified.
     *
-    * @param minValue The minimum value of the range.
+    * @param minValue     The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
-    * @param maxValue The maximum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public final T checkMaintainRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public final T checkMaintainRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue,
+      boolean maxInclusive, int milliseconds) throws InterruptedException {
+
       return checkMaintainRange(accessor, (CheckGroup) null, minValue, minInclusive, maxValue, maxInclusive,
          milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified for the entire time specified. Assumes
-    * range is inclusive.
+    * Verifies that the element is set to a value within the range specified for the entire time
+    * specified. Assumes range is inclusive.
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param minValue The minimum value of the range.
-    * @param maxValue The maximum value of the range.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param minValue     The minimum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public final T checkMaintainNotRange(ITestAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
+   public final T checkMaintainNotRange(ITestAccessor accessor, T minValue, T maxValue,
+      int milliseconds) throws InterruptedException {
+
       return checkMaintainNotRange(accessor, null, minValue, true, maxValue, true, milliseconds);
    }
 
    /**
-    * Verifies that the element is not set to a value within the range specified for the entire time specified.
+    * Verifies that the element is not set to a value within the range specified for the entire time
+    * specified.
     *
-    * @param minValue The minimum value of the range.
+    * @param minValue     The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
-    * @param maxValue The maximum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public final T checkMaintainNotRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public final T checkMaintainNotRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue,
+      boolean maxInclusive, int milliseconds) throws InterruptedException {
+
       return checkMaintainNotRange(accessor, (CheckGroup) null, minValue, minInclusive, maxValue, maxInclusive,
          milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified for the entire time specified. Assumes
-    * range is inclusive.
+    * Verifies that the element is set to a value within the range specified for the entire time
+    * specified. Assumes range is inclusive.
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param minValue The minimum value of the range.
-    * @param maxValue The maximum value of the range.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param minValue     The minimum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public final T checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue, int milliseconds) throws InterruptedException {
+   public final T checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue,
+      int milliseconds) throws InterruptedException {
+
       return checkMaintainRange(accessor, checkGroup, minValue, true, maxValue, true, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value outside the range specified. Either end of the range can be set to be
-    * inclusive or not.
+    * Verifies that the element is set to a value outside the range specified. Either end of the range
+    * can be set to be inclusive or not.
     *
-    * @param minValue The minimum value of the range.
-    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    * to the range value.
-    * @param maxValue The maximum value of the range.
-    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    * to the range value.
+    * @param minValue     The minimum value of the range.
+    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must
+    *                        not < and not = to the range value.
+    * @param maxValue     The maximum value of the range.
+    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must
+    *                        not > and not = to the range value.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
     */
-   public final boolean checkNotRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
-      return checkNotRange(accessor, (CheckGroup) null, minValue, minInclusive, maxValue, maxInclusive, milliseconds);
+   public final boolean checkNotRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue,
+      boolean maxInclusive, int milliseconds) throws InterruptedException {
+
+      return checkNotRange(accessor, (CheckGroup) null, minValue, minInclusive, maxValue, maxInclusive,
+         milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value outside the range specified. Either end of the range can be set to be
-    * inclusive or not.
+    * Verifies that the element is set to a value outside the range specified. Either end of the range
+    * can be set to be inclusive or not.
     *
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param minValue The minimum value of the range.
-    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    * to the range value.
-    * @param maxValue The maximum value of the range.
-    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    * to the range value.
+    * @param accessor     Reference to the accessor.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param minValue     The minimum value of the range.
+    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must
+    *                        not < and not = to the range value.
+    * @param maxValue     The maximum value of the range.
+    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must
+    *                        not > and not = to the range value.
     * @return if the check passed
     */
-   public final boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive) throws InterruptedException {
+   public final boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue,
+      boolean minInclusive, T maxValue, boolean maxInclusive) throws InterruptedException {
+
       return checkNotRange(accessor, (CheckGroup) null, minValue, minInclusive, maxValue, maxInclusive, 0);
    }
 
    /**
     * Waits until the element equals the "value" passed. Returns last value observed upon a time out.
     *
-    * @param accessor Reference to the accessor.
-    * @param value The expected value to wait for.
+    * @param accessor     Reference to the accessor.
+    * @param value        The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value found. Either value expected or value found at timeout.
     */
    public T waitForValue(ITestEnvironmentAccessor accessor, T value, int milliseconds) throws InterruptedException {
+
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
             new MethodFormatter().add(value).add(milliseconds), getMessage());
@@ -488,14 +531,17 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * Waits until the element has a value other than the "value" passed. Returns last value observed upon a time out.
+    * Waits until the element has a value other than the "value" passed. Returns last value observed
+    * upon a time out.
     *
-    * @param accessor Reference to the accessor.
-    * @param value The expected value to wait for.
+    * @param accessor     Reference to the accessor.
+    * @param value        The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public T waitForNotValue(ITestEnvironmentAccessor accessor, T value, int milliseconds) throws InterruptedException {
+   public T waitForNotValue(ITestEnvironmentAccessor accessor, T value,
+      int milliseconds) throws InterruptedException {
+
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
             new MethodFormatter().add(value).add(milliseconds), getMessage());
@@ -509,17 +555,20 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * Waits until the element has a value within the range specified. Either end of the range can be inclusive or not.
+    * Waits until the element has a value within the range specified. Either end of the range can be
+    * inclusive or not.
     *
-    * @param accessor Reference to the accessor.
-    * @param minValue The minimum value of the range.
+    * @param accessor     Reference to the accessor.
+    * @param minValue     The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
-    * @param maxValue The maximum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public T waitForRange(ITestEnvironmentAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public T waitForRange(ITestEnvironmentAccessor accessor, T minValue, boolean minInclusive, T maxValue,
+      boolean maxInclusive, int milliseconds) throws InterruptedException {
+
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
             new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
@@ -536,29 +585,34 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Waits until the element has a value within the range specified. Assumes the range is inclusive.
     *
-    * @param minValue The minimum value of the range.
-    * @param maxValue The maximum value of the range.
+    * @param minValue     The minimum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public T waitForRange(ITestEnvironmentAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
+   public T waitForRange(ITestEnvironmentAccessor accessor, T minValue, T maxValue,
+      int milliseconds) throws InterruptedException {
+
       return waitForRange(accessor, minValue, true, maxValue, true, milliseconds);
    }
 
    /**
-    * Waits until the element has a value within the range specified. Either end of the range can be inclusive or not.
+    * Waits until the element has a value within the range specified. Either end of the range can be
+    * inclusive or not.
     *
-    * @param accessor Reference to the accessor.
-    * @param minValue The minimum value of the range.
-    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    * to the range value.
-    * @param maxValue The maximum value of the range.
-    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    * to the range value.
+    * @param accessor     Reference to the accessor.
+    * @param minValue     The minimum value of the range.
+    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must
+    *                        not < and not = to the range value.
+    * @param maxValue     The maximum value of the range.
+    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must
+    *                        not > and not = to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public T waitForNotRange(ITestEnvironmentAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public T waitForNotRange(ITestEnvironmentAccessor accessor, T minValue, boolean minInclusive, T maxValue,
+      boolean maxInclusive, int milliseconds) throws InterruptedException {
+
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
             new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
@@ -577,41 +631,48 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Waits until the element has a value within the range specified. Assumes range is inclusive.
     *
-    * @param minValue The minimum value of the range.
-    * @param maxValue The maximum value of the range.
+    * @param minValue     The minimum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public T waitForNotRange(ITestEnvironmentAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
+   public T waitForNotRange(ITestEnvironmentAccessor accessor, T minValue, T maxValue,
+      int milliseconds) throws InterruptedException {
+
       return waitForRange(accessor, minValue, true, maxValue, true, milliseconds);
    }
 
    /**
-    * Waits until the element has a value other than the "value" passed. Returns last value observed upon a timout.
+    * Waits until the element has a value other than the "value" passed. Returns last value observed
+    * upon a timout.
     *
-    * @param value The expected value to wait for.
+    * @param value        The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public final T waitNotValue(ITestEnvironmentAccessor accessor, T value, int milliseconds) throws InterruptedException {
+   public final T waitNotValue(ITestEnvironmentAccessor accessor, T value,
+      int milliseconds) throws InterruptedException {
+
       return waitForNotValue(accessor, value, milliseconds);
    }
 
    /**
     * Verifies that the element is set to "value" within the number of "milliseconds" passed.
     *
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param value Expected value.
+    * @param accessor     Reference to the accessor.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param value        Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
     */
-   public boolean check(ITestAccessor accessor, CheckGroup checkGroup, T value, int milliseconds) throws InterruptedException {
+   public boolean check(ITestAccessor accessor, CheckGroup checkGroup, T value,
+      int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
 
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
@@ -627,25 +688,27 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element bits are set to "value" within the number of "milliseconds" passed.
     * 
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
+    * @param accessor     Reference to the accessor.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
     * @param msb
     * @param lsb
-    * @param value Expected value.
+    * @param value        Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
     */
-   public boolean checkBits(ITestAccessor accessor, CheckGroup checkGroup, int msb, int lsb, T value, int milliseconds) throws InterruptedException {
+   public boolean checkBits(ITestAccessor accessor, CheckGroup checkGroup, int msb, int lsb, T value,
+      int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
 
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(value).add(milliseconds), getMessage());
-      
+
       BitEqualsCondition<T> c = new BitEqualsCondition<>(this, msb, lsb, value);
 
       CheckPoint cp = waitWithCheckPoint(accessor, checkGroup, toString(value), c, false, milliseconds);
@@ -653,26 +716,28 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       accessor.getLogger().methodEnded(accessor);
       return cp.isPass();
    }
-   
+
    /**
-    * Verifies that the element is set to a value within the range specified. Either end of the range can be set to be
-    * inclusive or not.
+    * Verifies that the element is set to a value within the range specified. Either end of the range
+    * can be set to be inclusive or not.
     *
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param minValue The minimum value of the range.
+    * @param accessor     Reference to the accessor.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param minValue     The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
-    * @param maxValue The maximum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait for the element to be in the range.
     * @return if the check passed
     */
-   public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive,
+      T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
@@ -687,94 +752,106 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified. Either end of the range can be set to be
-    * inclusive or not.
+    * Verifies that the element is set to a value within the range specified. Either end of the range
+    * can be set to be inclusive or not.
     *
-    * @param minValue The minimum value of the range.
+    * @param minValue     The minimum value of the range.
     * @param minInclusive If the minimum value of the range is inclusive.
-    * @param maxValue The maximum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
     */
-   public final boolean checkRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public final boolean checkRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue,
+      boolean maxInclusive, int milliseconds) throws InterruptedException {
+
       return checkRange(accessor, (CheckGroup) null, minValue, minInclusive, maxValue, maxInclusive, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified. Either end of the range can be set to be
-    * inclusive or not.
+    * Verifies that the element is set to a value within the range specified. Either end of the range
+    * can be set to be inclusive or not.
     *
-    * @param minValue The minimum value of the range.
+    * @param minValue     The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
-    * @param maxValue The maximum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @return if the check passed
     */
-   public final boolean checkRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive) {
+   public final boolean checkRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue,
+      boolean maxInclusive) {
+
       return checkRange(accessor, (CheckGroup) null, minValue, minInclusive, maxValue, maxInclusive);
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified. Assumes that both ends of the range are
-    * inclusive.
+    * Verifies that the element is set to a value within the range specified. Assumes that both ends of
+    * the range are inclusive.
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param minValue The minimum value of the range.
-    * @param maxValue The maximum value of the range.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param minValue     The minimum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
     */
-   public final boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue, int milliseconds) throws InterruptedException {
+   public final boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue,
+      int milliseconds) throws InterruptedException {
+
       return checkRange(accessor, checkGroup, minValue, true, maxValue, true, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified. Assumes that both ends of the range are
-    * inclusive.
+    * Verifies that the element is set to a value within the range specified. Assumes that both ends of
+    * the range are inclusive.
     *
-    * @param minValue The minimum value of the range.
-    * @param maxValue The maximum value of the range.
+    * @param minValue     The minimum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
     */
-   public final boolean checkRange(ITestAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
+   public final boolean checkRange(ITestAccessor accessor, T minValue, T maxValue,
+      int milliseconds) throws InterruptedException {
+
       return this.checkRange(accessor, (CheckGroup) null, minValue, true, maxValue, true, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified. Assumes that both ends of the range are
-    * inclusive.
+    * Verifies that the element is set to a value within the range specified. Assumes that both ends of
+    * the range are inclusive.
     *
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @return if the check passed
     */
    public final boolean checkRange(ITestAccessor accessor, T minValue, T maxValue) {
+
       return checkRange(accessor, (CheckGroup) null, minValue, true, maxValue, true);
    }
 
    /**
-    * Verifies that the element is set to some value other than "value" within the number of "milliseconds" passed.
-    * Passes if at any point with in the time allowed, the elment is set to a value other than "value".
+    * Verifies that the element is set to some value other than "value" within the number of
+    * "milliseconds" passed. Passes if at any point with in the time allowed, the elment is set to a
+    * value other than "value".
     *
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param value value to test against.
+    * @param accessor     Reference to the accessor.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param value        value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
     */
-   public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, T value, int milliseconds) throws InterruptedException {
+   public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, T value,
+      int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(value).add(milliseconds), getMessage());
@@ -783,31 +860,33 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       accessor.getLogger().methodEnded(accessor);
       return cp.isPass();
    }
-   
+
    /**
-    * Verifies that the element bits are set to some value other than "value" within the number of "milliseconds" passed.
-    * Passes if at any point with in the time allowed, the elment is set to a value other than "value".
+    * Verifies that the element bits are set to some value other than "value" within the number of
+    * "milliseconds" passed. Passes if at any point with in the time allowed, the elment is set to a
+    * value other than "value".
     * 
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
+    * @param accessor     Reference to the accessor.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
     * @param msb
     * @param lsb
-    * @param value value to test against.
+    * @param value        value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
     */
-   public boolean checkNotBits(ITestAccessor accessor, CheckGroup checkGroup, int msb, int lsb, T value, int milliseconds) throws InterruptedException {
+   public boolean checkNotBits(ITestAccessor accessor, CheckGroup checkGroup, int msb, int lsb, T value,
+      int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(value).add(milliseconds), getMessage());
-      CheckPoint cp =
-         waitWithCheckPoint(accessor, checkGroup, "Not " + toString(value), new BitEqualsCondition<T>(this, true, msb, lsb, value),
-            false, milliseconds);
+      CheckPoint cp = waitWithCheckPoint(accessor, checkGroup, "Not " + toString(value),
+         new BitEqualsCondition<T>(this, true, msb, lsb, value), false, milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return cp.isPass();
    }
@@ -819,54 +898,62 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @return if the check passed
     */
    public final boolean checkNot(ITestAccessor accessor, T value) {
+
       return checkNot(accessor, (CheckGroup) null, value);
    }
 
    /**
-    * Verifies that the element is set to some value other than "value" within the number of "milliseconds" passed.
-    * Passes if at any point with in the time allowed, the element is set to a value other than "value".
+    * Verifies that the element is set to some value other than "value" within the number of
+    * "milliseconds" passed. Passes if at any point with in the time allowed, the element is set to a
+    * value other than "value".
     *
-    * @param value value to test against.
+    * @param value        value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
     */
    public final boolean checkNot(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
+
       return checkNot(accessor, (CheckGroup) null, value, milliseconds);
    }
 
-   protected CheckPoint waitWithCheckPoint(ITestAccessor accessor, CheckGroup checkGroup, String expected, IDiscreteElementCondition<T> condition, boolean maintain, int milliseconds) throws InterruptedException {
+   protected CheckPoint waitWithCheckPoint(ITestAccessor accessor, CheckGroup checkGroup, String expected,
+      IDiscreteElementCondition<T> condition, boolean maintain, int milliseconds) throws InterruptedException {
+
       MsgWaitResult result = getMessage().waitForCondition(accessor, condition, maintain, milliseconds);
       CheckPoint passFail = new CheckPoint(getFullName(), expected, toString(condition.getLastCheckValue()),
          result.isPassed(), result.getXmitCount(), result.getElapsedTime());
 
       if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      } else {
+      }
+      else {
          checkGroup.add(passFail);
       }
       return passFail;
    }
 
    /**
-    * Verifies that the element is set to a value outside the range specified. Either end of the range can be set to be
-    * inclusive or not.
+    * Verifies that the element is set to a value outside the range specified. Either end of the range
+    * can be set to be inclusive or not.
     *
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param minValue The minimum value of the range.
-    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    * to the range value.
-    * @param maxValue The maximum value of the range.
-    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    * to the range value.
+    * @param accessor     Reference to the accessor.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param minValue     The minimum value of the range.
+    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must
+    *                        not < and not = to the range value.
+    * @param maxValue     The maximum value of the range.
+    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must
+    *                        not > and not = to the range value.
     * @return if the check passed
     */
-   public boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive,
+      T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
@@ -878,7 +965,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       return cp.isPass();
    }
 
-   public boolean checkNotRangeNT(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public boolean checkNotRangeNT(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue,
+      boolean maxInclusive, int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
@@ -890,97 +979,108 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * Verifies that the element is set to a value outside the range specified. Assumes that both ends of the range are
-    * inclusive. Therefore observed value may not equal either of the range values.
+    * Verifies that the element is set to a value outside the range specified. Assumes that both ends
+    * of the range are inclusive. Therefore observed value may not equal either of the range values.
     *
     * @param minValue The minimum value of the range.
     * @param maxValue The maximum value of the range.
     * @return if the check passed
     */
    public final boolean checkNotRange(ITestAccessor accessor, T minValue, T maxValue) throws InterruptedException {
+
       return checkNotRange(accessor, (CheckGroup) null, minValue, true, maxValue, true);
    }
 
    /**
-    * Verifies that the element is set to a value outside the range specified. Assumes that both ends of the range are
-    * inclusive.
+    * Verifies that the element is set to a value outside the range specified. Assumes that both ends
+    * of the range are inclusive.
     *
-    * @param minValue The minimum value of the range.
-    * @param maxValue The maximum value of the range.
+    * @param minValue     The minimum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
     */
-   public final boolean checkNotRange(ITestAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
+   public final boolean checkNotRange(ITestAccessor accessor, T minValue, T maxValue,
+      int milliseconds) throws InterruptedException {
+
       return checkNotRange(accessor, (CheckGroup) null, minValue, true, maxValue, true, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value outside the range specified. Assumes that both ends of the range are
-    * inclusive.
+    * Verifies that the element is set to a value outside the range specified. Assumes that both ends
+    * of the range are inclusive.
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param minValue The minimum value of the range.
-    * @param maxValue The maximum value of the range.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param minValue     The minimum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
     */
-   public final boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue, int milliseconds) throws InterruptedException {
+   public final boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue,
+      int milliseconds) throws InterruptedException {
+
       return checkNotRange(accessor, checkGroup, minValue, true, maxValue, true, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value outside the range specified. Assumes that both ends of the range are
-    * inclusive. Therefore observed value may not equal either of the range values.
+    * Verifies that the element is set to a value outside the range specified. Assumes that both ends
+    * of the range are inclusive. Therefore observed value may not equal either of the range values.
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param minValue The minimum value of the range.
-    * @param maxValue The maximum value of the range.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going
+    *                      to log then the reference to the CheckGroup must be passed and this method
+    *                      will add the result of the check to the group with out logging a point.
+    *                      <p>
+    *                      If an outside method is not going to log the check then a <b>null </b>
+    *                      reference should be passed and this method will log the test point.
+    * @param minValue   The minimum value of the range.
+    * @param maxValue   The maximum value of the range.
     * @return if the check passed
     */
-   public final boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue) throws InterruptedException {
+   public final boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue,
+      T maxValue) throws InterruptedException {
+
       return checkNotRange(accessor, checkGroup, minValue, true, maxValue, true);
    }
 
    /**
-    * Verifies that the element is set to a value outside the range specified. Either end of the range can be set to be
-    * inclusive or not.
+    * Verifies that the element is set to a value outside the range specified. Either end of the range
+    * can be set to be inclusive or not.
     *
-    * @param minValue The minimum value of the range.
-    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    * to the range value.
-    * @param maxValue The maximum value of the range.
-    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    * to the range value.
+    * @param minValue     The minimum value of the range.
+    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must
+    *                        not < and not = to the range value.
+    * @param maxValue     The maximum value of the range.
+    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must
+    *                        not > and not = to the range value.
     * @return if the check passed
     */
-   public final boolean checkNotRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive) throws InterruptedException {
+   public final boolean checkNotRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue,
+      boolean maxInclusive) throws InterruptedException {
+
       return checkNotRange(accessor, (CheckGroup) null, minValue, minInclusive, maxValue, maxInclusive);
    }
 
    /**
-    * Verifies that the element is set to the "value" passed for the entire time passed into "milliseconds". Returns
-    * value found that caused failure or last value observed if time expires.
+    * Verifies that the element is set to the "value" passed for the entire time passed into
+    * "milliseconds". Returns value found that caused failure or last value observed if time expires.
     *
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
+    * @param accessor   Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going
+    *                      to log then the reference to the CheckGroup must be passed and this method
+    *                      will add the result of the check to the group with out logging a point.
+    *                      <p>
+    *                      If an outside method is not going to log the check then a <b>null </b>
+    *                      reference should be passed and this method will log the test point.
     * @return last value observed. Either value expected or value found at timeout.
     */
-   public T checkMaintain(ITestAccessor accessor, CheckGroup checkGroup, T value, int milliseconds) throws InterruptedException {
+   public T checkMaintain(ITestAccessor accessor, CheckGroup checkGroup, T value,
+      int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(value).add(milliseconds), getMessage());
@@ -991,6 +1091,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    public T checkMaintainNT(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(value).add(milliseconds), getMessage());
@@ -1001,6 +1102,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    public T checkMaintainNotNT(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(value).add(milliseconds), getMessage());
@@ -1011,29 +1113,33 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * Verifies that the element is set to the "value" passed for the entire time passed into "milliseconds". Returns
-    * value found that caused failure or last value observed if time expires.
+    * Verifies that the element is set to the "value" passed for the entire time passed into
+    * "milliseconds". Returns value found that caused failure or last value observed if time expires.
     *
     * @return last value observed. Either value expected or value found at timeout.
     */
    public final T checkMaintain(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
+
       return checkMaintain(accessor, (CheckGroup) null, value, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value other than the "value" passed for the entire time passed into
-    * "milliseconds". Returns value found that caused failure or last value observed if time expires.
+    * Verifies that the element is set to a value other than the "value" passed for the entire time
+    * passed into "milliseconds". Returns value found that caused failure or last value observed if
+    * time expires.
     *
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
+    * @param accessor   Reference to the accessor.
+    * @param checkGroup If this check is part of a larger set of checks which another method is going
+    *                      to log then the reference to the CheckGroup must be passed and this method
+    *                      will add the result of the check to the group with out logging a point.
+    *                      <p>
+    *                      If an outside method is not going to log the check then a <b>null </b>
+    *                      reference should be passed and this method will log the test point.
     * @return last value observed
     */
-   public T checkMaintainNot(ITestAccessor accessor, CheckGroup checkGroup, T value, int milliseconds) throws InterruptedException {
+   public T checkMaintainNot(ITestAccessor accessor, CheckGroup checkGroup, T value,
+      int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(value).add(milliseconds), getMessage());
@@ -1047,33 +1153,37 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * Verifies that the element is set to the "value" passed for the entire time passed into "milliseconds". Returns
-    * value found that caused failure or last value observed if time expires.
+    * Verifies that the element is set to the "value" passed for the entire time passed into
+    * "milliseconds". Returns value found that caused failure or last value observed if time expires.
     *
     * @return last value observed
     */
    public final T checkMaintainNot(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
+
       return checkMaintainNot(accessor, (CheckGroup) null, value, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified for the entire time specified.
+    * Verifies that the element is set to a value within the range specified for the entire time
+    * specified.
     *
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param minValue The minimum value of the range.
+    * @param accessor     Reference to the accessor.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param minValue     The minimum value of the range.
     * @param minInclusive If the minumum value of the range is inclusive.
-    * @param maxValue The maximum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public T checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public T checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive,
+      T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
@@ -1087,7 +1197,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       return c.getLastCheckValue();
    }
 
-   public T checkMaintainRangeNT(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public T checkMaintainRangeNT(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue,
+      boolean maxInclusive, int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
@@ -1099,25 +1211,28 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified for the entire time specified.
+    * Verifies that the element is set to a value within the range specified for the entire time
+    * specified.
     *
-    * @param accessor Reference to the accessor.
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param minValue The minimum value of the range.
-    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must not < and not =
-    * to the range value.
-    * @param maxValue The maximum value of the range.
-    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
-    * to the range value.
+    * @param accessor     Reference to the accessor.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param minValue     The minimum value of the range.
+    * @param minInclusive If the minumum value of the range is inclusive. If true the actual value must
+    *                        not < and not = to the range value.
+    * @param maxValue     The maximum value of the range.
+    * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must
+    *                        not > and not = to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public T checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public T checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive,
+      T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
@@ -1131,7 +1246,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       return c.getLastCheckValue();
    }
 
-   public T checkMaintainNotRangeNT(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
+   public T checkMaintainNotRangeNT(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue,
+      boolean maxInclusive, int milliseconds) throws InterruptedException {
+
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
@@ -1144,25 +1261,29 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * Verifies that the element is set to a value within the range specified for the entire time specified. Assumes
-    * range is inclusive.
+    * Verifies that the element is set to a value within the range specified for the entire time
+    * specified. Assumes range is inclusive.
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param minValue The minimum value of the range.
-    * @param maxValue The maximum value of the range.
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param minValue     The minimum value of the range.
+    * @param maxValue     The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public final T checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue, int milliseconds) throws InterruptedException {
+   public final T checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue,
+      int milliseconds) throws InterruptedException {
+
       return checkMaintainNotRange(accessor, checkGroup, minValue, true, maxValue, true, milliseconds);
    }
 
-   public boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue, int milliseconds, int pulses) throws InterruptedException {
+   public boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue,
+      int milliseconds, int pulses) throws InterruptedException {
+
       if (accessor == null) {
          throw new NullPointerException("The parameter accessor is null");
       }
@@ -1178,30 +1299,41 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
       if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      } else {
+      }
+      else {
          checkGroup.add(passFail);
       }
       accessor.getLogger().methodEnded(accessor);
       return passFail.isPass();
    }
 
-   public final boolean checkPulse(ITestAccessor accessor, T pulsedValue, T nonPulsedValue) throws InterruptedException {
+   public final boolean checkPulse(ITestAccessor accessor, T pulsedValue,
+      T nonPulsedValue) throws InterruptedException {
+
       return checkPulse(accessor, null, pulsedValue, nonPulsedValue);
    }
 
-   public final boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue) throws InterruptedException {
+   public final boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue,
+      T nonPulsedValue) throws InterruptedException {
+
       return checkPulse(accessor, checkGroup, pulsedValue, nonPulsedValue, 1000, 2);
    }
 
-   public final boolean checkPulse(ITestAccessor accessor, T pulsedValue, T nonPulsedValue, int milliseconds) throws InterruptedException {
+   public final boolean checkPulse(ITestAccessor accessor, T pulsedValue, T nonPulsedValue,
+      int milliseconds) throws InterruptedException {
+
       return checkPulse(accessor, null, pulsedValue, nonPulsedValue, milliseconds, 2);
    }
 
-   public final boolean checkPulse(ITestAccessor accessor, T pulsedValue, T nonPulsedValue, int milliseconds, int pulses) throws InterruptedException {
+   public final boolean checkPulse(ITestAccessor accessor, T pulsedValue, T nonPulsedValue, int milliseconds,
+      int pulses) throws InterruptedException {
+
       return checkPulse(accessor, null, pulsedValue, nonPulsedValue, milliseconds, pulses);
    }
 
-   public boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue, int milliseconds) throws InterruptedException {
+   public boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue,
+      int milliseconds) throws InterruptedException {
+
       return checkPulse(accessor, checkGroup, pulsedValue, nonPulsedValue, milliseconds, 2);
    }
 
@@ -1215,6 +1347,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
    @Override
    public int compareTo(DiscreteElement<T> o) {
+
       return getValue().compareTo(o.getValue());
    }
 
@@ -1225,6 +1358,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @return if check passed
     */
    public final boolean checkInList(ITestAccessor accessor, T[] list) {
+
       return checkList(accessor, null, true, list);
    }
 
@@ -1235,26 +1369,29 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @return if check passed
     */
    public final boolean checkNotInList(ITestAccessor accessor, T[] list) {
+
       return checkList(accessor, null, false, list);
    }
 
    /**
-    * Verifies that the element is set to a value IN or NOT IN the "list" passed. "isInList" determines if checking for
-    * IN the list or NOT.
+    * Verifies that the element is set to a value IN or NOT IN the "list" passed. "isInList" determines
+    * if checking for IN the list or NOT.
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param isInList Determines if checking for the element's value to be in or not in the "list". Passing TRUE will
-    * test for IN the "list".
-    * @param list List of values to check for
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param isInList     Determines if checking for the element's value to be in or not in the "list".
+    *                        Passing TRUE will test for IN the "list".
+    * @param list         List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
     */
-   public boolean checkList(ITestAccessor accessor, CheckGroup checkGroup, boolean isInList, T[] list, int milliseconds) throws InterruptedException {
+   public boolean checkList(ITestAccessor accessor, CheckGroup checkGroup, boolean isInList, T[] list,
+      int milliseconds) throws InterruptedException {
+
       ListCondition<T> c = new ListCondition<>(this, isInList, list);
 
       if (accessor == null) {
@@ -1268,7 +1405,8 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       assert result.isPassed() == passFail.isPass() : "result does not match checkgroup";
       if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      } else {
+      }
+      else {
          checkGroup.add(passFail);
       }
       accessor.getLogger().methodEnded(accessor);
@@ -1278,70 +1416,76 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to a value NOT in the "list".
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param list List of values to check for
+    * @param checkGroup If this check is part of a larger set of checks which another method is going
+    *                      to log then the reference to the CheckGroup must be passed and this method
+    *                      will add the result of the check to the group with out logging a point.
+    *                      <p>
+    *                      If an outside method is not going to log the check then a <b>null </b>
+    *                      reference should be passed and this method will log the test point.
+    * @param list       List of values to check for
     * @return if check passed
     */
    public final boolean checkNotInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list) {
+
       return this.checkList(accessor, checkGroup, false, list);
    }
 
    /**
     * Verifies that the element is set to a value NOT in the "list".
     *
-    * @param list List of values to check for
+    * @param list         List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
     */
-   public final boolean checkNotInList(ITestAccessor accessor, T[] list, int milliseconds) throws InterruptedException {
+   public final boolean checkNotInList(ITestAccessor accessor, T[] list,
+      int milliseconds) throws InterruptedException {
+
       return this.checkList(accessor, (CheckGroup) null, false, list, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value IN or NOT IN the "list" passed. "wantInList" determines if checking
-    * for IN the list or NOT.
+    * Verifies that the element is set to a value IN or NOT IN the "list" passed. "wantInList"
+    * determines if checking for IN the list or NOT.
     *
-    * @param wantInList Determines if checking for the element's value to be in or not in the "list". Passing TRUE will
-    * test for IN the "list".
-    * @param list List of values to check for
+    * @param wantInList Determines if checking for the element's value to be in or not in the "list".
+    *                      Passing TRUE will test for IN the "list".
+    * @param list       List of values to check for
     * @return if check passed
     */
    public final boolean checkList(ITestAccessor accessor, boolean wantInList, T[] list) {
+
       return this.checkList(accessor, null, wantInList, list);
    }
 
    /**
-    * Verifies that the element is set to a value IN or NOT IN the "list" passed. "isInList" determines if checking for
-    * IN the list or NOT.
+    * Verifies that the element is set to a value IN or NOT IN the "list" passed. "isInList" determines
+    * if checking for IN the list or NOT.
     *
-    * @param isInList Determines if checking for the element's value to be in or not in the "list". Passing TRUE will
-    * test for IN the "list".
-    * @param list List of values to check for
+    * @param isInList     Determines if checking for the element's value to be in or not in the "list".
+    *                        Passing TRUE will test for IN the "list".
+    * @param list         List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
     */
-   public final boolean checkList(ITestAccessor accessor, boolean isInList, T[] list, int milliseconds) throws InterruptedException {
+   public final boolean checkList(ITestAccessor accessor, boolean isInList, T[] list,
+      int milliseconds) throws InterruptedException {
+
       return checkList(accessor, (CheckGroup) null, isInList, list, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value IN or NOT IN the "list" passed. "wantInList" determines if checking
-    * for IN the list or NOT.
+    * Verifies that the element is set to a value IN or NOT IN the "list" passed. "wantInList"
+    * determines if checking for IN the list or NOT.
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param wantInList Determines if checking for the element's value to be in or not in the "list". Passing TRUE will
-    * test for IN the "list".
-    * @param list List of values to check for
+    * @param checkGroup If this check is part of a larger set of checks which another method is going
+    *                      to log then the reference to the CheckGroup must be passed and this method
+    *                      will add the result of the check to the group with out logging a point.
+    *                      <p>
+    *                      If an outside method is not going to log the check then a <b>null </b>
+    *                      reference should be passed and this method will log the test point.
+    * @param wantInList Determines if checking for the element's value to be in or not in the "list".
+    *                      Passing TRUE will test for IN the "list".
+    * @param list       List of values to check for
     * @return if check passed
     */
    public boolean checkList(ITestAccessor accessor, CheckGroup checkGroup, boolean wantInList, T[] list) {
@@ -1353,7 +1497,8 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
       if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      } else {
+      }
+      else {
          checkGroup.add(passFail);
       }
 
@@ -1363,107 +1508,121 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    /**
     * Verifies that the element is set to a value in the "list".
     *
-    * @param list List of values to check for
+    * @param list         List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
     */
    public final boolean checkInList(ITestAccessor accessor, T[] list, int milliseconds) throws InterruptedException {
+
       return this.checkList(accessor, (CheckGroup) null, true, list, milliseconds);
    }
 
    /**
     * Verifies that the element is set to a value NOT in the "list".
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param list List of values to check for
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param list         List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
     */
-   public final boolean checkNotInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list, int milliseconds) throws InterruptedException {
+   public final boolean checkNotInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list,
+      int milliseconds) throws InterruptedException {
+
       return this.checkList(accessor, checkGroup, false, list, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value in the list for the entire time passed into milliseconds.
+    * Verifies that the element is set to a value in the list for the entire time passed into
+    * milliseconds.
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param list The list of values to check against
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param list         The list of values to check against
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public final T checkMaintainInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list, int milliseconds) throws InterruptedException {
+   public final T checkMaintainInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list,
+      int milliseconds) throws InterruptedException {
+
       return this.checkMaintainList(accessor, checkGroup, list, true, milliseconds);
    }
 
    /**
-    * Verifies that the element is set to a value not in the list for the entire time passed into milliseconds.
+    * Verifies that the element is set to a value not in the list for the entire time passed into
+    * milliseconds.
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param list The list of values to check against
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param list         The list of values to check against
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public final T checkMaintainNotInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list, int milliseconds) throws InterruptedException {
+   public final T checkMaintainNotInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list,
+      int milliseconds) throws InterruptedException {
+
       return this.checkMaintainList(accessor, checkGroup, list, false, milliseconds);
    }
 
    /**
     * Verifies that the element is set to a value in the "list".
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param list List of values to check for
+    * @param checkGroup   If this check is part of a larger set of checks which another method is going
+    *                        to log then the reference to the CheckGroup must be passed and this method
+    *                        will add the result of the check to the group with out logging a point.
+    *                        <p>
+    *                        If an outside method is not going to log the check then a <b>null </b>
+    *                        reference should be passed and this method will log the test point.
+    * @param list         List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
     */
-   public final boolean checkInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list, int milliseconds) throws InterruptedException {
+   public final boolean checkInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list,
+      int milliseconds) throws InterruptedException {
+
       return this.checkList(accessor, checkGroup, true, list, milliseconds);
    }
 
    /**
     * Verifies that the element is set to a value in the "list".
     *
-    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
-    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
-    * logging a point.
-    * <p>
-    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
-    * will log the test point.
-    * @param list List of values to check for
+    * @param checkGroup If this check is part of a larger set of checks which another method is going
+    *                      to log then the reference to the CheckGroup must be passed and this method
+    *                      will add the result of the check to the group with out logging a point.
+    *                      <p>
+    *                      If an outside method is not going to log the check then a <b>null </b>
+    *                      reference should be passed and this method will log the test point.
+    * @param list       List of values to check for
     * @return if check passed
     */
    public final boolean checkInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list) {
+
       return checkList(accessor, checkGroup, true, list);
    }
 
    /**
-    * Waits until the element is set to a value either in or not in the "list" as determined by "isInList".
+    * Waits until the element is set to a value either in or not in the "list" as determined by
+    * "isInList".
     *
-    * @param list The list of values to check against
-    * @param isInList If the value is expected to be in or not in the "list"
+    * @param list         The list of values to check against
+    * @param isInList     If the value is expected to be in or not in the "list"
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
     */
-   public T waitForList(ITestAccessor accessor, T[] list, boolean isInList, int milliseconds) throws InterruptedException {
+   public T waitForList(ITestAccessor accessor, T[] list, boolean isInList,
+      int milliseconds) throws InterruptedException {
 
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
          new MethodFormatter().add(list).add(isInList).add(milliseconds), this.getMessage());
@@ -1474,7 +1633,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       return c.getLastCheckValue();
    }
 
-   public T checkMaintainList(ITestAccessor accessor, CheckGroup checkGroup, T[] list, boolean isInList, int milliseconds) throws InterruptedException {
+   public T checkMaintainList(ITestAccessor accessor, CheckGroup checkGroup, T[] list, boolean isInList,
+      int milliseconds) throws InterruptedException {
+
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
          new MethodFormatter().add(list).add(isInList).add(milliseconds), this.getMessage());
 
@@ -1487,7 +1648,8 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       CheckGroup passFail = inList(accessor, isInList, value, list, result.getElapsedTime());
       if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
-      } else {
+      }
+      else {
          checkGroup.add(passFail);
       }
       accessor.getLogger().methodEnded(accessor);
@@ -1495,19 +1657,21 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * This method checks a an array of EnumBase objects to determine if a given EnumBase object is or isn't in the list.
-    * It then returns a CheckGroup object that describes the checks and pass/fail status.
+    * This method checks a an array of EnumBase objects to determine if a given EnumBase object is or
+    * isn't in the list. It then returns a CheckGroup object that describes the checks and pass/fail
+    * status.
     *
     * @param isInList
-    * <ul>
-    * <li><b>True </b> used to get a pass iff the item is in the list.</li>
-    * <li><b>False </b> used to get a pass iff the item is not in the list.</li>
-    * </ul>
-    * @param actual The EnumBase object to check for.
-    * @param list The array of EnumBase objects to look through.
+    *                    <ul>
+    *                    <li><b>True </b> used to get a pass iff the item is in the list.</li>
+    *                    <li><b>False </b> used to get a pass iff the item is not in the list.</li>
+    *                    </ul>
+    * @param actual   The EnumBase object to check for.
+    * @param list     The array of EnumBase objects to look through.
     * @return A CheckGroup object that describes all comparisons made and outcomes.
     */
    private CheckGroup inList(ITestAccessor accessor, boolean isInList, T actual, T[] list, long elapsedTime) {
+
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
          new MethodFormatter().add(isInList).add(actual).add(list), this.getMessage());
       CheckGroup checkGroup;
@@ -1524,7 +1688,8 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
                expected.equals(actual), elapsedTime));
             i++;
          }
-      } else {
+      }
+      else {
          checkGroup = new CheckGroup(Operation.AND, this.getFullName()); // Pass iff none of the
          // items match
          for (T expected : list) {
@@ -1538,9 +1703,12 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    /**
-    * Sets the element to the first enumeration for the wait time and then it sets it to the second enumeration.
+    * Sets the element to the first enumeration for the wait time and then it sets it to the second
+    * enumeration.
     */
-   public synchronized void toggle(ITestEnvironmentAccessor accessor, T value1, T value2, int milliseconds) throws InterruptedException {
+   public synchronized void toggle(ITestEnvironmentAccessor accessor, T value1, T value2,
+      int milliseconds) throws InterruptedException {
+
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
          new MethodFormatter().add(value1).add(value2).add(milliseconds), getMessage());
 
@@ -1560,6 +1728,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     */
    @Deprecated
    public T get() {
+
       return getValue();
    }
 
@@ -1567,9 +1736,11 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * gets this element's current value. Does logging
     */
    public T get(ITestEnvironmentAccessor accessor) {
+
       //      accessor.getLogger().methodCalled(accessor, new MethodFormatter());
       if (accessor != null) {
-         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter(), getMessage());
+         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter(),
+            getMessage());
       }
 
       T v = getValue();
@@ -1587,24 +1758,29 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @return the value of this element
     */
    public T getNoLog() {
+
       return getValue();
    }
 
    @Deprecated
    public void set(T value) {
+
       setValue(value);
    }
 
    public void setNoLog(T value) {
+
       setValue(value);
    }
 
    @Deprecated
    public void setNoLog(ITestEnvironmentAccessor accessor, T value) {
+
       setValue(value);
    }
 
    private void checkAccessor(ITestEnvironmentAccessor accessor) {
+
       if (accessor == null) {
          throw new NullPointerException("The parameter accessor is null");
       }
@@ -1616,9 +1792,10 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * Sets the element to the "value" passed and immediately sends the message that contains it..
     *
     * @param accessor
-    * @param value The value to set.
+    * @param value    The value to set.
     */
    public void setAndSend(ITestEnvironmentAccessor accessor, T value) {
+
       this.set(accessor, value);
       super.sendMessage();
    }
