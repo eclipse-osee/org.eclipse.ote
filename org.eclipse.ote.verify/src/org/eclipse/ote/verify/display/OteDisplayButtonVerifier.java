@@ -24,12 +24,15 @@ import org.eclipse.ote.verify.OteVerifierAttribute;
 public class OteDisplayButtonVerifier<T extends OteDisplayButtonVerifier<T>> extends OteDisplayObjectVerifier<T> {
 
    private final OteVerifierAttribute color;
-   private final OteVerifierAttribute label;
+   private final OteVerifierAttribute firstLineLabel;
+   private final OteVerifierAttribute secondLineLabel;
 
    public OteDisplayButtonVerifier(OteInternalApi api) {
       super(api);
 
-      this.label = new OteVerifierAttribute("Label", OteVerifierAttribute.REQUIRED);
+      this.firstLineLabel = new OteVerifierAttribute("First Line Label", OteVerifierAttribute.REQUIRED);
+      this.secondLineLabel = new OteVerifierAttribute("Second Line Label", OteVerifierAttribute.OPTIONAL);
+
       this.color = new OteVerifierAttribute("Color", OteVerifierAttribute.OPTIONAL);
    }
 
@@ -48,20 +51,34 @@ public class OteDisplayButtonVerifier<T extends OteDisplayButtonVerifier<T>> ext
    }
 
    /**
-    * @return the label
+    * @return the label on the first line
     */
-   public OteVerifierAttribute getLabel() {
-      return label;
+   public OteVerifierAttribute getFirstLineLabel() {
+      return firstLineLabel;
    }
 
    /**
-    * @param label the label to set
+    * @return the label on the second line
     */
-   public void setLabel(String label) {
-      if (label.equals(null)) {
-         this.label.setValue("");
+   public OteVerifierAttribute getSecondLineLabel() {
+      return secondLineLabel;
+   }
+
+   /**
+    * @param firstLineLabel the label to set on the first line
+    * @param secondLineLabel the label to set on the second line
+    */
+   public void setLabel(String firstLineLabel, String secondLineLabel) {
+      if (firstLineLabel.equals(null)) {
+         this.firstLineLabel.setValue("");
       } else {
-         this.label.setValue(label);
+         this.firstLineLabel.setValue(firstLineLabel);
+      }
+
+      if (secondLineLabel.equals(null)) {
+         this.secondLineLabel.setValue("");
+      } else {
+         this.secondLineLabel.setValue(secondLineLabel);
       }
    }
 
@@ -72,7 +89,8 @@ public class OteDisplayButtonVerifier<T extends OteDisplayButtonVerifier<T>> ext
       CheckGroup superChecks = super.verify(actual);
       cg.addAll(superChecks.getTestPoints());
 
-      this.addToCheckGroup(this.getLabel(), actual.getLabel(), cg);
+      this.addToCheckGroup(this.getFirstLineLabel(), actual.getFirstLineLabel(), cg);
+      this.addToCheckGroup(this.getSecondLineLabel(), actual.getSecondLineLabel(), cg);
       this.addToCheckGroup(this.getColor(), actual.getColor(), cg);
 
       return cg;
