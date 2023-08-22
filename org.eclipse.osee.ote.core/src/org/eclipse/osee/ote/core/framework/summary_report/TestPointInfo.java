@@ -20,6 +20,7 @@ public class TestPointInfo {
    private String name = null;
    private boolean pass = false;
    private String time = null;
+   private String requirementId;
 
    public void setPass(boolean b) {
       pass = b;
@@ -51,5 +52,13 @@ public class TestPointInfo {
 
    public void setName(String name) {
       this.name = name;
+   }
+
+   public void setRequirement(String requirementId) {
+      this.requirementId = requirementId;
+   }
+   
+   public String getRequirement() {
+      return requirementId;
    }
 }

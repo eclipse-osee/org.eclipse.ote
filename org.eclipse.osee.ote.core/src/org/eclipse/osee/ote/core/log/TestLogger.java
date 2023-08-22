@@ -137,13 +137,13 @@ public class TestLogger extends Logger implements ITestLogger {
    @Override
    public void testpoint(ITestEnvironmentAccessor env, TestScript script, TestCase testCase, boolean passed, String testPointName, String exp, String act) {
       TestPointRecord recordToLog = new TestPointRecord(env, script, testCase, testPointName, exp, act, passed);
-      recordToLog.setRequirments(requirementIds);
+      recordToLog.setRequirements(requirementIds);
       log(recordToLog);
    }
 
    @Override
    public void testpoint(TestPointRecord record) {
-      record.setRequirments(requirementIds);      
+      record.setRequirements(requirementIds);      
       log(record);
    }
 

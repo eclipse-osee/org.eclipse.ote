@@ -62,6 +62,10 @@ public class TestCaseInfo {
    public int getPass() {
       return pass;
    }
+   
+   protected void removeTestPoint() {
+      testPointInfo.remove(0);
+   }
 
    public void addTestPoint() {
       testPointInfo.add(new TestPointInfo());

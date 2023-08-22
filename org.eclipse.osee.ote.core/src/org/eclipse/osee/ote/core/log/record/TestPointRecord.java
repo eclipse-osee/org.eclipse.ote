@@ -202,7 +202,7 @@ public class TestPointRecord extends TestRecord {
       return number;
    }
    
-   public void setRequirments(List<String> requirementIds) {
+   public void setRequirements(List<String> requirementIds) {
       this.testPoint.setRequirements(requirementIds);
    }
 }

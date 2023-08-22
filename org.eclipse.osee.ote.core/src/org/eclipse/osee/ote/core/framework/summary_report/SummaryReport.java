@@ -21,11 +21,20 @@ import java.util.List;
  * @author Dominic Leiner
  */
 public class SummaryReport {
-   private static final String SUMMARY_TABLE_HEADER = "| Test | Total | Pass | Fail | Aborted |";
-   private static final String SUMMARY_TABLE_FORMAT = "|:----:|------:|-----:|-----:|--------:|";
+   private static final String REPORT_TTLE = "# Summary Report";
    
-   private static final String REQ_TABLE_HEADER = "| Test |  REQ? | Pass/Fail | Comment |";
-   private static final String REQ_TABLE_FORMAT = "|:----:|:-----:|:---------:|---------|";
+   private static final String ABORT_TABLE_TITLE = "## Test Abort Summary";
+   
+   private static final String SUMMARY_TABLE_TITLE = "## Test Result Summary";
+   private static final String SUMMARY_TABLE_HEADER = "| Test | Total | Pass | Fail |";
+   private static final String SUMMARY_TABLE_FORMAT = "|:----:|------:|-----:|-----:|";
+   
+   private static final String TESTPOINT_TABLE_HEADER = "| Test |  TestPoint | Pass/Fail | Comment |";
+   private static final String TESTPOINT_TABLE_FORMAT = "|:----:|:----------:|:---------:|---------|";
+   
+   private static final String REQ_TABLE_TITLE = "## Test Result Summary by Requirement";
+   private static final String REQ_TABLE_HEADER = "| Test |  REQ ID | Pass/Fail | Comment |";
+   private static final String REQ_TABLE_FORMAT = "|:----:|:-------:|:---------:|---------|";
    
    
    List<SummaryItem> testResultSummary;
@@ -53,6 +62,48 @@ public class SummaryReport {
    public void importTmoDirectory(File tmoDirectory) {
       addAllItems(SummaryReportGenerator.generate(tmoDirectory).getResultSummary());
    }
+   
+   public String buildSummaryReport() {
+      String result = REPORT_TTLE + "\n";
+      
+      List<SummaryItem> abortedList = getAborted();
+      
+      if(abortedList.isEmpty()) {
+         result += ABORT_TABLE_TITLE + "\n" + "NONE" + "\n"
+            + SUMMARY_TABLE_TITLE + "\n" + buildSummaryTable() + "\n"
+            + REQ_TABLE_TITLE + "\n" + buildRequirementTable();
+      } else {
+         result += ABORT_TABLE_TITLE + "\n" + buildAbortTable() + "\n"
+            + SUMMARY_TABLE_TITLE + "\n" + "Aborts Found" + "\n"
+            + REQ_TABLE_TITLE + "\n" + "Aborts Found";
+      }
+      
+      return result;
+   }
+
+   private List<SummaryItem> getAborted() {
+      List<SummaryItem> result = new LinkedList<SummaryItem>();
+      for(SummaryItem i : testResultSummary) {
+         if(i.containsAborted()) {
+            result.add(i);
+         }
+      }
+      return result;
+   }
+   
+   public String buildAbortTable() {
+      String result = SUMMARY_TABLE_HEADER;
+      result += "\n" + SUMMARY_TABLE_FORMAT;
+      
+      for(SummaryItem item : testResultSummary) {
+         if(item.containsAborted()) {
+            result += "\n" + item.getMdTableFormat();
+            
+         }
+      }
+      
+      return result;
+   }
       
    public String buildSummaryTable() {
       String result = SUMMARY_TABLE_HEADER;
@@ -65,15 +116,26 @@ public class SummaryReport {
       return result;
    }
    
-   public String buildReqTable() {
-      String result = REQ_TABLE_HEADER;
-      result += "\n" + REQ_TABLE_FORMAT;
+   public String buildTestCaseTable() {
+      String result = TESTPOINT_TABLE_HEADER;
+      result += "\n" + TESTPOINT_TABLE_FORMAT;
       
       for(SummaryItem item : testResultSummary) {
          for(TestCaseInfo testCase : item.getTestCases()) {
             result += testCase.getMdTableFormat();
          }
          
+      }
+      
+      return result;
+   }
+   
+   public String buildRequirementTable() {
+      String result = REQ_TABLE_HEADER;
+      result += "\n" + REQ_TABLE_FORMAT;
+      
+      for(SummaryItem item : testResultSummary) {
+         result += item.getRequirementTable();
       }
       
       return result;

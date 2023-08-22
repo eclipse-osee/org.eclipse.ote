@@ -16,6 +16,7 @@ package org.eclipse.osee.ote.core.framework.summary_report;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
@@ -36,28 +37,40 @@ import com.sun.accessibility.internal.resources.accessibility;
  * @author Andy Jury, Dominic Leiner
  */
 public class OutFileResultProcessor extends AbstractOperation {
-
    private final File source;
+   private final Boolean importTestPoints;   
+   
    private boolean isFromTestPoint = false;
    private boolean gotTestCaseName = false;
    private boolean gotTestCaseNumber = false;
    private boolean isAdditionalInfo = false;
 
    private List<TestCaseInfo> testCases;
+   private HashMap<String, Boolean> requirementStats;
    TestPointResultsData testPointsResults;
 
    /**
     * @param source outfile to be processed into test case info
     */
    public OutFileResultProcessor(File source) {
+      this(source, false);
+   }
+   
+   /**
+    * Extension to {@link #OutFileResultProcessor(File)}.
+    */
+   public OutFileResultProcessor(File source, Boolean importTestPoints) {
       super("File Conversion", "lba.ote.outfile.conversion");
       this.source = source;
+      this.importTestPoints = importTestPoints;
 
       testCases = new ArrayList<TestCaseInfo>();
       TestCaseInfo info = new TestCaseInfo();
       info.setName("Initialization");
       info.setNumber("-1");
       testCases.add(info);
+      
+      requirementStats = new HashMap<String, Boolean>();
    }
 
 
@@ -113,6 +126,9 @@ public class OutFileResultProcessor extends AbstractOperation {
          public void onEndElement(Object obj) {
             gotTestCaseName = false;
             gotTestCaseNumber = false;
+            if(!importTestPoints) {
+               testCases.remove(0);               
+            }
          }
 
          @Override
@@ -195,6 +211,9 @@ public class OutFileResultProcessor extends AbstractOperation {
       handler.getHandler("TestPoint").addListener(new IBaseSaxElementListener() {
          @Override
          public void onEndElement(Object obj) {
+            if(!importTestPoints) {
+               testCases.get(testCases.size() - 1).removeTestPoint();;
+            }
          }
 
          @Override
@@ -211,6 +230,24 @@ public class OutFileResultProcessor extends AbstractOperation {
          @Override
          public void onStartElement(Object obj) {
             isFromTestPoint = false;
+         }
+      });
+      handler.getHandler("Requirement").addListener(new IBaseSaxElementListener() {
+         @Override
+         public void onEndElement(Object obj) {
+            String requirement = obj.toString();
+            TestPointInfo lastTestPoint = testCases.get(testCases.size() - 1).getLastTestPoint();
+            lastTestPoint.setRequirement(requirement);
+            Boolean pass = lastTestPoint.isPass();
+            
+            if( !pass || !requirementStats.containsKey(requirement)) {
+               requirementStats.put(requirement, pass);
+            }
+            
+         }
+
+         @Override
+         public void onStartElement(Object obj) {
          }
       });
       handler.getHandler("CheckGroup").addListener(new IBaseSaxElementListener() {
@@ -296,6 +333,10 @@ public class OutFileResultProcessor extends AbstractOperation {
    
    public TestPointResultsData getTestPointResults() {
       return testPointsResults;
+   }
+   
+   public HashMap<String, Boolean> getRequirementStats() {
+      return requirementStats;
    }
 
 }

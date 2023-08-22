@@ -31,6 +31,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import com.sun.java.swing.plaf.windows.WindowsTreeUI.CollapsedIcon;
 
@@ -52,7 +53,15 @@ public class SummaryReportGenerator {
     * @param tmoDirectory A directory containing TMOs to parse.
     * @return {@link SummaryReport}
     */
+   
    public static SummaryReport generate(File tmoDirectory) {
+      return generate(tmoDirectory, false);
+   }
+   
+   /**
+    *  Extension to {@link #generate(File)}.
+    */
+   public static SummaryReport generate(File tmoDirectory, Boolean importTestPoints) {
       if(tmoDirectory.isDirectory()) {
          BlockingQueue<File> listOfFiles = new LinkedBlockingQueue<File>();
          listOfFiles.addAll(Lib.recursivelyListFiles(tmoDirectory, Pattern.compile(".*\\.tmo")));
@@ -77,7 +86,7 @@ public class SummaryReportGenerator {
                endIndex += remainder;
             }
   
-            Worker worker = new Worker(listOfFiles);
+            Worker worker = new Worker(listOfFiles, importTestPoints);
             Future<List<SummaryItem>> future;
             try {
                future = executor.submit(asRenamingCallable("SummaryReport " + i, worker)); 
@@ -111,9 +120,11 @@ public class SummaryReportGenerator {
    private static final class Worker implements Callable<List<SummaryItem>> {
 
       private BlockingQueue<File> sharedlist;
+      private Boolean importTestPoints;
 
-      public Worker(BlockingQueue<File> fullList) {
+      public Worker(BlockingQueue<File> fullList, Boolean importTestPoints) {
          this.sharedlist = fullList;
+         this.importTestPoints = importTestPoints;
       }
 
       @Override
@@ -125,13 +136,18 @@ public class SummaryReportGenerator {
                continue;
             }
             
-            String sanitizedFileName = file.getName().replaceAll("\\..*", "");
+            String sanitizedFileName = FilenameUtils.removeExtension(file.getName());
             OutFileResultProcessor resultProcessor = new OutFileResultProcessor(file);
             resultProcessor.run();
+            
             SummaryItem temp = new SummaryItem();
             temp.setName(sanitizedFileName);
             temp.setTestPointResults(resultProcessor.getTestPointResults());
-            temp.setTestCases(resultProcessor.getTestCases());
+            temp.setRequirementStats(resultProcessor.getRequirementStats());
+            if(importTestPoints) {
+               temp.setTestCases(resultProcessor.getTestCases());               
+            }
+            
             fromThread.add(temp);
          }
 
