@@ -39,7 +39,7 @@ public class OteRecorder {
    private boolean isRecordingStarted;
    private List<Message> chainedFilters;
    private OteRecorderChainedFilter oteRecorderChainedFilter;
-   private int maxMessageRecordings = -1;
+   private int maxMessageRecordings = Integer.MAX_VALUE;
 
    public OteRecorder(List<Message> oteMessages) {
       this.oteMessages = new HashSet<>();
