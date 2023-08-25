@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.ote.verify.display;
 
-import java.awt.Point;
 import org.eclipse.osee.ote.core.environment.OteInternalApi;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.Operation;
@@ -25,13 +24,11 @@ import org.eclipse.ote.verify.OteVerifierAttribute;
 public class OteDisplayTextVerifier<T extends OteDisplayTextVerifier<T>> extends OteDisplayObjectVerifier<T> {
 
    private final OteVerifierAttribute label;
-   private final OteVerifierAttribute location;
    private final OteVerifierAttribute color;
 
    public OteDisplayTextVerifier(OteInternalApi api) {
       super(api);
       this.label = new OteVerifierAttribute("Label", true);
-      this.location = new OteVerifierAttribute("Location", true);
       this.color = new OteVerifierAttribute("Color", false);
    }
 
@@ -47,20 +44,6 @@ public class OteDisplayTextVerifier<T extends OteDisplayTextVerifier<T>> extends
     */
    public void setLabel(String label) {
       this.label.setValue(label);
-   }
-
-   /**
-    * @return the location of the text
-    */
-   public OteVerifierAttribute getLocation() {
-      return location;
-   }
-
-   /**
-    * @param location the location of the text to set
-    */
-   public void setLocation(Point location) {
-      this.location.setValue(location);
    }
 
    /**
@@ -85,7 +68,6 @@ public class OteDisplayTextVerifier<T extends OteDisplayTextVerifier<T>> extends
       cg.addAll(superChecks.getTestPoints());
 
       this.addToCheckGroup(this.getLabel(), actual.getLabel(), cg);
-      this.addToCheckGroup(this.getLocation(), actual.getLocation(), cg);
       this.addToCheckGroup(this.getColor(), actual.getColor(), cg);
 
       return cg;
