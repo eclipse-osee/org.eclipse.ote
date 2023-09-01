@@ -22,8 +22,8 @@ import org.eclipse.osee.ote.core.framework.saxparse.elements.TestPointResultsDat
  * @author Dominic Leiner
  */
 public class SummaryItem {
-   String name;
-   TestPointResultsData testPointsResult;
+   private String name;
+   private TestPointResultsData testPointsResult;
    private List<TestCaseInfo> testCases;
    private HashMap<String, Boolean> requirementStats;
    

@@ -21,7 +21,7 @@ import java.util.List;
  * @author Dominic Leiner
  */
 public class SummaryReport {
-   private static final String REPORT_TTLE = "# Summary Report";
+   private static final String REPORT_TITLE = "# Summary Report";
    
    private static final String ABORT_TABLE_TITLE = "## Test Abort Summary";
    
@@ -64,7 +64,7 @@ public class SummaryReport {
    }
    
    public String buildSummaryReport() {
-      String result = REPORT_TTLE + "\n";
+      String result = REPORT_TITLE + "\n";
       
       List<SummaryItem> abortedList = getAborted();
       

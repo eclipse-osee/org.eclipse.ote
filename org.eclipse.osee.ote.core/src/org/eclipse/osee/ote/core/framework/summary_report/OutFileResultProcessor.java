@@ -18,6 +18,8 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -27,7 +29,6 @@ import org.eclipse.osee.ote.core.framework.saxparse.elements.TestPointResultsDat
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-import com.sun.accessibility.internal.resources.accessibility;
 
 /**
  * 
@@ -44,10 +45,12 @@ public class OutFileResultProcessor extends AbstractOperation {
    private boolean gotTestCaseName = false;
    private boolean gotTestCaseNumber = false;
    private boolean isAdditionalInfo = false;
+   
+   private SummaryItem result;
 
    private List<TestCaseInfo> testCases;
    private HashMap<String, Boolean> requirementStats;
-   TestPointResultsData testPointsResults;
+   private TestPointResultsData testPointsResults;
 
    /**
     * @param source outfile to be processed into test case info
@@ -63,6 +66,7 @@ public class OutFileResultProcessor extends AbstractOperation {
       super("File Conversion", "lba.ote.outfile.conversion");
       this.source = source;
       this.importTestPoints = importTestPoints;
+      this.result = new SummaryItem();
 
       testCases = new ArrayList<TestCaseInfo>();
       TestCaseInfo info = new TestCaseInfo();
@@ -115,6 +119,8 @@ public class OutFileResultProcessor extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
 
       monitor.setTaskName(String.format("Computing overview information for [%s].", source.getName()));
+      
+      result.setName(FilenameUtils.removeExtension(source.getName()));
 
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       OteSaxHandler handler = new OteSaxHandler();
@@ -212,7 +218,7 @@ public class OutFileResultProcessor extends AbstractOperation {
          @Override
          public void onEndElement(Object obj) {
             if(!importTestPoints) {
-               testCases.get(testCases.size() - 1).removeTestPoint();;
+               testCases.get(testCases.size() - 1).removeTestPoint();
             }
          }
 
@@ -298,6 +304,16 @@ public class OutFileResultProcessor extends AbstractOperation {
          public void onStartElement(Object obj) {
          }
       });
+      handler.getHandler("ScriptName").addListener(new IBaseSaxElementListener() {
+         @Override
+         public void onEndElement(Object obj) {
+            result.setName((String) obj);
+         }
+
+         @Override
+         public void onStartElement(Object obj) {
+         }
+      });
       handler.getHandler("AdditionalInfo").addListener(new IBaseSaxElementListener() {
          @Override
          public void onEndElement(Object obj) {
@@ -324,19 +340,34 @@ public class OutFileResultProcessor extends AbstractOperation {
       
 
       xmlReader.parse(new InputSource(new FileInputStream(source)));
+      
+      result.setName(cleanName(result.getName()));
+      
+      result.setRequirementStats(requirementStats);
+      result.setTestPointResults(testPointsResults);
+      
+      if(importTestPoints) {
+         result.setTestCases(testCases);
+      }
 
    }
    
-   public List<TestCaseInfo> getTestCases() {
-      return testCases;
-   }
-   
-   public TestPointResultsData getTestPointResults() {
-      return testPointsResults;
-   }
-   
-   public HashMap<String, Boolean> getRequirementStats() {
-      return requirementStats;
+   /**
+    * Trim name down to string after the last '.', unless that's just numbers.
+    *  say.no.more.00 -> more
+    */
+   private String cleanName(String name) {
+      String result = name.substring(name.lastIndexOf('.') + 1);
+      
+      String regex = "[0-9]+";
+      if(Pattern.matches(regex, result)) {
+         return cleanName(name.substring(0, name.lastIndexOf('.')));
+      }
+         
+      return result;
    }
 
+   public SummaryItem getSummaryItem() {
+      return result;
+   }
 }

@@ -136,19 +136,10 @@ public class SummaryReportGenerator {
                continue;
             }
             
-            String sanitizedFileName = FilenameUtils.removeExtension(file.getName());
-            OutFileResultProcessor resultProcessor = new OutFileResultProcessor(file);
+            OutFileResultProcessor resultProcessor = new OutFileResultProcessor(file, importTestPoints);
             resultProcessor.run();
             
-            SummaryItem temp = new SummaryItem();
-            temp.setName(sanitizedFileName);
-            temp.setTestPointResults(resultProcessor.getTestPointResults());
-            temp.setRequirementStats(resultProcessor.getRequirementStats());
-            if(importTestPoints) {
-               temp.setTestCases(resultProcessor.getTestCases());               
-            }
-            
-            fromThread.add(temp);
+            fromThread.add(resultProcessor.getSummaryItem());
          }
 
          return fromThread;
