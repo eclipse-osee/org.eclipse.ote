@@ -18,6 +18,7 @@
 
    <modules>
       <module>../../../net.sourceforge.tess4j</module>
+      <module>../../../org.opencv</module>
       <module>../ote.dependencies.feature</module>
       <module>../ote.dependencies.p2</module>
    </modules>
