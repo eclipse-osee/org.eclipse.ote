@@ -17,6 +17,7 @@
 	<version>0.26.3-SNAPSHOT</version>
     
     <modules>
+		<module>../org.eclipse.ote.basic</module>
 		<module>../org.eclipse.ote.simple.oteide.product</module>
 		<module>../org.eclipse.ote.simple.io</module>
 		<module>../org.eclipse.ote.simple.test.environment</module>

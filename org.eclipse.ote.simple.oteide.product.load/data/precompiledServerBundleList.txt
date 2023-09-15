@@ -1,4 +1,5 @@
 org.eclipse.equinox.cm
+					org.eclipse.ote.basic
 					org.eclipse.ote.bytemessage
 					org.eclipse.ote.io
 					org.eclipse.ote.io.mux
