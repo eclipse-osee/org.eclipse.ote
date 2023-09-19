@@ -159,8 +159,8 @@
 										<xs:extension base="xs:string">
 											<xs:attribute name="name" type="xs:string" use="required" />
 											<xs:attribute name="version" type="xs:string" use="required" />
-											<xs:attribute name="versionUnit" type="xs:string" use="required" />
-											<xs:attribute name="underTest" type="xs:boolean" use="required" />
+											<xs:attribute name="versionUnit" type="xs:string" minOccurs="0" />
+											<xs:attribute name="underTest" type="xs:boolean" minOccurs="0"  />
 										</xs:extension>
 									</xs:simpleContent>
 								</xs:complexType>

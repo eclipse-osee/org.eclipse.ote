@@ -192,6 +192,8 @@ public abstract class TestScript implements ITimeout {
    private ITestRunListenerProvider listenerProvider;
    private final boolean shouldPauseOnFail;
    private final boolean printFailToConsole;
+   
+   private VersionSupport versions;
 
    public TestScript(TestEnvironment environment, IUserSession callback, ScriptTypeEnum scriptType, boolean isBatchable) {
       constructed.incrementAndGet();
@@ -213,6 +215,11 @@ public abstract class TestScript implements ITimeout {
       this.testPointTally = new TestPointTally(this.getClass().getName());
       shouldPauseOnFail = OteProperties.isPauseOnFailEnabled();
       printFailToConsole = OteProperties.isPrintFailToConsoleEnabled();
+      
+      if(VersionSupport.VERSION_FILE != null) {
+         versions = new VersionSupport();
+         this.addScriptSummary(versions);         
+      }
    }
 
    public void abortTestScript() {
