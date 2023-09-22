@@ -30,6 +30,10 @@ public class Core {
     public static final int VERSION_REVISION = getVersionRevisionJ();
     public static final String VERSION_STATUS = getVersionStatusJ();
 
+    public static void loadNativeLibrary(String libraryPath) {
+       System.load(libraryPath);
+    }
+    
     private static final int
             CV_8U = 0,
             CV_8S = 1,
