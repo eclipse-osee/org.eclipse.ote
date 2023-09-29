@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ote.core.log.record;
 
-import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javax.xml.stream.XMLStreamException;
@@ -125,10 +125,6 @@ public class TestPointRecord extends TestRecord {
       this(source, script, testCase, new CheckPoint(testPointName, expected, actual, passed), timeStamp);
    }
    
-   public TestPointRecord(ITestEnvironmentAccessor source, TestScript script, TestCase testCase, String testPointName, String[] requirementIds, String expected, String actual, boolean passed, boolean timeStamp) {
-      this(source, script, testCase, new CheckPoint(testPointName, requirementIds, expected, actual, passed), timeStamp);
-   }
-
    /**
     * TestPointRecord Constructor. Sets up a test point record of the result of the test point.
     * 
@@ -141,10 +137,6 @@ public class TestPointRecord extends TestRecord {
     */
    public TestPointRecord(ITestEnvironmentAccessor source, TestScript script, TestCase accessor, String testPointName, String expected, String actual, boolean passed) {
       this(source, script, accessor, testPointName, expected, actual, passed, true);
-   }
-   
-   public TestPointRecord(ITestEnvironmentAccessor source, TestScript script, TestCase accessor, String testPointName, String[] requirementIds, String expected, String actual, boolean passed) {
-      this(source, script, accessor, testPointName, requirementIds, expected, actual, passed, true);
    }
 
    /**
@@ -202,7 +194,7 @@ public class TestPointRecord extends TestRecord {
       return number;
    }
    
-   public void setRequirements(List<String> requirementIds) {
+   public void setRequirements(Set<String> requirementIds) {
       this.testPoint.setRequirements(requirementIds);
    }
 }

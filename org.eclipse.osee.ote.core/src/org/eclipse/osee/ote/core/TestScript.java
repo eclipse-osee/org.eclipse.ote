@@ -215,11 +215,13 @@ public abstract class TestScript implements ITimeout {
       this.testPointTally = new TestPointTally(this.getClass().getName());
       shouldPauseOnFail = OteProperties.isPauseOnFailEnabled();
       printFailToConsole = OteProperties.isPrintFailToConsoleEnabled();
-      
+
       if(VersionSupport.VERSION_FILE != null) {
          versions = new VersionSupport();
          this.addScriptSummary(versions);         
       }
+      
+      this.environment.getLogger().clearRequirementCoverage();
    }
 
    public void abortTestScript() {

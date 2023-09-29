@@ -13,9 +13,8 @@
 
 package org.eclipse.osee.ote.core.testPoint;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -33,7 +32,7 @@ import org.w3c.dom.Element;
 public class CheckPoint implements ITestPoint {
    private final String testPointName;
    private String expected;
-   private List<String> requirementIds;
+   private Set<String> requirementIds;
    private final String actual;
    private final boolean pass;
    private final long elpasedTime;
@@ -60,27 +59,14 @@ public class CheckPoint implements ITestPoint {
       this(testPointName, expected, actual, pass, 0, elapsedTime);
    }
    
-   public CheckPoint(String testPointName, String[] requirementIds, String expected, String actual, boolean pass, long elapsedTime) {
-      this(testPointName, requirementIds, expected, actual, pass, 0, elapsedTime);
-   }
-
-   public CheckPoint(String testPointName, String[] requirementIds, String expected, String actual, boolean pass, int numTransmissions, long elapsedTime) {
+   public CheckPoint(String testPointName, String expected, String actual, boolean pass, int numTransmissions, long elapsedTime) {
       this.testPointName = testPointName;
       this.expected = expected.equals("") ? " " : XmlSupport.convertNonPrintableCharacers(expected);
       this.actual = actual.equals("") ? " " : XmlSupport.convertNonPrintableCharacers(actual);
       this.pass = pass;
       this.elpasedTime = elapsedTime;
       this.numTransmissions = numTransmissions;
-      
-      if(requirementIds != null) {
-         this.requirementIds = Arrays.asList(requirementIds);
-      } else {
-         this.requirementIds = new ArrayList<String>();
-      }
-   }
-   
-   public CheckPoint(String testPointName, String expected, String actual, boolean pass, int numTransmissions, long elapsedTime) {
-      this(testPointName, null, expected, actual, pass, numTransmissions, elapsedTime);
+      this.requirementIds = new HashSet<String>();
    }
 
    public CheckPoint(String testPointName, Object expected, Object actual, boolean pass, long elapsedTime) {
@@ -93,10 +79,6 @@ public class CheckPoint implements ITestPoint {
 
    public CheckPoint(String testPointName, String expected, String actual, boolean pass) {
       this(testPointName, expected, actual, pass, 0);
-   }
-   
-   public CheckPoint(String testPointName, String[] requirementIds, String expected, String actual, boolean pass) {
-      this(testPointName, requirementIds, expected, actual, pass, 0, 0);
    }
 
    public CheckPoint(String testPointName, boolean expected, boolean actual) {
@@ -189,9 +171,9 @@ public class CheckPoint implements ITestPoint {
    }
    
    @Override
-   public void setRequirements(List<String> requirementIds) {
-      //This is to ensure we get the list by object and not be reference.
-      this.requirementIds = new ArrayList<String>(requirementIds);
+   public void setRequirements(Set<String> requirementIds) {
+      //This is to ensure we get this by object and not be reference.
+      this.requirementIds = new HashSet<String>(requirementIds);
    }
 
 }

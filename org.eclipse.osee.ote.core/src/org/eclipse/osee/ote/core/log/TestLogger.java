@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.ote.core.log;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -49,7 +49,7 @@ import org.eclipse.osee.ote.core.log.record.WarningRecord;
  */
 public class TestLogger extends Logger implements ITestLogger {
 
-   private ArrayList<String> requirementIds;
+   private Set<String> requirementIds;
 
    /**
     * TestLogger Constructor. Sets logging level and filter.
@@ -57,7 +57,7 @@ public class TestLogger extends Logger implements ITestLogger {
    public TestLogger() {
       super("osee.test.core.log", null);
       setLevel(Level.ALL);
-      this.requirementIds = new ArrayList<String>();
+      this.requirementIds = new HashSet<String>();
    }
 
    /**
@@ -343,13 +343,13 @@ public class TestLogger extends Logger implements ITestLogger {
     */
    public void addRequirementCoverage(String... requirementIds) {      
       for(String req : requirementIds) {
-         this.requirementIds.add(req);  
+         this.requirementIds.add(req.trim());  
       }
    }
  
    public void removeRequirementCoverage(String... requirementId) {
       for(String req : requirementId) {
-         this.requirementIds.remove(req);
+         this.requirementIds.remove(req.trim());
       }
    }
    
