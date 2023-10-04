@@ -61,10 +61,14 @@ public class TestPointResultsData {
       this.aborted = aborted;
       this.fail = fail;
       this.pass = pass;
-      this.interactive = interactive;
+      if (interactive != null) {
+         this.interactive = interactive;
+      } else {
+         this.interactive = "0";
+      }
       this.total = total;
    }
-   
+
    @Override
    public String toString() {
       return "Total:" + total + " Pass:" + pass + " Fail:" + fail + " Aborted:" + aborted;
