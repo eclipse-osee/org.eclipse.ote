@@ -131,7 +131,13 @@ public final class UpdateDispatcher {
       if (channel.socket().getReceiveBufferSize() < RECEIVE_BUFFER_SIZE) {
          channel.socket().setReceiveBufferSize(RECEIVE_BUFFER_SIZE);
       }
-      channel.connect(remoteAddress);
+      try {
+         channel.connect(remoteAddress);
+      }
+      catch (IOException ex) {
+         OseeLog.log(UpdateDispatcher.class, Level.SEVERE, "Error connecting to " + remoteAddress);
+         throw ex;
+      }
       if (channelMap.put(type, channel) != null) {
          OseeLog.log(UpdateDispatcher.class, Level.WARNING, "A previous channel was replaced");
       }

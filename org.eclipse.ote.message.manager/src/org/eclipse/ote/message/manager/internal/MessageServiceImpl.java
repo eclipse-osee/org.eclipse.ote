@@ -61,6 +61,7 @@ import org.eclipse.osee.ote.message.tool.SubscriptionDetails;
 import org.eclipse.osee.ote.message.tool.rec.IMessageEntryFactory;
 import org.eclipse.osee.ote.message.tool.rec.MessageRecordConfig;
 import org.eclipse.osee.ote.message.tool.rec.MessageRecorder;
+import org.eclipse.osee.ote.properties.OteProperties;
 import org.eclipse.osee.ote.remote.messages.RECORDING_COMPLETE;
 import org.eclipse.ote.io.BasicDatagramChannelDataFactory;
 import org.eclipse.ote.io.BasicDatagramChannelRunnable;
@@ -121,8 +122,9 @@ public class MessageServiceImpl implements IRemoteMessageService {
       try {
          datagramChannelDataPool = new DatagramChannelDataPool(new BasicDatagramChannelDataFactory(),
                                                                64);
-         xmitAddress = new InetSocketAddress(InetAddress.getLocalHost(),
+         xmitAddress = new InetSocketAddress(OteProperties.getDefaultInetAddress(),
                                              PortUtil.getInstance().getValidPort());
+
          datagramChannelWorker = new DatagramChannelWorker("OTE Message Service Worker",
                                                            new BasicDatagramChannelRunnable(xmitAddress));
          datagramChannelWorker.start();
