@@ -14,14 +14,8 @@
 package org.eclipse.osee.ote.core.framework.summary_report;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.Stack;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -31,9 +25,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
-import org.apache.commons.io.FilenameUtils;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import com.sun.java.swing.plaf.windows.WindowsTreeUI.CollapsedIcon;
 
 /**
  * 
