@@ -451,6 +451,19 @@ public class ProcessOutfileOverview implements IExceptionableRunnable {
             // Intentionally Empty Block
          }
       });
+      handler.getHandler("Requirement").addListener(new IBaseSaxElementListener() {
+         @Override
+         public void onEndElement(Object obj) {
+            if (currentTestpointSummaryItem instanceof TestPointSummary) {
+               ((TestPointSummary) currentTestpointSummaryItem).addRequirment(spaceProcessing(obj.toString()));
+            }
+         }
+
+         @Override
+         public void onStartElement(Object obj) {
+            // Intentionally Empty Block
+         }
+      });
       handler.getHandler("GroupName").addListener(new IBaseSaxElementListener() {
          @Override
          public void onEndElement(Object obj) {

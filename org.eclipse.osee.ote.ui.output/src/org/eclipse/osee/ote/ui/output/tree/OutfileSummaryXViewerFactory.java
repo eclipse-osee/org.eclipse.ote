@@ -34,13 +34,15 @@ public class OutfileSummaryXViewerFactory extends XViewerFactory {
       XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn Actual = new XViewerColumn("osee.outfilesummary.view.actual", "Actual", 200,
       XViewerAlign.Left, true, SortDataType.String, false, null);
-   public static XViewerColumn Time = new XViewerColumn("osee.outfilesummary.view.elapsedTime", "Elapsed Time", 100,
+   public static XViewerColumn Time = new XViewerColumn("osee.outfilesummary.view.elapsedTime", "Elapsed Time", 105,
+      XViewerAlign.Left, true, SortDataType.String, false, null);
+   public static XViewerColumn Requirements = new XViewerColumn("osee.outfilesummary.view.requirement", "Requirement", 200,
       XViewerAlign.Left, true, SortDataType.String, false, null);
    private final IManagedForm managedForm;
 
    public OutfileSummaryXViewerFactory(IManagedForm managedForm) {
       super(VIEWER_NAMESPACE);
-      registerColumns(Title, Expected, Actual, Time);
+      registerColumns(Title, Expected, Actual, Time, Requirements);
       this.managedForm = managedForm;
    }
 

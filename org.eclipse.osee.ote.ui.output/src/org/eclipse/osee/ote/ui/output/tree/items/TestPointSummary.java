@@ -34,6 +34,7 @@ public class TestPointSummary extends BaseOutfileTreeItem {
 
    private String actual;
    private String expected;
+   private String requirement;
    private boolean isPassed;
    private String elpasedTime;
    private String number;
@@ -43,12 +44,13 @@ public class TestPointSummary extends BaseOutfileTreeItem {
    private String groupType;
    private final List<StacktraceData> stacktrace = new ArrayList<>();
    private boolean isTopLevelTestPoint;
-
-   public TestPointSummary(IOutfileTreeItem item, String label, String expected, String actual, String elapsedTime, Image image) {
+   
+   public TestPointSummary(IOutfileTreeItem item, String label, String expected, String actual, String elapsedTime, String requirement, Image image) {
       super(OutfileRowType.testpoint, item, label, image);
       this.expected = expected;
       this.actual = actual;
       this.elpasedTime = elapsedTime;
+      this.requirement = requirement;
    }
    
    public void setTopLevelTestPoint(boolean isTopLevelTestPoint) {
@@ -82,6 +84,10 @@ public class TestPointSummary extends BaseOutfileTreeItem {
    public String getNumber() {
       return number;
    }
+   
+   public String getRequirement() {
+      return requirement;
+   }
 
    public void setAsParentTPItem(String number) {
       this.number = number;
@@ -95,12 +101,23 @@ public class TestPointSummary extends BaseOutfileTreeItem {
    public void setExpected(String expected) {
       this.expected = expected;
    }
-   
 
    public void setElpasedTime(String elpasedTime) {
       this.elpasedTime = elpasedTime;
    }
+   
+   public void setRequirement(String requirement) {
+      this.requirement = requirement;
+   }
 
+   public void addRequirment(String requirement) {
+      if(this.requirement == null) {
+         this.requirement = requirement;         
+      } else {
+         this.requirement += ", " + requirement;
+      }
+   }
+   
    public void setNumber(String number) {
       this.number = number;
    }
@@ -163,6 +180,7 @@ public class TestPointSummary extends BaseOutfileTreeItem {
       setActual(childItem.actual);
       setElpasedTime(childItem.elpasedTime);
       setFirstColumn(String.format("%s { %s }", getColumnText(0), childItem.getFirstColumn()));
+      setRequirement(childItem.getRequirement());
    }
 
    public void addStackTrace(StacktraceData obj) {
@@ -209,4 +227,6 @@ public class TestPointSummary extends BaseOutfileTreeItem {
          }
       }
    }
+
+
 }

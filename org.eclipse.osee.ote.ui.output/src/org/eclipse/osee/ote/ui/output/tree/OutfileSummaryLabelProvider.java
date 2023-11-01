@@ -54,6 +54,8 @@ public class OutfileSummaryLabelProvider extends XViewerLabelProvider {
                return item.getActual();
             case 3:
                return item.getElapsedTime();
+            case 4: 
+               return item.getRequirement();
          }
       }
       return null;
