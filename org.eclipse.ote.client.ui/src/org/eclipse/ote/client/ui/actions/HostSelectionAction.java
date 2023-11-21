@@ -16,8 +16,8 @@ package org.eclipse.ote.client.ui.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.ote.client.ui.OteClientUiPlugin;
 import org.eclipse.ote.client.ui.core.widgets.HostTableSelectionDialog;
-import org.eclipse.ote.client.ui.internal.OteClientUiPlugin;
 import org.eclipse.ui.actions.ActionFactory;
 
 /**

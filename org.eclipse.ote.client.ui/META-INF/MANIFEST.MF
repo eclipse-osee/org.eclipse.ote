@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Ui Plug-in
 Bundle-SymbolicName: org.eclipse.ote.client.ui;singleton:=true
 Bundle-Version: 0.26.3.qualifier
-Bundle-Activator: org.eclipse.ote.client.ui.internal.OteClientUiPlugin
+Bundle-Activator: org.eclipse.ote.client.ui.OteClientUiPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.osee.ote.connection.service,

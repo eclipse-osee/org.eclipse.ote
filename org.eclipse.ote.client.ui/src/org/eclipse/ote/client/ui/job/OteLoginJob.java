@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.plugin.core.IWorkbenchUser;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.properties.OteProperties;
 import org.eclipse.ote.client.Activator;
+import org.eclipse.ote.client.ui.OteClientUiPlugin;
 import org.eclipse.ote.client.ui.core.OteSessionDelegateViewImpl;
-import org.eclipse.ote.client.ui.internal.OteClientUiPlugin;
 
 /**
  * @author Ken J. Aguilar

@@ -31,7 +31,7 @@ import org.eclipse.osee.ote.core.framework.prompt.IUserInputPromptResponse;
 import org.eclipse.osee.ote.core.framework.prompt.IYesNoPromptResponse;
 import org.eclipse.osee.ote.service.SessionDelegate;
 import org.eclipse.osee.ote.ui.IOteConsoleService;
-import org.eclipse.ote.client.ui.internal.OteClientUiPlugin;
+import org.eclipse.ote.client.ui.OteClientUiPlugin;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.ui.PlatformUI;
