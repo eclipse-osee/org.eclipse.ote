@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.ote.client.ui.internal;
+package org.eclipse.ote.client.ui;
 
 import java.util.logging.Level;
 

@@ -14,7 +14,6 @@
 package org.eclipse.ote.client.ui;
 
 import org.eclipse.osee.ote.service.IOteClientService;
-import org.eclipse.ote.client.ui.internal.OteClientUiPlugin;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
