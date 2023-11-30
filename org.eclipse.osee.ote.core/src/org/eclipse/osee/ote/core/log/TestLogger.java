@@ -50,6 +50,7 @@ import org.eclipse.osee.ote.core.log.record.WarningRecord;
 public class TestLogger extends Logger implements ITestLogger {
 
    private Set<String> requirementIds;
+   private TestCase currentTestCase;
 
    /**
     * TestLogger Constructor. Sets logging level and filter.
@@ -167,6 +168,7 @@ public class TestLogger extends Logger implements ITestLogger {
    @Override
    public void testCaseBegan(TestCase testCase) {
       log(testCase.getTestRecord());
+      currentTestCase = testCase;
    }
 
    /**
@@ -355,6 +357,12 @@ public class TestLogger extends Logger implements ITestLogger {
    
    public void clearRequirementCoverage() {
       this.requirementIds.clear();
+   }
+   
+   public void addPartNumber(String part, String number) {
+	   if(currentTestCase != null) {
+		   currentTestCase.addPartNumber(part, number);		   
+	   }
    }
 
 }

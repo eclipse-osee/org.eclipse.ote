@@ -301,4 +301,9 @@ public class MockTestLogger implements ITestLogger {
       // TODO Auto-generated method stub
    }
 
+   @Override
+   public void addPartNumber(String part, String number) {
+	   // TODO Auto-generated method stub
+   }
+
 }

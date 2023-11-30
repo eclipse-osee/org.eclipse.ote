@@ -43,6 +43,7 @@ import org.eclipse.osee.ote.core.log.record.RequirementRecord;
 import org.eclipse.osee.ote.core.log.record.TestCaseRecord;
 import org.eclipse.osee.ote.core.log.record.TestDescriptionRecord;
 import org.eclipse.osee.ote.core.log.record.TestRecord;
+import org.eclipse.osee.ote.core.log.record.PartNumberRecord;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -109,6 +110,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
    @JsonProperty
    public int number;
    protected List<RequirementRecord> traceability = new ArrayList<>();
+   private List<PartNumberRecord> partNo = new ArrayList<>();
 
    public TestCase(TestScript testScript) {
       this(testScript, false);
@@ -274,22 +276,28 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       }
       return description;
    }
-
+   
    @Override
    public Element toXml(Document doc) {
       Element testCaseElement = doc.createElement("TestCase");
       testCaseElement.appendChild(getTastCaseNumberXml(doc));
       testCaseElement.appendChild(getTestCaseClassName(doc));
       testCaseElement.appendChild(getTracabilityXml(doc));
+      if(partNo.size() > 0) {
+    	  testCaseElement.appendChild(getPartNoXml(doc));    	  
+      }
       return testCaseElement;
-   }
-
+   }   
+   
    @Override
    public void toXml(XMLStreamWriter writer) throws XMLStreamException {
       writer.writeStartElement("TestCase");
       writeTestCaseNumber(writer);
       writeTestCaseClassName(writer);
       writeTracability(writer);
+      if(partNo.size() > 0) {
+          writePartNo(writer);    	  
+      }
    }
 
    /**
@@ -440,5 +448,25 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       } else {
          return traceability;
       }
+   }
+   
+   public void addPartNumber(String part, String number) {
+	   partNo.add(new PartNumberRecord(part, number));
+   }
+   
+   public Element getPartNoXml(Document doc) {
+	   Element traceElement = doc.createElement("PartNumbers");
+	   for (PartNumberRecord record : partNo) {
+		   traceElement.appendChild(record.toXml(doc));
+	   }
+	   return traceElement;
+   }
+   
+   public void writePartNo(XMLStreamWriter writer) throws XMLStreamException {
+	   writer.writeStartElement("PartNumbers");
+	   for (PartNumberRecord record : partNo) {
+		   record.toXml(writer);
+	   }
+	   writer.writeEndElement();
    }
 }

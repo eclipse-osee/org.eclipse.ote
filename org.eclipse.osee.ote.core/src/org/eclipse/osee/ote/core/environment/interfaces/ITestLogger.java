@@ -83,4 +83,6 @@ public interface ITestLogger {
    
    public void clearRequirementCoverage();
    
+   public void addPartNumber(String part, String number);
+   
 }

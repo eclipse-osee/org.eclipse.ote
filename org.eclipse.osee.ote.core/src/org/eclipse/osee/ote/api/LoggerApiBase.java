@@ -55,4 +55,14 @@ public class LoggerApiBase {
       testEnv.getLogger().clearRequirementCoverage();
    }
 
+   /**
+    * Add a PartNumber to the current testCase.
+    * 
+    * @param part
+    * @param number
+    */
+   public void addPartNumber(String part, String number) {
+      testEnv.getLogger().addPartNumber(part.trim(), number.trim());
+   }
+
 }
