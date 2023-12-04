@@ -2,9 +2,9 @@
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
 <setAttribute key="additional_plugins">
 <setEntry value="org.eclipse.equinox.cm:1.4.400.v20200422-1833:default:true:default:true"/>
-<setEntry value="org.eclipse.osee.ote.connection.service:0.26.3.qualifier:default:true:default:true"/>
-<setEntry value="org.eclipse.osee.ote.io:0.26.3.qualifier:default:true:2:true"/>
-<setEntry value="org.eclipse.osee.ote.rest:0.26.3.qualifier:default:true:default:true"/>
+<setEntry value="org.eclipse.osee.ote.connection.service:0.26.13.qualifier:default:true:default:true"/>
+<setEntry value="org.eclipse.osee.ote.io:0.26.13.qualifier:default:true:2:true"/>
+<setEntry value="org.eclipse.osee.ote.rest:0.26.13.qualifier:default:true:default:true"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
 <stringAttribute key="application" value="org.eclipse.osee.ote.core.server"/>

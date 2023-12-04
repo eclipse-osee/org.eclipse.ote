@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.eclipse.ote.simple</groupId>
 		<artifactId>org.eclipse.ote.simple.parent</artifactId>
-		<version>0.26.3-SNAPSHOT</version>
+		<version>0.26.13-SNAPSHOT</version>
 		<relativePath>../org.eclipse.ote.simple.parent</relativePath>
 	</parent>
 

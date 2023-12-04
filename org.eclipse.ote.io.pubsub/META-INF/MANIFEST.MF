@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE IO Pubsub
 Bundle-SymbolicName: org.eclipse.ote.io.pubsub
-Bundle-Version: 0.26.3.qualifier
+Bundle-Version: 0.26.13.qualifier
 Bundle-Vendor: Boeing
 Automatic-Module-Name: org.eclipse.ote.message.pubsub
 Bundle-RequiredExecutionEnvironment: JavaSE-11

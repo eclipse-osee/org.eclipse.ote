@@ -6,7 +6,7 @@
    <parent>
       <groupId>org.eclipse.ote.build</groupId>
       <artifactId>core</artifactId>
-      <version>0.26.3-SNAPSHOT</version>
+      <version>0.26.13-SNAPSHOT</version>
       <relativePath>../../maven/core</relativePath>
    </parent>
 
@@ -14,7 +14,7 @@
    <artifactId>ote.dependencies.parent</artifactId>
    <packaging>pom</packaging>
    <name>OTE Runtime Parent</name>
-   <version>0.26.3-SNAPSHOT</version>
+   <version>0.26.13-SNAPSHOT</version>
 
    <modules>
       <module>../../../net.sourceforge.tess4j</module>

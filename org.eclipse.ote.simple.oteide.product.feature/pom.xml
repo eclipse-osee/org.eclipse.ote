@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>ote.ide</groupId>
 		<artifactId>org.eclipse.ote.simple.oteide.product.parent</artifactId>
-		<version>0.26.3-SNAPSHOT</version>
+		<version>0.26.13-SNAPSHOT</version>
 		<relativePath>../org.eclipse.ote.simple.oteide.product.parent</relativePath>
 	</parent>
 	

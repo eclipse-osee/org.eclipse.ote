@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.eclipse.ote.test.server</groupId>
 		<artifactId>org.eclipse.ote.test.server.parent</artifactId>
-		<version>0.26.3-SNAPSHOT</version>
+		<version>0.26.13-SNAPSHOT</version>
 		<relativePath>../org.eclipse.ote.test.server.parent</relativePath>
 	</parent>
 
 	<artifactId>org.eclipse.ote.test.server.p2</artifactId>
 	<packaging>eclipse-repository</packaging>
 	<name>OTE Test Server - p2 Site </name>
-	<version>0.26.3-SNAPSHOT</version>
+	<version>0.26.13-SNAPSHOT</version>
 
 	<build>
 		<plugins>

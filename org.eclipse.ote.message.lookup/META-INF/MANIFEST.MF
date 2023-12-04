@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE Message Lookup (Incubation)
 Bundle-SymbolicName: org.eclipse.ote.message.lookup
-Bundle-Version: 0.26.3.qualifier
+Bundle-Version: 0.26.13.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.hsqldb
 Bundle-ActivationPolicy: lazy

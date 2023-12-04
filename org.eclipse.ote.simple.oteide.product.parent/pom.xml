@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.ote.build</groupId>
 		<artifactId>core</artifactId>
-		<version>0.26.3-SNAPSHOT</version>
+		<version>0.26.13-SNAPSHOT</version>
 		<relativePath>../org.eclipse.ote.build/maven/core/</relativePath>
 	</parent>
 
@@ -14,7 +14,7 @@
 	<artifactId>org.eclipse.ote.simple.oteide.product.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>OTE IDE Product - Parent (Incubation)</name>
-	<version>0.26.3-SNAPSHOT</version>
+	<version>0.26.13-SNAPSHOT</version>
     
     <modules>
 		<module>../org.eclipse.ote.basic</module>
