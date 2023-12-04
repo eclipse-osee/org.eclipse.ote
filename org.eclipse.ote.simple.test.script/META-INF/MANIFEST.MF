@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE Simple Test Script
 Bundle-SymbolicName: org.eclipse.ote.simple.test.script
-Bundle-Version: 0.26.3.qualifier
+Bundle-Version: 0.26.13.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.junit,
  org.eclipse.ote.simple.test.environment

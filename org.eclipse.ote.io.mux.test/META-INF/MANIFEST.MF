@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE IO Mux Unit Tests
 Bundle-SymbolicName: org.eclipse.ote.io.mux.test
-Bundle-Version: 0.26.3.qualifier
+Bundle-Version: 0.26.13.qualifier
 Fragment-Host: org.eclipse.ote.io.mux
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit

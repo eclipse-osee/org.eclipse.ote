@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE OTE UI
 Bundle-SymbolicName: org.eclipse.ote.ui;singleton:=true
-Bundle-Version: 0.26.3.qualifier
+Bundle-Version: 0.26.13.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.ui.swt

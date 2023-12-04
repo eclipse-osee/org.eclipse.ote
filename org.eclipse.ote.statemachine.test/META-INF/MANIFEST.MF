@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test
 Bundle-SymbolicName: org.eclipse.ote.statemachine.test
-Bundle-Version: 0.26.3.qualifier
-Fragment-Host: org.eclipse.ote.statemachine;bundle-version="0.26.3"
+Bundle-Version: 0.26.13.qualifier
+Fragment-Host: org.eclipse.ote.statemachine
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit,
  org.eclipse.equinox.event;bundle-version="1.2.200",

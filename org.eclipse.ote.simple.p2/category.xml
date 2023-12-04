@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.ote.simple.feature_0.26.3.qualifier.jar" id="org.eclipse.ote.simple.feature" version="0.26.3.qualifier">
+   <feature url="features/org.eclipse.ote.simple.feature_0.26.13.qualifier.jar" id="org.eclipse.ote.simple.feature" version="0.26.13.qualifier">
       <category name="base.qual"/>
    </feature>
    <category-def name="org.eclipse.ote.simple" label="OTE Simple">

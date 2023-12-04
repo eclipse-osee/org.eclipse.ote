@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Basic OTE Environment
 Bundle-SymbolicName: org.eclipse.ote.basic
-Bundle-Version: 0.26.3.qualifier
+Bundle-Version: 0.26.13.qualifier
 Automatic-Module-Name: org.eclipse.ote.basic
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.eclipse.osee.framework.core.enums,

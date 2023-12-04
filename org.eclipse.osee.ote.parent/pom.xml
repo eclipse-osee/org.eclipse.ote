@@ -6,7 +6,7 @@
 	<!--<parent>
 		<groupId>org.eclipse.ote</groupId>
 		<artifactId>org.eclipse.ote.mavenbuild</artifactId>
-		<version>0.26.3-SNAPSHOT</version>
+		<version>0.26.13-SNAPSHOT</version>
 		<relativePath>../org.eclipse.ote.mavenbuild</relativePath>
 	</parent>-->
 
@@ -14,7 +14,7 @@
 	<artifactId>org.eclipse.osee.ote.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>OSEE OTE - Parent (Incubation)</name>
-	<version>0.26.3-SNAPSHOT</version>
+	<version>0.26.13-SNAPSHOT</version>
 
 	<modules>
 		<module>../org.eclipse.osee.framework.ui.workspacebundleloader</module>

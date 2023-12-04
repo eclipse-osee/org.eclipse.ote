@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.ote.client.feature_0.26.3.qualifier.jar" id="org.eclipse.ote.client.feature" version="0.26.3.qualifier">
+   <feature url="features/org.eclipse.ote.client.feature_0.26.13.qualifier.jar" id="org.eclipse.ote.client.feature" version="0.26.13.qualifier">
       <category name="org.eclipse.ote"/>
    </feature>
-   <feature url="features/org.eclipse.ote.client.feature.source_0.26.3.qualifier.jar" id="org.eclipse.ote.client.feature.source" version="0.26.3.qualifier">
+   <feature url="features/org.eclipse.ote.client.feature.source_0.26.13.qualifier.jar" id="org.eclipse.ote.client.feature.source" version="0.26.13.qualifier">
       <category name="org.eclipse.ote"/>
    </feature>
-   <feature url="features/org.eclipse.ote.serverclient.feature_0.26.3.qualifier.jar" id="org.eclipse.ote.serverclient.feature" version="0.26.3.qualifier">
+   <feature url="features/org.eclipse.ote.serverclient.feature_0.26.13.qualifier.jar" id="org.eclipse.ote.serverclient.feature" version="0.26.13.qualifier">
       <category name="org.eclipse.ote"/>
    </feature>
-   <feature url="features/org.eclipse.ote.serverclient.feature.source_0.26.3.qualifier.jar" id="org.eclipse.ote.serverclient.feature.source" version="0.26.3.qualifier">
+   <feature url="features/org.eclipse.ote.serverclient.feature.source_0.26.13.qualifier.jar" id="org.eclipse.ote.serverclient.feature.source" version="0.26.13.qualifier">
       <category name="org.eclipse.ote"/>
    </feature>
-   <feature url="features/org.eclipse.ote.server.feature_0.26.3.qualifier.jar" id="org.eclipse.ote.server.feature" version="0.26.3.qualifier">
+   <feature url="features/org.eclipse.ote.server.feature_0.26.13.qualifier.jar" id="org.eclipse.ote.server.feature" version="0.26.13.qualifier">
       <category name="org.eclipse.ote"/>
    </feature>
-   <feature url="features/org.eclipse.ote.server.feature.source_0.26.3.qualifier.jar" id="org.eclipse.ote.server.feature.source" version="0.26.3.qualifier">
+   <feature url="features/org.eclipse.ote.server.feature.source_0.26.13.qualifier.jar" id="org.eclipse.ote.server.feature.source" version="0.26.13.qualifier">
       <category name="org.eclipse.ote"/>
    </feature>
-   <feature url="features/org.eclipse.osee.client.ote.feature_0.26.3.qualifier.jar" id="org.eclipse.osee.client.ote.feature" version="0.26.3.qualifier">
+   <feature url="features/org.eclipse.osee.client.ote.feature_0.26.13.qualifier.jar" id="org.eclipse.osee.client.ote.feature" version="0.26.13.qualifier">
       <category name="org.eclipse.ote"/>
    </feature>
-   <feature url="features/org.eclipse.osee.client.ote.feature.source_0.26.3.qualifier.jar" id="org.eclipse.osee.client.ote.feature.source" version="0.26.3.qualifier">
+   <feature url="features/org.eclipse.osee.client.ote.feature.source_0.26.13.qualifier.jar" id="org.eclipse.osee.client.ote.feature.source" version="0.26.13.qualifier">
       <category name="org.eclipse.ote"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ote.feature_0.26.3.qualifier.jar" id="org.eclipse.osee.ote.feature" version="0.26.3.qualifier">
+   <feature url="features/org.eclipse.osee.ote.feature_0.26.13.qualifier.jar" id="org.eclipse.osee.ote.feature" version="0.26.13.qualifier">
       <category name="org.eclipse.ote"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ote.feature.source_0.26.3.qualifier.jar" id="org.eclipse.osee.ote.feature.source" version="0.26.3.qualifier">
+   <feature url="features/org.eclipse.osee.ote.feature.source_0.26.13.qualifier.jar" id="org.eclipse.osee.ote.feature.source" version="0.26.13.qualifier">
       <category name="org.eclipse.ote"/>
    </feature>
-    <feature url="features/org.eclipse.osee.ote.server.external.feature_0.26.3.qualifier.jar" id="org.eclipse.osee.ote.server.external.feature" version="0.26.3.qualifier">
+    <feature url="features/org.eclipse.osee.ote.server.external.feature_0.26.13.qualifier.jar" id="org.eclipse.osee.ote.server.external.feature" version="0.26.13.qualifier">
       <category name="org.eclipse.ote"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ote.server.external.feature.source_0.26.3.qualifier.jar" id="org.eclipse.osee.ote.server.external.feature.source" version="0.26.3.qualifier">
+   <feature url="features/org.eclipse.osee.ote.server.external.feature.source_0.26.13.qualifier.jar" id="org.eclipse.osee.ote.server.external.feature.source" version="0.26.13.qualifier">
       <category name="org.eclipse.ote"/>
    </feature>
    

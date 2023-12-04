@@ -7,7 +7,7 @@
 
 	<groupId>org.eclipse.ote.rest.server</groupId>
 	<artifactId>org.eclipse.ote.rest.server</artifactId>
-	<version>0.26.3-SNAPSHOT</version>
+	<version>0.26.13-SNAPSHOT</version>
 
 	<name>org.eclipse.ote.rest.server</name>
 	<!-- FIXME change it to the project's website -->
