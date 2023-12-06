@@ -54,11 +54,15 @@ public class SummaryReportGenerator {
     *  Extension to {@link #generate(File)}.
     */
    public static SummaryReport generate(File tmoDirectory, Boolean importTestPoints) {
+      SummaryReport reportToReturn = new SummaryReport();
+      
       if(tmoDirectory.isDirectory()) {
          BlockingQueue<File> listOfFiles = new LinkedBlockingQueue<File>();
          listOfFiles.addAll(Lib.recursivelyListFiles(tmoDirectory, Pattern.compile(".*\\.tmo")));
-
-         SummaryReport reportToReturn = new SummaryReport();
+         
+         if(listOfFiles.size() == 0) {
+            return reportToReturn;
+         }
          
          int threadCount = (listOfFiles.size() < THREAD_COUNT) ? listOfFiles.size() : THREAD_COUNT;
          
@@ -98,10 +102,9 @@ public class SummaryReportGenerator {
          }
          
          executor.shutdown();
-         return reportToReturn;
       }
       
-      return null;
+      return reportToReturn;
    }
    
    /**

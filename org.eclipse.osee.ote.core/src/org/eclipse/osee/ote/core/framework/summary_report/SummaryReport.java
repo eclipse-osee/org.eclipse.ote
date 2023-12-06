@@ -58,6 +58,10 @@ public class SummaryReport {
    protected List<SummaryItem> getResultSummary() {
       return testResultSummary;
    }
+   
+   protected int getFileCount() {
+      return testResultSummary.size();
+   }
 
    public void importTmoDirectory(File tmoDirectory) {
       addAllItems(SummaryReportGenerator.generate(tmoDirectory).getResultSummary());
@@ -84,6 +88,10 @@ public class SummaryReport {
     * @return The summary report as a Markdown-formatted string.
     */
    public String buildSummaryReport(boolean includeRequirementsTable, boolean includeInteractives) {
+      if(testResultSummary.size() == 0) {
+         return "No test results found. Please ensure that .TMO files are available in the provided directories.";
+      }
+      
       String result = REPORT_TITLE + "\n";
 
       List<SummaryItem> abortedList = getAborted();
