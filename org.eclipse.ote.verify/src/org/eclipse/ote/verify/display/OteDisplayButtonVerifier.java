@@ -12,10 +12,11 @@
  **********************************************************************/
 package org.eclipse.ote.verify.display;
 
-import org.eclipse.osee.ote.core.environment.OteInternalApi;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.Operation;
 import org.eclipse.ote.verify.OteVerifierAttribute;
+import org.eclipse.ote.verify.OteVerifierObjectAttribute;
+import org.eclipse.ote.verify.OteVerifierStringAttribute;
 
 /**
  * @author Leonel Pena
@@ -23,17 +24,15 @@ import org.eclipse.ote.verify.OteVerifierAttribute;
  */
 public class OteDisplayButtonVerifier<T extends OteDisplayButtonVerifier<T>> extends OteDisplayObjectVerifier<T> {
 
-   private final OteVerifierAttribute color;
-   private final OteVerifierAttribute firstLineLabel;
-   private final OteVerifierAttribute secondLineLabel;
+   private final OteVerifierObjectAttribute color;
+   private final OteVerifierStringAttribute firstLineLabel;
+   private final OteVerifierStringAttribute secondLineLabel;
 
-   public OteDisplayButtonVerifier(OteInternalApi api) {
-      super(api);
+   public OteDisplayButtonVerifier() {
+      this.firstLineLabel = new OteVerifierStringAttribute("First Line Label", OteVerifierAttribute.REQUIRED);
+      this.secondLineLabel = new OteVerifierStringAttribute("Second Line Label", OteVerifierAttribute.OPTIONAL);
 
-      this.firstLineLabel = new OteVerifierAttribute("First Line Label", OteVerifierAttribute.REQUIRED);
-      this.secondLineLabel = new OteVerifierAttribute("Second Line Label", OteVerifierAttribute.OPTIONAL);
-
-      this.color = new OteVerifierAttribute("Color", OteVerifierAttribute.OPTIONAL);
+      this.color = new OteVerifierObjectAttribute("Color", OteVerifierAttribute.OPTIONAL);
    }
 
    /**
@@ -53,14 +52,14 @@ public class OteDisplayButtonVerifier<T extends OteDisplayButtonVerifier<T>> ext
    /**
     * @return the label on the first line
     */
-   public OteVerifierAttribute getFirstLineLabel() {
+   public OteVerifierStringAttribute getFirstLineLabel() {
       return firstLineLabel;
    }
 
    /**
     * @return the label on the second line
     */
-   public OteVerifierAttribute getSecondLineLabel() {
+   public OteVerifierStringAttribute getSecondLineLabel() {
       return secondLineLabel;
    }
 

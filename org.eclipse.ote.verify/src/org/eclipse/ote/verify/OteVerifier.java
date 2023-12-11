@@ -19,17 +19,9 @@ import org.eclipse.osee.ote.core.testPoint.CheckPoint;
 
 /**
  * @author Michael P. Masterson
- * @param <T> The concrete implementation 
+ * @param <T> The concrete implementation
  */
 public abstract class OteVerifier<T extends OteVerifier<T>> {
-   protected OteInternalApi api;
-   
-   /**
-    * @param api Needed for logging results
-    */
-   public OteVerifier(OteInternalApi api) {
-      this.api = api;
-   }
 
    /**
     * Creates a test point comparing this object to the actual argument
@@ -38,8 +30,8 @@ public abstract class OteVerifier<T extends OteVerifier<T>> {
     * @return A test point indicating if this object matches the actual argument
     */
    public abstract ITestPoint verify(T actual);
-   
-   public void logResults(ITestPoint tp) {
+
+   public void logResults(OteInternalApi api, ITestPoint tp) {
       api.testLogger().testpoint(api, tp);
    }
 
@@ -51,13 +43,13 @@ public abstract class OteVerifier<T extends OteVerifier<T>> {
     * @param actual
     * @param groupToUpdate
     */
-   protected void addToCheckGroup(OteVerifierAttribute expected, OteVerifierAttribute actual, CheckGroup groupToUpdate) {
+   protected <A> void addToCheckGroup(OteVerifierAttribute<A> expected, OteVerifierAttribute<A> actual, CheckGroup groupToUpdate) {
       OteMatchResult matches = expected.matches(actual);
-   
+
       if (!matches.equals(OteMatchResult.NOT_USED)) {
          groupToUpdate.add(new CheckPoint(expected.getName(), expected.toString(), actual.toString(),
             matches.equals(OteMatchResult.PASSED)));
       }
    }
-   
+
 }

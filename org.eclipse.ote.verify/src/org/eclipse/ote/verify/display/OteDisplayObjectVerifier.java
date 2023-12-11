@@ -13,32 +13,31 @@
 package org.eclipse.ote.verify.display;
 
 import org.eclipse.osee.framework.jdk.core.type.DoublePoint;
-import org.eclipse.osee.ote.core.environment.OteInternalApi;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.Operation;
 import org.eclipse.ote.verify.OteVerifier;
 import org.eclipse.ote.verify.OteVerifierAttribute;
+import org.eclipse.ote.verify.OteVerifierPointAttribute;
 
 /**
  * @author Michael P. Masterson
  * @param <T>
  */
 public class OteDisplayObjectVerifier<T extends OteDisplayObjectVerifier<T>> extends OteVerifier<T> {
-   private final OteVerifierAttribute position;
+   private final OteVerifierPointAttribute position;
 
    /**
     * @param api used for logging
     */
-   public OteDisplayObjectVerifier(OteInternalApi api) {
-      super(api);
-      this.position = new OteVerifierAttribute("Position", OteVerifierAttribute.OPTIONAL);
+   public OteDisplayObjectVerifier() {
+      this.position = new OteVerifierPointAttribute("Position", OteVerifierAttribute.OPTIONAL);
    }
 
    public void setPosition(DoublePoint position) {
       this.position.setValue(position);
    }
 
-   public OteVerifierAttribute getPosition() {
+   public OteVerifierPointAttribute getPosition() {
       return position;
    }
 

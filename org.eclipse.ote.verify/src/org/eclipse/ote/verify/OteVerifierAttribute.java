@@ -12,21 +12,20 @@
  **********************************************************************/
 package org.eclipse.ote.verify;
 
-import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Michael P. Masterson
+ * @param <T> Underlying attribute type for matching using the equals() method
  */
-public class OteVerifierAttribute implements Named {
+public abstract class OteVerifierAttribute<T> implements Named {
 
-   // TODO: Add use of these to all constructor calls
    public static final boolean REQUIRED = true;
    public static final boolean OPTIONAL = false;
 
    private final String name;
-   private Object value;
+   private T value;
    private final boolean isRequired;
 
    /**
@@ -36,9 +35,14 @@ public class OteVerifierAttribute implements Named {
     */
    public OteVerifierAttribute(String name, boolean isRequired) {
       this.name = name;
-      this.value = BaseId.SENTINEL;
+      this.value = sentinelValue();
       this.isRequired = isRequired;
    }
+
+   /**
+    * @return The SENTINEL value for this attribute.
+    */
+   public abstract T sentinelValue();
 
    /**
     * Compares this object to the 'actual' argument.
@@ -50,23 +54,23 @@ public class OteVerifierAttribute implements Named {
     * @throws OseeCoreException If the attribute is required but the expected or actual value was never set. Also thrown
     * if the value is optional and the expected value was set but the actual value was never set
     */
-   public OteMatchResult matches(OteVerifierAttribute actual) {
+   public OteMatchResult matches(OteVerifierAttribute<T> actual) {
       if (this.isRequired) {
-         if (this.value.equals(BaseId.SENTINEL)) {
+         if (this.value.equals(sentinelValue())) {
             throw new OseeCoreException("Required attribute '%s' was never set on expected OTE verifier attribute",
                this.name);
          }
 
-         if (actual.value.equals(BaseId.SENTINEL)) {
+         if (actual.value.equals(sentinelValue())) {
             throw new OseeCoreException("Required attribute '%s' was never set on actual OTE verifier attribute",
                actual.name);
          }
 
          return this.value.equals(actual.value) ? OteMatchResult.PASSED : OteMatchResult.FAILED;
       } else {
-         if (this.value.equals(BaseId.SENTINEL)) {
+         if (this.value.equals(sentinelValue())) {
             return OteMatchResult.NOT_USED;
-         } else if (actual.value.equals(BaseId.SENTINEL)) {
+         } else if (actual.value.equals(sentinelValue())) {
             throw new OseeCoreException("Optional attribute '%s' was set on expected but not on actual", actual.name);
          } else {
             return this.value.equals(actual.value) ? OteMatchResult.PASSED : OteMatchResult.FAILED;
@@ -85,14 +89,14 @@ public class OteVerifierAttribute implements Named {
    /**
     * @return the value
     */
-   public Object getValue() {
+   public T getValue() {
       return value;
    }
 
    /**
     * @param value the value to set
     */
-   public void setValue(Object value) {
+   public void setValue(T value) {
       this.value = value;
    }
 

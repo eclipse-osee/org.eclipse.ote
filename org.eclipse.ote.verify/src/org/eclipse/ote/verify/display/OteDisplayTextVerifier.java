@@ -12,10 +12,10 @@
  **********************************************************************/
 package org.eclipse.ote.verify.display;
 
-import org.eclipse.osee.ote.core.environment.OteInternalApi;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.Operation;
-import org.eclipse.ote.verify.OteVerifierAttribute;
+import org.eclipse.ote.verify.OteVerifierObjectAttribute;
+import org.eclipse.ote.verify.OteVerifierStringAttribute;
 
 /**
  * @author Michael P. Masterson
@@ -23,19 +23,18 @@ import org.eclipse.ote.verify.OteVerifierAttribute;
  */
 public class OteDisplayTextVerifier<T extends OteDisplayTextVerifier<T>> extends OteDisplayObjectVerifier<T> {
 
-   private final OteVerifierAttribute label;
-   private final OteVerifierAttribute color;
+   private final OteVerifierStringAttribute label;
+   private final OteVerifierObjectAttribute color;
 
-   public OteDisplayTextVerifier(OteInternalApi api) {
-      super(api);
-      this.label = new OteVerifierAttribute("Label", true);
-      this.color = new OteVerifierAttribute("Color", false);
+   public OteDisplayTextVerifier() {
+      this.label = new OteVerifierStringAttribute("Label", true);
+      this.color = new OteVerifierObjectAttribute("Color", false);
    }
 
    /**
     * @return the label
     */
-   public OteVerifierAttribute getLabel() {
+   public OteVerifierStringAttribute getLabel() {
       return label;
    }
 
@@ -49,7 +48,7 @@ public class OteDisplayTextVerifier<T extends OteDisplayTextVerifier<T>> extends
    /**
     * @return the color
     */
-   public OteVerifierAttribute getColor() {
+   public OteVerifierObjectAttribute getColor() {
       return color;
    }
 

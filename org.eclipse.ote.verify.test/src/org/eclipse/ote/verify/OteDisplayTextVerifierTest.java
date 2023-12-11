@@ -27,7 +27,7 @@ import org.junit.rules.ExpectedException;
  * @author Michael P. Masterson
  */
 public class OteDisplayTextVerifierTest {
-   
+
    private static final String TEST_COLOR = "Some Color";
    public static final double TEST_DOUBLE = 1.234;
    public static final String TEST_STRING = "Test1";
@@ -46,57 +46,56 @@ public class OteDisplayTextVerifierTest {
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
    public void testPassFailCases() {
-      
-      OteDisplayTextVerifier expected = new OteDisplayTextVerifier(api);
-      OteDisplayTextVerifier actual = new OteDisplayTextVerifier(api);
-      
+
+      OteDisplayTextVerifier expected = new OteDisplayTextVerifier();
+      OteDisplayTextVerifier actual = new OteDisplayTextVerifier();
+
       expected.setPosition(new DoublePoint(TEST_DOUBLE, TEST_DOUBLE));
       expected.setLabel(TEST_STRING);
       expected.setColor(TEST_COLOR);
-      
-      actual.setPosition(new DoublePoint(TEST_DOUBLE+1, TEST_DOUBLE));
+
+      actual.setPosition(new DoublePoint(TEST_DOUBLE + 1, TEST_DOUBLE));
       actual.setLabel(TEST_STRING + "_BAD");
       actual.setColor(TEST_COLOR + "_BAD");
-      
-      
+
       CheckGroup group = expected.verify(actual);
       Assert.assertFalse(group.isPass());
-      expected.logResults(group);
+      expected.logResults(api, group);
       ITestPoint result = logger.pop();
       Assert.assertFalse(result.isPass());
-      
-      
-      actual.setPosition(new DoublePoint(TEST_DOUBLE+1, TEST_DOUBLE));
+
+      actual.setPosition(new DoublePoint(TEST_DOUBLE + 1, TEST_DOUBLE));
       actual.setLabel(TEST_STRING);
       actual.setColor(TEST_COLOR);
       group = expected.verify(actual);
       Assert.assertFalse(group.isPass());
-      expected.logResults(group);
+      expected.logResults(api, group);
       result = logger.pop();
       Assert.assertFalse(result.isPass());
 
       actual.setPosition(new DoublePoint(TEST_DOUBLE, TEST_DOUBLE));
       actual.setLabel(TEST_STRING);
       actual.setColor(TEST_COLOR);
-      expected.logResults(expected.verify(actual));
+      expected.logResults(api, expected.verify(actual));
       result = logger.pop();
       Assert.assertTrue(result.isPass());
    }
-   
+
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
    public void testExceptionWhenMissingActualPositionAttribute() {
       this.exceptionRule.expect(OseeCoreException.class);
       this.exceptionRule.expectMessage("Optional attribute 'Position' was set on expected but not on actual");
-      OteDisplayTextVerifier expected = new OteDisplayTextVerifier(api);
-      OteDisplayTextVerifier actual = new OteDisplayTextVerifier(api);
+      OteDisplayTextVerifier expected = new OteDisplayTextVerifier();
+      OteDisplayTextVerifier actual = new OteDisplayTextVerifier();
 
       expected.setPosition(new DoublePoint(TEST_DOUBLE, TEST_DOUBLE));
       expected.setLabel(TEST_STRING);
       expected.setColor(TEST_COLOR);
 
-      actual = new OteDisplayTextVerifier(api);
+      actual = new OteDisplayTextVerifier();
       actual.setLabel(TEST_STRING);
+      actual.setColor(TEST_COLOR);
       expected.verify(actual);
    }
 
@@ -105,14 +104,15 @@ public class OteDisplayTextVerifierTest {
    public void testExceptionWhenMissingActualLabelAttribute() {
       this.exceptionRule.expect(OseeCoreException.class);
       this.exceptionRule.expectMessage("Required attribute 'Label' was never set on actual OTE verifier attribute");
-      OteDisplayTextVerifier expected = new OteDisplayTextVerifier(api);
-      OteDisplayTextVerifier actual = new OteDisplayTextVerifier(api);
+      OteDisplayTextVerifier expected = new OteDisplayTextVerifier();
+      OteDisplayTextVerifier actual = new OteDisplayTextVerifier();
 
       expected.setPosition(new DoublePoint(TEST_DOUBLE, TEST_DOUBLE));
       expected.setLabel(TEST_STRING);
       expected.setColor(TEST_COLOR);
 
       actual.setPosition(new DoublePoint(TEST_DOUBLE + 1, TEST_DOUBLE));
+      actual.setColor(TEST_COLOR);
       expected.verify(actual);
 
    }
@@ -120,8 +120,8 @@ public class OteDisplayTextVerifierTest {
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
    public void testActualHavingMoreAttributesThanExpected() {
-      OteDisplayTextVerifier expected = new OteDisplayTextVerifier(api);
-      OteDisplayTextVerifier actual = new OteDisplayTextVerifier(api);
+      OteDisplayTextVerifier expected = new OteDisplayTextVerifier();
+      OteDisplayTextVerifier actual = new OteDisplayTextVerifier();
 
       expected.setLabel(TEST_STRING);
       expected.setColor(TEST_COLOR);
@@ -129,10 +129,10 @@ public class OteDisplayTextVerifierTest {
       actual.setPosition(new DoublePoint(TEST_DOUBLE + 1, TEST_DOUBLE));
       actual.setLabel(TEST_STRING);
       actual.setColor(TEST_COLOR);
-      expected.logResults(expected.verify(actual));
+      expected.logResults(api, expected.verify(actual));
       ITestPoint result = logger.pop();
       Assert.assertTrue(result.isPass());
-      
+
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
@@ -141,8 +141,8 @@ public class OteDisplayTextVerifierTest {
       this.exceptionRule.expect(OseeCoreException.class);
       this.exceptionRule.expectMessage("Optional attribute 'Color' was set on expected but not on actual");
 
-      OteDisplayTextVerifier expected = new OteDisplayTextVerifier(api);
-      OteDisplayTextVerifier actual = new OteDisplayTextVerifier(api);
+      OteDisplayTextVerifier expected = new OteDisplayTextVerifier();
+      OteDisplayTextVerifier actual = new OteDisplayTextVerifier();
 
       expected.setPosition(new DoublePoint(TEST_DOUBLE, TEST_DOUBLE));
       expected.setLabel(TEST_STRING);
