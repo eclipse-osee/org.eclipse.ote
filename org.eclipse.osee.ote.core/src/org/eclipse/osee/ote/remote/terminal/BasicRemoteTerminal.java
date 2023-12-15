@@ -15,10 +15,11 @@ package org.eclipse.osee.ote.remote.terminal;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.invoke.VolatileCallSite;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.ote.core.environment.interfaces.BasicTimeout;
 import org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimerControl;
@@ -31,8 +32,9 @@ import com.jcraft.jsch.Session;
  * @author Nydia Delgado, Dominic Leiner
  */
 public class BasicRemoteTerminal implements OteRemoteTerminal {
+   private static final int TEN_MINUTE_DEFAULT_TIMEOUT = 600000;
    //wait this long in milliseconds between output updates
-   static final int SLEEP_TIME = 1000; 
+   static final int SLEEP_TIME = 250; 
    private final BasicTimeout timeoutWaiter = new BasicTimeout();
    private final ITimerControl timerControl;
    
@@ -113,6 +115,7 @@ public class BasicRemoteTerminal implements OteRemoteTerminal {
 
    /**
     * Issues command to open remote terminal session
+    * Uses default timeout
     * 
     * @param command
     * @return {@link OteRemoteTerminalResponse} if no exceptions while sending
@@ -121,27 +124,92 @@ public class BasicRemoteTerminal implements OteRemoteTerminal {
     *         verifications
     */
    public OteRemoteTerminalResponse command(String command) {
-      OteRemoteTerminalResponse retVal;
-
-      try {
-         ChannelExec channel = (ChannelExec) session.openChannel("exec");
-         channel.setCommand(command);
-         channel.connect();
-
-         retVal = getOutput(channel);
-
-         channel.disconnect();
-      } catch (IOException e) {
-         retVal = new OteRemoteTerminalResponseException(e);
-      } catch (JSchException e) {
-         retVal = new OteRemoteTerminalResponseException(e);
-      }
-      return retVal;
+      return command(command, TEN_MINUTE_DEFAULT_TIMEOUT);
    }
    
    /**
+    * Issues command to open remote terminal session
+    * 
+    * @param command
+    * @param timeoutInMs
+    * @return {@link OteRemoteTerminalResponse} if no exceptions while sending
+    *         command to remote terminal session, otherwise an
+    *         {@link OteRemoteTerminalResponseException} that fails all
+    *         verifications
+    */
+   public OteRemoteTerminalResponse command(String command, int timeoutInMs) {
+       final ExecutorService processThread = Executors.newSingleThreadExecutor();
+       OteRemoteTerminalResponse response;
+       RemoteProcRunnable myRunnable = new RemoteProcRunnable(command);
+       processThread.execute(myRunnable);
+       processThread.shutdown();
+       
+       try {
+          boolean completed = processThread.awaitTermination(timeoutInMs, TimeUnit.MILLISECONDS);
+          if(completed) {
+             response = myRunnable.getResponse();
+          } else {
+             myRunnable.stop();
+             Exception ex = new OseeCoreException("Timed out executing remote process after %d %s",
+                                                  timeoutInMs, TimeUnit.MILLISECONDS);
+             response = new OteRemoteTerminalResponseException(ex);
+          }
+       }
+       catch (InterruptedException ex) {
+           response = new OteRemoteTerminalResponseException(ex);
+       }
+       return response;
+    }
+   
+   private class RemoteProcRunnable implements Runnable {
+
+       private final String command;
+       private OteRemoteTerminalResponse response;
+       private ChannelExec channel;
+
+       /**
+        * @param command
+        */
+       public RemoteProcRunnable(String command) {
+          this.command = command;
+       }
+
+       /**
+        * @return the response
+        */
+       public OteRemoteTerminalResponse getResponse() {
+          return response;
+       }
+       
+       /**
+        * Stops the process.
+        */
+       public void stop() {
+          if(channel != null)
+              channel.disconnect();
+       }
+
+       @Override
+       public void run() {
+          try {
+              channel = (ChannelExec) session.openChannel("exec");
+              channel.setCommand(command);
+              channel.connect();
+
+              response = getOutput(channel);
+
+              channel.disconnect();
+          }
+          catch (Exception ex) {
+              response = new OteRemoteTerminalResponseException(ex);
+          }
+       }
+
+    }
+   
+   /**
     * Issues command to open remote terminal session & not wait for a response.
-    * Default no timeout.
+    * Default 10 minute timeout.
     * 
     * @param command
     * @return {@link OteRemoteTerminalResponseStream} 
@@ -149,8 +217,7 @@ public class BasicRemoteTerminal implements OteRemoteTerminal {
     *          Encapsulates an OteRemoteTerminalResponse.
     */
    public OteRemoteTerminalResponseStream commandAndContinue(String command) {
-      int noTimeout = 0;
-      return commandAndContinue(command, noTimeout);
+      return commandAndContinue(command, TEN_MINUTE_DEFAULT_TIMEOUT);
    }
    
    /**
@@ -171,21 +238,29 @@ public class BasicRemoteTerminal implements OteRemoteTerminal {
          }
          
          public void stop() {
-            if(!responseStream.isClosed())
+            if(!responseStream.isClosed()) {
                this.responseStream.kill();
+            }
          }
          
          public void run() {
             ChannelExec channel = responseStream.getChannel();
             try {
+               try {
+                  //Give the thread a brief time to start & get some output.
+                  Thread.sleep(100);
+               } catch (InterruptedException e) {
+                  //Do nothing
+               }
                getOutputStream(responseStream);
                responseStream.closed(channel.getExitStatus());
             }
             catch (IOException e) {
                responseStream.exception(new OteRemoteTerminalResponseException(e));
             } finally {
-               if(channel != null) 
+               if(channel != null) {
                   channel.disconnect();
+               }
             }
             
          }
@@ -236,6 +311,13 @@ public class BasicRemoteTerminal implements OteRemoteTerminal {
          threadStopper.setDaemon(true);
          threadStopper.start(); 
       }      
+      
+      try {
+         //Give the thread a brief period to get output
+         Thread.sleep(100);
+      } catch (InterruptedException e) {
+         //Do nothing
+      }
 
       return retVal;
    }
