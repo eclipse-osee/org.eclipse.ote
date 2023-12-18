@@ -14,6 +14,7 @@ package org.eclipse.osee.ote.api.local;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
 /**
  * @author Dominic Leiner
@@ -93,6 +94,40 @@ public class LocalProcessStream {
       
       this.isDone = true;
    }
+   
+   /**
+    * Verifies the exit code from the local process is exactly equal to the code parameter
+    * 
+    * @param accessor For logging
+    * @param testPointName
+    * @param expectedCode Expected status code
+    */
+   public void verifyExitCode(ITestAccessor accessor, String testPointName, int expectedCode) {
+       this.getResponse().verifyExitCode(accessor, testPointName, expectedCode);
+   }
+
+   /**
+    * Verifies the output stream from the local process contains the provided string
+    * 
+    * @param accessor For logging
+    * @param testPointName
+    * @param str Substring to match in the output stream
+    */
+   public void verifyOutputStreamContains(ITestAccessor accessor, String testPointName, String str) {
+       this.getResponse().verifyOutputStreamContains(accessor, testPointName, str);
+   }
+
+   /**
+    * Verifies the error stream from the local process contains the provided string
+    * 
+    * @param accessor For logging
+    * @param testPointName
+    * @param str Substring to match in the error stream
+    */
+   public void verifyErrorStreamContains(ITestAccessor accessor, String testPointName, String str) {
+       this.getResponse().verifyErrorStreamContains(accessor, testPointName, str);
+   }
+   
    
    public String toString() {
          return getClass().getSimpleName()  + " {\n\tisDone: " + isDone + 

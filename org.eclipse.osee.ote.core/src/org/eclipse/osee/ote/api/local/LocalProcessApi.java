@@ -198,7 +198,14 @@ public class LocalProcessApi {
       });
       
       processThread.shutdown();
-      timeoutExecutor.shutdown();
+      timeoutExecutor.shutdown();   
+      
+      try {
+         //Give the thread a brief time to get output
+         Thread.sleep(250);
+      } catch (InterruptedException e) {
+         // Do nothing
+      }
       
       return response;
    }
