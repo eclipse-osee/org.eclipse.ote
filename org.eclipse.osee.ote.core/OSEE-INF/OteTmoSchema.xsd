@@ -228,6 +228,22 @@
 				<xs:choice maxOccurs="unbounded">
 					<xs:element name="Number" type="xs:unsignedInt" />
 					<xs:element name="Name" type="xs:string" />
+					<xs:element name="PartNumbers" minOccurs="0" maxOccurs="1">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="PartNumber" minOccurs="1" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:simpleContent>
+											<xs:extension base="xs:string">
+												<xs:attribute name="part" type="xs:string" use="required" />
+												<xs:attribute name="number" type="xs:string" use="required" />
+											</xs:extension>
+										</xs:simpleContent>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
 					<xs:element name="Tracability">
 						<xs:complexType mixed="true">
 							<xs:sequence minOccurs="0">
