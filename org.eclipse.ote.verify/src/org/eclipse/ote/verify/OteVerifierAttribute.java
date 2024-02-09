@@ -27,6 +27,7 @@ public abstract class OteVerifierAttribute<T> implements Named {
    private final String name;
    private T value;
    private final boolean isRequired;
+   private boolean isUsed;
 
    /**
     * @param name the name used for logging results
@@ -56,21 +57,21 @@ public abstract class OteVerifierAttribute<T> implements Named {
     */
    public OteMatchResult matches(OteVerifierAttribute<T> actual) {
       if (this.isRequired) {
-         if (this.value.equals(sentinelValue())) {
+         if (!this.isUsed()) {
             throw new OseeCoreException("Required attribute '%s' was never set on expected OTE verifier attribute",
                this.name);
          }
 
-         if (actual.value.equals(sentinelValue())) {
+         if (!actual.isUsed()) {
             throw new OseeCoreException("Required attribute '%s' was never set on actual OTE verifier attribute",
                actual.name);
          }
 
          return this.value.equals(actual.value) ? OteMatchResult.PASSED : OteMatchResult.FAILED;
       } else {
-         if (this.value.equals(sentinelValue())) {
+         if (!this.isUsed()) {
             return OteMatchResult.NOT_USED;
-         } else if (actual.value.equals(sentinelValue())) {
+         } else if (!actual.isUsed()) {
             throw new OseeCoreException("Optional attribute '%s' was set on expected but not on actual", actual.name);
          } else {
             return this.value.equals(actual.value) ? OteMatchResult.PASSED : OteMatchResult.FAILED;
@@ -98,6 +99,14 @@ public abstract class OteVerifierAttribute<T> implements Named {
     */
    public void setValue(T value) {
       this.value = value;
+      this.isUsed = true;
+   }
+
+   /**
+    * @return true if this attribute's value has been changed from the default
+    */
+   public boolean isUsed() {
+      return isUsed;
    }
 
    @Override
