@@ -38,7 +38,7 @@ public class OteDisplayButtonVerifier<T extends OteDisplayButtonVerifier<T>> ext
    /**
     * @return the color
     */
-   public OteVerifierAttribute getColor() {
+   public OteVerifierObjectAttribute getColor() {
       return color;
    }
 

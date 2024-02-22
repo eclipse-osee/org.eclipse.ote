@@ -36,8 +36,8 @@ public abstract class OteVerifier<T extends OteVerifier<T>> {
    }
 
    /**
-    * Adds a new test point to the checkgroup comparing the expected and actual ONLY IF the attributes are used or
-    * required
+    * Adds a new test point to the checkgroup comparing the expected and actual are equal ONLY IF the attributes are
+    * used or required
     * 
     * @param expected
     * @param actual
@@ -49,6 +49,23 @@ public abstract class OteVerifier<T extends OteVerifier<T>> {
       if (!matches.equals(OteMatchResult.NOT_USED)) {
          groupToUpdate.add(new CheckPoint(expected.getName(), expected.toString(), actual.toString(),
             matches.equals(OteMatchResult.PASSED)));
+      }
+   }
+
+   /**
+    * Adds a new test point to the checkgroup comparing the expected and actual are not equal ONLY IF the attributes are
+    * used or required
+    * 
+    * @param expected
+    * @param actual
+    * @param groupToUpdate
+    */
+   protected <A> void addToCheckGroupNot(OteVerifierAttribute<A> expected, OteVerifierAttribute<A> actual, CheckGroup groupToUpdate) {
+      OteMatchResult matches = expected.matches(actual);
+
+      if (!matches.equals(OteMatchResult.NOT_USED)) {
+         groupToUpdate.add(new CheckPoint(expected.getName(), "Not " + expected.toString(), actual.toString(),
+            matches.equals(OteMatchResult.FAILED)));
       }
    }
 
