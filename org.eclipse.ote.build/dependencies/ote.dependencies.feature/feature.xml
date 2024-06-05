@@ -341,10 +341,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.equinox.core.sdk"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.equinox.executable"
          version="0.0.0"/>
 
@@ -548,7 +544,7 @@
          id="com.google.guava"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="27.1.0.v20221112-0806"
          unpack="false"/>
 
    <plugin
@@ -881,13 +877,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.sshd.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.debug.core"
          download-size="0"
          install-size="0"
@@ -1013,20 +1002,13 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
+    <plugin
          id="org.apache.batik.anim"
          download-size="0"
          install-size="0"
-         version="1.14.0.v20210324-0332"
+         version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.anim"
-         download-size="0"
-         install-size="0"
-         version="1.9.1.v20181015-1528"
-         unpack="false"/>
-
+         
    <plugin
          id="org.apache.batik.awt.util"
          download-size="0"
@@ -1038,20 +1020,6 @@
          id="org.apache.batik.bridge"
          download-size="0"
          install-size="0"
-         version="1.9.1.v20181015-1528"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.bridge"
-         download-size="0"
-         install-size="0"
-         version="1.14.0.v20210324-0332"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.codec"
-         download-size="0"
-         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
@@ -1059,15 +1027,9 @@
          id="org.apache.batik.constants"
          download-size="0"
          install-size="0"
-         version="1.9.1.v20180227-1645"
+         version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.apache.batik.constants"
-         download-size="0"
-         install-size="0"
-         version="1.14.0.v20210324-0332"
-         unpack="false"/>
 
    <plugin
          id="org.apache.batik.css"
@@ -1080,16 +1042,9 @@
          id="org.apache.batik.dom"
          download-size="0"
          install-size="0"
-         version="1.9.1.v20181015-1528"
+         version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.dom"
-         download-size="0"
-         install-size="0"
-         version="1.14.0.v20210324-0332"
-         unpack="false"/>
-
+         
    <plugin
          id="org.apache.batik.dom.svg"
          download-size="0"
@@ -1115,42 +1070,21 @@
          id="org.apache.batik.gvt"
          download-size="0"
          install-size="0"
-         version="1.14.0.v20210324-0332"
+         version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.gvt"
-         download-size="0"
-         install-size="0"
-         version="1.9.1.v20190730-1743"
-         unpack="false"/>
-
+         
    <plugin
          id="org.apache.batik.i18n"
          download-size="0"
          install-size="0"
-         version="1.14.0.v20210324-0332"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.i18n"
-         download-size="0"
-         install-size="0"
-         version="1.9.1.v20180227-1645"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.apache.batik.parser"
          download-size="0"
          install-size="0"
-         version="1.9.1.v20190730-1743"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.parser"
-         download-size="0"
-         install-size="0"
-         version="1.14.0.v20210324-0332"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -1178,16 +1112,9 @@
          id="org.apache.batik.transcoder"
          download-size="0"
          install-size="0"
-         version="1.14.0.v20210324-0332"
+         version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.transcoder"
-         download-size="0"
-         install-size="0"
-         version="1.9.1.v20181015-1528"
-         unpack="false"/>
-
+         
    <plugin
          id="org.apache.batik.util"
          download-size="0"
@@ -1206,14 +1133,7 @@
          id="org.apache.batik.xml"
          download-size="0"
          install-size="0"
-         version="1.14.0.v20210324-0332"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.batik.xml"
-         download-size="0"
-         install-size="0"
-         version="1.9.1.v20190730-1743"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -1281,13 +1201,6 @@
 
    <plugin
          id="org.apache.xml.resolver"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.xalan"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1995,6 +1908,20 @@
 
    <plugin
          id="org.glassfish.corba.glassfish-corba-omgapi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+    <plugin
+         id="org.glassfish.corba.glassfish-corba-orb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+    <plugin
+         id="org.glassfish.corba.glassfish-corba-internal-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
