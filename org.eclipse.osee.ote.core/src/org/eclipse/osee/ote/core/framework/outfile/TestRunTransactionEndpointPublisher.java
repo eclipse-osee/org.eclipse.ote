@@ -62,8 +62,8 @@ public class TestRunTransactionEndpointPublisher {
             } else if (rec instanceof TestPointResults) {
                TestPointResults testPointResults = (TestPointResults) rec;
 
-               addAttributeToCreateArtifacts("Passed", Integer.toString(testPointResults.getPasses()));
-               addAttributeToCreateArtifacts("Failed", Integer.toString(testPointResults.getFails()));
+               addAttributeToCreateArtifacts("Passed Count", Integer.toString(testPointResults.getPasses()));
+               addAttributeToCreateArtifacts("Failed Count", Integer.toString(testPointResults.getFails()));
                addAttributeToCreateArtifacts("Script Aborted", Boolean.toString(testPointResults.isAborted()));
                addAttributeToCreateArtifacts("Total Test Points", Integer.toString(testPointResults.getTotal()));
             } else if (rec instanceof SystemInfo) {

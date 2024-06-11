@@ -14,14 +14,12 @@ package org.eclipse.osee.ote.rest;
 
 import java.io.InputStream;
 import java.net.URI;
-
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.ote.rest.multipart.FileStreamPart;
 import org.eclipse.osee.ote.rest.multipart.MultiPartMessage;
@@ -118,8 +116,8 @@ public abstract class OteRestEndpoint {
       Response response;
       OteRestResponse retVal;
       try {
-         response = jaxRsApi.newTargetUrl(target.toString()).request(MediaType.APPLICATION_JSON)
-               .post(Entity.json(jsonString));
+         response = jaxRsApi.newTargetUrl(target.toString()).request(MediaType.APPLICATION_JSON).header("Authorization",
+            "Basic " + getUsername()).post(Entity.json(jsonString));
 
          retVal = new OteRestResponse(response);
       } catch (RuntimeException ex) {
@@ -297,4 +295,9 @@ public abstract class OteRestEndpoint {
       }
       return builder.build();
    }
+
+   private static String getUsername() {
+      return System.getenv("USERNAME");
+   }
+
 }

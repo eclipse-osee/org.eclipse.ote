@@ -23,7 +23,6 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.enums.OteRunTestsKeys;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -119,13 +118,14 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
       OteRestResponse response = endpoint.postOutfile(jsonString);
 
       if (PRINT_OUTPUT_TO_CONSOLE) {
+         System.out.println(
+            "Response Status: " + response.getResponse().getStatusInfo() + ": " + response.getResponse().getStatus());
          System.out.println("Response: " + response.getContents(String.class));
       }
 
       if (response.getResponse().getStatus() != OK_RESPONSE_CODE) {
-         OseeLog.logf(getClass(), Level.WARNING,
-                      "OSEE Outfile not sent. Rest response contents:\n%s",
-                      response.getContents(String.class));
+         OseeLog.logf(getClass(), Level.WARNING, "OSEE Outfile not sent. Rest response contents:\n%s",
+            response.getContents(String.class));
       } else {
          OseeLog.log(getClass(), Level.INFO, "OSEE Outfile sent successfully.");
       }

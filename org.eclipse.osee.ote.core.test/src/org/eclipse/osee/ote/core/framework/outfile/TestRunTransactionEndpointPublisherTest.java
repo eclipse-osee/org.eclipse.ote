@@ -56,12 +56,12 @@ public class TestRunTransactionEndpointPublisherTest {
       createArtifacts.addAttribute(attribute3);
 
       AttributeJsonPojo attribute4 = new AttributeJsonPojo();
-      attribute4.setTypeName("Passed");
+      attribute4.setTypeName("Passed Count");
       attribute4.setValue("1");
       createArtifacts.addAttribute(attribute4);
 
       AttributeJsonPojo attribute5 = new AttributeJsonPojo();
-      attribute5.setTypeName("Failed");
+      attribute5.setTypeName("Failed Count");
       attribute5.setValue("0");
       createArtifacts.addAttribute(attribute5);
 
