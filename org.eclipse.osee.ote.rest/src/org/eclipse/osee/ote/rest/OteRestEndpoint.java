@@ -15,6 +15,7 @@ package org.eclipse.osee.ote.rest;
 import java.io.InputStream;
 import java.net.URI;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -77,6 +78,10 @@ public abstract class OteRestEndpoint {
       return retVal;
    }
 
+   protected OteRestResponse performPostFile(URI target, InputStream input, String fileName, String mediaType) {
+      return performPostFile(target, input, fileName, mediaType, false);
+   }
+
    /**
     * This method should never throw a RuntimeException caused by HTTP issues
     * contacting the target URI. All such exceptions are wrapped in a
@@ -90,7 +95,7 @@ public abstract class OteRestEndpoint {
     *         POST, otherwise an {@link OteRestResponseException} that fails every
     *         verification gracefully.
     */
-   protected OteRestResponse performPostFile(URI target, InputStream input, String fileName, String mediaType) {
+   protected OteRestResponse performPostFile(URI target, InputStream input, String fileName, String mediaType, boolean useAuthHeader) {
       Response response;
       OteRestResponse retVal;
 
@@ -102,6 +107,9 @@ public abstract class OteRestEndpoint {
          webTarget.register(MultipartMessageBodyWriter.class);
 
          Builder builder = webTarget.request();
+         if (useAuthHeader) {
+            builder.header("Authorization", "Basic " + getUsername());
+         }
          response = builder.post(Entity.entity(mpMsg, MediaType.MULTIPART_FORM_DATA));
          retVal = new OteRestResponse(response);
       } catch (RuntimeException ex) {
@@ -112,13 +120,34 @@ public abstract class OteRestEndpoint {
       return retVal;
    }
 
+   /**
+    * Performs a POST request with a JSON string to the specified URI.
+    *
+    * @param target The target URI to which the POST request will be sent.
+    * @param jsonString The JSON string to be sent in the body of the POST request.
+    * @return An OteRestResponse containing the response from the POST request.
+    */
    protected OteRestResponse performPostJsonString(URI target, String jsonString) {
+      return performPostJsonString(target, jsonString, false);
+   }
+
+   /**
+    * Performs a POST request with a JSON string to the specified URI, optionally including an Authorization header.
+    *
+    * @param target The target URI to which the POST request will be sent.
+    * @param jsonString The JSON string to be sent in the body of the POST request.
+    * @param useAuthHeader A boolean indicating whether to include the Authorization header in the request.
+    * @return An OteRestResponse containing the response from the POST request.
+    */
+   protected OteRestResponse performPostJsonString(URI target, String jsonString, boolean useAuthHeader) {
       Response response;
       OteRestResponse retVal;
       try {
-         response = jaxRsApi.newTargetUrl(target.toString()).request(MediaType.APPLICATION_JSON).header("Authorization",
-            "Basic " + getUsername()).post(Entity.json(jsonString));
-
+         Invocation.Builder requestBuilder = jaxRsApi.newTargetUrl(target.toString()).request(MediaType.APPLICATION_JSON);
+         if (useAuthHeader) {
+            requestBuilder.header("Authorization", "Basic " + getUsername());
+         }
+         response = requestBuilder.post(Entity.json(jsonString));
          retVal = new OteRestResponse(response);
       } catch (RuntimeException ex) {
          retVal = new OteRestResponseException(ex);

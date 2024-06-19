@@ -36,7 +36,7 @@ public class TestRunTransactionEndpointPublisher {
    private final TestRunTransactionEndpointJsonPojo testRunTransactionEndpointJsonPojo =
       new TestRunTransactionEndpointJsonPojo();
    private String testRunTransactionEndpointJson = new String();
-   private final String branchName = OtePropertiesCore.oseeBranch.getValue(DEFAULT_BRANCH_NAME); //This should be connected to user supplied branch in future
+   private final String branchName = OtePropertiesCore.oseeBranchId.getValue(DEFAULT_BRANCH_NAME); //This should be connected to user supplied branch in future
    private final CreateArtifactsJsonPojo createArtifacts = new CreateArtifactsJsonPojo();
 
    public String publish(LogRecord logRecord) {

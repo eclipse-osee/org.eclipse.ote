@@ -12,17 +12,11 @@
  **********************************************************************/
 package org.eclipse.osee.ote.rest;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Paths;
-import java.util.Enumeration;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.enums.OteRunTestsKeys;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -34,6 +28,7 @@ import org.eclipse.osee.ote.core.framework.ITestLifecycleListener;
 import org.eclipse.osee.ote.core.framework.MethodResultImpl;
 import org.eclipse.osee.ote.core.framework.ReturnCode;
 import org.eclipse.osee.ote.core.framework.event.IEventData;
+import org.eclipse.osee.ote.properties.OtePropertiesCore;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -48,8 +43,12 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
 
    private static boolean PRINT_OUTPUT_TO_CONSOLE = false;
    private static int OK_RESPONSE_CODE = 200;
-   public static final String JSON_OUTFILE_FILE_NAME = "TestRunTransactionEndpoint.json";
    private static final String NO_PATH = "NO_OTE_OUTFILE_PATH";
+   private static final String DEFAULT_BRANCH_ID = "no_osee_branch_provided";
+   private static final String DEFAULT_CI_SET_ID = "no_osee_ciSet_provided";
+
+   private final String branchId = OtePropertiesCore.oseeBranchId.getValue(DEFAULT_BRANCH_ID);
+   private final String ciSetId = OtePropertiesCore.oseeCiSetId.getValue(DEFAULT_CI_SET_ID);
 
    private TestEnvironmentInterface testEnv;
    private JaxRsApi jaxRsApi;
@@ -89,56 +88,82 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
    @Override
    public IMethodResult postDispose(IEventData eventData, TestEnvironment env) {
       String testClassName = eventData.getProperties().get(OteRunTestsKeys.testClass.name());
-      postOutfile(testClassName);
+      postTmoFile(testClassName);
+
       return new MethodResultImpl(ReturnCode.OK);
    }
 
-   private void postOutfile(String testClassName) {
-      String jsonString = "";
-      String tmzPath = getTmzPath(testClassName);
-      try (ZipFile tmzFile = new ZipFile(tmzPath)) {
-         Enumeration<? extends ZipEntry> tmzEntries = tmzFile.entries();
+   /**
+    * Posts the TMO file to the specified endpoint.
+    *
+    * @param testClassName the name of the test class that corresponds to the test event.
+    */
 
-         while (tmzEntries.hasMoreElements()) {
-            ZipEntry entry = tmzEntries.nextElement();
-            InputStream input = tmzFile.getInputStream(entry);
-            if (entry.getName().equals(JSON_OUTFILE_FILE_NAME)) {
-               jsonString = new BufferedReader(new InputStreamReader(input)).lines().collect(Collectors.joining("\n"));
-               if (PRINT_OUTPUT_TO_CONSOLE) {
-                  System.out.println(String.format("Contents of %s: %s", entry.getName(), jsonString));
-               }
-            }
-         }
-      } catch (Exception ex) {
-         System.err.println("Error loading TMZ file at " + tmzPath);
-         ex.printStackTrace();
+   private void postTmoFile(String testClassName) {
+      if (branchId.equals(DEFAULT_BRANCH_ID)) {
+         OseeLog.logf(getClass(), Level.WARNING, "No OSEE Branch ID provided, TMO file will not be uploaded to OSEE.");
+         return;
+      }
+
+      if (ciSetId.equals(DEFAULT_CI_SET_ID)) {
+         OseeLog.logf(getClass(), Level.WARNING, "No OSEE CI Set ID provided, TMO file will not be uploaded to OSEE.");
+         return;
+      }
+
+      InputStream tmoInputStream = getTmoFileInputStream(testClassName);
+      if (tmoInputStream == null) {
+         OseeLog.logf(getClass(), Level.WARNING,
+            "TMO InputStream is null. Cannot send TMO file for test class: " + testClassName);
+         return;
       }
 
       OseeOutfileEndpoint endpoint = new OseeOutfileEndpoint(jaxRsApi);
-      OteRestResponse response = endpoint.postOutfile(jsonString);
+      OteRestResponse response = endpoint.postTmoFile(branchId, ciSetId, tmoInputStream, testClassName);
 
       if (PRINT_OUTPUT_TO_CONSOLE) {
-         System.out.println(
-            "Response Status: " + response.getResponse().getStatusInfo() + ": " + response.getResponse().getStatus());
-         System.out.println("Response: " + response.getContents(String.class));
+         System.out.println("TMO Response Status: " + response.getResponse().getStatus());
+         System.out.println("TMO Response: " + response.getContents(String.class));
       }
 
       if (response.getResponse().getStatus() != OK_RESPONSE_CODE) {
-         OseeLog.logf(getClass(), Level.WARNING, "OSEE Outfile not sent. Rest response contents:\n%s",
+         OseeLog.logf(getClass(), Level.WARNING, "TMO File not sent to OSEE. Rest response contents:\n%s",
             response.getContents(String.class));
       } else {
-         OseeLog.log(getClass(), Level.INFO, "OSEE Outfile sent successfully.");
+         OseeLog.log(getClass(), Level.INFO, "TMO File sent successfully to OSEE.");
+      }
+   }
+
+
+   /**
+    * Retrieves the input stream of the TMO file associated with the given test class name.
+    *
+    * @param testClassName the name of the test class
+    * @return the input stream of the TMO file, or null if not found or an error occurs
+    */
+   private InputStream getTmoFileInputStream(String testClassName) {
+      String tmoFilePath = getTmoFilePath(testClassName);
+      if (tmoFilePath.equals(NO_PATH)) {
+         OseeLog.logf(getClass(), Level.WARNING, "No TMO file found for test class: " + testClassName);
+         return null;
+      }
+
+      try {
+         return testEnv.getOutDir().toPath().resolve(tmoFilePath).toUri().toURL().openStream();
+      } catch (Exception e) {
+         OseeLog.log(getClass(), Level.WARNING, "Error opening TMO file input stream: " + e.getMessage());
+         e.printStackTrace();
+         return null;
       }
    }
 
    private String getTmzPath(String testClassName) {
       String tmzFilePath = NO_PATH;
       File outputDir = testEnv.getOutDir();
+
       String[] tmzList = outputDir.list(new FilenameFilter() {
          @Override
          public boolean accept(File dir, String name) {
-            boolean retVal = name.endsWith("z") && name.startsWith(testClassName);
-            return retVal;
+            return name.endsWith("z") && name.startsWith(testClassName);
          }
       });
 
@@ -148,5 +173,24 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
       }
 
       return tmzFilePath;
+   }
+
+   private String getTmoFilePath(String testClassName) {
+      String tmoFilePath = NO_PATH;
+      File outputDir = testEnv.getOutDir();
+
+      String[] tmoList = outputDir.list(new FilenameFilter() {
+         @Override
+         public boolean accept(File dir, String name) {
+            return (name.endsWith(".tmo") || name.endsWith(".TMO")) && name.startsWith(testClassName);
+         }
+      });
+
+      // If there is more than one, this will only choose the first one
+      if (tmoList != null && tmoList.length > 0) {
+         tmoFilePath = Paths.get(outputDir.getAbsolutePath(), tmoList[0]).toString();
+      }
+
+      return tmoFilePath;
    }
 }
