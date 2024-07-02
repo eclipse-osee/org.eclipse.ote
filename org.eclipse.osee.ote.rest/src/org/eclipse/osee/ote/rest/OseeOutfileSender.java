@@ -48,7 +48,6 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
    private static final String DEFAULT_CI_SET_ID = "no_osee_ciSet_provided";
 
    private final String branchId = OtePropertiesCore.oseeBranchId.getValue(DEFAULT_BRANCH_ID);
-   private final String ciSetId = OtePropertiesCore.oseeCiSetId.getValue(DEFAULT_CI_SET_ID);
 
    private TestEnvironmentInterface testEnv;
    private JaxRsApi jaxRsApi;
@@ -88,18 +87,19 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
    @Override
    public IMethodResult postDispose(IEventData eventData, TestEnvironment env) {
       String testClassName = eventData.getProperties().get(OteRunTestsKeys.testClass.name());
-      postTmoFile(testClassName);
+      String ciSetId = OtePropertiesCore.oseeCiSetId.getValue(DEFAULT_CI_SET_ID);
+      postTmoFile(testClassName, ciSetId);
 
       return new MethodResultImpl(ReturnCode.OK);
    }
 
    /**
-    * Posts the TMO file to the specified endpoint.
-    *
-    * @param testClassName the name of the test class that corresponds to the test event.
+    * Posts the TMO file for a given test class
+    * 
+    * @param testClassName the name of the test class for which the TMO file is being uploaded
+    * @param ciSetId the OSEE CI Set ID
     */
-
-   private void postTmoFile(String testClassName) {
+   private void postTmoFile(String testClassName, String ciSetId) {
       if (branchId.equals(DEFAULT_BRANCH_ID)) {
          OseeLog.logf(getClass(), Level.WARNING, "No OSEE Branch ID provided, TMO file will not be uploaded to OSEE.");
          return;
@@ -133,7 +133,6 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
       }
    }
 
-
    /**
     * Retrieves the input stream of the TMO file associated with the given test class name.
     *
@@ -142,6 +141,7 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
     */
    private InputStream getTmoFileInputStream(String testClassName) {
       String tmoFilePath = getTmoFilePath(testClassName);
+
       if (tmoFilePath.equals(NO_PATH)) {
          OseeLog.logf(getClass(), Level.WARNING, "No TMO file found for test class: " + testClassName);
          return null;
