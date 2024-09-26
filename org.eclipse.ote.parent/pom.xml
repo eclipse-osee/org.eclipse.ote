@@ -18,6 +18,7 @@
 	<modules>
 		<module>../org.eclipse.ote.bytemessage</module>
 		<module>../org.eclipse.ote.bytemessage.test</module>
+		<module>../org.eclipse.ote.cat</module>
 		<module>../org.eclipse.ote.message.manager</module>
 		<module>../org.eclipse.ote.io</module>
 		<module>../org.eclipse.ote.io.test</module>
