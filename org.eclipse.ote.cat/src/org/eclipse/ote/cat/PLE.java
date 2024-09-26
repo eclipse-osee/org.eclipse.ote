@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ote.cat;
+package org.eclipse.ote.cat;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
