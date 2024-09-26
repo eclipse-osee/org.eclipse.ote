@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Compiler Applicability Tool Plugin
+Bundle-SymbolicName: org.eclipse.ote.cat;singleton:=true
+Bundle-Version: 0.26.3.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Boeing
+Automatic-Module-Name: org.eclipse.ote.cat
+Export-Package: 
+ org.eclipse.ote.cat
