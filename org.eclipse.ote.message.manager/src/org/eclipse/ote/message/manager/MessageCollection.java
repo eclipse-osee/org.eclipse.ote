@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.GCHelper;
@@ -548,13 +547,25 @@ public class MessageCollection<U extends Message> implements IMessageScheduleCha
             String.format("disposing the message [%s][reader] because it's reference count is 0.", msg.getName()));
          log(Level.FINEST, String.format("%d messages related", msg.getDefaultMessageData().getMessages().size()));
 
-         MessageData removed = messageDataReaders.remove(createTopicDescription(msg.getDefaultMessageData()));
-         if (removed == null) {
-            log(Level.WARNING, String.format("Failed to remove reader %s.%s -- %s", namespace.toString(),
-               msg.getDefaultMessageData().getTopicName(), namespace.toString()));
-         }
+         removeWrappedReaderData(namespace, msg);
       }
       msg.destroy();
+   }
+
+   /**
+    * MessageData collection is only used for wrapped messages (writer buffers into reader buffers). If message isn't
+    * wrappable then there should be nothing to remove.
+    * 
+    * @param namespace
+    * @param msg
+    */
+   private void removeWrappedReaderData(Namespace namespace, Message msg) {
+      TopicDescription topic = createTopicDescription(msg.getDefaultMessageData());
+      MessageData removed = messageDataReaders.remove(topic);
+      if (removed == null && topicShouldWrap(topic)) { // no need to log if not intended to wrap
+         log(Level.WARNING, String.format("Failed to remove reader %s.%s -- %s", namespace.toString(),
+            msg.getDefaultMessageData().getTopicName(), namespace.toString()));
+      }
    }
 
    public void add(MessageWriterSetupHandler messageWriterSetupHandler) {
