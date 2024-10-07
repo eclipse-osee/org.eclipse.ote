@@ -895,6 +895,7 @@
 <setEntry value="org.eclipse.ote.basic@default:default"/>
 <setEntry value="org.eclipse.ote.bytemessage.test@default:false"/>
 <setEntry value="org.eclipse.ote.bytemessage@default:default"/>
+<setEntry value="org.eclipse.ote.cat.plugin@default:default"/>
 <setEntry value="org.eclipse.ote.client.ui@default:default"/>
 <setEntry value="org.eclipse.ote.client@default:default"/>
 <setEntry value="org.eclipse.ote.io.mux.test@default:false"/>
