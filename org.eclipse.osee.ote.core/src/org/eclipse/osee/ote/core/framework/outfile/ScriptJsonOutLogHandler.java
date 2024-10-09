@@ -41,7 +41,9 @@ import org.eclipse.osee.ote.core.log.record.json.LogRecordModule;
  */
 public class ScriptJsonOutLogHandler extends Handler {
    private final Map<String, Object> minimum = new HashMap<String, Object>();
+   private final Map<String, Object> gTest = new HashMap<String, Object>();
    private final MinimumPublisher minimumPublisher;
+   private final GoogleTestFormatPublisher gTestPublisher;
    private final ObjectMapper mapper = new ObjectMapper();
    private final File outfile;
    private ZipOutputStream zip;
@@ -54,6 +56,7 @@ public class ScriptJsonOutLogHandler extends Handler {
       outfile = outFile;
       distrStatement = distributionStatement;
       this.minimumPublisher = new MinimumPublisher(minimum);
+      this.gTestPublisher = new GoogleTestFormatPublisher(gTest);
       this.testRunTransactionEndpointPublisher = new TestRunTransactionEndpointPublisher();
    }
 
@@ -66,6 +69,7 @@ public class ScriptJsonOutLogHandler extends Handler {
       if (isLoggable(logRecord)) {
          try {
             minimumPublisher.publish(logRecord);
+            gTestPublisher.publish(logRecord);
             if (logRecord instanceof ScriptResultRecord) {
                testRunTransactionEndpointJson.append(testRunTransactionEndpointPublisher.publish(logRecord));
             }
@@ -121,6 +125,7 @@ public class ScriptJsonOutLogHandler extends Handler {
    public synchronized void flushRecords() {
       if (prepareToFlush()) {
          writeZipEntry("Minimum", minimum);
+         writeZipEntry("GTest", gTest);
          writeZipEntry("DistributionStatement", distrStatement);
          writeZipEntrySB("TestRunTransactionEndpoint", testRunTransactionEndpointJson);
       }
