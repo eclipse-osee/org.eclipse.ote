@@ -31,13 +31,6 @@ import org.osgi.framework.BundleContext;
 public class CatPlugin extends AbstractUIPlugin {
 
    /**
-    * When the {@link CatPlugin#instance} is not yet set or the symbolic bundle name of the plug-in cannot be found, the
-    * {@link CatPlugin} class name is used for the plug-in identifier.
-    */
-
-   private static final String defaultIdentifier = CatPlugin.class.getName();
-
-   /**
     * Saves the single instance of the {@link CatPlugin} class.
     * 
     * @implNote The static <code>instance</code> variable is expected to never be <code>null</code> on access. To access
@@ -49,36 +42,25 @@ public class CatPlugin extends AbstractUIPlugin {
    private static CatPlugin instance = null;
 
    /**
-    * Gets the {@link CatPlugin} OSGi bundle symbolic name as the identifier. When the OSGi bundle symbolic name cannot
-    * be determined the {@link CatPlugin} class name is returned.
+    * Gets the {@link CatPlugin} OSGi bundle symbolic name as the identifier.
     * 
     * @return an identification string for the {@link CatPlugin}.
     */
 
    public static String getIdentifier() {
-
-      if (Objects.isNull(CatPlugin.instance)) {
-         return CatPlugin.defaultIdentifier;
-      }
-
-      if (Objects.isNull(CatPlugin.instance.catPluginIdentifier)) {
-
-         Bundle bundle = CatPlugin.instance.getBundle();
-
-         if (Objects.isNull(bundle)) {
-            return CatPlugin.defaultIdentifier;
-         }
-
-         String symbolicName = bundle.getSymbolicName();
-
-         if (Objects.isNull(symbolicName)) {
-            return CatPlugin.defaultIdentifier;
-         }
-
-         CatPlugin.instance.catPluginIdentifier = symbolicName;
-      }
-
+      assert Objects.nonNull(CatPlugin.instance) : "CatPlugin instance is unexpectedly null.";
       return CatPlugin.instance.catPluginIdentifier;
+   }
+
+   /**
+    * Gets the expected OSGi extension identifier for the extension that implements the
+    * "org.eclipse.core.runtime.preferences" extension point of the plug-in.
+    * 
+    * @return the extension identifier.
+    */
+
+   public static String getDefaultPreferenceInitializerExtensionIdentifier() {
+      return CatPlugin.getIdentifier() + ".defaultpreferenceinitializer";
    }
 
    /**
@@ -111,7 +93,8 @@ public class CatPlugin extends AbstractUIPlugin {
    public CatPlugin() {
       super();
       CatPlugin.instance = this;
-      this.catPluginIdentifier = null;
+      Bundle bundle = this.getBundle();
+      this.catPluginIdentifier = bundle.getSymbolicName();
    }
 
    /**
