@@ -19,16 +19,51 @@
    <extension
       point = "org.eclipse.ui.preferencePages">
       
+      <!--
+         == Set the "name" attribute value to the display name for the preference page implemented
+         == by the class specified by the "class" attribute value.
+         ==
+         == The "category" attribute needs to be specified for subordinate pages. The value of the
+         == "category" attribute should be set to the "id" attribute value for its parent preference
+         == page.
+      -->
+      
       <page
          class    = "org.eclipse.ote.cat.plugin.preferencepage.CatSettingsPreferencePage"
-         id       = "org.eclipse.ote.cat.plugin.preferencePages.cat"
+         id       = "org.eclipse.ote.cat.plugin.preferencepage.cat"
          name     = "CAT" />
 
       <page
-         category = "org.eclipse.ote.cat.plugin.preferencePages.cat"
+         category = "org.eclipse.ote.cat.plugin.preferencepage.cat"
          class    = "org.eclipse.ote.cat.plugin.preferencepage.PleConfigurationCachePreferencePage"
-         id       = "org.eclipse.ote.cat.plugin.preferencePages.pleConfigurationCache"
+         id       = "org.eclipse.ote.cat.plugin.preferencepages.pleconfigurationcache"
          name     = "PLE Configuration Cache" />
+      
+   </extension>
+   
+   <!--
+      == The "id" attribute is expected to be set to:
+      ==
+      ==    <bundle-symbolic-name> ".defaultpreferenceinitializer"
+      ==
+      ==    where bundle-symbolic-name is the value for "Bundle-SymbolicName" set in the file
+      ==    "MANIFEST.MF". 
+   -->
+   
+   <extension
+         point = "org.eclipse.core.runtime.preferences"
+         id    = "org.eclipse.ote.cat.plugin.defaultpreferenceinitializer">
+         
+      <!--
+         == Set the value of the "option" attribute to be the command line option used to
+         == specify a JSON file containing the default preference values. If the command line
+         == option is to have a leading dash or dashes those are to be included in the attribute
+         == value. 
+      -->
+      
+      <initializer
+            class  = "org.eclipse.ote.cat.plugin.preferencepage.PreferenceInitializer"
+            option = "-org.eclipse.ote.cat.plugin.defaultpreferences" />
       
    </extension>
    
