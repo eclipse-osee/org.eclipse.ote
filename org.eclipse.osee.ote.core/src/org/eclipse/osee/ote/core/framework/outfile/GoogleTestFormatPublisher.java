@@ -44,7 +44,9 @@ public class GoogleTestFormatPublisher {
    private Map<String, Object> gTest;
    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
    List<Object> testsuites = new ArrayList<Object>();
-   List<Object> testsuite = new ArrayList<Object>();;
+   List<Object> testsuite = new ArrayList<Object>();
+   List<Object> failedPoints = new ArrayList<Object>();
+   private static String testName;
    
    public GoogleTestFormatPublisher(Map<String, Object> gTest) {
       this.gTest = gTest;
@@ -59,7 +61,8 @@ public class GoogleTestFormatPublisher {
       
       if (logRecord instanceof ScriptResultRecord) {
          ScriptResultRecord srr = (ScriptResultRecord) logRecord;
-         gTest.put("name", logRecord.getMessage());
+         testName = logRecord.getMessage();
+         gTest.put("name", testName);
          for (XmlizableStream rec : srr.getResults()) {
             Map<String, Object> results = new HashMap<String, Object>();
             if (rec instanceof TimeSummary) {
@@ -71,23 +74,24 @@ public class GoogleTestFormatPublisher {
                gTest.put("branch", "dev");
                gTest.put("environment", "LOCAL");
             } else if (rec instanceof TestPointResults) {
-               results.put("tests", ((TestPointResults) rec).getTotal());
-               results.put("failures", ((TestPointResults) rec).getFails());
+               results.put("tests", 1);
+               int failures = ((TestPointResults) rec).getFails();
+               failures = failures > 0 ? 1: 0;
+               results.put("failures", failures);
                results.put("disabled", 0); //not used
                results.put("errors", 0); //not used
                results.put("interactives", ((TestPointResults) rec).getInteractives());
                results.put("aborted", ((TestPointResults) rec).isAborted());
-               results.put("name", ((TestPointResults) rec).getClass());
+               results.put("name", testName);
                results.put("time", gTest.get("time"));  
                results.put("timestamp", gTest.get("timestamp"));
+               Map<String, Object> point = (Map<String, Object>) testsuite.get(0);
+               point.put("name", testName);
+               point.put("failures", failedPoints);
                results.put("testsuite", testsuite);
                testsuites.add(results);
-               int g_test = gTest.get("tests") != null ? (Integer)gTest.get("tests"): 0;
-               int r_test = results.get("tests") != null ? (Integer) results.get("tests") : 0;
-               gTest.put("tests",  (g_test + r_test));
-               int g_failure = gTest.get("failures") != null ? (Integer)gTest.get("failures"): 0;
-               int r_failure = results.get("failures") != null ? (Integer) results.get("failures") : 0;
-               gTest.put("failures",  (g_failure + r_failure));
+               gTest.put("tests",  1);
+               gTest.put("failures",  failures);
                gTest.put("disabled", 0); //not used
                gTest.put("errors", 0); //not used
             }
@@ -111,37 +115,36 @@ public class GoogleTestFormatPublisher {
       if (testPoint instanceof CheckPoint) {
          Map<String, Object> point =
             convertCheckPoint((CheckPoint) testPoint, testScript, instant, number, groupName, overallPass, levelNum);
+         testsuite.clear();
          testsuite.add(point);
       } else if (testPoint instanceof CheckGroup) {
          CheckGroup group = (CheckGroup) testPoint;
          ArrayList<ITestPoint> groupPoints = group.getTestPoints();
          Operation op = group.getOperation();
          String curGroupName = group.getGroupName() + " [" + op.getName() + "]";
-         for (int i = 0; i < groupPoints.size(); i++) {
-            ITestPoint tp = groupPoints.get(i);
-            handleTestPoint(tp, testScript, instant, number, curGroupName, overallPass, levelNum + "." + (i + 1));
-         }
+            ITestPoint tp = groupPoints.get(0);
+            handleTestPoint(tp, testScript, instant, number, curGroupName, overallPass, levelNum);
       }
    }
 
    private Map<String, Object> convertCheckPoint(CheckPoint checkPoint, TestScript testScript, Instant instant, int number, String groupName, boolean overallPass, String levelNum) {
       Map<String, Object> tpMap = new HashMap<String, Object>();
-      tpMap.put("name", checkPoint.getTestPointName());
-      tpMap.put("expected", checkPoint.getExpected());
-      tpMap.put("actual", checkPoint.getActual());
       tpMap.put("status", "RUN");
       tpMap.put("result", "COMPLETED");
       tpMap.put("isInteractive", checkPoint.isInteractive());
-      tpMap.put("classname", checkPoint.getClass());
+      tpMap.put("classname", testScript.getClass());
       tpMap.put("time", checkPoint.getElpasedTime()/1000 + "s");
-      tpMap.put("number", number);
-      tpMap.put("steps", testScript.getTestCase().getName());
+      tpMap.put("steps", testScript.getClass().getName());
       tpMap.put("timestamp", formatter.format(Timestamp.from(instant)));
-      tpMap.put("overall", overallPass);
       if (!groupName.isEmpty()) {
          tpMap.put("groupName", groupName);
       }
-      tpMap.put("tpLevel", levelNum);
+      if(!overallPass) {
+         Map<String, Object> failedPoint = new HashMap<String, Object>();
+         failedPoint.put("failure", "Test failure #" + number +  ". Expected: '" + checkPoint.getExpected() + "' Actual: '" +   checkPoint.getActual() +"'");
+         failedPoint.put("type",  "");
+         failedPoints.add(failedPoint);
+      }
       return tpMap;
    }
 
