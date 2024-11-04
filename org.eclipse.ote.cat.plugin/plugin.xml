@@ -15,7 +15,21 @@
   -->
 
 <plugin>
-
+   
+   <!--
+      == When the workbench is ready the "earlyStartup" method of the CAT Plug-In "Startup" class
+      == will be invoked. This will cause the CAT Plug-In bundle to be activated and begin the
+      == "CatPluginManager" cache load and synchronization.
+   -->
+     
+   <extension
+      point = "org.eclipse.ui.startup">
+   
+      <startup 
+         class = "org.eclipse.ote.cat.plugin.Startup" />
+         	
+   </extension>
+   
    <extension
       point = "org.eclipse.ui.preferencePages">
       
@@ -30,29 +44,29 @@
       
       <page
          class    = "org.eclipse.ote.cat.plugin.preferencepage.CatSettingsPreferencePage"
-         id       = "org.eclipse.ote.cat.plugin.preferencepage.cat"
+         id       = "preferencepage.cat"
          name     = "CAT" />
 
       <page
-         category = "org.eclipse.ote.cat.plugin.preferencepage.cat"
+         category = "preferencepage.cat"
          class    = "org.eclipse.ote.cat.plugin.preferencepage.PleConfigurationCachePreferencePage"
-         id       = "org.eclipse.ote.cat.plugin.preferencepages.pleconfigurationcache"
-         name     = "PLE Configuration Cache" />
+         id       = "preferencepages.pleconfigurationcache"
+         name     = "PLE Configuration Loader" />
       
    </extension>
    
    <!--
-      == The "id" attribute is expected to be set to:
-      ==
-      ==    <bundle-symbolic-name> ".defaultpreferenceinitializer"
-      ==
-      ==    where bundle-symbolic-name is the value for "Bundle-SymbolicName" set in the file
-      ==    "MANIFEST.MF". 
+      == This extension specification is found by the CAT Plug-In using the extension point identifier
+      == and the bundle symbolic name. The CAT Plug-In is expected to provide only on extension for the
+      == "org.eclipse.core.runtime.preferences" extention point. The configuration element ("initializer")
+      == and attribute ("option") that contains the default preferences command line option name are found
+      == by element and attribute names. These names must align with thoes defined in the
+      == org.eclipse.ote.cat.plugin.Constants class. 
    -->
    
    <extension
          point = "org.eclipse.core.runtime.preferences"
-         id    = "org.eclipse.ote.cat.plugin.defaultpreferenceinitializer">
+         id    = "defaultpreferenceinitializer">
          
       <!--
          == Set the value of the "option" attribute to be the command line option used to
@@ -67,4 +81,36 @@
       
    </extension>
    
+   <!--
+      == The CAT Plug-In project nature extension identifier is found using the extension point identifier
+      == and the bundle symbolic name. The CAT Plug-In is expected to provide only one extension for the
+      == "org.eclipse.core.resources.natures" extension point.
+   -->
+   
+   <extension
+      point = "org.eclipse.core.resources.natures"
+      id    = "catprojectnature">
+      
+      <runtime>
+      
+         <run
+            class = "org.eclipse.ote.cat.plugin.project.CatNature" />
+            
+      </runtime>
+      
+      <requires-nature
+         id = "org.eclipse.jdt.core.javanature" />
+          
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.ide.projectNatureImages">
+         
+      <image
+            icon="icons/catprojectnature.png"
+            id="catprojectnature.image"
+            natureId="org.eclipse.ote.cat.plugin.catprojectnature"/>
+            
+   </extension>
+    
 </plugin>
