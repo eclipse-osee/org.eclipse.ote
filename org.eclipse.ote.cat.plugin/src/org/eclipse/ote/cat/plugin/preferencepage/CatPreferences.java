@@ -14,17 +14,61 @@ package org.eclipse.ote.cat.plugin.preferencepage;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.eclipse.ote.cat.plugin.Constants;
+import org.eclipse.ote.cat.plugin.exception.CatErrorCode;
+import org.eclipse.ote.cat.plugin.exception.CatPluginException;
+import org.eclipse.ote.cat.plugin.util.JsonFileOperations;
 
 /**
- * A POJO for deserialization of default preference values from a JSON file.
+ * An object used for deserialization of preference values from a JSON file.
  * 
  * @author Loren K. Ashley
  */
 
-public class DefaultPreferences {
+public class CatPreferences {
+
+   /**
+    * Save a single instance of a {@link JsonFileOperations} object specialized for reading and writing
+    * {@link CatPreferences} objects to and from JSON files.
+    */
+
+   private static final JsonFileOperations<CatPreferences> jsonFileOperations =
+      new JsonFileOperations<>(CatPreferences.class, "CAT Preferences File");
+
+   /**
+    * Reads a JSON file containing preferences for the CAT Plug-In.
+    * 
+    * @param osPathString the OS path string to the file to be read.
+    * @return {@link CatPreferences} object containing the CAT Plug-In preferences read from the file.
+    * @throws CatPluginException when an error occurs accessing, reading, or parsing the file.
+    */
+
+   public static CatPreferences read(String osPathString) {
+
+      try {
+         Path path = Paths.get(osPathString);
+         File file = path.toFile();
+         return CatPreferences.jsonFileOperations.read(file);
+      } catch (Exception e) {
+         //@formatter:off
+         CatPluginException failedToReadPreferencesFileException =
+            new CatPluginException
+                   (
+                      CatErrorCode.PreferenceFileError,
+                        "Failed to read preferences file."     + "\n"
+                      + "   Preferences File: " + osPathString + "\n",
+                      e
+                   );
+         //@formatter:on
+         throw failedToReadPreferencesFileException;
+      }
+   }
 
    @JsonProperty(Constants.catJarPreferenceStoreName)
    private String catJar;
@@ -44,7 +88,11 @@ public class DefaultPreferences {
    @JsonProperty(Constants.sourceLocationMethodPreferenceStoreName)
    private String sourceLocationMethod;
 
-   public DefaultPreferences() {
+   /**
+    * Creates a new {@link CatPreferences} object with all <code>null</code> values.
+    */
+
+   public CatPreferences() {
       this.catJar = null;
       this.sourceLocationMethod = null;
       this.jtsProjects = null;
@@ -91,6 +139,11 @@ public class DefaultPreferences {
 
    public void setJtsProjects(String[] jtsProjects) {
       this.jtsProjects = jtsProjects;
+   }
+
+   @JsonIgnore
+   public void setJtsProjectsCommaList(String jtsProjectsCommaList) {
+      this.jtsProjects = jtsProjectsCommaList.split(",");
    }
 
    public void setPleConfiguration(String pleConfiguration) {

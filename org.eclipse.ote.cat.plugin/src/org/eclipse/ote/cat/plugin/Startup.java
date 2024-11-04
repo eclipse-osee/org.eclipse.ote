@@ -10,24 +10,27 @@
  * Contributors: Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.ote.cat.plugin.preferencepage;
+package org.eclipse.ote.cat.plugin;
+
+import org.eclipse.ui.IStartup;
 
 /**
- * Implements a CAT Plug-in preference sub-page for the selection of the PLE Configuration cache and down loading PLE
- * Configurations from an OPLE server.
+ * CAT Plug-In class that is loaded once the workspace is ready which will cause the CAT Plug-In bundle to be activated.
  * 
  * @author Loren K. Ashley
  */
 
-public class PleConfigurationCachePreferencePage extends AbstractCatPreferencePage {
+public class Startup implements IStartup {
 
    /**
-    * Creates the PLE Configuration Cache preference page.
+    * Invocation of this method will cause the CAT Plug-In bundle to be activated. The method itself performs no action.
+    * <p>
+    * {@inheritDoc}
     */
 
-   public PleConfigurationCachePreferencePage() {
-      super(PreferencePage.PLE_CONFIGURATION_LOADER);
-      this.setDescription(this.preferencePage.getPageTitle());
+   @Override
+   public void earlyStartup() {
+      //No action necessary
    }
 
 }
