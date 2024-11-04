@@ -14,16 +14,15 @@ package org.eclipse.ote.cat.plugin.preferencepage;
 
 import java.util.Arrays;
 import java.util.Objects;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ote.cat.plugin.CatPlugin;
-import org.eclipse.ote.cat.plugin.CatPluginException;
+import org.eclipse.ote.cat.plugin.exception.CatErrorCode;
+import org.eclipse.ote.cat.plugin.exception.CatPluginException;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.statushandlers.StatusManager;
 
 /**
  * A base class for CAT Plug-in preference pages.
@@ -45,6 +44,8 @@ public class AbstractCatPreferencePage extends FieldEditorPreferencePage impleme
     */
 
    protected boolean pageInitialized;
+
+   protected CatPreferences preferenceValues;
 
    /**
     * Creates a new empty {@link FieldEditorPreferencePage} with {@link #GRID} layout.
@@ -72,15 +73,14 @@ public class AbstractCatPreferencePage extends FieldEditorPreferencePage impleme
       try {
          IPreferenceStore preferenceStore = CatPlugin.getInstancePreferenceStore();
          this.setPreferenceStore(preferenceStore);
+         this.preferenceValues = Preference.getPreferenceValues(this.preferencePage);
          this.pageInitialized = true;
       } catch (Exception e) {
          //@formatter:off
          CatPluginException initException =
             new CatPluginException
                    (
-                      StatusManager.BLOCK | StatusManager.LOG,
-                      "CAT Plugin Preference Page Error",
-                      IStatus.ERROR,
+                      CatErrorCode.PreferencePageError,
                         "Failed to initialize CAT Plugin preference page." + "\n"
                       + "   Page: " + this.preferencePage.getPageTitle()   + "\n",
                       e
@@ -92,7 +92,7 @@ public class AbstractCatPreferencePage extends FieldEditorPreferencePage impleme
 
    /**
     * Creates the {@link FieldEditor} instances for the preference page using the factories provided by the members of
-    * the enumeration {@link #Preference}.
+    * the enumeration {@link Preference}.
     * <p>
     * {@inheritDoc}
     */
@@ -120,11 +120,9 @@ public class AbstractCatPreferencePage extends FieldEditorPreferencePage impleme
          CatPluginException createFieldEditorsException =
             new CatPluginException
                    (
-                      StatusManager.BLOCK | StatusManager.LOG,
-                      "CAT Plugin Preference Page Error",
-                      IStatus.ERROR,
+                      CatErrorCode.PreferencePageError,
                         "Failed to create field editors for CAT Plugin preference page." + "\n"
-                      + "   Page: " + this.preferencePage.getPageTitle()                           + "\n",
+                      + "   Page: " + this.preferencePage.getPageTitle()                 + "\n",
                       e
                    );
          //@formatter:on

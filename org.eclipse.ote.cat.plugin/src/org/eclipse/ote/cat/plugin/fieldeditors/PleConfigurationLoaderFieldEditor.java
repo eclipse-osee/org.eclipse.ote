@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Loren K. Ashley
  */
 
-public class PleConfigurationLoader extends StringButtonFieldEditor {
+public class PleConfigurationLoaderFieldEditor extends StringButtonFieldEditor {
 
    /**
     * Label for the {@link StringButtonFieldEditor} button.
@@ -33,18 +33,18 @@ public class PleConfigurationLoader extends StringButtonFieldEditor {
    private static String buttonText = "Load";
 
    /**
-    * Creates a new {@link PleConfigurationLoader} {@link FieldEditor}.
+    * Creates a new {@link PleConfigurationLoaderFieldEditor} {@link FieldEditor}.
     * 
     * @param preferenceStoreName the name used to access the preference value in the preference store.
     * @param fieldEditorLabel the label for the field editor.
     * @param parentComposite the {@link Composite} to attach this field editor to.
     */
 
-   public PleConfigurationLoader(String preferenceStoreName, String fieldEditorLabel, Composite parentComposite) {
+   public PleConfigurationLoaderFieldEditor(String preferenceStoreName, String fieldEditorLabel, Composite parentComposite) {
       super(preferenceStoreName, fieldEditorLabel, parentComposite);
       final Text text = this.getTextControl();
       text.setEditable(false);
-      this.setChangeButtonText(PleConfigurationLoader.buttonText);
+      this.setChangeButtonText(PleConfigurationLoaderFieldEditor.buttonText);
    }
 
    /**

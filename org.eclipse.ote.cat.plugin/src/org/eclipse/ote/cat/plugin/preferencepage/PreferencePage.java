@@ -20,7 +20,7 @@ import java.util.Objects;
  * @see
  * <ul>
  * <li>{@link PreferencePage#CAT_SETTINGS CAT_SETTINGS}</li>
- * <li>{@link PreferencesPage#PLE_CONFIGURATION_CACHE PLE_CONFIGURATION_CACHE}</li>
+ * <li>{@link PreferencePage#PLE_CONFIGURATION_LOADER PLE_CONFIGURATION_LOADER}</li>
  * </ul>
  */
 
@@ -37,7 +37,7 @@ public enum PreferencePage {
     * Preference sub-page for loading PLE Configurations from an OPLE server.
     */
 
-   PLE_CONFIGURATION_CACHE("PLE Configuration Cache Settings And Loader");
+   PLE_CONFIGURATION_LOADER("PLE Configuration Loader");
 
    /**
     * Save the page title used for the preference page.
@@ -46,7 +46,7 @@ public enum PreferencePage {
    private String pageTitle;
 
    /**
-    * Create a new {@Link PreferncePage} enumeration member.
+    * Create a new {@link PreferencePage} enumeration member.
     * 
     * @param pageTitle the title of the preference page represented by the enumeration member.
     */

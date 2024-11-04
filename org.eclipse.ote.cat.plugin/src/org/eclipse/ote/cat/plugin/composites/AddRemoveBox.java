@@ -12,12 +12,19 @@
 
 package org.eclipse.ote.cat.plugin.composites;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Supplier;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -28,7 +35,7 @@ import org.eclipse.swt.widgets.Composite;
  * @param <T> the type of object displayed in the selection table.
  */
 
-public class SelectionBox<T> extends Composite {
+public class AddRemoveBox<T> extends Composite {
 
    /**
     * A functional interface for the callback that is invoked when the table's selection is changed.
@@ -63,7 +70,7 @@ public class SelectionBox<T> extends Composite {
     * @param selectionChangedAction this callback is invoked when the table selection changes.
     */
 
-   public SelectionBox(Composite parent, SelectionChangedAction selectionChangedAction) {
+   public AddRemoveBox(Composite parent, SelectionChangedAction selectionChangedAction) {
 
       super(parent, SWT.NULL);
 
@@ -87,12 +94,24 @@ public class SelectionBox<T> extends Composite {
 
          @Override
          public void selectionChanged(SelectionChangedEvent event) {
-            SelectionBox.this.selectionChangedAction.selectionChanged();
+            AddRemoveBox.this.selectionChangedAction.selectionChanged();
          }
       
       };
       //@formatter:on
       this.tableViewer.addSelectionChangedListener(selectionChangedListener);
+      this.addDisposeListener(this::dispose);
+   }
+
+   /**
+    * Releases operating system resources for the table.
+    * 
+    * @param disposeEvent unused
+    */
+
+   public void dispose(DisposeEvent disposeEvent) {
+      this.tableViewer.getTable().dispose();
+      this.tableViewer = null;
    }
 
    /**
@@ -102,11 +121,48 @@ public class SelectionBox<T> extends Composite {
     */
 
    public void add(List<T> items) {
-      this.tableViewer.add(items.toArray());
+      Set<T> currentContents = this.getContents(HashSet::new);
+      items.stream().filter((project) -> !currentContents.contains(project)).forEach(this.tableViewer::add);
    }
 
    /**
-    * Predicate to determine if an item is selected in the table.
+    * Gets a {@link Collection} of the Class&lt;T&gt; items held in the selection table.
+    * 
+    * @param <C> the type of collection created and returned by the method.
+    * @param collectionFactory a {@link Supplier} for the {@link Collection} to be filled by the method.
+    * @return the {@link Collection} provided by the <code>collectionFactory</code> {@link Supplier}.
+    */
+
+   public <C extends Collection<T>> C getContents(Supplier<C> collectionFactory) {
+      int i;
+      C selections = collectionFactory.get();
+      //@formatter:off
+      for( Object element = this.tableViewer.getElementAt(i=0);
+           Objects.nonNull( element );
+           element = this.tableViewer.getElementAt(++i)) {
+         @SuppressWarnings("unchecked")
+         T t = (T) element;
+         selections.add( t );
+      }
+      return selections;
+      
+   }
+
+   /**
+    * Gets a {@link List} of the currently selected items in the table viewer.
+    * 
+    * @return a {@link List} of the selected items.
+    */
+   
+   public List<T> getSelected() {
+      IStructuredSelection structuredSelection = this.tableViewer.getStructuredSelection();
+      @SuppressWarnings("unchecked")
+      List<T> selected = structuredSelection.toList();
+      return selected;
+   }
+
+   /**
+    * Predicate to determine if at least one item is selected in the table viewer.
     * 
     * @return <code>true</code> when an item is selected; otherwise, <code>false</code>.
     */
@@ -115,6 +171,16 @@ public class SelectionBox<T> extends Composite {
       ISelection selection = this.tableViewer.getSelection();
       boolean result = !selection.isEmpty();
       return result;
+   }
+
+   /**
+    * Removes the elements of the <code>items</code> {@link List} from the table viewer.
+    * 
+    * @param items a {@link List} of the Class&lt;T&gt; items to be removed.
+    */
+   
+   public void remove(List<T> items) {
+      this.tableViewer.remove(items.toArray());
    }
 
 }

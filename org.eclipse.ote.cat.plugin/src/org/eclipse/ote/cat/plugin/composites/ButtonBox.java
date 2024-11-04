@@ -117,20 +117,20 @@ public class ButtonBox extends Composite {
     * @param enableMaskSupplier this callback is invoked when enabling or disabling buttons.
     */
 
-   public ButtonBox(Composite parent, ButtonAction addButtonAction, ButtonAction removeButtonAction, EnableMaskSupplier enableAction) {
+   public ButtonBox(Composite parent, ButtonAction addButtonAction, ButtonAction removeButtonAction, EnableMaskSupplier enableMaskSupplier) {
 
       super(parent, SWT.NULL);
 
       this.addButtonAction = addButtonAction;
       this.removeButtonAction = removeButtonAction;
-      this.enableMaskSupplier = enableAction;
+      this.enableMaskSupplier = enableMaskSupplier;
 
       GridLayout gridLayout = new GridLayout();
       gridLayout.marginWidth = 0;
 
       this.setLayout(gridLayout);
       this.createButtons();
-      this.addDisposeListener(this::disposer);
+      this.addDisposeListener(this::dispose);
       this.enableButtons();
    };
 
@@ -152,7 +152,7 @@ public class ButtonBox extends Composite {
     * <li>sets up a selection listener with the <code>buttonAction</code>.</li>
     * </ul>
     * 
-    * @param key the resource name used to supply the button's label text.
+    * @param label the resource name used to supply the button's label text.
     * @param buttonAction the callback to be invoked with the button is pressed.
     * @return Button the created button.
     */
@@ -176,7 +176,7 @@ public class ButtonBox extends Composite {
     * @param event unused
     */
 
-   private void disposer(DisposeEvent event) {
+   private void dispose(DisposeEvent event) {
       this.addButton.dispose();
       this.addButton = null;
       this.removeButton.dispose();

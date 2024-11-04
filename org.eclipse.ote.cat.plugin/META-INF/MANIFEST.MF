@@ -4,8 +4,8 @@ Bundle-Name: OSEE Compiler Applicability Tool Plugin
 Bundle-SymbolicName: org.eclipse.ote.cat.plugin;singleton:=true
 Bundle-Version: 0.26.3.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.eclipse.ote.cat.plugin.CatPlugin
+Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.eclipse.ote.cat.plugin
 Import-Package: 
  com.fasterxml.jackson.annotation,
@@ -13,18 +13,25 @@ Import-Package:
  com.fasterxml.jackson.databind,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
+ org.eclipse.core.runtime.jobs,
  org.eclipse.core.runtime.preferences,
  org.eclipse.e4.core.services.log,
+ org.eclipse.jdt.core,
  org.eclipse.jface.dialogs,
  org.eclipse.jface.preference,
  org.eclipse.jface.viewers,
  org.eclipse.jface.window,
+ org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.swt,
  org.eclipse.swt.events,
  org.eclipse.swt.graphics,
  org.eclipse.swt.layout,
  org.eclipse.swt.widgets,
- org.osgi.framework
+ org.osgi.framework,
+ org.osgi.service.prefs
 Require-Bundle: 
- org.eclipse.ui
+ org.eclipse.ui,
+ org.eclipse.ui.ide,
+ org.eclipse.jdt.apt.core
