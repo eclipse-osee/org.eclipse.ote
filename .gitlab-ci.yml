@@ -1,17 +1,5 @@
-stages:
-  - validate
-
-Validate Files:
-  stage: validate
-  image: $DOCKER_IMAGE_PYTHON_GIT
-  script:
-    - git --version
-    - python --version
-    - git fetch
-    - FILES=$(git diff --name-only origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME)
-    - echo "Files to validate:"
-    - echo $FILES | tr " " "\n"
-    - python validationScripts/validateFiles.py "$EXCLUDED_KEYWORDS" $FILES
-  only:
-    - merge_requests
-  allow_failure: true
+include: 
+  - project: ${TEMPLATE_PROJECT_LOCATION}
+    ref: ${TEMPLATE_REF}
+    file: 
+      - ${TEMPLATE_LOCATION_JAVA8}
