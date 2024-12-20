@@ -18,9 +18,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.Policy;
 import org.eclipse.ote.cat.plugin.exception.CatErrorCode;
-import org.eclipse.ote.cat.plugin.exception.CatErrorSupportProvider;
 import org.eclipse.ote.cat.plugin.exception.CatPluginException;
 import org.eclipse.ote.cat.plugin.project.CatProjectManager;
 import org.eclipse.ote.cat.plugin.util.Extensions;
@@ -280,7 +278,9 @@ public class CatPlugin extends AbstractUIPlugin {
       try {
 
          super.start(context);
-         Policy.setErrorSupportProvider(new CatErrorSupportProvider());
+         //TODO: This sets the error support provide globally.
+         //Need to implement plug-in specific error support provider.
+         //Policy.setErrorSupportProvider(new CatErrorSupportProvider());
          this.catProjectManager.start();
          CatErrorCode.verifyStatusCodes();
 
