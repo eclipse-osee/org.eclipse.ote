@@ -14,7 +14,6 @@ package org.eclipse.osee.ote.core;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.ote.core.enums.PromptResponseType;
@@ -27,9 +26,11 @@ import org.eclipse.osee.ote.core.framework.prompt.UserInputPromptImpl;
 import org.eclipse.osee.ote.core.framework.prompt.YesNoPromptImpl;
 import org.eclipse.osee.ote.core.framework.prompt.YesNoPromptResult;
 import org.eclipse.osee.ote.core.log.record.AttentionRecord;
+import org.eclipse.osee.ote.core.log.record.SevereRecord;
 import org.eclipse.osee.ote.core.log.record.TestPointRecord;
 import org.eclipse.osee.ote.core.log.record.TestRecord;
 import org.eclipse.osee.ote.core.testPoint.InteractiveTestPoint;
+import org.eclipse.osee.ote.properties.OteProperties;
 
 class TestPromptImpl {
 
@@ -41,7 +42,7 @@ class TestPromptImpl {
 
    public String prompt(final TestPrompt prompt, final TestEnvironment environment, final TestScript test) {
 
-      if (environment.isInBatchMode()) {
+      if (environment.isInBatchMode() || OteProperties.isAbortOnPauseEnabled()) {
          promptInitWorker.execute(new Runnable() {
             @Override
             public void run() {
@@ -58,6 +59,10 @@ class TestPromptImpl {
          } else {
             test.getLogger().log(
                new AttentionRecord(environment, prompt.getType().name() + " : " + prompt.toString(), true));
+         }
+         if (prompt.isWaiting() && OteProperties.isAbortOnPauseEnabled()) {
+            test.getLogger().log(new SevereRecord(environment, "Abort on pause flag set: Aborting test..."));
+            test.abort();
          }
          return "";
       } else if (!environment.getRunManager().isCurrentThreadScript()) {

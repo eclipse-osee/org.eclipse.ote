@@ -14,7 +14,6 @@
 package org.eclipse.osee.ote.core;
 
 import java.io.Serializable;
-
 import org.eclipse.osee.ote.core.enums.PromptResponseType;
 
 /**
@@ -37,7 +36,7 @@ public class TestPrompt implements Serializable {
       super();
       this.prompt = XmlSupport.convertNonPrintableCharacers(prompt);
       this.waitForResponse =
-         type == PromptResponseType.SCRIPT_PAUSE || type == PromptResponseType.PASS_FAIL || type == PromptResponseType.SCRIPT_STEP || type == PromptResponseType.USER_INPUT ? true : false;
+         type == PromptResponseType.SCRIPT_PAUSE || type == PromptResponseType.PASS_FAIL || type == PromptResponseType.SCRIPT_STEP || type == PromptResponseType.USER_INPUT || type == PromptResponseType.YES_NO ? true : false;
       this.uutStep = type == PromptResponseType.SCRIPT_STEP ? true : false;
       this.type = type;
    }

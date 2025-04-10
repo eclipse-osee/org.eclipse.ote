@@ -29,6 +29,7 @@ public class OteProperties extends OseeProperties {
    private static final String OSEE_OTE_BATCH = "osee.ote.batch";
    private static final String OSEE_OTE_LOG_FILE_PATH = "osee.ote.logfilepath";
    private static final String OSEE_PAUSE_ON_FAIL = "ote.pause.on.fail";
+   private static final String OSEE_ABORT_ON_PAUSE = "ote.abort.on.pause";
    private static final String OSEE_PRINT_FAIL_TO_CONSOLE = "ote.print.fail.to.console";
    private static final String OSEE_OTE_DEFAULT_IP = "ote.default.ip.address";
 
@@ -81,5 +82,12 @@ public class OteProperties extends OseeProperties {
     */
    public static String getAllSettings() {
       return instance.toString();
+   }
+
+   /**
+    * @return true if Abort On Pause option is set to true
+    */
+   public static boolean isAbortOnPauseEnabled() {
+      return System.getProperty(OSEE_ABORT_ON_PAUSE) != null;
    }
 }
