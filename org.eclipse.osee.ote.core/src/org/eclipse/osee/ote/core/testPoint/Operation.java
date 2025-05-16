@@ -13,19 +13,25 @@
 
 package org.eclipse.osee.ote.core.testPoint;
 
-import javax.print.attribute.EnumSyntax;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.print.attribute.EnumSyntax;
 import org.eclipse.osee.framework.jdk.core.util.EnumBase;
 
 public class Operation extends EnumBase {
 
    private static final long serialVersionUID = -3132727420541603024L;
-   public static final Operation OR = new Operation(0);
-   public static final Operation AND = new Operation(1);
+   static final int OR_ID = 0;
+   public static final Operation OR = new Operation(OR_ID);
+   static final int AND_ID = 1;
+   public static final Operation AND = new Operation(AND_ID);
+   static final int NOR_ID = 2;
+   public static final Operation NOR = new Operation(NOR_ID);
+   static final int NAND_ID = 3;
+   public static final Operation NAND = new Operation(NAND_ID);
 
-   private static final String[] stringTable = new String[] {"OR", "AND"};
-   private static final Operation[] enumValueTable = new Operation[] {OR, AND};
+   private static final String[] stringTable = new String[] {"OR", "AND", "NOR", "NAND"};
+   private static final Operation[] enumValueTable = new Operation[] {OR, AND, NOR, NAND};
 
    private Operation(int value) {
       super(value);
