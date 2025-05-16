@@ -21,20 +21,24 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.util.IConsoleInputListener;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
 /**
- * This class is needed to get the OTE specific OTE Console class which will provide the ability to set the buffer limit of the console
+ * This class is needed to get the OTE specific OTE Console class which will provide the ability to set the buffer limit
+ * of the console
+ * 
  * @author Michael P. Masterson
  */
 public class OteConsoleWrapper {
@@ -70,32 +74,46 @@ public class OteConsoleWrapper {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
+            //TODO: determine if application is in a light or dark mode
+            boolean isLightMode = true;
+
+            Color consoleColor;
+
+            Device device = Display.getCurrent().getSystemColor(CONSOLE_OUT).getDevice();
+            consoleColor = isLightMode ? Displays.getSystemColor(SWT.COLOR_BLACK) : new Color(device, 128, 255, 128);
             streamOut = console.newOutputStream();// newMessageStream();
-            streamOut.setColor(Displays.getSystemColor(SWT.COLOR_BLACK));
+            streamOut.setColor(consoleColor);
             streamOut.setActivateOnWrite(false);
+
+            device = Display.getCurrent().getSystemColor(CONSOLE_ERROR).getDevice();
+            consoleColor = isLightMode ? Displays.getSystemColor(SWT.COLOR_RED) : new Color(device, 255, 128, 128);
             streamErr = console.newOutputStream();
-            streamErr.setColor(Displays.getSystemColor(SWT.COLOR_RED));
+            streamErr.setColor(consoleColor);
             streamErr.setActivateOnWrite(false);
+
+            device = Display.getCurrent().getSystemColor(CONSOLE_PROMPT).getDevice();
+            consoleColor = isLightMode ? Displays.getSystemColor(SWT.COLOR_BLUE) : new Color(device, 128, 128, 255);
             streamPrompt = console.newOutputStream();
-            streamPrompt.setColor(Displays.getSystemColor(SWT.COLOR_BLUE));
+            streamPrompt.setColor(consoleColor);
             streamPrompt.setActivateOnWrite(false);
          }
       });
       thread.start();
    }
-   
+
    /**
-    * @param low 
-    * @param high 
-    * @see  org.eclipse.ui.console.IOConsole#setWaterMarks(int, int)
+    * @param low
+    * @param high
+    * @see org.eclipse.ui.console.IOConsole#setWaterMarks(int, int)
     */
    public void setWaterMarks(int low, int high) {
       this.console.setWaterMarks(low, high);
    }
 
    /**
-    * This should only be called once in the constructor.  This method may be overridden by subclasses if a different 
-    * instance of an IOConsole is required.  
+    * This should only be called once in the constructor. This method may be overridden by subclasses if a different
+    * instance of an IOConsole is required.
+    * 
     * @param title
     * @return a new IOConsole with the title provided
     */
@@ -126,7 +144,8 @@ public class OteConsoleWrapper {
 
    /**
     * Writes string to console without popping console forward
-    * @param str 
+    * 
+    * @param str
     */
    public void write(String str) {
       write(str, false);
@@ -134,7 +153,8 @@ public class OteConsoleWrapper {
 
    /**
     * Writes string to console without popping console forward
-    * @param str 
+    * 
+    * @param str
     */
    public void writeError(String str) {
       write(str, CONSOLE_ERROR, true);
@@ -142,8 +162,8 @@ public class OteConsoleWrapper {
 
    /**
     * Writes string to console
-    * @param str 
     * 
+    * @param str
     * @param popup bring console window forward
     */
    public void write(String str, boolean popup) {
@@ -152,8 +172,8 @@ public class OteConsoleWrapper {
 
    /**
     * Write string to console
-    * @param str 
     * 
+    * @param str
     * @param type CONSOLE_ERROR, CONSOLE_OUT, CONSOLE_PROMPT
     */
    public void write(String str, int type) {
@@ -162,8 +182,8 @@ public class OteConsoleWrapper {
 
    /**
     * Write string to console
-    * @param str 
     * 
+    * @param str
     * @param type CONSOLE_ERROR, CONSOLE_OUT, CONSOLE_PROMPT
     * @param popup bring console window forward
     */
@@ -198,7 +218,7 @@ public class OteConsoleWrapper {
          } else {
             sendToStreams(type, str);
          }
-         if(newline ){
+         if (newline) {
             sendToStreams(type, "\n");
          }
          if (popup) {
