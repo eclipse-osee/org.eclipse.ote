@@ -16,8 +16,12 @@ package org.eclipse.osee.ote.core.testPoint;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestGroup;
@@ -28,11 +32,110 @@ import org.w3c.dom.Element;
 /**
  * @author Robert A. Fisher
  * @author Charles Shaw
+ * @author Loren K. Ashley
  */
 public class CheckGroup implements ITestGroup {
    private final String groupName;
    private final ArrayList<ITestPoint> testPoints;
    private final Operation operation;
+   private Set<String> requirementIds;
+
+   public static final CheckGroup SENTINEL = new CheckGroup(null, null) {
+
+      @Override
+      public CheckGroup add(ITestPoint testPoint) {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public CheckGroup addAll(Collection<ITestPoint> testPoionts) {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public ArrayList<ITestPoint> getTestPoints() {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public Operation getOperation() {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public String getGroupName() {
+         return Named.SENTINEL;
+      }
+
+      /**
+       * {@inheritDoc}
+       * 
+       * @return true
+       */
+
+      @Override
+      public boolean isInvalid() {
+         return true;
+      }
+
+      /**
+       * {@inheritDoc}
+       * 
+       * @return false
+       */
+
+      @Override
+      public boolean isValid() {
+         return false;
+      }
+
+      @Override
+      public int size() {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public boolean isPass() {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public Element toXml(Document doc) {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public void setRequirements(Set<String> requirementIds) {
+         throw new UnsupportedOperationException();
+      }
+
+   };
+
+   /**
+    * Determines if the {@link CheckGroup} implementation is <code>null</code> or a sentinel implementation.
+    * 
+    * @return <code>true</code> when the implementation is <code>null</code> or sentinel; otherwise, <code>false</code>.
+    */
+
+   public static boolean isInvalid(CheckGroup checkGroup) {
+      return Objects.isNull(checkGroup) || checkGroup.isInvalid();
+   }
+
+   /**
+    * Determines if the {@link CheckGroup} implementation is non-<code>null</code> and a non-sentinel implementation.
+    * 
+    * @return <code>true</code> when the implementation is non-<code>null</code> and non-sentinel; otherwise,
+    * <code>false</code>.
+    */
+
+   public static boolean isValid(CheckGroup checkGroup) {
+      return Objects.nonNull(checkGroup) && checkGroup.isValid();
+   }
 
    /**
     * CheckGroup objects are used to setup complex TestPoint structures where the pass/fail behavior can be an <b>And
@@ -46,7 +149,6 @@ public class CheckGroup implements ITestGroup {
    public CheckGroup(Operation operation, String groupName) {
       super();
       testPoints = new ArrayList<>();
-      // this.allTrue = allTrue;
       this.operation = operation;
       this.groupName = groupName;
    }
@@ -87,33 +189,75 @@ public class CheckGroup implements ITestGroup {
       return this.testPoints.size();
    }
 
+   /**
+    * Predicate to determine if the {@link CheckGroup} implementation is sentinel.
+    * 
+    * @return true
+    */
+
+   public boolean isInvalid() {
+      return false;
+   }
+
+   /**
+    * Predicate to determine if the {@link CheckGroup} implementation is non-sentinel.
+    * 
+    * @return false
+    */
+
+   public boolean isValid() {
+      return true;
+   }
+
    @Override
    public boolean isPass() {
-      boolean passFail;
 
-      // Ensure that some points have been added
-      if (testPoints.size() > 0) {
-         // If this group is using AND logic then assume pass until find a
-         // fail
-         // if (allTrue) {
-         if (operation == Operation.AND) {
-            passFail = true;
-            // Else the group is using OR logic, so assume fail until find a
-            // pass
+      /*
+       * When no test points are present, all operations are defined to be failures.
+       */
+
+      if (testPoints.size() == 0) {
+         return false;
+      }
+
+      boolean isAndOperation = (operation == Operation.AND) || (operation == Operation.NAND);
+      boolean isNotOfOperation = (operation == Operation.NAND) || (operation == Operation.NOR);
+
+      /*
+       * For and operations start out assuming a pass until a failure is found. For or operations start out assuming a
+       * fail until a pass is found.
+       */
+
+      boolean passFail = isAndOperation;
+
+      for (ITestPoint testPoint : testPoints) {
+         if (isAndOperation) {
+            passFail &= testPoint.isPass();
+            if (passFail == false) {
+               /*
+                * Short circuit failure exit
+                */
+               break;
+            }
          } else {
-            passFail = false;
-         }
-
-         for (ITestPoint testPoint : testPoints) {
-            if (operation == Operation.AND) {
-               passFail &= testPoint.isPass();
-            } else {
-               passFail |= testPoint.isPass();
+            passFail |= testPoint.isPass();
+            if (passFail == true) {
+               /*
+                * Short circuit pass exit
+                */
+               break;
             }
          }
-      } else {
-         passFail = false;
       }
+
+      /*
+       * Flip result for NAND and NOR operations
+       */
+
+      if (isNotOfOperation) {
+         passFail = !passFail;
+      }
+
       return passFail;
    }
 
@@ -140,6 +284,11 @@ public class CheckGroup implements ITestGroup {
       } else {
          checkGroupElement.appendChild(Jaxp.createElement(doc, "Result", "FAILED"));
       }
+      if (requirementIds != null && requirementIds.size() > 0) {
+         for (String req : requirementIds) {
+            checkGroupElement.appendChild(Jaxp.createElement(doc, "Requirement", req));
+         }
+      }
 
       for (ITestPoint testPoint : testPoints) {
          checkGroupElement.appendChild(testPoint.toXml(doc));
@@ -159,9 +308,21 @@ public class CheckGroup implements ITestGroup {
       } else {
          XMLStreamWriterUtil.writeElement(writer, "Result", "FAILED");
       }
+      if (requirementIds != null && requirementIds.size() > 0) {
+         for (String req : requirementIds) {
+            XMLStreamWriterUtil.writeElement(writer, "Requirement", req);
+         }
+      }
 
       for (ITestPoint testPoint : testPoints) {
          testPoint.toXml(writer);
       }
    }
+
+   @Override
+   public void setRequirements(Set<String> requirementIds) {
+      //This is to ensure we get this by object and not be reference.
+      this.requirementIds = new HashSet<String>(requirementIds);
+   }
+
 }
