@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ote.message;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,10 +30,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -58,8 +57,6 @@ import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
 import org.eclipse.osee.ote.message.listener.MessageSystemListener;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.w3c.dom.Document;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -324,8 +321,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
    }
 
    public boolean setMemSource(ITestEnvironmentMessageSystemAccessor accessor, DataType type) {
-      accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
-         new MethodFormatter().add(type));
+      accessor.getLogger().methodCalledOnObject(accessor, getMessageName(), new MethodFormatter().add(type));
       boolean success = setMemSource(type);
       accessor.getLogger().methodEnded(accessor);
       return success;
@@ -422,11 +418,8 @@ public abstract class Message implements Xmlizable, XmlizableStream {
    }
 
    /**
-    * Gets a list of all the message's data elements.
-    * <br>
-    * This returns ALL the elements, which may not be mapped to the
-    * active data type and/or may be non-mapping elements.
-    * 
+    * Gets a list of all the message's data elements. <br>
+    * This returns ALL the elements, which may not be mapped to the active data type and/or may be non-mapping elements.
     * Use {@link #getElements(DataType)} to get mapped elements
     * 
     * @return a collection of {@link Element}s
@@ -447,7 +440,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
    }
 
    /**
-    * @param type 
+    * @param type
     * @return a collection of mapped {@link Element}s for the specified DataType
     */
    public Collection<Element> getElements(DataType type) {
@@ -463,7 +456,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
    }
 
    /**
-    * @param elementName 
+    * @param elementName
     * @return true if the Message contains an element with the given name, false otherwise
     */
    public boolean hasElement(String elementName) {
@@ -546,7 +539,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
    }
 
    /**
-    * @param elementName The element name 
+    * @param elementName The element name
     * @param type The data type to search for the given element name
     * @return the element associated with the given name
     * @throws IllegalArgumentException if an element doesn't exist with given name. Use {@link #hasElement(String)} with
@@ -698,15 +691,15 @@ public abstract class Message implements Xmlizable, XmlizableStream {
    public MessageSystemListener getRemoveableListener() {
       return removableListenerHandler;
    }
-   
+
    public void setListenerTrace(MessageListenerTrace listener) {
-      if(listenerHandler != null){
+      if (listenerHandler != null) {
          listenerHandler.setMessageListenerTrace(this, listener);
       }
    }
-   
+
    public MessageListenerTrace clearListenerTrace() {
-      if(listenerHandler != null){
+      if (listenerHandler != null) {
          return listenerHandler.clearListenerTrace(this);
       }
       return null;
@@ -776,11 +769,11 @@ public abstract class Message implements Xmlizable, XmlizableStream {
 
    @JsonProperty
    public String getType() {
-       return getMemType().name();
+      return getMemType().name();
    }
-   
+
    /**
-    * Zeroize the entire body of this message.  Notice that the header and mask will not be affected.
+    * Zeroize the entire body of this message. Notice that the header and mask will not be affected.
     */
    public void zeroize() {
       checkState();
@@ -790,7 +783,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
          }
       }
    }
-   
+
    /**
     * Clears/zeroes out the entire mask for this message.
     */
@@ -807,7 +800,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
     * 
     * @param accessor For logging results
     * @return if the check passed
-    * @throws InterruptedException 
+    * @throws InterruptedException
     */
    public boolean checkForTransmission(ITestAccessor accessor) throws InterruptedException {
       return checkForTransmission(accessor, TransmissionTimeoutDefault);
@@ -820,7 +813,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
     * @param accessor For logging
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
-    * @throws InterruptedException 
+    * @throws InterruptedException
     */
    public boolean checkForTransmission(ITestAccessor accessor, int milliseconds) throws InterruptedException {
       return checkForTransmissions(accessor, 1, milliseconds);
@@ -833,7 +826,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
     * @param accessor For logging results
     * @param numTransmissions the number of transmissions to look for
     * @return if the check passed
-    * @throws InterruptedException 
+    * @throws InterruptedException
     */
    public boolean checkForTransmissions(ITestAccessor accessor, int numTransmissions) throws InterruptedException {
       return checkForTransmissions(accessor, numTransmissions, TransmissionTimeoutDefault);
@@ -846,7 +839,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
     * @param numTransmissions the number of transmission to look for
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
-    * @throws InterruptedException 
+    * @throws InterruptedException
     */
    public boolean checkForTransmissions(ITestAccessor accessor, int numTransmissions, int milliseconds) throws InterruptedException {
       checkState();
@@ -854,9 +847,8 @@ public abstract class Message implements Xmlizable, XmlizableStream {
          new MethodFormatter().add(numTransmissions).add(milliseconds));
       TransmissionCountCondition c = new TransmissionCountCondition(numTransmissions);
       MsgWaitResult result = waitForCondition(accessor, c, false, milliseconds);
-      CheckPoint passFail =
-         new CheckPoint(this.name, Integer.toString(numTransmissions), Integer.toString(result.getXmitCount()),
-            result.isPassed(), result.getXmitCount(), result.getElapsedTime());
+      CheckPoint passFail = new CheckPoint(this.name, Integer.toString(numTransmissions),
+         Integer.toString(result.getXmitCount()), result.isPassed(), result.getXmitCount(), result.getElapsedTime());
       accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
       accessor.getLogger().methodEnded(accessor);
       return passFail.isPass();
@@ -868,7 +860,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
     * @param accessor For logging results
     * @param milliseconds the amount to time (in milliseconds) to check
     * @return if the check passed
-    * @throws InterruptedException 
+    * @throws InterruptedException
     */
    public boolean checkForNoTransmissions(ITestEnvironmentMessageSystemAccessor accessor, int milliseconds) throws InterruptedException {
       checkState();
@@ -890,10 +882,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
       cancelTimer.cancelTimer();
       time = accessor.getEnvTime() - time;
 
-      accessor.getLogger().testpoint(
-         accessor,
-         accessor.getTestScript(),
-         accessor.getTestScript().getTestCase(),
+      accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestScript().getTestCase(),
          new CheckPoint(this.getMessageName(), "No Transmissions",
             result ? "No Transmissions" : "Transmissions Occurred", result, time));
       if (accessor != null) {
@@ -907,7 +896,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
     * 
     * @param accessor For logging results
     * @return if the check passed
-    * @throws InterruptedException 
+    * @throws InterruptedException
     */
    public boolean waitForTransmission(ITestEnvironmentMessageSystemAccessor accessor) throws InterruptedException {
       return waitForTransmission(accessor, TransmissionTimeoutDefault);
@@ -919,7 +908,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
     * @param accessor For logging results
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
-    * @throws InterruptedException 
+    * @throws InterruptedException
     */
    public boolean waitForTransmission(ITestEnvironmentMessageSystemAccessor accessor, int milliseconds) throws InterruptedException {
       return waitForTransmissions(accessor, 1, milliseconds);
@@ -931,7 +920,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
     * @param accessor For logging results
     * @param numTransmissions the number of transmissions to look for
     * @return if the check passed
-    * @throws InterruptedException 
+    * @throws InterruptedException
     */
    public boolean waitForTransmissions(ITestEnvironmentMessageSystemAccessor accessor, int numTransmissions) throws InterruptedException {
       return waitForTransmissions(accessor, numTransmissions, TransmissionTimeoutDefault);
@@ -944,7 +933,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
     * @param numTransmissions The exact number of transmissions to wait
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
-    * @throws InterruptedException 
+    * @throws InterruptedException
     */
    public boolean waitForTransmissions(ITestEnvironmentMessageSystemAccessor accessor, int numTransmissions, int milliseconds) throws InterruptedException {
       checkState();
@@ -1012,7 +1001,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
    /**
     * restores the state of this message. The state is intended to come from a remote instance of this message.
     * 
-    * @param state 
+    * @param state
     */
    public void setMessageState(final MessageState state) {
       checkState();
@@ -1066,7 +1055,6 @@ public abstract class Message implements Xmlizable, XmlizableStream {
    }
 
    /**
-    * 
     * @param type
     * @return True if mem source set correctly
     */
@@ -1117,7 +1105,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
       checkState();
       postMemSourceChangeListeners.add(listener);
    }
-   
+
    public void removePreMemSourceChangeListener(IMemSourceChangeListener listener) {
       checkState();
       preMemSourceChangeListeners.remove(listener);
@@ -1250,8 +1238,9 @@ public abstract class Message implements Xmlizable, XmlizableStream {
 
    /**
     * To be implemented if elements in a subclass must pass some criteria other than name matching
-    * @param currentElement  
-    * @param proposedElement 
+    * 
+    * @param currentElement
+    * @param proposedElement
     * @return True if the proposed element is a proper replacement for the current element
     */
    public boolean isValidElement(Element currentElement, Element proposedElement) {
@@ -1287,6 +1276,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
 
    /**
     * To be overridden if element switching is allowed
+    * 
     * @param messages The destination messages that this message should switch its elements to point to
     */
    public void switchElementAssociation(Collection<? extends Message> messages) {
@@ -1296,7 +1286,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
       return new HashMap<DataType, Class<? extends Message>[]>();
    }
 
-   @SuppressWarnings({ "rawtypes", "unchecked" })
+   @SuppressWarnings({"rawtypes", "unchecked"})
    public void postCreateMessageSetup(IMessageManager messageManager, MessageData data) throws Exception {
       Map<? extends DataType, Class<? extends Message>[]> o = getAssociatedMessages();
       messageRequestor = messageManager.createMessageRequestor(getName());
@@ -1340,7 +1330,8 @@ public abstract class Message implements Xmlizable, XmlizableStream {
 
    /**
     * Changes the rate back to the default rate.
-    * @param accessor 
+    * 
+    * @param accessor
     */
    public void changeRateToDefault(ITestEnvironmentMessageSystemAccessor accessor) {
       double oldRate = getRate();
@@ -1384,22 +1375,40 @@ public abstract class Message implements Xmlizable, XmlizableStream {
       }
       return getElement(path.getList(), type);
    }
-   
-   public ListIterator<Element> getElementIterator() {
-	   ArrayList<Element> list = new ArrayList<>(elementMap.values());
-	   return list.listIterator();
-   }
-   
-   public ListIterator<Element> getElementIterator(Element elemnt) {
-	   ArrayList<Element> list = new ArrayList<>(elementMap.values());
-	   int index = list.indexOf(elemnt);
-	   if (index >= 0) {
-		   return list.listIterator(index);		   
-	   }
-	   return null;
-   }
-   
-   
 
-   
+   public ListIterator<Element> getElementIterator() {
+      ArrayList<Element> list = new ArrayList<>(elementMap.values());
+      return list.listIterator();
+   }
+
+   public ListIterator<Element> getElementIterator(Element elemnt) {
+      ArrayList<Element> list = new ArrayList<>(elementMap.values());
+      int index = list.indexOf(elemnt);
+      if (index >= 0) {
+         return list.listIterator(index);
+      }
+      return null;
+   }
+
+   /**
+    * Sets a specified number of bits starting at a given byte offset and bit position. Skipping the header. <br>
+    * This method modifies the memory by setting the bits starting from the given byte offset, beginning at the
+    * specified bit position, and spanning the specified number of bits (size). <br>
+    * <br>
+    * Examples: <br>
+    * setBits(2, 6, 2, 3) would result in the 3rd byte being 0000 0011 <br>
+    * setBits(2, 0, 8, 15) would result in the 3rd byte being 0000 1111 <br>
+    * <br>
+    * If the size is not large enough for the value, it will result in no change. <br>
+    * 
+    * @param byteOffset byte offset - offset is 0 based.
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value the value to set in the specified bits
+    */
+   public void setBits(int byteOffset, int startBit, int sizeInBits, long value) {
+      getMemoryResource().getMem().setLong(value, byteOffset, startBit, startBit + sizeInBits - 1);
+      //For developers: These are parameters          offset,      msb,                   lsb)
+   }
+
 }

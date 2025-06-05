@@ -15,7 +15,6 @@ package org.eclipse.osee.ote.message;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.condition.ICondition;
 import org.eclipse.osee.ote.message.data.MessageData;
@@ -27,9 +26,8 @@ import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAccessor;
 
 /**
- * This class wraps the Message Object to limit the exposed API and make it simpler for the test
- * writer. This class will contain both the reader and writer instance of a message and will decide
- * which object is needed for each function.
+ * This class wraps the Message Object to limit the exposed API and make it simpler for the test writer. This class will
+ * contain both the reader and writer instance of a message and will decide which object is needed for each function.
  * 
  * @author Michael P. Masterson
  * @param <M> The concrete Message type this class is wrapping
@@ -224,12 +222,12 @@ public abstract class OteMessage<M extends Message> {
    }
 
    /**
-    * Zeroize the entire body of this message.  Notice that the header and mask will not be affected.
+    * Zeroize the entire body of this message. Notice that the header and mask will not be affected.
     */
    public void zeroize() {
       getMessageToWrite().zeroize();
    }
-   
+
    /**
     * Clears/zeroes out the entire mask for this message.
     */
@@ -442,6 +440,26 @@ public abstract class OteMessage<M extends Message> {
 
    public int getDefaultOffset() {
       return getMessageToRead().getDefaultOffset();
+   }
+
+   /**
+    * Sets a specified number of bits starting at a given byte offset and bit position. Skipping the header. <br>
+    * This method modifies the memory by setting the bits starting from the given byte offset, beginning at the
+    * specified bit position, and spanning the specified number of bits (size). <br>
+    * <br>
+    * Examples: <br>
+    * setBits(2, 6, 2, 3) would result in the 3rd byte being 0000 0011 <br>
+    * setBits(2, 0, 8, 15) would result in the 3rd byte being 0000 1111 <br>
+    * <br>
+    * If the size is not large enough for the value, it will result in no change. <br>
+    * 
+    * @param byteOffset byte offset - offset is 0 based.
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value the value to set in the specified bits
+    */
+   public void setBits(int byteOffset, int startBit, int sizeInBits, long value) {
+      getMessageToWrite().setBits(byteOffset, startBit, sizeInBits, value);
    }
 
 }
