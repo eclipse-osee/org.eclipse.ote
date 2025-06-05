@@ -1280,7 +1280,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
 
    /**
     * To be overridden if element switching is allowed
-    *
+    * 
     * @param messages The destination messages that this message should switch its elements to point to
     */
    public void switchElementAssociation(Collection<? extends Message> messages) {
@@ -1334,7 +1334,7 @@ public abstract class Message implements Xmlizable, XmlizableStream {
 
    /**
     * Changes the rate back to the default rate.
-    *
+    * 
     * @param accessor
     */
    public void changeRateToDefault(ITestEnvironmentMessageSystemAccessor accessor) {
@@ -1392,6 +1392,27 @@ public abstract class Message implements Xmlizable, XmlizableStream {
          return list.listIterator(index);
       }
       return null;
+   }
+
+   /**
+    * Sets a specified number of bits starting at a given byte offset and bit position. Skipping the header. <br>
+    * This method modifies the memory by setting the bits starting from the given byte offset, beginning at the
+    * specified bit position, and spanning the specified number of bits (size). <br>
+    * <br>
+    * Examples: <br>
+    * setBits(2, 6, 2, 3) would result in the 3rd byte being 0000 0011 <br>
+    * setBits(2, 0, 8, 15) would result in the 3rd byte being 0000 1111 <br>
+    * <br>
+    * If the size is not large enough for the value, it will result in no change. <br>
+    * 
+    * @param byteOffset byte offset - offset is 0 based.
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value the value to set in the specified bits
+    */
+   public void setBits(int byteOffset, int startBit, int sizeInBits, long value) {
+      getMemoryResource().getMem().setLong(value, byteOffset, startBit, startBit + sizeInBits - 1);
+      //For developers: These are parameters          offset,      msb,                   lsb)
    }
 
 }
