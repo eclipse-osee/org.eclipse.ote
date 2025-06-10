@@ -40,8 +40,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
+import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
 import org.eclipse.osee.ote.message.condition.ICondition;
+import org.eclipse.osee.ote.message.condition.IDiscreteElementCondition;
+import org.eclipse.osee.ote.message.condition.MessageBitEqualsCondition;
 import org.eclipse.osee.ote.message.condition.TransmissionCountCondition;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.Element;
@@ -1395,7 +1398,180 @@ public abstract class Message implements Xmlizable, XmlizableStream {
    }
 
    /**
-    * Sets a specified number of bits starting at a given byte offset and bit position. Skipping the header. <br>
+    * Verifies that the specified bits are set to "value".
+    * 
+    * @param accessor for logging
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value - value to check for
+    * @return if the check passed
+    */
+   public boolean checkBits(ITestAccessor accessor, CheckGroup checkGroup, int byteOffset, int startBit, int sizeInBits, long value) {
+      checkState();
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
+            new MethodFormatter().add(byteOffset).add(startBit).add(sizeInBits).add(value));
+      }
+
+      long actualValue = getMemoryResource().getMem().getLong(byteOffset, startBit, startBit + sizeInBits - 1);
+      CheckPoint passFail =
+         new CheckPoint(this.name, toHexString(value), toHexString(actualValue), actualValue == value, 0);
+
+      if (checkGroup == null) {
+         accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
+      } else {
+         checkGroup.add(passFail);
+      }
+
+      if (accessor != null) {
+         accessor.getLogger().methodEnded(accessor);
+      }
+
+      return passFail.isPass();
+   }
+
+   /**
+    * Verifies that the specified bits are NOT set to "value".
+    * 
+    * @param accessor for logging
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value value to test against
+    * @return if the check passed
+    */
+   public boolean checkNotBits(ITestAccessor accessor, CheckGroup checkGroup, int byteOffset, int startBit, int sizeInBits, long value) {
+      checkState();
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
+            new MethodFormatter().add(byteOffset).add(startBit).add(sizeInBits).add(value));
+      }
+
+      long actualValue = getMemoryResource().getMem().getLong(byteOffset, startBit, startBit + sizeInBits - 1);
+      CheckPoint passFail =
+         new CheckPoint(this.name, "Not " + toHexString(value), toHexString(actualValue), actualValue != value, 0);
+
+      if (checkGroup == null) {
+         accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
+      } else {
+         checkGroup.add(passFail);
+      }
+
+      if (accessor != null) {
+         accessor.getLogger().methodEnded(accessor);
+      }
+
+      return passFail.isPass();
+   }
+
+   /**
+    * Verifies that the specified bits are set to "value" within the number of "milliseconds" passed.
+    * 
+    * @param accessor for logging
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value - value to check for
+    * @param milliseconds Number of milliseconds to wait for the element to equal the "value"
+    * @return if the check passed
+    * @throws InterruptedException
+    */
+   public boolean checkBits(ITestAccessor accessor, CheckGroup checkGroup, int byteOffset, int startBit, int sizeInBits, long value, int milliseconds) throws InterruptedException {
+      checkState();
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
+            new MethodFormatter().add(byteOffset).add(startBit).add(sizeInBits).add(milliseconds));
+      }
+
+      MessageBitEqualsCondition<Long> condition =
+         new MessageBitEqualsCondition<Long>(this, byteOffset, startBit, startBit + sizeInBits - 1, value);
+      CheckPoint passFail =
+         waitWithCheckPoint(accessor, checkGroup, toHexString(value), condition, false, milliseconds);
+
+      if (accessor != null) {
+         accessor.getLogger().methodEnded(accessor);
+      }
+
+      return passFail.isPass();
+   }
+
+   /**
+    * Verifies that the specified bits are set to some value other than "value" within the number of "milliseconds"
+    * passed. Passes if at any point with in the time allowed, the specified bits are set to a value other than "value".
+    * 
+    * @param accessor for logging
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value value to test against
+    * @param milliseconds Number of milliseconds to wait for the specified bits to equal the "value"
+    * @return If the check passed
+    * @throws InterruptedException
+    */
+   public boolean checkNotBits(ITestAccessor accessor, CheckGroup checkGroup, int byteOffset, int startBit, int sizeInBits, long value, int milliseconds) throws InterruptedException {
+      checkState();
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
+            new MethodFormatter().add(byteOffset).add(startBit).add(sizeInBits).add(milliseconds));
+      }
+
+      MessageBitEqualsCondition<Long> condition =
+         new MessageBitEqualsCondition<Long>(this, true, byteOffset, startBit, startBit + sizeInBits - 1, value);
+      CheckPoint passFail =
+         waitWithCheckPoint(accessor, checkGroup, "Not " + toHexString(value), condition, false, milliseconds);
+
+      if (accessor != null) {
+         accessor.getLogger().methodEnded(accessor);
+      }
+
+      return passFail.isPass();
+   }
+
+   protected CheckPoint waitWithCheckPoint(ITestAccessor accessor, CheckGroup checkGroup, String expected, IDiscreteElementCondition<Long> condition, boolean maintain, int milliseconds) throws InterruptedException {
+      MsgWaitResult result = waitForCondition(accessor, condition, maintain, milliseconds);
+      CheckPoint passFail = new CheckPoint(this.name, expected, toHexString(condition.getLastCheckValue()),
+         result.isPassed(), result.getXmitCount(), result.getElapsedTime());
+
+      if (checkGroup == null) {
+         accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
+      } else {
+         checkGroup.add(passFail);
+      }
+
+      return passFail;
+   }
+
+   public String toHexString(Long value) {
+      return value + "(0x" + Long.toHexString(value).toUpperCase() + ")";
+   }
+
+   /**
+    * Sets a specified number of bits starting at a given byte offset and bit position. <br>
     * This method modifies the memory by setting the bits starting from the given byte offset, beginning at the
     * specified bit position, and spanning the specified number of bits (size). <br>
     * <br>
@@ -1405,14 +1581,109 @@ public abstract class Message implements Xmlizable, XmlizableStream {
     * <br>
     * If the size is not large enough for the value, it will result in no change. <br>
     * 
-    * @param byteOffset byte offset - offset is 0 based.
+    * @param accessor for logging
+    * @param byteOffset byte offset - offset is 0 based
     * @param startBit bit position to start - start bit is 0 based
     * @param sizeInBits numbers of bits
     * @param value the value to set in the specified bits
     */
-   public void setBits(int byteOffset, int startBit, int sizeInBits, long value) {
+   public void setBits(ITestAccessor accessor, int byteOffset, int startBit, int sizeInBits, long value) {
+      checkState();
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
+            new MethodFormatter().add(byteOffset).add(startBit).add(sizeInBits).add(value));
+      }
+
       getMemoryResource().getMem().setLong(value, byteOffset, startBit, startBit + sizeInBits - 1);
-      //For developers: These are parameters          offset,      msb,                   lsb)
+
+      if (accessor != null) {
+         accessor.getLogger().methodEnded(accessor);
+      }
+   }
+
+   /**
+    * Gets the current value of the specified bits
+    * 
+    * @param accessor for logging
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @return the value of the specified bits
+    */
+   public long getBits(ITestAccessor accessor, int byteOffset, int startBit, int sizeInBits) {
+      checkState();
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
+            new MethodFormatter().add(byteOffset).add(startBit).add(sizeInBits));
+      }
+
+      long value = getMemoryResource().getMem().getLong(byteOffset, startBit, startBit + sizeInBits - 1);
+
+      if (accessor != null) {
+         accessor.getLogger().methodEnded(accessor);
+      }
+
+      return value;
+   }
+
+   /**
+    * Waits until the specified bits equals the "value" passed. Returns last value observed upon a time out.
+    * 
+    * @param accessor for logging
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param milliseconds Number of milliseconds to wait before failing
+    * @return last value found, either value expected or value found at timeout
+    * @throws InterruptedException
+    */
+   public long waitForBits(ITestAccessor accessor, int byteOffset, int startBit, int sizeInBits, long value, int milliseconds) throws InterruptedException {
+      checkState();
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
+            new MethodFormatter().add(byteOffset).add(startBit).add(sizeInBits).add(value).add(milliseconds));
+      }
+
+      MessageBitEqualsCondition<Long> condition =
+         new MessageBitEqualsCondition<Long>(this, byteOffset, startBit, startBit + sizeInBits - 1, value);
+      waitForCondition(accessor, condition, false, milliseconds);
+
+      if (accessor != null) {
+         accessor.getLogger().methodEnded(accessor);
+      }
+
+      return condition.getLastCheckValue();
+   }
+
+   /**
+    * Waits until the specified bits have a value other than the "value" passed. Returns last value observed upon a time
+    * out.
+    * 
+    * @param accessor for logging
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value The expected value to wait for
+    * @param milliseconds Number of milliseconds to wait before failing
+    * @return last value found, either value expected or value found at timeout
+    * @throws InterruptedException
+    */
+   public long waitForNotBits(ITestAccessor accessor, int byteOffset, int startBit, int sizeInBits, long value, int milliseconds) throws InterruptedException {
+      checkState();
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
+            new MethodFormatter().add(byteOffset).add(startBit).add(sizeInBits).add(value).add(milliseconds));
+      }
+
+      MessageBitEqualsCondition<Long> condition =
+         new MessageBitEqualsCondition<Long>(this, true, byteOffset, startBit, startBit + sizeInBits - 1, value);
+      waitForCondition(accessor, condition, false, milliseconds);
+
+      if (accessor != null) {
+         accessor.getLogger().methodEnded(accessor);
+      }
+
+      return condition.getLastCheckValue();
    }
 
 }

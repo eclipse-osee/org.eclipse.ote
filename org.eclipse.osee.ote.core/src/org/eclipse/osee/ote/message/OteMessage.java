@@ -16,6 +16,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
+import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.message.condition.ICondition;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.MsgWaitResult;
@@ -443,7 +444,158 @@ public abstract class OteMessage<M extends Message> {
    }
 
    /**
-    * Sets a specified number of bits starting at a given byte offset and bit position. Skipping the header. <br>
+    * Verifies that the specified bits are set to "value".
+    * 
+    * @param accessor for logging
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value - value to check for
+    * @return if the check passed
+    * @throws InterruptedException
+    */
+   public boolean checkBits(ITestAccessor accessor, CheckGroup checkGroup, int byteOffset, int startBit, int sizeInBits, long value) throws InterruptedException {
+      return getMessageToRead().checkBits(accessor, checkGroup, byteOffset, startBit, sizeInBits, value);
+   }
+
+   /**
+    * Verifies that the specified bits are NOT set to "value".
+    * 
+    * @param accessor for logging
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value value to test against
+    * @return if the check passed
+    */
+   public boolean checkNotBits(ITestAccessor accessor, CheckGroup checkGroup, int byteOffset, int startBit, int sizeInBits, long value) throws InterruptedException {
+      return getMessageToRead().checkNotBits(accessor, checkGroup, byteOffset, startBit, sizeInBits, value);
+   }
+
+   /**
+    * Verifies that the specified bits are set to "value".
+    * 
+    * @param accessor for logging
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value - value to check for
+    * @return if the check passed
+    * @throws InterruptedException
+    */
+   public boolean checkBits(ITestAccessor accessor, int byteOffset, int startBit, int sizeInBits, long value) throws InterruptedException {
+      return getMessageToRead().checkBits(accessor, (CheckGroup) null, byteOffset, startBit, sizeInBits, value);
+   }
+
+   /**
+    * Verifies that the specified bits are NOT set to "value".
+    * 
+    * @param accessor for logging
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value value to test against
+    * @return if the check passed
+    */
+   public boolean checkNotBits(ITestAccessor accessor, int byteOffset, int startBit, int sizeInBits, long value) throws InterruptedException {
+      return getMessageToRead().checkNotBits(accessor, (CheckGroup) null, byteOffset, startBit, sizeInBits, value);
+   }
+
+   /**
+    * Verifies that the specified bits are set to "value" within the number of "milliseconds" passed.
+    * 
+    * @param accessor for logging
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value - value to check for
+    * @param milliseconds Number of milliseconds to wait for the specified bits to equal the "value"
+    * @return if the check passed
+    * @throws InterruptedException
+    */
+   public final boolean checkBits(ITestAccessor accessor, CheckGroup checkGroup, int byteOffset, int startBit, int sizeInBits, long value, int milliseconds) throws InterruptedException {
+      return getMessageToRead().checkBits(accessor, checkGroup, byteOffset, startBit, sizeInBits, value, milliseconds);
+   }
+
+   /**
+    * Verifies that the specified bits are set to some value other than "value" within the number of "milliseconds"
+    * passed. Passes if at any point with in the time allowed, the specified bits are set to a value other than "value".
+    * 
+    * @param accessor for logging
+    * @param checkGroup If this check is part of a larger set of checks which another method is going to log then the
+    * reference to the CheckGroup must be passed and this method will add the result of the check to the group with out
+    * logging a point.
+    * <p>
+    * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
+    * will log the test point.
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value value to test against
+    * @param milliseconds Number of milliseconds to wait for the specified bits to equal the "value"
+    * @return If the check passed
+    * @throws InterruptedException
+    */
+   public final boolean checkNotBits(ITestAccessor accessor, CheckGroup checkGroup, int byteOffset, int startBit, int sizeInBits, long value, int milliseconds) throws InterruptedException {
+      return getMessageToRead().checkNotBits(accessor, checkGroup, byteOffset, startBit, sizeInBits, value,
+         milliseconds);
+   }
+
+   /**
+    * Verifies that the specified bits are set to "value" within the number of "milliseconds" passed.
+    * 
+    * @param accessor for logging
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value - value to check for
+    * @param milliseconds Number of milliseconds to wait for the specified bits to equal the "value"
+    * @return if the check passed
+    * @throws InterruptedException
+    */
+   public final boolean checkBits(ITestAccessor accessor, int byteOffset, int startBit, int sizeInBits, long value, int milliseconds) throws InterruptedException {
+      return getMessageToRead().checkBits(accessor, (CheckGroup) null, byteOffset, startBit, sizeInBits, value,
+         milliseconds);
+   }
+
+   /**
+    * Verifies that the specified bits are set to some value other than "value" within the number of "milliseconds"
+    * passed. Passes if at any point with in the time allowed, the specified bits are set to a value other than "value".
+    * 
+    * @param accessor for logging
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value value to test against
+    * @param milliseconds Number of milliseconds to wait for the specified bits to equal the "value"
+    * @return If the check passed
+    * @throws InterruptedException
+    */
+   public final boolean checkNotBits(ITestAccessor accessor, int byteOffset, int startBit, int sizeInBits, long value, int milliseconds) throws InterruptedException {
+      return getMessageToRead().checkNotBits(accessor, (CheckGroup) null, byteOffset, startBit, sizeInBits, value,
+         milliseconds);
+   }
+
+   /**
+    * Sets a specified number of bits starting at a given byte offset and bit position. <br>
     * This method modifies the memory by setting the bits starting from the given byte offset, beginning at the
     * specified bit position, and spanning the specified number of bits (size). <br>
     * <br>
@@ -453,13 +605,59 @@ public abstract class OteMessage<M extends Message> {
     * <br>
     * If the size is not large enough for the value, it will result in no change. <br>
     * 
-    * @param byteOffset byte offset - offset is 0 based.
+    * @param accessor for logging
+    * @param byteOffset byte offset - offset is 0 based
     * @param startBit bit position to start - start bit is 0 based
     * @param sizeInBits numbers of bits
     * @param value the value to set in the specified bits
     */
-   public void setBits(int byteOffset, int startBit, int sizeInBits, long value) {
-      getMessageToWrite().setBits(byteOffset, startBit, sizeInBits, value);
+   public void setBits(ITestAccessor accessor, int byteOffset, int startBit, int sizeInBits, long value) {
+      getMessageToWrite().setBits(accessor, byteOffset, startBit, sizeInBits, value);
    }
 
+   /**
+    * Gets the current value of the specified bits
+    * 
+    * @param accessor for logging
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @return the value of the specified bits
+    */
+   public long getBits(ITestAccessor accessor, int byteOffset, int startBit, int sizeInBits) {
+      return getMessageToRead().getBits(accessor, byteOffset, startBit, sizeInBits);
+   }
+
+   /**
+    * Waits until the specified bits equals the "value" passed. Returns last value observed upon a time out.
+    * 
+    * @param accessor for logging
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @return the value of the specified bits
+    * @param milliseconds Number of milliseconds to wait before failing
+    * @return last value found, either value expected or value found at timeout
+    * @throws InterruptedException
+    */
+   public long waitForBits(ITestAccessor accessor, int byteOffset, int startBit, int sizeInBits, long value, int milliseconds) throws InterruptedException {
+      return getMessageToRead().waitForBits(accessor, byteOffset, startBit, sizeInBits, value, milliseconds);
+   }
+
+   /**
+    * Waits until the specified bits have a value other than the "value" passed. Returns last value observed upon a time
+    * out.
+    * 
+    * @param accessor for logging
+    * @param byteOffset byte offset - offset is 0 based
+    * @param startBit bit position to start - start bit is 0 based
+    * @param sizeInBits numbers of bits
+    * @param value The expected value to wait for
+    * @param milliseconds Number of milliseconds to wait before failing
+    * @return last value observed
+    * @throws InterruptedException
+    */
+   public long waitForNotBits(ITestAccessor accessor, int byteOffset, int startBit, int sizeInBits, long value, int milliseconds) throws InterruptedException {
+      return getMessageToRead().waitForNotBits(accessor, byteOffset, startBit, sizeInBits, value, milliseconds);
+   }
 }
