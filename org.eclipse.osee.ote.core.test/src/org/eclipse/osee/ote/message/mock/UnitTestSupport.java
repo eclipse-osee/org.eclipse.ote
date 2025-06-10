@@ -19,12 +19,12 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
 import org.eclipse.osee.ote.core.testPoint.Operation;
+import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.MessageSystemException;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.DiscreteElement;
@@ -92,7 +92,8 @@ public class UnitTestSupport {
          public void onDataAvailable(MessageData data, DataType type) throws MessageSystemException {
             if (index < sequence.length) {
                element.setValue(sequence[index]);
-               System.out.println(System.currentTimeMillis() + ": " + index + ": " + element.getName() + " is now " + element.getValue());
+               System.out.println(
+                  System.currentTimeMillis() + ": " + index + ": " + element.getName() + " is now " + element.getValue());
                index++;
             } else {
                element.getMessage().removeListener(this);
@@ -107,9 +108,42 @@ public class UnitTestSupport {
 
       };
 
-      //  wait for a transmission so that the sequence begins on transimssion edges
+      //  wait for a transmission so that the sequence begins on transmission edges
       element.getMessage().waitForTransmission(accessor);
       element.getMessage().addListener(listener);
+      return seqHandle;
+   }
+
+   public <T extends Comparable<T>> ISequenceHandle setSequence(Message message, int byteOffset, int startBit, int sizeInBits, Long[] sequence) throws InterruptedException {
+      final SequenceHandle seqHandle = new SequenceHandle();
+      message.setBits(accessor, byteOffset, startBit, sizeInBits, sequence[0]);
+      IOSEEMessageListener listener = new IOSEEMessageListener() {
+         int index = 1;
+
+         @Override
+         public void onDataAvailable(MessageData data, DataType type) throws MessageSystemException {
+            if (index < sequence.length) {
+               message.setBits(accessor, byteOffset, startBit, sizeInBits, sequence[index]);
+               System.out.println(
+                  System.currentTimeMillis() + ": " + index + ": " + message.getName() + " is now " + message.getBits(
+                     accessor, byteOffset, startBit, sizeInBits));
+               index++;
+            } else {
+               message.removeListener(this);
+               seqHandle.signalEndSequence();
+            }
+         }
+
+         @Override
+         public void onInitListener() throws MessageSystemException {
+
+         }
+
+      };
+
+      //  wait for a transmission so that the sequence begins on transmission edges
+      message.waitForTransmission(accessor);
+      message.addListener(listener);
       return seqHandle;
    }
 
@@ -185,7 +219,9 @@ public class UnitTestSupport {
          boolean c = element.checkNot(accessor, grp, value, millis);
          CheckPoint cp = (CheckPoint) grp.getTestPoints().get(0);
          long elapsedTime = cp.getElpasedTime();
-         Assert.assertTrue(element.getName() + String.format(".checkNot(%s, %d)->failed, elapsed time=%d", value, millis, elapsedTime), c);
+         Assert.assertTrue(
+            element.getName() + String.format(".checkNot(%s, %d)->failed, elapsed time=%d", value, millis, elapsedTime),
+            c);
          System.out.printf("checkNot->passed, actual %s, expected %s, elapsed=%d\n", cp.getActual(), cp.getExpected(),
             cp.getElpasedTime());
       } catch (InterruptedException e) {
@@ -206,14 +242,22 @@ public class UnitTestSupport {
       CheckGroup grp = new CheckGroup(Operation.AND, "checkCheckGrp");
       boolean c = element.check(accessor, grp, value);
       long time = ((CheckPoint) grp.getTestPoints().get(0)).getElpasedTime();
-      Assert.assertTrue(
-         element.getName() + String.format(".check()->failed, elapsed=%d, expect=<%s>, actual=<%s>", time, value,
-            element.getValue()), c);
+      Assert.assertTrue(element.getName() + String.format(".check()->failed, elapsed=%d, expect=<%s>, actual=<%s>",
+         time, value, element.getValue()), c);
    }
 
    public <T extends Comparable<T>> void checkWaitForValue(DiscreteElement<T> element, T value, int millis) throws InterruptedException {
       T result = element.waitForValue(accessor, value, millis);
-      Assert.assertEquals(String.format("%d: %s.checkWaitForValue()->failed", System.currentTimeMillis(), element.getName()), value, result);
+      Assert.assertEquals(
+         String.format("%d: %s.checkWaitForValue()->failed", System.currentTimeMillis(), element.getName()), value,
+         result);
+   }
+
+   public <T extends Comparable<T>> void checkWaitForBits(Message message, int byteOffset, int startBit, int sizeInBits, long value, int millis) throws InterruptedException {
+      long result = message.waitForBits(accessor, byteOffset, startBit, sizeInBits, value, millis);
+      Assert.assertTrue(
+         String.format("%d: %s.checkWaitForBits()->failed", System.currentTimeMillis(), message.getName()),
+         value == result);
    }
 
    public <T extends Comparable<T>> void checkList(DiscreteElement<T> element, T[] values, int millis) throws InterruptedException {
@@ -237,10 +281,8 @@ public class UnitTestSupport {
       CheckPoint cp = (CheckPoint) ((CheckGroup) chkGrp.getTestPoints().get(0)).getTestPoints().get(0);
       StringBuilder sb = new StringBuilder();
       Arrays.stream(values).forEach(v -> sb.append(v).append(", "));
-      Assert.assertFalse(
-         String.format("%d: %s.checkListFail(%s)->failed, found '%s', elapsed time=%d", 
-                       System.currentTimeMillis(), element.getName(),sb, cp.getActual(), cp.getElpasedTime()), 
-                       b);
+      Assert.assertFalse(String.format("%d: %s.checkListFail(%s)->failed, found '%s', elapsed time=%d",
+         System.currentTimeMillis(), element.getName(), sb, cp.getActual(), cp.getElpasedTime()), b);
    }
 
    public <T extends Comparable<T>> void checkMaintainList(DiscreteElement<T> element, T[] values, int millis) throws InterruptedException {
@@ -260,7 +302,15 @@ public class UnitTestSupport {
       T result = element.waitForValue(accessor, value, millis);
       boolean b = value.equals(result);
       Assert.assertFalse(
-         element.getName() + String.format(" .checkWaitForValueFail()->failed, expect=%s, actual=%s", value, result), b);
+         element.getName() + String.format(" .checkWaitForValueFail()->failed, expect=%s, actual=%s", value, result),
+         b);
+   }
+
+   public <T extends Comparable<T>> void checkWaitForBitsFail(Message message, int byteOffset, int startBit, int sizeInBits, long value, int millis) throws InterruptedException {
+      long result = message.waitForBits(accessor, byteOffset, startBit, sizeInBits, value, millis);
+      boolean b = value == result;
+      Assert.assertFalse(
+         message.getName() + String.format(" .checkWaitForBitsFail()->failed, expect=%s, actual=%s", value, result), b);
    }
 
    public <T extends Comparable<T>> void checkPulse(DiscreteElement<T> element, T pulsedValue, T nonPulsedValue) throws InterruptedException {
@@ -318,7 +368,7 @@ public class UnitTestSupport {
       }
    }
 
-   public <T extends Comparable<T>> void genericTestCheckWaitForValue(DiscreteElement<T> element, T[] values, T valueToFInd) throws InterruptedException {
+   public <T extends Comparable<T>> void genericTestCheckWaitForValue(DiscreteElement<T> element, T[] values, T valueToFind) throws InterruptedException {
       // check sequence
       element.getMessage().waitForTransmission(accessor);
       ISequenceHandle handle = setSequence(element, values);
@@ -327,7 +377,20 @@ public class UnitTestSupport {
       }
       handle.waitForEndSequence(100, TimeUnit.MILLISECONDS);
       handle = setSequence(element, values);
-      checkWaitForValueFail(element, valueToFInd, 200);
+      checkWaitForValueFail(element, valueToFind, 200);
+      handle.waitForEndSequence(100, TimeUnit.MILLISECONDS);
+   }
+
+   public <T extends Comparable<T>> void genericTestCheckWaitForBits(TestMessage message, int byteOffset, int startBit, int sizeInBits, Long[] values, long valueToFind) throws InterruptedException {
+      // check sequence
+      message.waitForTransmission(accessor);
+      ISequenceHandle handle = setSequence(message, byteOffset, startBit, sizeInBits, values);
+      for (long v : values) {
+         checkWaitForBits(message, byteOffset, startBit, sizeInBits, v, 40);
+      }
+      handle.waitForEndSequence(100, TimeUnit.MILLISECONDS);
+      handle = setSequence(message, byteOffset, startBit, sizeInBits, values);
+      checkWaitForBitsFail(message, byteOffset, startBit, sizeInBits, valueToFind, 200);
       handle.waitForEndSequence(100, TimeUnit.MILLISECONDS);
    }
 
@@ -353,7 +416,7 @@ public class UnitTestSupport {
             throw new RuntimeException("exception while waiting for randomizedList to finish", ex);
          }
       }
-      
+
       // check failure
       ScheduledFuture<?> badRandomizer = maintainRandomizedList(element, badValues, 50);
       checkList(element, badValues, 500); // wait for the value to be set to the bad list
