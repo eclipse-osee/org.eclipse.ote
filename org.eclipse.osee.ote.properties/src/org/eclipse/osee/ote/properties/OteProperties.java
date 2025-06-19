@@ -88,6 +88,6 @@ public class OteProperties extends OseeProperties {
     * @return true if Abort On Pause option is set to true
     */
    public static boolean isAbortOnPauseEnabled() {
-      return System.getProperty(OSEE_ABORT_ON_PAUSE) != null;
+      return "true".equals(System.getProperty(OSEE_ABORT_ON_PAUSE));
    }
 }
