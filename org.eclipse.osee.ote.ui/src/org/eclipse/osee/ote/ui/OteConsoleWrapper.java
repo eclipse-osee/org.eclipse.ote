@@ -38,7 +38,7 @@ import org.eclipse.ui.console.IOConsoleOutputStream;
 /**
  * This class is needed to get the OTE specific OTE Console class which will provide the ability to set the buffer limit
  * of the console
- * 
+ *
  * @author Michael P. Masterson
  */
 public class OteConsoleWrapper {
@@ -56,7 +56,7 @@ public class OteConsoleWrapper {
 
    private final Thread thread;
 
-   private boolean newline;
+   private final boolean newline;
 
    public OteConsoleWrapper(String title) {
       this(title, true, true);
@@ -74,8 +74,10 @@ public class OteConsoleWrapper {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            //TODO: determine if application is in a light or dark mode
-            boolean isLightMode = true;
+
+            //TODO: Determine if application is in a light or dark mode, in the meantime use the system property "ote.light".
+
+            boolean isLightMode = Boolean.parseBoolean(System.getProperty("ote.light", "true"));
 
             Color consoleColor;
 
@@ -113,7 +115,7 @@ public class OteConsoleWrapper {
    /**
     * This should only be called once in the constructor. This method may be overridden by subclasses if a different
     * instance of an IOConsole is required.
-    * 
+    *
     * @param title
     * @return a new IOConsole with the title provided
     */
@@ -144,7 +146,7 @@ public class OteConsoleWrapper {
 
    /**
     * Writes string to console without popping console forward
-    * 
+    *
     * @param str
     */
    public void write(String str) {
@@ -153,7 +155,7 @@ public class OteConsoleWrapper {
 
    /**
     * Writes string to console without popping console forward
-    * 
+    *
     * @param str
     */
    public void writeError(String str) {
@@ -162,7 +164,7 @@ public class OteConsoleWrapper {
 
    /**
     * Writes string to console
-    * 
+    *
     * @param str
     * @param popup bring console window forward
     */
@@ -172,7 +174,7 @@ public class OteConsoleWrapper {
 
    /**
     * Write string to console
-    * 
+    *
     * @param str
     * @param type CONSOLE_ERROR, CONSOLE_OUT, CONSOLE_PROMPT
     */
@@ -182,7 +184,7 @@ public class OteConsoleWrapper {
 
    /**
     * Write string to console
-    * 
+    *
     * @param str
     * @param type CONSOLE_ERROR, CONSOLE_OUT, CONSOLE_PROMPT
     * @param popup bring console window forward
