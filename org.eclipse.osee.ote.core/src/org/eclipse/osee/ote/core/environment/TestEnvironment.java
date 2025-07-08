@@ -28,11 +28,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.LocalConnector;
 import org.eclipse.osee.framework.jdk.core.reportdata.ReportDataListener;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -40,6 +42,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.OseeLogStatusCallback;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.OseeTestThread;
+import org.eclipse.osee.ote.core.TestAbortError;
 import org.eclipse.osee.ote.core.TestPrompt;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.enums.PromptResponseType;
@@ -109,7 +112,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       this.associatedObjectListeners = new HashMap<>();
       this.associatedObjects = new HashMap<>(100);
       this.batchMode = OteProperties.isOseeOteInBatchModeEnabled();
-      
+
    }
 
    public void init(IServiceConnector connector) {
@@ -146,6 +149,54 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    @Override
    public IRunManager getRunManager() {
       return factory.getRunManager();
+   }
+
+   /**
+    * Creates and returns a {@link Runnable} that checks if the test script has been aborted or if the current thread
+    * has been interrupted; and throws a {@link TestAbortError} for either condition.
+    *
+    * @return a {@link Runnable} to check for a test script abort or interruption.
+    * @throws TestAbortError when the test script has been aborted or the current thread has been interrupted.
+    * @implNote The use of checked exceptions for all conditions that can go awry in a test script would become
+    * unwieldy. Often, in test code when something has gone wrong or cannot be completed a checked exception is wrapped
+    * into a runtime exception or a new runtime exception is thrown. At higher levels in the test code a general
+    * exception catch all is used to trap all exceptions to prevent the test script from being exited and instead a
+    * request for user interaction is made. Then pending the result of the user interaction a test point is passed or
+    * failed and the test script is allowed to continue.
+    * <p>
+    * The {@link TestScript#testWait} method wraps an {@link InterruptedException} into a runtime
+    * {@link OseeCoreException} exception. This makes a exception caused by a test script interruption or abort
+    * indistinguishable from a general runtime exception possible resulting in a request for user interaction instead of
+    * a clean test script abort.
+    */
+
+   public Runnable getAbortChecker() {
+
+      return new Runnable() {
+
+         IRunManager runManager = TestEnvironment.this.factory.getRunManager();
+
+         private boolean isAborted() {
+            if (this.runManager.isAborted()) {
+               return true;
+            }
+            TestScript testScript = this.runManager.getCurrentScript();
+            if (Objects.nonNull(testScript) && testScript.isAborted()) {
+               return true;
+            }
+            if (Thread.currentThread().isInterrupted()) {
+               return true;
+            }
+            return false;
+         }
+
+         @Override
+         public void run() {
+            if (this.isAborted()) {
+               throw new TestAbortError();
+            }
+         }
+      };
    }
 
    @Override
@@ -291,11 +342,9 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
             if (!outDir.mkdirs()) {
                throw new IOException("Failed to create the output directory");
             }
-            OseeLog.logf(TestEnvironment.class, Level.INFO,
-                  "Outfile Dir [%s] created.", outDir.getAbsolutePath());
+            OseeLog.logf(TestEnvironment.class, Level.INFO, "Outfile Dir [%s] created.", outDir.getAbsolutePath());
          } else {
-            OseeLog.logf(TestEnvironment.class, Level.FINE,
-                  "Outfile Dir [%s] exists.", outDir.getAbsolutePath());
+            OseeLog.logf(TestEnvironment.class, Level.FINE, "Outfile Dir [%s] exists.", outDir.getAbsolutePath());
          }
       } else {
          throw new IOException("A valid outfile directory must be specified.");
@@ -345,7 +394,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       if (myRegistration != null) {
          myRegistration.unregister();
       }
-      myRegistration = FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(TestEnvironmentInterface.class, this, null);
+      myRegistration = FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(
+         TestEnvironmentInterface.class, this, null);
    }
 
    protected void stop() {
@@ -430,10 +480,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    @Deprecated
    /**
-    * alerts the environment of an exception. The environment will take any
-    * necessary actions and alert any interested
+    * alerts the environment of an exception. The environment will take any necessary actions and alert any interested
     * entities of the problem. Any runing test script will be terminated
-    * 
     */
    public void handleException(Throwable t, Level logLevel) {
       handleException(t, "An exception has occurred in the environment", logLevel, true);
@@ -441,8 +489,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    @Deprecated
    /**
-    * @param abortScript
-    *           true will cause the currently running script to abort
+    * @param abortScript true will cause the currently running script to abort
     */
    public void handleException(Throwable t, Level logLevel, boolean abortScript) {
       handleException(t, "An exception has occurred in the environment", logLevel, abortScript);
@@ -450,16 +497,12 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    @Deprecated
    /**
-    * alerts the environment of an exception. The environment will take any
-    * necessary actions and alert any interested
+    * alerts the environment of an exception. The environment will take any necessary actions and alert any interested
     * entities of the problem
-    * 
-    * @param t
-    *           the exception
-    * @param logLevel
-    *           the severity of the exception. Specifing a Level.OFF will
-    * @param abortScript
-    *           cause the exception to not be logged
+    *
+    * @param t the exception
+    * @param logLevel the severity of the exception. Specifing a Level.OFF will
+    * @param abortScript cause the exception to not be logged
     */
    public void handleException(Throwable t, String message, Level logLevel, boolean abortScript) {
       if (logLevel != Level.OFF) {
@@ -490,8 +533,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    @Override
    @Deprecated
    /**
-    * marks the script as ready as well as clears any objects that are
-    * associated with the environment.
+    * marks the script as ready as well as clears any objects that are associated with the environment.
     */
    public synchronized void onScriptSetup() {
 
@@ -567,14 +609,14 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    /**
     * Causes current thread to wait until another thread invokes the {@link java.lang.Object#notify()}method or the
     * {@link java.lang.Object#notifyAll()}method for this object.
-    * 
+    *
     * @param milliseconds
     * @throws InterruptedException
     */
    public void testWait(int milliseconds) {
       getRunManager().getCurrentScript().testWait(milliseconds);
    }
-   
+
    @Override
    @Deprecated
    public void abortTestScript() {
