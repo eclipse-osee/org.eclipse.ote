@@ -13,12 +13,11 @@
 
 package org.eclipse.osee.ote.core.log.record;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Set;
 import java.util.logging.Level;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,8 +31,6 @@ import org.eclipse.osee.ote.core.log.TestLevel;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Ryan D. Brooks
@@ -101,8 +98,8 @@ public class TestPointRecord extends TestRecord {
             }
             script.pauseScriptOnFail(point, name, exp, act, stack.toString());
             script.printFailure(point, name, exp, act, stack.toString());
-         }
-         else {
+            script.abortScriptOnFail(source);
+         } else {
             script.pauseScriptOnFail(point);
             script.printFailure(point);
          }
@@ -124,7 +121,7 @@ public class TestPointRecord extends TestRecord {
    public TestPointRecord(ITestEnvironmentAccessor source, TestScript script, TestCase testCase, String testPointName, String expected, String actual, boolean passed, boolean timeStamp) {
       this(source, script, testCase, new CheckPoint(testPointName, expected, actual, passed), timeStamp);
    }
-   
+
    /**
     * TestPointRecord Constructor. Sets up a test point record of the result of the test point.
     * 
@@ -193,7 +190,7 @@ public class TestPointRecord extends TestRecord {
    public int getNumber() {
       return number;
    }
-   
+
    public void setRequirements(Set<String> requirementIds) {
       this.testPoint.setRequirements(requirementIds);
    }
