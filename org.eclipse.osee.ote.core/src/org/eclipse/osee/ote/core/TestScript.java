@@ -190,9 +190,10 @@ public abstract class TestScript implements ITimeout {
    private ScriptLoggingListener loggingListener;
    private final TestPromptImpl promptImpl;
    private ITestRunListenerProvider listenerProvider;
+   private final boolean shouldAbortOnFail;
    private final boolean shouldPauseOnFail;
    private final boolean printFailToConsole;
-   
+
    private VersionSupport versions;
 
    public TestScript(TestEnvironment environment, IUserSession callback, ScriptTypeEnum scriptType, boolean isBatchable) {
@@ -213,14 +214,15 @@ public abstract class TestScript implements ITimeout {
          throw new TestException("No environment found: Can not run script ", Level.SEVERE);
       }
       this.testPointTally = new TestPointTally(this.getClass().getName());
+      shouldAbortOnFail = OteProperties.isAbortOnFailEnabled();
       shouldPauseOnFail = OteProperties.isPauseOnFailEnabled();
       printFailToConsole = OteProperties.isPrintFailToConsoleEnabled();
 
-      if(VersionSupport.VERSION_FILE != null) {
+      if (VersionSupport.VERSION_FILE != null) {
          versions = new VersionSupport();
-         this.addScriptSummary(versions);         
+         this.addScriptSummary(versions);
       }
-      
+
       this.environment.getLogger().clearRequirementCoverage();
    }
 
@@ -391,6 +393,12 @@ public abstract class TestScript implements ITimeout {
       if (printFailToConsole) {
          prompt(
             "TP " + testPoint + ": " + name + "\nExpected: " + expected + "\nActual:      " + actual + "\n\n" + stackTrace);
+      }
+   }
+
+   public void abortScriptOnFail(ITestEnvironmentAccessor source) {
+      if (shouldAbortOnFail) {
+         source.abortTestScript();
       }
    }
 
