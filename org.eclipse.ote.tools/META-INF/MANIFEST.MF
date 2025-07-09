@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tools Support
+Bundle-SymbolicName: org.eclipse.ote.tools;singleton:=true
+Bundle-Version: 0.26.3.qualifier
+Bundle-Vendor: Boeing
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.eclipse.osee.framework2
+Export-Package: 
+ org.eclipse.ote.tools.util,
+ org.eclipse.ote.tools.util.io,
+ org.eclipse.ote.tools.util.io.json,
+ org.eclipse.ote.tools.util.io.poly
+Import-Package: 
+ com.fasterxml.jackson.annotation,
+ com.fasterxml.jackson.core,
+ com.fasterxml.jackson.databind,
+ com.fasterxml.jackson.databind.type,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.jdt.annotation,
+ org.eclipse.jdt.core

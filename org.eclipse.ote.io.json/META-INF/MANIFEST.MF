@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OTE IO Json
+Bundle-SymbolicName: org.eclipse.ote.io.json;singleton:=true
+Bundle-Version: 0.26.3.qualifier
+Bundle-Vendor: Boeing
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.eclipse.ote.io.json
+Export-Package: 
+ org.eclipse.ote.io.json
+Import-Package: 
+ com.fasterxml.jackson.annotation,
+ com.fasterxml.jackson.core,
+ com.fasterxml.jackson.databind,
+ com.fasterxml.jackson.databind.type,
+ org.eclipse.jdt.annotation,
+ org.eclipse.ote.io.pio,
+ org.eclipse.ote.tools.util
