@@ -71,5 +71,33 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+         
+    <plugin
+         id="org.eclipse.ote.abstractapplication"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/> 
+         
+	<plugin
+         id="org.eclipse.ote.io.json"
+      	 download-size="0"
+      	 install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+	<plugin
+         id="org.eclipse.ote.io.pio"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+	<plugin
+         id="org.eclipse.ote.tools"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>

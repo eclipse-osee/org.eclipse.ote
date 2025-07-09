@@ -48,6 +48,10 @@
 		<module>../org.eclipse.ote.ui.message.search</module>
 		<module>../org.eclipse.ote.ui.mux</module>
 		
+		<module>../org.eclipse.ote.abstractapplication</module>
+		<module>../org.eclipse.ote.io.json</module>
+		<module>../org.eclipse.ote.io.pio</module>
+		<module>../org.eclipse.ote.tools</module>
 
 		<module>../org.eclipse.ote.serverclient.feature</module>
 		<module>../org.eclipse.ote.server.feature</module>

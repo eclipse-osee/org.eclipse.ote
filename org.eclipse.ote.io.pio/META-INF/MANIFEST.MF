@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OTE IO PIO
+Bundle-SymbolicName: org.eclipse.ote.io.pio;singleton:=true
+Bundle-Version: 0.26.3.qualifier
+Bundle-Vendor: Boeing
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.eclipse.ote.io.pio
+Export-Package: 
+ org.eclipse.ote.io.pio
+Import-Package: 
+ org.eclipse.jdt.annotation,
+ org.eclipse.jdt.core,
+ org.eclipse.ote.tools.util
