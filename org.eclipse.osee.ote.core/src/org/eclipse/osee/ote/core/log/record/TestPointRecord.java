@@ -102,6 +102,7 @@ public class TestPointRecord extends TestRecord {
          } else {
             script.pauseScriptOnFail(point);
             script.printFailure(point);
+            script.abortScriptOnFail(source);
          }
       }
    }
