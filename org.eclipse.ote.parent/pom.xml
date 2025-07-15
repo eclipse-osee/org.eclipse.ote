@@ -19,7 +19,7 @@
 		<module>../org.eclipse.ote.bytemessage</module>
 		<module>../org.eclipse.ote.bytemessage.test</module>
 		<module>../org.eclipse.ote.cat</module>
-                <module>../org.eclipse.ote.cat.plugin</module>
+		<module>../org.eclipse.ote.cat.plugin</module>
 		<module>../org.eclipse.ote.message.manager</module>
 		<module>../org.eclipse.ote.io</module>
 		<module>../org.eclipse.ote.io.test</module>
@@ -52,6 +52,7 @@
 		<module>../org.eclipse.ote.io.json</module>
 		<module>../org.eclipse.ote.io.pio</module>
 		<module>../org.eclipse.ote.tools</module>
+		<module>../org.eclipse.ote.tools.test</module>
 
 		<module>../org.eclipse.ote.serverclient.feature</module>
 		<module>../org.eclipse.ote.server.feature</module>
