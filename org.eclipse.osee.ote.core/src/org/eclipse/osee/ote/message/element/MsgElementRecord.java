@@ -62,5 +62,8 @@ public class MsgElementRecord<R extends RecordElement> {
       }
    }
 
+   public R getSourceRecord() {
+      return sourceRecord;
+   }
 
 }
