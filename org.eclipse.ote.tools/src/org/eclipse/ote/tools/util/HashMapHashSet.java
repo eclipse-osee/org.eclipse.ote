@@ -54,7 +54,7 @@ public class HashMapHashSet<K, V> extends AbstractMapCollection<K, V, Set<V>> im
 
    /**
     * Creates the primary {@link HashMap} with an initial capacity of <code>mapInitialCapacity</code> and a load factor
-    * of <code>mapLoadFactory</code>. New {@link HashSet} collections created by this object are created with an initial
+    * of <code>mapLoadFactor</code>. New {@link HashSet} collections created by this object are created with an initial
     * capacity of <code>collectionInitialCapacity</code> and a load factor of <code>collectionLoadFactor</code>.
     *
     * @param mapInitialCapacity the initial capacity of the primary {@link HashMap}.
@@ -71,17 +71,16 @@ public class HashMapHashSet<K, V> extends AbstractMapCollection<K, V, Set<V>> im
    /**
     * Creates the primary {@link HashMap} with an initial capacity that matches the number of collections in the
     * provided <code>mapCollection</code> and the default load factor. New {@link HashSet} collections created by this
-    * object are created with the default initial capacity and load factor for {@link HashSet} objects. A new
-    * {@link HashSet} is created and associated with each key from the <code>mapCollection</code> and stored in the
-    * primary {@link HashMap}. The values in each collection in <code>mapCollection</code> are copied to the
-    * corresponding collection in this object. So the collections in this object are independent from the collections in
-    * <code>mapCollection</code>. Changes to collections in <code>mapCollection</code> will not be reflected in this
-    * object.
+    * object are created with the default initial capacity and load factor for {@link HashSet} objects.
+    * <p>
+    * For each {@link Collection} in the provided {@code mapCollection}, a new {@link HashSet} is created and filled
+    * with the values from that {@link Collection}. The new {@link HashSet}s are associated with the same key as their
+    * corresponding {@link Collection}s were in the provided {@code mapCollection}.
     *
     * @param mapCollection the {@link MapCollection} to copy the key and value references from.
     */
 
-   public HashMapHashSet(MapCollection<K, V, Set<V>> mapCollection) {
+   public HashMapHashSet(MapCollection<K, V, ? extends Collection<V>> mapCollection) {
       super(() -> new HashMap<>(mapCollection.size()), HashSet::new);
       //@formatter:off
       mapCollection

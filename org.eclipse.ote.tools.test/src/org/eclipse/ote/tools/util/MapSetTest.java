@@ -13,6 +13,11 @@
 
 package org.eclipse.ote.tools.util;
 
+import static org.eclipse.ote.tools.util.MapTestUtils.forEachMutableTestMap;
+import static org.eclipse.ote.tools.util.MapTestUtils.forEachTestKey;
+import static org.eclipse.ote.tools.util.MapTestUtils.forEachTestMap;
+import static org.eclipse.ote.tools.util.MapTestUtils.id;
+import static org.eclipse.ote.tools.util.MapTestUtils.setOf;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.HashSet;
@@ -43,6 +48,36 @@ import org.junit.runners.Parameterized.Parameters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MapSetTest {
 
+   /**
+    * Performs JUNIT assertion checks on the map contents. Some of the checks here are redundant with other tests.
+    *
+    * @param mapLetter the testing letter of the map being checked
+    * @param mapSet the map to be tested
+    */
+
+   private static void assertMapOk(String mapLetter, MapSet<String, String> mapSet) {
+      Set<String> set;
+      set = mapSet.get("A");
+      Assert.assertNotNull(id(mapLetter), set);
+      Assert.assertTrue(id(mapLetter), set.contains("A-1"));
+      Assert.assertTrue(id(mapLetter), set.contains("A-2"));
+      Assert.assertTrue(id(mapLetter), set.contains("A-3"));
+      Assert.assertEquals(id(mapLetter), 3, set.size());
+      set = mapSet.get("B");
+      Assert.assertNotNull(id(mapLetter), set);
+      Assert.assertTrue(id(mapLetter), set.contains("B-1"));
+      Assert.assertTrue(id(mapLetter), set.contains("B-2"));
+      Assert.assertTrue(id(mapLetter), set.contains("B-3"));
+      Assert.assertEquals(id(mapLetter), 3, set.size());
+      set = mapSet.get("C");
+      Assert.assertNotNull(id(mapLetter), set);
+      Assert.assertTrue(id(mapLetter), set.contains("C-1"));
+      Assert.assertTrue(id(mapLetter), set.contains("C-2"));
+      Assert.assertTrue(id(mapLetter), set.contains("C-3"));
+      Assert.assertEquals(id(mapLetter), 3, set.size());
+      Assert.assertEquals(id(mapLetter), 3, mapSet.size());
+   }
+
    @Parameters
    public static Collection<Object[]> data() {
       //@formatter:off
@@ -60,347 +95,470 @@ public class MapSetTest {
    private MapSet<String, String> mapSetC;
    private MapSet<String, String> mapSetD;
    private MapSet<String, String> mapSetE;
-   Map<String, MapSet<String, String>> maps;
+   private MapSet<String, String> mapSetF;
+   private Map<String, MapSet<String, String>> maps;
 
    public MapSetTest(Supplier<MapSet<String, String>> mapSetSupplier) {
       this.mapSetSupplier = mapSetSupplier;
    }
 
-   @SafeVarargs
-   private static <T> Set<T> setOf(T... values) {
-      HashSet<T> mutableHashSet = new HashSet<>(values.length * 2);
-      for (T value : values) {
-         mutableHashSet.add(value);
-      }
-      return mutableHashSet;
-   }
-
+   @SuppressWarnings("unchecked")
    @Before
    public void testSetup() {
+
+      /*
+       * Map setups to test constructors
+       */
+
+      //@formatter:off
+      /*
+       * MapSetSupplier provides maps from the constructors:
+       *
+       *    * HashMapHashSet()
+       *    * HashMapHashSet(int mapInitialCapacity, int collectionInitialCapacity)
+       *    * HashMapHashSet(int mapInitialCapacity, float mapLoadFactor, int collectionInitialCapacity, float collectionLoadFactor)
+       */
+      //@formatter:on
+
+      /*
+       * MapSet::ofEntries
+       */
+
       //@formatter:off
       this.mapSetA =
          MapSet.ofEntries
             (
                new AbstractMap.SimpleEntry<>( "A", setOf( "A-1", "A-2", "A-3" ) ),
                new AbstractMap.SimpleEntry<>( "B", setOf( "B-1", "B-2", "B-3" ) ),
-               new AbstractMap.SimpleEntry<>( "C", setOf( "C-1", "C-2", "C-3" ) ),
-               new AbstractMap.SimpleEntry<>( "D", setOf( "D-1", "D-2", "D-3" ) )
+               new AbstractMap.SimpleEntry<>( "C", setOf( "C-1", "C-2", "C-3" ) )
             );
       //@formatter:off
 
+      /*
+       * HashMapHashSet(MapCollection<K, V, Set<V>> mapCollection)
+       */
+
       this.mapSetB = new HashMapHashSet<>( this.mapSetA );
 
-      this.mapSetC = new HashMapHashSet<>();
-      this.mapSetC.putAll( "A", setOf( "A-1", "A-2", "A-3" ) );
-      this.mapSetC.putAll( "B", setOf( "B-1" ) );
-      this.mapSetC.putAll( "B", setOf( "B-2", "B-3" ) );
-      this.mapSetC.putAll( "C", setOf( "C-1", "C-2" ) );
-      this.mapSetC.putAll( "C", setOf( "C-3" ) );
-      this.mapSetC.putAll( "D", setOf( "D-1", "D-2", "D-3" ) );
+      /*
+       * Map setups to test put methods
+       */
 
-      this.mapSetD = new HashMapHashSet<>();
-      this.mapSetD.putEntry( new AbstractMap.SimpleEntry<>( "A", "A-1") );
-      this.mapSetD.putEntry( new AbstractMap.SimpleEntry<>( "A", "A-2") );
-      this.mapSetD.putEntry( new AbstractMap.SimpleEntry<>( "A", "A-3") );
-      this.mapSetD.putEntry( new AbstractMap.SimpleEntry<>( "B", "B-1") );
-      this.mapSetD.putEntry( new AbstractMap.SimpleEntry<>( "B", "B-2") );
-      this.mapSetD.putEntry( new AbstractMap.SimpleEntry<>( "B", "B-3") );
-      this.mapSetD.putEntry( new AbstractMap.SimpleEntry<>( "C", "C-1") );
-      this.mapSetD.putEntry( new AbstractMap.SimpleEntry<>( "C", "C-2") );
-      this.mapSetD.putEntry( new AbstractMap.SimpleEntry<>( "C", "C-3") );
-      this.mapSetD.putEntry( new AbstractMap.SimpleEntry<>( "D", "D-1") );
-      this.mapSetD.putEntry( new AbstractMap.SimpleEntry<>( "D", "D-2") );
-      this.mapSetD.putEntry( new AbstractMap.SimpleEntry<>( "D", "D-3") );
+      /*
+       * C MapCollection::put(Map.Entry<? extends K, ? extends C> entry)
+       */
 
-      this.mapSetE = new HashMapHashSet<>();
-      this.mapSetE.putValue( "A", "A-1" );
-      this.mapSetE.putValue( "A", "A-2" );
-      this.mapSetE.putValue( "A", "A-3" );
-      this.mapSetE.putValue( "B", "B-1" );
-      this.mapSetE.putValue( "B", "B-2" );
-      this.mapSetE.putValue( "B", "B-3" );
-      this.mapSetE.putValue( "C", "C-1" );
-      this.mapSetE.putValue( "C", "C-2" );
-      this.mapSetE.putValue( "C", "C-3" );
-      this.mapSetE.putValue( "D", "D-1" );
-      this.mapSetE.putValue( "D", "D-2" );
-      this.mapSetE.putValue( "D", "D-3" );
+      this.mapSetC = this.mapSetSupplier.get();
+      //@formatter:off
+      forEachTestKey
+         (
+            ( key ) ->
+            {
+               Set<String> set = new HashSet<>();
+               for( int i = 1; i <= 3; i++ ) {
+                  set.add( key + "-" + i );
+               }
+               this.mapSetC.put( new AbstractMap.SimpleEntry<>( key, set ) );
+            }
+         );
+      //@formatter:on
 
-      this.maps = new LinkedHashMap<String,MapSet<String,String>>();
-      this.maps.put( "A", this.mapSetA );
-      this.maps.put( "B", this.mapSetB );
-      this.maps.put( "C", this.mapSetC );
-      this.maps.put( "D", this.mapSetD );
-      this.maps.put( "E", this.mapSetE );
+      /*
+       * C MapCollection::putAll(K key, C values)
+       */
+
+      this.mapSetD = this.mapSetSupplier.get();
+      this.mapSetD.putAll("A", setOf("A-1", "A-2", "A-3"));
+      this.mapSetD.putAll("B", setOf("B-1"));
+      this.mapSetD.putAll("B", setOf("B-2", "B-3"));
+      this.mapSetD.putAll("C", setOf("C-1", "C-2"));
+      this.mapSetD.putAll("C", setOf("C-3"));
+
+      /*
+       * C MapCollection::putEntry(Map.Entry<K, V> entry)
+       */
+
+      this.mapSetE = this.mapSetSupplier.get();
+      //@formatter:off
+      forEachTestKey
+         (
+            ( key ) ->
+            {
+               for( int i = 1; i <= 3; i++ ) {
+                  this.mapSetE.putEntry( new AbstractMap.SimpleEntry<>( key, key + "-" + i ) );
+               }
+            }
+         );
+      //@formatter:on
+
+      /*
+       * C MapCollection::putValue(K key, V value)
+       */
+
+      this.mapSetF = this.mapSetSupplier.get();
+      //@formatter:off
+      forEachTestKey
+         (
+            ( key ) ->
+            {
+               for( int i = 1; i <= 3; i++ ) {
+                  this.mapSetF.putValue( key, key + "-" + i );
+               }
+            }
+         );
+      //@formatter:on
+
+      /*
+       * Create ordered map of test MapSets
+       */
+
+      this.maps = new LinkedHashMap<String, MapSet<String, String>>();
+      this.maps.put("A", this.mapSetA);
+      this.maps.put("B", this.mapSetB);
+      this.maps.put("C", this.mapSetC);
+      this.maps.put("D", this.mapSetD);
+      this.maps.put("E", this.mapSetE);
+      this.maps.put("F", this.mapSetF);
+
+      MapTestUtils.maps = (Map<String, Object>) (Object) this.maps;
    }
 
    @Test
-   public void testA_containsValueInAnyCollection() {
-      for( Map.Entry<String,MapSet<String,String>> mapSetEntry : this.maps.entrySet() ) {
-         String mapLetter = mapSetEntry.getKey();
-         MapSet<String,String> mapSet = mapSetEntry.getValue();
-         Assert.assertTrue( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "A-1" ));
-         Assert.assertTrue( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "A-2" ));
-         Assert.assertTrue( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "A-3" ));
-         Assert.assertTrue( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "B-1" ));
-         Assert.assertTrue( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "B-2" ));
-         Assert.assertTrue( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "B-3" ));
-         Assert.assertTrue( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "C-1" ));
-         Assert.assertTrue( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "C-2" ));
-         Assert.assertTrue( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "C-3" ));
-         Assert.assertTrue( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "D-1" ));
-         Assert.assertTrue( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "D-2" ));
-         Assert.assertTrue( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "D-3" ));
-         Assert.assertFalse( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "E-1" ));
-         Assert.assertFalse( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "E-2" ));
-         Assert.assertFalse( "mapSet" + mapLetter + " mapSet contains", mapSet.containsValueInAnyCollection( "E-3" ));
-      }
+   public void testA_verifyMaps() {
+      //@formatter:off
+      forEachTestMap
+         (
+            ( String mapLetter, MapSet<String, String> mapSet ) ->
+            {
+               MapSetTest.assertMapOk(mapLetter, mapSet);
+            }
+         );
+      //@formatter:on
    }
 
    @Test
-   public void testB_forEachEntry_consumer() {
-      for( Map.Entry<String,MapSet<String,String>> mapSetEntry : this.maps.entrySet() ) {
-         String mapLetter = mapSetEntry.getKey();
-         MapSet<String,String> mapSet = mapSetEntry.getValue();
-         MapSet<String,String> collectedMapSet = new HashMapHashSet<>();
-         mapSet.forEachEntry( ( entry ) -> collectedMapSet.putEntry(entry) );
-         Set<String> keySet = mapSet.keySet();
-         Set<String> collectedKeySet = collectedMapSet.keySet();
-         Assert.assertTrue("mapSet" + mapLetter + " key sets", keySet.equals(collectedKeySet));
-         for (String key : keySet) {
-            Set<String> valueSet = mapSet.get(key);
-            Set<String> collectedValueSet = collectedMapSet.get(key);
-            Assert.assertTrue("mapSet" + mapLetter + " key " + key + " value sets", valueSet.equals(collectedValueSet));
-         }
-      }
+   public void testB_containsValueInAnyCollection() {
+      //@formatter:off
+      forEachTestMap
+         (
+            (String mapLetter, MapSet<String, String> mapSet) ->
+            {
+               forEachTestKey
+                  (
+                     ( String key, Integer i ) ->
+                        Assert.assertTrue( id( mapLetter, key ), mapSet.containsValueInAnyCollection( key + "-" + i ) )
+                  );
+            }
+         );
    }
 
    @Test
-   public void testC_forEachEntry_key_consumer() {
-      for( Map.Entry<String,MapSet<String,String>> mapSetEntry : this.maps.entrySet() ) {
-         String mapLetter = mapSetEntry.getKey();
-         MapSet<String,String> mapSet = mapSetEntry.getValue();
-         MapSet<String,String> collectedMapSet = new HashMapHashSet<>();
-         Set<String> keySet = mapSet.keySet();
-         for( String key : keySet ) {
-            mapSet.forEachEntry( key, (entry) -> collectedMapSet.putEntry( entry ) );
-         }
-         Set<String> collectedKeySet = collectedMapSet.keySet();
-         Assert.assertTrue("mapSet" + mapLetter + " key sets", keySet.equals(collectedKeySet));
-         for (String key : keySet) {
-            Set<String> valueSet = mapSet.get(key);
-            Set<String> collectedValueSet = collectedMapSet.get(key);
-            Assert.assertTrue("mapSet" + mapLetter + " key " + key + " value sets", valueSet.equals(collectedValueSet));
-         }
-      }
+   public void testC_forEach() {
+      //@formatter:off
+      forEachTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               MapSet<String,String> collectedMapSet = new HashMapHashSet<>();
+               mapSet.forEach( ( Map.Entry<? extends String,? extends Set<String>> mapEntry ) -> collectedMapSet.put( mapEntry ) );
+               MapSetTest.assertMapOk(mapLetter, collectedMapSet);
+            }
+         );
+      //@formatter:on
    }
 
    @Test
-   public void testD_forEachValue_biconsumer() {
-      for( Map.Entry<String,MapSet<String,String>> mapSetEntry : this.maps.entrySet() ) {
-         String mapLetter = mapSetEntry.getKey();
-         MapSet<String,String> mapSet = mapSetEntry.getValue();
-         MapSet<String,String> collectedMapSet = new HashMapHashSet<>();
-         mapSet.forEachValue( ( k, v ) -> collectedMapSet.putValue( k, v ) );
-         Set<String> keySet = mapSet.keySet();
-         Set<String> collectedKeySet = collectedMapSet.keySet();
-         Assert.assertTrue("mapSet" + mapLetter + " key sets", keySet.equals(collectedKeySet));
-         for (String key : keySet) {
-            Set<String> valueSet = mapSet.get(key);
-            Set<String> collectedValueSet = collectedMapSet.get(key);
-            Assert.assertTrue("mapSet" + mapLetter + " key " + key + " value sets", valueSet.equals(collectedValueSet));
-         }
-      }
+   public void testD_forEachEntry_consumer() {
+      //@formatter:off
+      forEachTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               MapSet<String,String> collectedMapSet = new HashMapHashSet<>();
+               mapSet.forEachEntry( ( Map.Entry<String,String> entry ) -> collectedMapSet.putEntry( entry ) );
+               MapSetTest.assertMapOk( mapLetter, collectedMapSet );
+            }
+         );
+      //@formatter:on
    }
 
    @Test
-   public void testE_forEachValue_key_consumer() {
-      for( Map.Entry<String,MapSet<String,String>> mapSetEntry : this.maps.entrySet() ) {
-         String mapLetter = mapSetEntry.getKey();
-         MapSet<String,String> mapSet = mapSetEntry.getValue();
-         MapSet<String,String> collectedMapSet = new HashMapHashSet<>();
-         Set<String> keySet = mapSet.keySet();
-         for( String key : keySet ) {
-            mapSet.forEachValue( key, (value) -> collectedMapSet.putValue( key,value ) );
-         }
-         Set<String> collectedKeySet = collectedMapSet.keySet();
-         Assert.assertTrue("mapSet" + mapLetter + " key sets", keySet.equals(collectedKeySet));
-         for (String key : keySet) {
-            Set<String> valueSet = mapSet.get(key);
-            Set<String> collectedValueSet = collectedMapSet.get(key);
-            Assert.assertTrue("mapSet" + mapLetter + " key " + key + " value sets", valueSet.equals(collectedValueSet));
-         }
-      }
+   public void testE_forEachEntry_key_consumer() {
+      //@formatter:off
+      forEachTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               MapSet<String, String> collectedMapSet = new HashMapHashSet<>();
+               forEachTestKey
+                  (
+                     ( String key ) ->
+                        mapSet.forEachEntry( key, ( Map.Entry<String,String> entry ) -> collectedMapSet.putEntry( entry ) )
+                  );
+               MapSetTest.assertMapOk( mapLetter, collectedMapSet );
+            }
+         );
+      //@formatter:on
    }
 
    @Test
-   public void testF_getOptional() {
-      for( Map.Entry<String,MapSet<String,String>> mapSetEntry : this.maps.entrySet() ) {
-         String mapLetter = mapSetEntry.getKey();
-         MapSet<String,String> mapSet = mapSetEntry.getValue();
-         Set<String> keySet = mapSet.keySet();
-         for( String key : keySet ) {
-            Optional<Set<String>> optionalSet = mapSet.getOptional( key );
-            Assert.assertTrue( "mapSet" + mapLetter + " set optional value present", optionalSet.isPresent() );
-            Set<String> valueSet = mapSet.get(key);
-            Set<String> optionalValueSet = optionalSet.get();
-            Assert.assertTrue("mapSet" + mapLetter + " key " + key + " value sets", valueSet.equals(optionalValueSet));
-         }
-
-         Assert.assertTrue( "mapSet" + mapLetter + " set optional value not present", !mapSet.getOptional( "Z" ).isPresent());
-      }
+   public void testF_forEachValue_biconsumer() {
+      //@formatter:off
+      forEachTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               MapSet<String, String> collectedMapSet = new HashMapHashSet<>();
+               mapSet.forEachValue( ( String k, String v) -> collectedMapSet.putValue( k, v ) );
+               MapSetTest.assertMapOk( mapLetter, collectedMapSet );
+            }
+         );
+      //@formatter:off
    }
 
    @Test
-   public void testG_removeEntry() {
-      for (Map.Entry<String, MapSet<String, String>> mapSetEntry : this.maps.entrySet()) {
-         String mapLetter = mapSetEntry.getKey();
-         if( "A".equals( mapLetter) ) {
-            //Map A is immutable
-            continue;
-         }
-         MapSet<String, String> mapSet = mapSetEntry.getValue();
-         mapSet.removeEntry( new AbstractMap.SimpleEntry<>( "A", "A-2" ) );
-         Set<String> setA = mapSet.get("A");
-         Assert.assertTrue( "mapSet" + mapLetter + " key A not contains A-1", setA.contains( "A-1") );
-         Assert.assertFalse( "mapSet" + mapLetter + " key A not contains A-2", setA.contains( "A-2") );
-         Assert.assertTrue( "mapSet" + mapLetter + " key A not contains A-3", setA.contains( "A-3") );
-      }
+   public void testG_forEachValue_key_consumer() {
+      //@formatter:off
+      forEachTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               MapSet<String, String> collectedMapSet = new HashMapHashSet<>();
+               forEachTestKey
+                  (
+                     ( String key ) -> mapSet.forEachValue( key, ( String value ) -> collectedMapSet.putValue( key, value ) )
+                  );
+               MapSetTest.assertMapOk( mapLetter, collectedMapSet );
+            }
+         );
+      //@formatter:on
    }
 
    @Test
-   public void testH_removeValue() {
-      for (Map.Entry<String, MapSet<String, String>> mapSetEntry : this.maps.entrySet()) {
-         String mapLetter = mapSetEntry.getKey();
-         if( "A".equals( mapLetter) ) {
-            //Map A is immutable
-            continue;
-         }
-         MapSet<String, String> mapSet = mapSetEntry.getValue();
-         mapSet.removeValue( "A", "A-2" );
-         Set<String> setA = mapSet.get("A");
-         Assert.assertTrue( "mapSet" + mapLetter + " key A not contains A-1", setA.contains( "A-1") );
-         Assert.assertFalse( "mapSet" + mapLetter + " key A not contains A-2", setA.contains( "A-2") );
-         Assert.assertTrue( "mapSet" + mapLetter + " key A not contains A-3", setA.contains( "A-3") );
-      }
+   public void testH_getOptional() {
+      //@formatter:off
+      forEachTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               MapSet<String, String> collectedMapSet = new HashMapHashSet<>();
+               forEachTestKey
+                  (
+                     ( String key ) ->
+                     {
+                        Optional<Set<String>> optionalSet = mapSet.getOptional(key);
+                        Assert.assertTrue( id( mapLetter, key ), optionalSet.isPresent() );
+                        Set<String> optionalValueSet = optionalSet.get();
+                        collectedMapSet.put( key, optionalValueSet );
+                     }
+                  );
+               MapSetTest.assertMapOk( mapLetter, mapSet );
+            }
+         );
+      //@formatter:off
    }
 
    @Test
-   public void testI_size() {
-      for (Map.Entry<String, MapSet<String, String>> mapSetEntry : this.maps.entrySet()) {
-         String mapLetter = mapSetEntry.getKey();
-         MapSet<String, String> mapSet = mapSetEntry.getValue();
-         Set<String> keySet = mapSet.keySet();
-         Assert.assertEquals("mapSet" + mapLetter + " keySet size", 4, keySet.size());
-         Assert.assertTrue("mapSet" + mapLetter + " keySet contains A", keySet.contains("A"));
-         Assert.assertTrue("mapSet" + mapLetter + " keySet contains B", keySet.contains("B"));
-         Assert.assertTrue("mapSet" + mapLetter + " keySet contains C", keySet.contains("C"));
-         Assert.assertTrue("mapSet" + mapLetter + " keySet contains D", keySet.contains("D"));
-         for (String key : keySet) {
-            Assert.assertEquals("mapSet" + mapLetter + " key " + key + " size", 3, mapSet.size(key));
-         }
-      }
+   public void testI_removeEntry() {
+      //@formatter:off
+      forEachMutableTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               boolean result;
+               result = mapSet.removeEntry( new AbstractMap.SimpleEntry<>( "A", "A-4" ) );
+               Assert.assertFalse( id( mapLetter ), result );
+               result = mapSet.removeEntry( new AbstractMap.SimpleEntry<>( "D", "A-1" ) );
+               Assert.assertFalse( id( mapLetter ), result );
+               forEachTestKey
+                  (
+                     ( String key, Integer i ) ->
+                     {
+                        boolean result2 = mapSet.removeEntry(new AbstractMap.SimpleEntry<>( key, key + "-" + i ) );
+                        Assert.assertTrue  ( id( mapLetter, key ), result2 );
+                     }
+                  );
+               Assert.assertEquals( id( mapLetter ), 0, mapSet.sizeValues() );
+            }
+         );
+      //@formatter:on
    }
 
    @Test
-   public void testJ_sizeValues() {
-      for (Map.Entry<String, MapSet<String, String>> mapSetEntry : this.maps.entrySet()) {
-         String mapLetter = mapSetEntry.getKey();
-         MapSet<String, String> mapSet = mapSetEntry.getValue();
-         Assert.assertEquals("mapSet" + mapLetter + " sizeValues", 12, mapSet.sizeValues());
-      }
+   public void testJ_removeValue() {
+      //@formatter:off
+      forEachMutableTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               boolean result;
+               result = mapSet.removeValue( "A", "A-4" );
+               Assert.assertFalse( id( mapLetter ), result );
+               result = mapSet.removeValue( "D", "A-1" );
+               Assert.assertFalse( id( mapLetter ), result );
+               forEachTestKey
+                  (
+                     ( String key, Integer i ) ->
+                     {
+                        boolean result2 = mapSet.removeValue( key, key + "-" + i );
+                        Assert.assertTrue  ( id( mapLetter, key ), result2 );
+                     }
+                  );
+               Assert.assertEquals( id( mapLetter ), 0, mapSet.sizeValues() );
+            }
+         );
+      //@formatter:on
    }
 
    @Test
-   public void testK_stream() {
-      for (Map.Entry<String, MapSet<String, String>> mapSetEntry : this.maps.entrySet()) {
-         String mapLetter = mapSetEntry.getKey();
-         MapSet<String, String> mapSet = mapSetEntry.getValue();
-         Set<String> keySet = mapSet.keySet();
-         Assert.assertEquals("mapSet" + mapLetter + " keySet size", 4, keySet.size());
-         for (String key : keySet) {
-            Set<String> set = mapSet.get(key);
-            Set<String> collectedSet = mapSet.stream(key).collect(Collectors.toSet());
-            Assert.assertTrue("mapSet" + mapLetter + " key " + key + " stream", set.equals(collectedSet));
-         }
-      }
+   public void testK_sizeValues() {
+      //@formatter:off
+      forEachMutableTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               Assert.assertEquals( id( mapLetter ), 9, mapSet.sizeValues() );
+            }
+         );
+      //@formatter:on
    }
 
    @Test
-   public void testL_streamAllCollectionValuesAsEntries() {
-      for (Map.Entry<String, MapSet<String, String>> mapSetEntry : this.maps.entrySet()) {
-         String mapLetter = mapSetEntry.getKey();
-         MapSet<String, String> mapSet = mapSetEntry.getValue();
-         MapSet<String, String> collectedMapSet = new HashMapHashSet<>();
-         //@formatter:off
-         mapSet
-            .streamAllCollectionValuesAsEntries()
-            .forEach( collectedMapSet::putEntry );
-         //@formatter:on
-         Set<String> keySet = mapSet.keySet();
-         Set<String> collectedKeySet = collectedMapSet.keySet();
-         Assert.assertTrue("mapSet" + mapLetter + " key sets", keySet.equals(collectedKeySet));
-         for (String key : keySet) {
-            Set<String> valueSet = mapSet.get(key);
-            Set<String> collectedValueSet = collectedMapSet.get(key);
-            Assert.assertTrue("mapSet" + mapLetter + " key " + key + " value sets", valueSet.equals(collectedValueSet));
-         }
-      }
+   public void testL_sizeValues_key() {
+      //@formatter:off
+      forEachMutableTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               forEachTestKey
+                  (
+                     ( String key ) ->
+                     {
+                        Assert.assertEquals( id( mapLetter, key ), 3, mapSet.sizeValues( key ) );
+                     }
+                  );
+            }
+         );
+      //@formatter:off
+   }
+
+
+   @Test
+   public void testM_stream() {
+      //@formatter:off
+      forEachTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               MapSet<String,String> collectedMapSet = new HashMapHashSet<>();
+               mapSet
+                  .stream()
+                  .map( ( value ) -> new AbstractMap.SimpleEntry<>( value.substring(0,1), value ) )
+                  .forEach( collectedMapSet::putEntry );
+               MapSetTest.assertMapOk( mapLetter, collectedMapSet );
+            }
+         );
+      //@formatter:on
    }
 
    @Test
-   public void testM_streamCollections() {
-      for (Map.Entry<String, MapSet<String, String>> mapSetEntry : this.maps.entrySet()) {
-         String mapLetter = mapSetEntry.getKey();
-         MapSet<String, String> mapSet = mapSetEntry.getValue();
-         //@formatter:off
-         List<Set<String>> collectedSets =
-         mapSet
-            .streamCollections()
-            .collect( Collectors.toList() );
-         //@formatter:on
-         Assert.assertEquals("mapSet" + mapLetter + " collected collections count", 4, collectedSets.size());
-         for (Set<String> collectedSet : collectedSets) {
-            Assert.assertTrue("mapSet" + mapLetter + " collected set contained in original",
-               mapSet.containsValue(collectedSet));
-         }
-      }
+   public void testN_stream_key() {
+      //@formatter:off
+      forEachTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               MapSet<String,String> collectedMapSet = new HashMapHashSet<>();
+               forEachTestKey
+                  (
+                     ( String key ) ->
+                        mapSet
+                           .stream( key )
+                           .map( ( value ) -> new AbstractMap.SimpleEntry<>( value.substring(0,1), value ) )
+                           .forEach( collectedMapSet::putEntry )
+               );
+               MapSetTest.assertMapOk( mapLetter, collectedMapSet );
+            }
+         );
+      //@formatter:on
    }
 
    @Test
-   public void testN_streamEntries() {
-      for (Map.Entry<String, MapSet<String, String>> mapSetEntry : this.maps.entrySet()) {
-         String mapLetter = mapSetEntry.getKey();
-         MapSet<String, String> mapSet = mapSetEntry.getValue();
-         MapSet<String, String> collectedMapSet = new HashMapHashSet<>();
-         //@formatter:off
-         mapSet
-            .streamEntries()
-            .forEach(  ( entry ) -> collectedMapSet.putAll( entry.getKey(), entry.getValue() ) );
-         //@formatter:on
-         Set<String> keySet = mapSet.keySet();
-         Set<String> collectedKeySet = collectedMapSet.keySet();
-         Assert.assertTrue("mapSet" + mapLetter + " key sets", keySet.equals(collectedKeySet));
-         for (String key : keySet) {
-            Set<String> valueSet = mapSet.get(key);
-            Set<String> collectedValueSet = collectedMapSet.get(key);
-            Assert.assertTrue("mapSet" + mapLetter + " key " + key + " value sets", valueSet.equals(collectedValueSet));
-         }
-      }
+   public void testO_streamAllCollectionValuesAsEntries() {
+      //@formatter:off
+      forEachTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               MapSet<String,String> collectedMapSet = new HashMapHashSet<>();
+               mapSet
+                  .streamAllCollectionValuesAsEntries()
+                  .forEach( collectedMapSet::putEntry );
+               MapSetTest.assertMapOk( mapLetter, collectedMapSet );
+            }
+         );
+      //@formatter:on
    }
 
    @Test
-   public void testO_streamKeys() {
-      for (Map.Entry<String, MapSet<String, String>> mapSetEntry : this.maps.entrySet()) {
-         String mapLetter = mapSetEntry.getKey();
-         MapSet<String, String> mapSet = mapSetEntry.getValue();
-         //@formatter:off
-         Set<String> collectedKeySet =
-         mapSet
-            .streamKeys()
-            .collect( Collectors.toSet() );
-         //@formatter:on
-         Assert.assertTrue("mapSet" + mapLetter + " key set", mapSet.keySet().equals(collectedKeySet));
-      }
+   public void testP_streamCollections() {
+      //@formatter:off
+      forEachTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               MapSet<String,String> collectedMapSet = new HashMapHashSet<>();
+               mapSet
+                  .streamCollections()
+                  .flatMap( Collection::stream )
+                  .map( ( value ) -> new AbstractMap.SimpleEntry<>( value.substring(0,1), value ) )
+                  .forEach( collectedMapSet::putEntry );
+               MapSetTest.assertMapOk( mapLetter, collectedMapSet );
+            }
+         );
+      //@formatter:on
+   }
+
+   @Test
+   public void testQ_streamEntries() {
+      //@formatter:off
+      forEachTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               MapSet<String,String> collectedMapSet = new HashMapHashSet<>();
+               mapSet
+                  .streamEntries()
+                  .forEach
+                     (
+                        ( entry ) ->
+                        {
+                           String key = entry.getKey();
+                           Set<String> set = entry.getValue();
+                           set.stream().forEach( ( value ) -> collectedMapSet.putValue( key, value ) );
+                        }
+                     );
+               MapSetTest.assertMapOk( mapLetter, collectedMapSet );
+            }
+         );
+      //@formatter:on
+   }
+
+   @Test
+   public void testO_streamPrimaryKeys() {
+      //@formatter:off
+      forEachTestMap
+         (
+            ( String mapLetter, MapSet<String,String> mapSet ) ->
+            {
+               Set<String> primaryKeys = mapSet.keySet();
+               Set<String> collectedPrimaryKeys =
+                  mapSet
+                     .streamPrimaryKeys()
+                     .collect( Collectors.toSet() );
+               Assert.assertEquals( id( mapLetter ), primaryKeys, collectedPrimaryKeys );
+            }
+         );
+      //@formatter:on
    }
 }

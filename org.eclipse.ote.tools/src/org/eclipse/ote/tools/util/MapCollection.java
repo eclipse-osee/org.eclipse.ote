@@ -41,7 +41,17 @@ public interface MapCollection<K, V, C extends Collection<V>> extends Map<K, C> 
     * <code>false</code>.
     */
 
-   boolean containsValueInAnyCollection(Object value);
+   boolean containsValueInAnyCollection(V value);
+
+   /**
+    * Performs the given action for each entry in the map until all entries have been processed or the action throws an
+    * exception. Iteration order is implementation dependent.
+    *
+    * @param action the action to be performed for each entry.
+    * @throw NullPointerException when {@code action} is {@code null}.
+    */
+
+   void forEach(Consumer<Map.Entry<? extends K, ? extends C>> action);
 
    /**
     * Performs the <code>action</code> for each key and the values from the {@link Collection} associated with the key
@@ -91,6 +101,15 @@ public interface MapCollection<K, V, C extends Collection<V>> extends Map<K, C> 
    Optional<C> getOptional(K key);
 
    /**
+    * Associates the provided {@link Collection} and key from the provided {@code entry} in the map.
+    *
+    * @param entry a {@link Map#Entry} containing the key and {@link Collection} to be associated.
+    * @return when the key maps to a {@link Collection}, the previous value; otherwise, {@code null}.
+    */
+
+   C put(Map.Entry<? extends K, ? extends C> entry);
+
+   /**
     * Adds the values in the {@link Collection} <code>values</code> to a collection in this object associated with the
     * specified <code>key</code>.
     *
@@ -115,6 +134,17 @@ public interface MapCollection<K, V, C extends Collection<V>> extends Map<K, C> 
     */
 
    C putEntry(Map.Entry<K, V> entry);
+
+   /**
+    * If the specified key is not already associated with a {@link Collection} or is associated with {@code null}, the
+    * {@link Collection} is associated with the key.
+    *
+    * @param entry a {@link Map#Entry} containing the key and {@link Collection} to be associated when an association
+    * does not already exist or the association is currently with {@code null}.
+    * @return {@code null} when a new association is made; otherwise, the value currently associated with the keys.
+    */
+
+   C putIfAbsent(Map.Entry<? extends K, ? extends C> entry);
 
    /**
     * Adds the <code>value</code> to the {@link Collection} associated with the <code>key</code>. When the
@@ -153,16 +183,6 @@ public interface MapCollection<K, V, C extends Collection<V>> extends Map<K, C> 
    boolean removeValue(K key, V value);
 
    /**
-    * Returns the number of values in the collection associated with the <code>key</code>.
-    *
-    * @param key the key whose associated {@link Collection} size is to be obtained.
-    * @return when <code>key</code> is associated with a {@link Collection}, the number of values in the
-    * {@link Collection}; otherwise, zero.
-    */
-
-   int size(K key);
-
-   /**
     * Returns the number of values in all of the {@link Collection}s with in the {@link MapCollection}. If a value is
     * contained in more than one {@link Collection}, it will be counted once for each {@link Collection} containing the
     * value.
@@ -171,6 +191,22 @@ public interface MapCollection<K, V, C extends Collection<V>> extends Map<K, C> 
     */
 
    int sizeValues();
+
+   /**
+    * Returns the number of values in the {@link Collection} associated with the provided {@code key}.
+    *
+    * @return the size of the {@link Collection} associated with the provided {@code key}.
+    */
+
+   int sizeValues(K key);
+
+   /**
+    * Provides an unordered {@link Stream} of all the values in all of the {@link Collection}s held within the map.
+    *
+    * @return a {@link Stream} of the map's values.
+    */
+
+   Stream<V> stream();
 
    /**
     * Provides an unordered {@link Stream} of all the values in the {@link Collection} associated with the
@@ -214,7 +250,6 @@ public interface MapCollection<K, V, C extends Collection<V>> extends Map<K, C> 
     * @return an unordered {@link Stream} of the {@link MapCollection} keys.
     */
 
-   Stream<K> streamKeys();
-}
+   Stream<K> streamPrimaryKeys();
 
-/* EOF */
+}

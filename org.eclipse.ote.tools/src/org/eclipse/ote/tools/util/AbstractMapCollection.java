@@ -26,8 +26,8 @@ import java.util.stream.Stream;
 
 /**
  * This class provides a complete generic implementation of the {@link MapCollection} interface. The methods of this
- * class may be overridden by the implementation if a more efficient implementation for the {@link Collection} type is
- * possible.
+ * class may be overridden by the implementation if a more efficient implementation for the {@link MapCollection} type
+ * is possible.
  *
  * @author Loren K. Ashley
  * @param <K> the map key type.
@@ -64,8 +64,8 @@ public class AbstractMapCollection<K, V, C extends Collection<V>> implements Map
    /**
     * Creates a new empty {@link Map} of {@link Collection} objects.
     *
-    * @param CollectionSupplier a {@link Supplier} that provides an implementation of the {@link Map} interface to be
-    * used as the primary {@link Map} of {@link Collection} objects for this object.
+    * @param mapCollectionSupplier a {@link Supplier} that provides an implementation of the {@link Map} interface to be
+    * used as the {@link Map} of {@link Collection} objects for this object.
     * @param collectionSupplier a {@link Supplier} that provides new empty implementation of the {@link Collection}
     * interface for the collections saved in this object.
     * @throws NullPointerException when <code>mapCollectionSupplier</code> is <code>null</code>,
@@ -110,7 +110,7 @@ public class AbstractMapCollection<K, V, C extends Collection<V>> implements Map
     */
 
    @Override
-   public boolean containsValueInAnyCollection(Object value) {
+   public boolean containsValueInAnyCollection(V value) {
       for (Collection<V> collection : this.mapCollection.values()) {
          if (collection.contains(value)) {
             return true;
@@ -127,6 +127,28 @@ public class AbstractMapCollection<K, V, C extends Collection<V>> implements Map
    public Set<Entry<K, C>> entrySet() {
       return this.mapCollection.entrySet();
    }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public void forEach(BiConsumer<? super K, ? super C> action) {
+      this.mapCollection.forEach(action);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public void forEach(Consumer<Map.Entry<? extends K, ? extends C>> action) {
+      this.mapCollection.entrySet().forEach(action);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
 
    @Override
    public void forEachEntry(Consumer<Map.Entry<K, V>> action) {
@@ -222,6 +244,19 @@ public class AbstractMapCollection<K, V, C extends Collection<V>> implements Map
       return this.mapCollection.put(key, value);
    }
 
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public C put(Map.Entry<? extends K, ? extends C> entry) {
+      return this.mapCollection.put(entry.getKey(), entry.getValue());
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
    @Override
    public C putAll(K key, C values) {
       C collection = this.mapCollection.get(key);
@@ -256,6 +291,25 @@ public class AbstractMapCollection<K, V, C extends Collection<V>> implements Map
     */
 
    @Override
+   public C putIfAbsent(K key, C value) {
+      return this.mapCollection.putIfAbsent(key, value);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public C putIfAbsent(Map.Entry<? extends K, ? extends C> entry) {
+      return this.mapCollection.putIfAbsent((K) entry.getClass(), entry.getValue());
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
    public C putValue(K key, V value) {
       C collection = this.mapCollection.get(key);
       if (Objects.isNull(collection)) {
@@ -275,6 +329,10 @@ public class AbstractMapCollection<K, V, C extends Collection<V>> implements Map
       return this.mapCollection.remove(key);
    }
 
+   /**
+    * {@inheritDoc}
+    */
+
    @Override
    public boolean removeEntry(Map.Entry<K, V> entry) {
       //@formatter:off
@@ -284,6 +342,10 @@ public class AbstractMapCollection<K, V, C extends Collection<V>> implements Map
             : false;
       //@formatter:on
    }
+
+   /**
+    * {@inheritDoc}
+    */
 
    @Override
    public boolean removeValue(K key, V value) {
@@ -313,7 +375,20 @@ public class AbstractMapCollection<K, V, C extends Collection<V>> implements Map
     */
 
    @Override
-   public int size(K key) {
+   public int sizeValues() {
+      int size = 0;
+      for (Collection<V> collection : this.mapCollection.values()) {
+         size += collection.size();
+      }
+      return size;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public int sizeValues(K key) {
       Collection<V> collection = this.mapCollection.get(key);
       //@formatter:off
       int size = Objects.nonNull( collection )
@@ -328,12 +403,14 @@ public class AbstractMapCollection<K, V, C extends Collection<V>> implements Map
     */
 
    @Override
-   public int sizeValues() {
-      int size = 0;
-      for (Collection<V> collection : this.mapCollection.values()) {
-         size += collection.size();
-      }
-      return size;
+   public Stream<V> stream() {
+      //@formatter:off
+      return
+         this.mapCollection
+            .values()
+            .stream()
+            .flatMap( C::stream );
+      //@formatter:on
    }
 
    /**
@@ -395,7 +472,7 @@ public class AbstractMapCollection<K, V, C extends Collection<V>> implements Map
     */
 
    @Override
-   public Stream<K> streamKeys() {
+   public Stream<K> streamPrimaryKeys() {
       return this.mapCollection.keySet().stream();
    }
 
