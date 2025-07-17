@@ -27,6 +27,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses
    (
       {
+         DoubleMapTest.class,
+         DoubleMapSetTest.class,
          MapSetTest.class
       }
    )

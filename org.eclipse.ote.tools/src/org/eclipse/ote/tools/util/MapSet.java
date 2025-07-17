@@ -13,8 +13,6 @@
 
 package org.eclipse.ote.tools.util;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -40,8 +38,8 @@ public interface MapSet<K, V> extends MapCollection<K, V, Set<V>> {
     *
     * @param <K> the map key type.
     * @param <V> the type of value saved in the {@link List} collections associated with the map keys.
-    * @param entries {@link Map.Entry}s containing the keys and {@link List} collections the map is populated with.
-    * @return an immutable {@link MapList} containing the specified mappings.
+    * @param entries {@link Map.Entry}s containing the keys and {@link Set} collections the map is populated with.
+    * @return an immutable {@link MapSet} containing the specified mappings.
     */
 
    @SafeVarargs
@@ -51,21 +49,19 @@ public interface MapSet<K, V> extends MapCollection<K, V, Set<V>> {
          throw new NullPointerException("MapSet::ofEntries, parameter \"entries\" is null");
       }
 
-      Map<K, Set<V>> newMap = new HashMap<>(entries.length);
+      MapSet<K, V> newMapSet = new HashMapHashSet<>(entries.length, entries.length);
 
       for (Map.Entry<K, Set<V>> entry : entries) {
          K key = entry.getKey();
          Set<V> set = entry.getValue();
          Set<V> newSet = new HashSet<V>(set);
-         Set<V> immutableSet = Collections.unmodifiableSet(newSet);
-         newMap.put(key, immutableSet);
+         Set<V> immutableSet = java.util.Collections.unmodifiableSet(newSet);
+         newMapSet.put(key, immutableSet);
       }
 
-      MapSet<K, V> mapSet = new AbstractImmutableMapSet<K, V>(newMap);
+      MapSet<K, V> mapSet = Collections.unmodifiableMapSet(newMapSet);
 
       return mapSet;
    }
 
 }
-
-/* EOF */
