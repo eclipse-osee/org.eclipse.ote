@@ -27,9 +27,8 @@ import org.eclipse.osee.ote.rest.multipart.MultiPartMessage;
 import org.eclipse.osee.ote.rest.multipart.MultipartMessageBodyWriter;
 
 /**
- * Provides generic REST request methods for use by OTE API implementations. All
- * REST requests will be careful to not propagate HTTP exceptions from the JaxRS
- * calls and instead wrap them in {@link OteRestResponseException}.
+ * Provides generic REST request methods for use by OTE API implementations. All REST requests will be careful to not
+ * propagate HTTP exceptions from the JaxRS calls and instead wrap them in {@link OteRestResponseException}.
  *
  * @author Michael P. Masterson
  */
@@ -39,7 +38,7 @@ public abstract class OteRestEndpoint {
 
    /**
     * @param jaxRsApi
-    * @param uri      Base path for this endpoint
+    * @param uri Base path for this endpoint
     */
    public OteRestEndpoint(JaxRsApi jaxRsApi, URI uri) {
       this.jaxRsApi = jaxRsApi;
@@ -55,22 +54,27 @@ public abstract class OteRestEndpoint {
    }
 
    /**
-    * This method should never throw a RuntimeException caused by HTTP issues
-    * contacting the target URI. All such exceptions are wrapped in a
-    * {@link OteRestResponseException} for ease of testing.
+    * This method should never throw a RuntimeException caused by HTTP issues contacting the target URI. All such
+    * exceptions are wrapped in a {@link OteRestResponseException} for ease of testing.
     *
-    * @param target    Full path to REST target
+    * @param target Full path to REST target
     * @param mediaType Use constants defined in {@link javax.ws.rs.core.MediaType}
-    * @return Working {@link OteRestResponse} if no exceptions while performing
-    *         GET, otherwise an {@link OteRestResponseException} that fails every
-    *         verification gracefully.
+    * @param useAuthHeader provides necessary authorization for API calls
+    * @return Working {@link OteRestResponse} if no exceptions while performing GET, otherwise an
+    * {@link OteRestResponseException} that fails every verification gracefully.
     */
-   protected OteRestResponse performGetRequest(URI target, String mediaType) {
+   protected OteRestResponse performGetRequest(URI target, String mediaType, boolean useAuthHeader) {
       Response response;
       OteRestResponse retVal;
       try {
-         response = jaxRsApi.newTargetUrl(target.toString()).request(mediaType).get();
+         WebTarget webTarget = jaxRsApi.newTargetUrl(target.toString());
+         webTarget.register(MultipartMessageBodyWriter.class);
 
+         Builder builder = webTarget.request(mediaType);
+         if (useAuthHeader) {
+            builder.header("Authorization", "Basic " + getUsername());
+         }
+         response = builder.get();
          retVal = new OteRestResponse(response);
       } catch (RuntimeException ex) {
          retVal = new OteRestResponseException(ex);
@@ -83,17 +87,16 @@ public abstract class OteRestEndpoint {
    }
 
    /**
-    * This method should never throw a RuntimeException caused by HTTP issues
-    * contacting the target URI. All such exceptions are wrapped in a
-    * {@link OteRestResponseException} for ease of testing.
+    * This method should never throw a RuntimeException caused by HTTP issues contacting the target URI. All such
+    * exceptions are wrapped in a {@link OteRestResponseException} for ease of testing.
     * 
-    * @param target    Full path to REST target
-    * @param input     Data to post
-    * @param fileName  The simple name of the file represented in the input stream
+    * @param target Full path to REST target
+    * @param input Data to post
+    * @param fileName The simple name of the file represented in the input stream
     * @param mediaType The MIME type to be declared in the HTTP Header
-    * @return Working {@link OteRestResponse} if no exceptions while performing
-    *         POST, otherwise an {@link OteRestResponseException} that fails every
-    *         verification gracefully.
+    * @param useAuthHeader provides necessary authorization for API calls
+    * @return Working {@link OteRestResponse} if no exceptions while performing POST, otherwise an
+    * {@link OteRestResponseException} that fails every verification gracefully.
     */
    protected OteRestResponse performPostFile(URI target, InputStream input, String fileName, String mediaType, boolean useAuthHeader) {
       Response response;
@@ -143,7 +146,8 @@ public abstract class OteRestEndpoint {
       Response response;
       OteRestResponse retVal;
       try {
-         Invocation.Builder requestBuilder = jaxRsApi.newTargetUrl(target.toString()).request(MediaType.APPLICATION_JSON);
+         Invocation.Builder requestBuilder =
+            jaxRsApi.newTargetUrl(target.toString()).request(MediaType.APPLICATION_JSON);
          if (useAuthHeader) {
             requestBuilder.header("Authorization", "Basic " + getUsername());
          }
@@ -156,21 +160,16 @@ public abstract class OteRestEndpoint {
    }
 
    /**
-    * Performs REST POST Request with defined Header.
+    * Performs REST POST Request with defined Header. This method should never throw a RuntimeException caused by HTTP
+    * issues contacting the target URI. All such exceptions are wrapped in a {@link OteRestResponseException} for ease
+    * of testing.
     * 
-    * This method should never throw a RuntimeException caused by HTTP issues
-    * contacting the target URI. All such exceptions are wrapped in a
-    * {@link OteRestResponseException} for ease of testing.
-    * 
-    * @param target     Full path to REST target
-    * @param header     Header string defining request body. Note, if defining
-    *                   'content-type' in header, only JSON can be used as
-    *                   mediatype for request. Example of header string:
-    *                   "Content-Type:application/json"
+    * @param target Full path to REST target
+    * @param header Header string defining request body. Note, if defining 'content-type' in header, only JSON can be
+    * used as mediatype for request. Example of header string: "Content-Type:application/json"
     * @param jsonString Data to post as JSON string
-    * @return Working {@link OteRestResponse} if no exceptions while performing
-    *         POST, otherwise an {@link OteResResponseException} that fails every
-    *         verification gracefully.
+    * @return Working {@link OteRestResponse} if no exceptions while performing POST, otherwise an
+    * {@link OteResResponseException} that fails every verification gracefully.
     */
    protected OteRestResponse performPostRequest(URI target, String header, String jsonString) {
       OteRestResponse retVal;
@@ -190,8 +189,8 @@ public abstract class OteRestEndpoint {
             String headerType = headerString[0];
             String headerValue = headerString[1];
 
-            response = jaxRsApi.newTargetUrl(target.toString()).request().header(headerType, headerValue)
-                  .post(Entity.json(jsonString));
+            response = jaxRsApi.newTargetUrl(target.toString()).request().header(headerType, headerValue).post(
+               Entity.json(jsonString));
          }
          retVal = new OteRestResponse(response);
       } catch (RuntimeException ex) {
@@ -202,21 +201,16 @@ public abstract class OteRestEndpoint {
    }
 
    /**
-    * Performs REST PUT Request with defined Header.
+    * Performs REST PUT Request with defined Header. This method should never throw a RuntimeException caused by HTTP
+    * issues contacting the target URI. All such exceptions are wrapped in a {@link OteRestResponseException} for ease
+    * of testing.
     * 
-    * This method should never throw a RuntimeException caused by HTTP issues
-    * contacting the target URI. All such exceptions are wrapped in a
-    * {@link OteRestResponseException} for ease of testing.
-    * 
-    * @param target     Full path to REST target
-    * @param header     Header string defining request body. Note, if defining
-    *                   'content-type' in header, only JSON can be used as
-    *                   mediatype for request. Example of header string:
-    *                   "Content-Type:application/json"
+    * @param target Full path to REST target
+    * @param header Header string defining request body. Note, if defining 'content-type' in header, only JSON can be
+    * used as mediatype for request. Example of header string: "Content-Type:application/json"
     * @param jsonString Data to put as JSON string
-    * @return Working {@link OteRestResponse} if no exceptions while performing
-    *         POST, otherwise an {@link OteResResponseException} that fails every
-    *         verification gracefully.
+    * @return Working {@link OteRestResponse} if no exceptions while performing POST, otherwise an
+    * {@link OteResResponseException} that fails every verification gracefully.
     */
    protected OteRestResponse performPutRequest(URI target, String header, String jsonString) {
 
@@ -238,8 +232,8 @@ public abstract class OteRestEndpoint {
             String headerType = headerString[0];
             String headerValue = headerString[1];
 
-            response = jaxRsApi.newTargetUrl(target.toString()).request().header(headerType, headerValue)
-                  .put(Entity.json(jsonString));
+            response = jaxRsApi.newTargetUrl(target.toString()).request().header(headerType, headerValue).put(
+               Entity.json(jsonString));
          }
          retVal = new OteRestResponse(response);
       } catch (RuntimeException ex) {
@@ -250,18 +244,14 @@ public abstract class OteRestEndpoint {
    }
 
    /**
-    * Performs REST DELETE Request with defined Header.
-    * 
-    * This method should never throw a RuntimeException caused by HTTP issues
-    * contacting the target URI. All such exceptions are wrapped in a
-    * {@link OteRestResponseException} for ease of testing.
+    * Performs REST DELETE Request with defined Header. This method should never throw a RuntimeException caused by HTTP
+    * issues contacting the target URI. All such exceptions are wrapped in a {@link OteRestResponseException} for ease
+    * of testing.
     * 
     * @param target Full path to REST target
-    * @param header Header String defining content-type. Example:
-    *               "Content-Type:application/json"
-    * @return Working {@link OteRestResponse} if no exceptions while performing
-    *         DELETE, otherwise an {@link OteResResponseException} that fails every
-    *         verification gracefully.
+    * @param header Header String defining content-type. Example: "Content-Type:application/json"
+    * @return Working {@link OteRestResponse} if no exceptions while performing DELETE, otherwise an
+    * {@link OteResResponseException} that fails every verification gracefully.
     */
    protected OteRestResponse performDeleteRequest(URI target, String header) {
 
@@ -271,8 +261,8 @@ public abstract class OteRestEndpoint {
          String headerType = headerString[0];
          String headerValue = headerString[1];
 
-         Response response = jaxRsApi.newTargetUrl(target.toString()).request().header(headerType, headerValue)
-               .delete();
+         Response response =
+            jaxRsApi.newTargetUrl(target.toString()).request().header(headerType, headerValue).delete();
 
          retVal = new OteRestResponse(response);
       } catch (RuntimeException ex) {
@@ -284,15 +274,13 @@ public abstract class OteRestEndpoint {
    }
 
    /**
-    * This method should never throw a RuntimeException caused by HTTP issues
-    * contacting the target URI. All such exceptions are wrapped in a
-    * {@link OteRestResponseException} for ease of testing.
+    * This method should never throw a RuntimeException caused by HTTP issues contacting the target URI. All such
+    * exceptions are wrapped in a {@link OteRestResponseException} for ease of testing.
     *
-    * @param target    Full path to REST target
+    * @param target Full path to REST target
     * @param mediaType Use constants defined in {@link javax.ws.rs.core.MediaType}
-    * @return Working {@link OteRestResponse} if no exceptions while performing
-    *         DELETE, otherwise an {@link OteRestResponseException} that fails
-    *         every verification gracefully.
+    * @return Working {@link OteRestResponse} if no exceptions while performing DELETE, otherwise an
+    * {@link OteRestResponseException} that fails every verification gracefully.
     */
    protected OteRestResponse performDeleteFile(URI target) {
       Response response;
