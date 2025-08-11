@@ -31,7 +31,7 @@ public class CustomSimpleEndpoint extends OteRestEndpoint {
 
    public OteRestResponse getCustomData() {
       URI target = UriBuilder.fromUri(baseUri).path("random").path("path").build();
-      OteRestResponse response = super.performGetRequest(target, MediaType.APPLICATION_JSON);
+      OteRestResponse response = super.performGetRequest(target, MediaType.APPLICATION_JSON, false);
       return response;
    }
 

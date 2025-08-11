@@ -46,7 +46,7 @@ public class Simple1Endpoint extends OteRestEndpoint {
       URI target = UriBuilder.fromUri(baseUri).path("otemaster").path("servers").build();
       String mediaType = MediaType.APPLICATION_JSON;
 
-      OteRestResponse retVal = super.performGetRequest(target, mediaType);
+      OteRestResponse retVal = super.performGetRequest(target, mediaType, false);
 
       accessor.getLogger().methodEnded(accessor);
       return retVal;
