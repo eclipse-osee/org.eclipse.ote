@@ -14,6 +14,7 @@ package org.eclipse.osee.ote.rest;
 
 import java.io.InputStream;
 import java.net.URI;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.OseeClient;
@@ -53,6 +54,22 @@ public class OseeOutfileEndpoint extends OteRestEndpoint {
          UriBuilder.fromUri(baseUri).path("script").path("tmo").path(branchId).path("import").path("file").path(
             ciSetId).build();
       OteRestResponse retVal = performPostFile(target, input, tmoFilename, "application/octet-stream", true);
+      return retVal;
+   }
+
+   /**
+    * Gets the branch id to publish a TMO file to the server.
+    *
+    * @param branchId the branch ID
+    * @param ciConfigId is the ID of the artifact with the current branch info
+    * @param ciConfigAttributeId is the ID of the attribute that contains the branch id of where tmos should be written
+    * @return the response from the server
+    */
+   public OteRestResponse getCiBranchId(String branchId, String ciConfigId, String ciConfigAttributeId) {
+      URI target =
+         UriBuilder.fromUri(baseUri).path("orcs").path("branch").path(branchId).path("artifact").path(ciConfigId).path(
+            "attribute").path(ciConfigAttributeId).build();
+      OteRestResponse retVal = performGetRequest(target, MediaType.APPLICATION_JSON, true);
       return retVal;
    }
 

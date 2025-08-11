@@ -32,7 +32,7 @@ public enum OtePropertiesCore implements OteSimpleProperties {
    serverFactoryClass("osee.ote.server.factory.class"),
    serverKeepalive("osee.ote.server.keepAlive"),
    serverTitle("osee.ote.server.title"),
-   signalMappingEnabled("ote.signal.mapping", false), 
+   signalMappingEnabled("ote.signal.mapping", false),
    timeDebug("ote.time.debug", false),
    abortMultipleInterrupt("ote.abort.interrupt.multiple", false),
    timeDebugTimeout("ote.time.debug.timeout", 250000),
@@ -40,40 +40,42 @@ public enum OtePropertiesCore implements OteSimpleProperties {
    userName("user.name"),
    oteServerFolder("osee.ote.server.folder"),
    oteStationName("osee.ote.station.name"),
-   useLookup("osee.ote.use.lookup"), 
-   oseeBranchId("osee.ote.outfile.branch"),
+   useLookup("osee.ote.use.lookup"),
+   oseeConfigBranchId("osee.ote.outfile.config.branch"),
+   oseeCiConfigId("osee.ote.outfile.config.artifact"),
+   oseeCiConfigAttributeId("osee.ote.outfile.config.attribute"),
    oseeCiSetId("osee.ote.outfile.ciSet");
-      
+
    private String key;
    private long defaultLong;
    private boolean defaultBoolean;
    private String defaultString;
-   
+
    private final boolean defaultValueSet;
-   
-   OtePropertiesCore(String key){
+
+   OtePropertiesCore(String key) {
       this.key = key;
       this.defaultValueSet = false;
    }
-   
-   OtePropertiesCore(String key, long defaultLong){
+
+   OtePropertiesCore(String key, long defaultLong) {
       this.key = key;
       this.defaultLong = defaultLong;
       this.defaultValueSet = true;
    }
-   
-   OtePropertiesCore(String key, boolean defaultBoolean){
+
+   OtePropertiesCore(String key, boolean defaultBoolean) {
       this.key = key;
       this.defaultBoolean = defaultBoolean;
       this.defaultValueSet = true;
    }
-   
-   OtePropertiesCore(String key, String defaultString){
+
+   OtePropertiesCore(String key, String defaultString) {
       this.key = key;
       this.defaultString = defaultString;
       this.defaultValueSet = true;
    }
-   
+
    @Override
    public String getKey() {
       return key;
@@ -88,7 +90,7 @@ public enum OtePropertiesCore implements OteSimpleProperties {
    public String getValue() {
       return System.getProperty(key);
    }
-   
+
    @Override
    public String getValue(String defaultValue) {
       return System.getProperty(key, defaultValue);
@@ -97,48 +99,48 @@ public enum OtePropertiesCore implements OteSimpleProperties {
    public long getLongValue(long defaultValue) {
       long value = defaultValue;
       String valueStr = System.getProperty(key);
-      try{
+      try {
          value = Long.parseLong(valueStr);
-      } catch (Throwable th){
+      } catch (Throwable th) {
       }
       return value;
    }
 
    public long getLongValue() {
-      if(!defaultValueSet){
+      if (!defaultValueSet) {
          throw new IllegalStateException("No default value set.");
       }
       long value = defaultLong;
       String valueStr = System.getProperty(key);
-      try{
+      try {
          value = Long.parseLong(valueStr);
-      } catch (Throwable th){
+      } catch (Throwable th) {
       }
       return value;
    }
-   
+
    public boolean getBooleanValue(boolean defaultValue) {
       boolean value = defaultValue;
       String valueStr = System.getProperty(key);
-      if(valueStr != null){
-         try{
+      if (valueStr != null) {
+         try {
             value = Boolean.parseBoolean(valueStr);
-         } catch (Throwable th){
+         } catch (Throwable th) {
          }
       }
       return value;
    }
-   
+
    public boolean getBooleanValue() {
-      if(!defaultValueSet){
+      if (!defaultValueSet) {
          throw new IllegalStateException("No default value set.");
       }
       boolean value = defaultBoolean;
       String valueStr = System.getProperty(key);
-      if(valueStr != null){
-         try{
+      if (valueStr != null) {
+         try {
             value = Boolean.parseBoolean(valueStr);
-         } catch (Throwable th){
+         } catch (Throwable th) {
          }
       }
       return value;
