@@ -41,6 +41,7 @@ public enum OtePropertiesCore implements OteSimpleProperties {
    oteServerFolder("osee.ote.server.folder"),
    oteStationName("osee.ote.station.name"),
    useLookup("osee.ote.use.lookup"),
+   oseeBranchId("osee.ote.outfile.branch"),
    oseeConfigBranchId("osee.ote.outfile.config.branch"),
    oseeCiConfigId("osee.ote.outfile.config.artifact"),
    oseeCiConfigAttributeId("osee.ote.outfile.config.attribute"),

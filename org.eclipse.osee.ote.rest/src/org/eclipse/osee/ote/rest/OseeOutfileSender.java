@@ -49,7 +49,8 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
    private static final String DEFAULT_CI_CONFIG_ATTRIBUTE_ID = "no_osee_ciConfigAttribute_provided";
    private static final String DEFAULT_CI_SET_ID = "no_osee_ciSet_provided";
 
-   private final String branchId = OtePropertiesCore.oseeConfigBranchId.getValue(DEFAULT_BRANCH_ID);
+   private final String branchId = OtePropertiesCore.oseeBranchId.getValue(DEFAULT_BRANCH_ID);
+   private final String configBranchId = OtePropertiesCore.oseeConfigBranchId.getValue(DEFAULT_BRANCH_ID);
    private final String ciConfigId = OtePropertiesCore.oseeCiConfigId.getValue(DEFAULT_CI_CONFIG_ID);
    private final String ciConfigAttributeId =
       OtePropertiesCore.oseeCiConfigAttributeId.getValue(DEFAULT_CI_CONFIG_ATTRIBUTE_ID);
@@ -105,20 +106,24 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
     * @param ciSetId the OSEE CI Set ID
     */
    private void postTmoFile(String testClassName, String ciSetId) {
-      if (branchId.equals(DEFAULT_BRANCH_ID)) {
+      boolean useSpecificBranchId = false;
+
+      if (configBranchId.equals(DEFAULT_BRANCH_ID)) {
+         OseeLog.logf(getClass(), Level.WARNING,
+            "No OSEE Config Branch ID provided, attempting to upload using a specific branch if provided.");
+         useSpecificBranchId = true;
+      } else if (ciConfigId.equals(DEFAULT_CI_CONFIG_ID)) {
+         OseeLog.logf(getClass(), Level.WARNING,
+            "No OSEE CI Config Artifact ID provided, attempting to upload using a specific branch if provided.");
+         useSpecificBranchId = true;
+      } else if (ciConfigAttributeId.equals(DEFAULT_CI_CONFIG_ATTRIBUTE_ID)) {
+         OseeLog.logf(getClass(), Level.WARNING,
+            "No OSEE CI Config Attribute ID provided, attempting to upload using a specific branch if provided.");
+         useSpecificBranchId = true;
+      }
+
+      if (useSpecificBranchId && branchId.equals(DEFAULT_BRANCH_ID)) {
          OseeLog.logf(getClass(), Level.WARNING, "No OSEE Branch ID provided, TMO file will not be uploaded to OSEE.");
-         return;
-      }
-
-      if (ciConfigId.equals(DEFAULT_CI_CONFIG_ID)) {
-         OseeLog.logf(getClass(), Level.WARNING,
-            "No OSEE CI Config Artifact ID provided, TMO file will not be uploaded to OSEE.");
-         return;
-      }
-
-      if (ciConfigAttributeId.equals(DEFAULT_CI_CONFIG_ATTRIBUTE_ID)) {
-         OseeLog.logf(getClass(), Level.WARNING,
-            "No OSEE CI Config Attribute ID provided, TMO file will not be uploaded to OSEE.");
          return;
       }
 
@@ -135,13 +140,20 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
       }
 
       OseeOutfileEndpoint endpoint = new OseeOutfileEndpoint(jaxRsApi);
-      OteRestResponse branchIdResponse = endpoint.getCiBranchId(branchId, ciConfigId, ciConfigAttributeId);
 
-      String ciBranchId = branchIdResponse.getContents(String.class);
-      if (ciBranchId == null || ciBranchId.trim().isEmpty()) {
-         OseeLog.logf(getClass(), Level.WARNING,
-            "No valid CI Branch ID returned from REST call, TMO file will not be uploaded to OSEE.");
-         return;
+      String ciBranchId = "";
+
+      if (useSpecificBranchId) {
+         ciBranchId = branchId;
+      } else {
+         OteRestResponse branchIdResponse = endpoint.getCiBranchId(configBranchId, ciConfigId, ciConfigAttributeId);
+
+         ciBranchId = branchIdResponse.getContents(String.class);
+         if (ciBranchId == null || ciBranchId.trim().isEmpty()) {
+            OseeLog.logf(getClass(), Level.WARNING,
+               "No valid CI Branch ID returned from REST call, TMO file will not be uploaded to OSEE.");
+            return;
+         }
       }
 
       OteRestResponse response = endpoint.postTmoFile(ciBranchId, ciSetId, tmoInputStream, testClassName);
