@@ -27,10 +27,12 @@ public class OteDisplayButtonVerifier<T extends OteDisplayButtonVerifier<T>> ext
    private final OteVerifierObjectAttribute color;
    private final OteVerifierStringAttribute firstLineLabel;
    private final OteVerifierStringAttribute secondLineLabel;
+   private final OteVerifierStringAttribute thirdLineLabel;
 
    public OteDisplayButtonVerifier() {
       this.firstLineLabel = new OteVerifierStringAttribute("First Line Label", OteVerifierAttribute.REQUIRED);
       this.secondLineLabel = new OteVerifierStringAttribute("Second Line Label", OteVerifierAttribute.OPTIONAL);
+      this.thirdLineLabel = new OteVerifierStringAttribute("Third Line Label", OteVerifierAttribute.OPTIONAL);
 
       this.color = new OteVerifierObjectAttribute("Color", OteVerifierAttribute.OPTIONAL);
    }
@@ -64,6 +66,13 @@ public class OteDisplayButtonVerifier<T extends OteDisplayButtonVerifier<T>> ext
    }
 
    /**
+    * @return the label on the third line
+    */
+   public OteVerifierStringAttribute getThirdLineLabel() {
+      return thirdLineLabel;
+   }
+
+   /**
     * @param firstLineLabel the label to set on the first line
     * @param secondLineLabel the label to set on the second line
     */
@@ -78,6 +87,20 @@ public class OteDisplayButtonVerifier<T extends OteDisplayButtonVerifier<T>> ext
          this.secondLineLabel.setValue("");
       } else {
          this.secondLineLabel.setValue(secondLineLabel);
+      }
+   }
+
+   /**
+    * @param firstLineLabel the label to set on the first line
+    * @param secondLineLabel the label to set on the second line
+    * @param thirdLineLabel the label to set on the third line
+    */
+   public void setLabel(String firstLineLabel, String secondLineLabel, String thirdLineLabel) {
+      setLabel(firstLineLabel, secondLineLabel);
+      if (thirdLineLabel.equals(null)) {
+         this.thirdLineLabel.setValue("");
+      } else {
+         this.thirdLineLabel.setValue(thirdLineLabel);
       }
    }
 
