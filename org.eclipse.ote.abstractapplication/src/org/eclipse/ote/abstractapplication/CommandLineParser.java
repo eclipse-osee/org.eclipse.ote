@@ -29,7 +29,7 @@ import org.eclipse.ote.tools.util.ToMessage;
 /**
  * Parses command line parameters, environment variables, and properties according to the command line parameter
  * definitions provided to the constructor.
- * 
+ *
  * @author Loren K. Ashley
  */
 
@@ -49,7 +49,7 @@ public class CommandLineParser implements ToMessage {
 
    /**
     * Creates a new {@link CommandLineParser} with the provided <code>commandLineParameterDefinitions</code>.
-    * 
+    *
     * @param commandLineParameterDefinitions (Nullable) the {@link CommandLineParameterDefinition}s for the command line
     * options to be known to the parser.
     */
@@ -80,7 +80,7 @@ public class CommandLineParser implements ToMessage {
 
    /**
     * Add a {@link CommandLineParameterDefinition} to the parser.
-    * 
+    *
     * @param commandLineParameterDefinition the {@link CommandLineParameterDefinition} to be added.
     */
 
@@ -97,7 +97,7 @@ public class CommandLineParser implements ToMessage {
    /**
     * Determines if the command line argument is an option, value, or error. A {@link CommandLineParameterToken} is
     * created for the argument and added to {@code list}.
-    * 
+    *
     * @param list the created {@link CommandLineParameterToken} created for the argument is appended to this list.
     * @param argument the command line argument to be classified.
     */
@@ -198,7 +198,7 @@ public class CommandLineParser implements ToMessage {
    /**
     * Determines if each argument is an option, value, or error and creates a {@link CommandLineParameterToken} for
     * each.
-    * 
+    *
     * @param args an array of the command line arguments
     * @return a list of {@link CommandLineParameterToken}s representing the command line arguments.
     */
@@ -216,7 +216,7 @@ public class CommandLineParser implements ToMessage {
    /**
     * Associates the {@link CommandLineParameterToken}s for values with the option name tokens. Errors are generated for
     * options with required values where a value was not found.
-    * 
+    *
     * @param list the tokenized command line parameters.
     */
 
@@ -260,7 +260,7 @@ public class CommandLineParser implements ToMessage {
 
    /**
     * Verifies that required command line parameters were present within the command line arguments.
-    * 
+    *
     * @param list the tokenized command line arguments.
     * @param errorMessage error messages for missing required command line parameters are added to this
     * {@link StringBuilder}.
@@ -298,7 +298,7 @@ public class CommandLineParser implements ToMessage {
 
    /**
     * Runs the command line argument processor for each option type command line argument.
-    * 
+    *
     * @param list a tokenized list of the command line arguments.
     * @param application the {@link Application} instance whose command line arguments are being processed.
     * @param errorMessage command line argument processing errors are appended to this {@link StringBuilder}.
@@ -326,7 +326,7 @@ public class CommandLineParser implements ToMessage {
             rv = false;
             continue;
          }
-         
+
       }
 
       return rv;
@@ -334,13 +334,13 @@ public class CommandLineParser implements ToMessage {
 
    /**
     * Parsers the command line arguments for the application.
-    * 
+    *
     * @param application the {@link Application} instance whose command line arguments are being parsed.
     * @param args the command line arguments passed to the application.
     * @param errorMessage an command line argument processing errors are appended to this {@link StringBuidler}.
     * @return {@code true} when parsing was successfull; otherwise, {@code false}.
     */
-   
+
    public boolean parse(Application application, String[] args, StringBuilder errorMessage) {
       List<CommandLineParameterToken> list = this.classifyArguments(args);
       this.linkParameters(list);
@@ -351,20 +351,20 @@ public class CommandLineParser implements ToMessage {
 
    /**
     * Generates a string with a help/usage message for the application.
-    * 
-    * @return a {@link String} containing the applicaiton help/usage message.
+    *
+    * @return a {@link String} containing the application help/usage message.
     */
-   
+
    public String optionsHelp() {
       //@formatter:off
       Message outMessage = new Message();
-      
+
       outMessage
          .title( "Command Line Options" )
          .indentInc();
-      
+
       for( CommandLineParameterDefinition commandLineParameterDefinition : this.shortMap.values() ) {
-         
+
          outMessage
             .blank()
             .title( commandLineParameterDefinition.getSynopsis() )
@@ -372,12 +372,12 @@ public class CommandLineParser implements ToMessage {
             .segment( "Short Option", commandLineParameterDefinition.getShortOption() )
             .segment( "Long Option",  commandLineParameterDefinition.getLongOption()  )
             ;
-         
+
          String required =
             commandLineParameterDefinition.isRequired()
                ? "This is a required command line parameter "
                : "This is an optional command line parameter ";
-         
+
          required +=
             commandLineParameterDefinition.doesNotHaveParameterValue()
                ? "that does not have a value."
@@ -387,7 +387,7 @@ public class CommandLineParser implements ToMessage {
                          ? "that requires a value."
                          : "."
                ;
-         
+
          outMessage
             .title( required )
             .indentDec()
