@@ -24,6 +24,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -34,6 +36,8 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 
 public class Message {
+
+   private static final Pattern newLinePattern = Pattern.compile("\\R");
 
    /**
     * Internal class to encapsulate the data for a message line. {@link Message} lines can be one of the following
@@ -224,8 +228,23 @@ public class Message {
             }
 
             case TITLE: {
-               message.append(IndentedString.indentString(this.getIndent()));
-               message.append(this.getTitle()).append(Message.lineEnding);
+               String indentString = IndentedString.indentString(this.getIndent());
+               CharSequence originalTitle = this.getTitle();
+               int end = originalTitle.length() - 1;
+               int last = 0;
+               int pos = 0;
+               StringBuilder outputTitle = new StringBuilder(end * 2);
+               Matcher newLineMatcher = newLinePattern.matcher(originalTitle);
+               while (newLineMatcher.find()) {
+                  pos = newLineMatcher.start();
+                  outputTitle.append(indentString).append(originalTitle.subSequence(last, pos + 1));
+                  last = pos + 1;
+               }
+               if (last < end) {
+                  outputTitle.append(indentString).append(originalTitle.subSequence(last, end + 1)).append(
+                     Message.lineEnding);
+               }
+               message.append(outputTitle);
                return;
             }
          }
@@ -353,9 +372,14 @@ public class Message {
             }
 
             case TITLE: {
+               int lines = 1;
+               Matcher lineMatcher = newLinePattern.matcher(this.title);
+               while (lineMatcher.find()) {
+                  lines++;
+               }
                //@formatter:off
                return
-                    IndentedString.indentSize() * this.getIndent()
+                    IndentedString.indentSize() * this.getIndent() * lines
                   + this.title.length()
                   + Message.lineEndingSize;
                //@formatter:on
