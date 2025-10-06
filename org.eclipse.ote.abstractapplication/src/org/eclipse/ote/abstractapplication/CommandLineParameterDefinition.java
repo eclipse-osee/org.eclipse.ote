@@ -27,7 +27,7 @@ import org.eclipse.ote.tools.util.ToMessage;
  * @author Loren K. Ashley
  */
 
-public class CommandLineParameterDefinition implements ToMessage {
+public class CommandLineParameterDefinition implements Comparable<CommandLineParameterDefinition>, ToMessage {
 
    /**
     * Valid sums of option, environment, and property priorities for the number of priorities specified above zero.
@@ -95,7 +95,7 @@ public class CommandLineParameterDefinition implements ToMessage {
 
    /**
     * Creates a new command line parameter definition.
-    * 
+    *
     * @param shortOption (NonNull) the single letter for a short command line option. Short options are started with a
     * single dash ( -o ).
     * @param longOption (NonNull) the word for a long command line options. Long options are started with a double dash
@@ -153,13 +153,13 @@ public class CommandLineParameterDefinition implements ToMessage {
    CommandLineParameterDefinition
       (
          @Nullable String                       shortOption,
-         @Nullable String                       longOption, 
-         @NonNull  ParameterValueType           parameterValueType, 
-         @NonNull  ParameterType                parameterType,           
-         @NonNull  String                       synopsis, 
-         @Nullable String                       environmentVariable, 
-         @Nullable String                       property, 
-                   int                          priority, 
+         @Nullable String                       longOption,
+         @NonNull  ParameterValueType           parameterValueType,
+         @NonNull  ParameterType                parameterType,
+         @NonNull  String                       synopsis,
+         @Nullable String                       environmentVariable,
+         @Nullable String                       property,
+                   int                          priority,
          @NonNull CommandLineParameterProcessor processor
       ) {
 
@@ -167,19 +167,19 @@ public class CommandLineParameterDefinition implements ToMessage {
       this.parameterType = Objects.requireNonNull( parameterType );
       this.synopsis = Objects.requireNonNull( synopsis );
       this.processor = Objects.requireNonNull(processor);
-      
+
       int optionPriority      = ( priority & 0b000011 );
       int environmentPriority = ( priority & 0b001100 ) >> 2;
       int propertyPriority    = ( priority & 0b110000 ) >> 4;
-      
-      int count = 
+
+      int count =
            ( optionPriority      > 0 ? 1 : 0 )
          + ( environmentPriority > 0 ? 1 : 0 )
          + ( propertyPriority    > 0 ? 1 : 0 );
-      
+
       int prioritySum = optionPriority + environmentPriority + propertyPriority;
       int priorityAnd = optionPriority & environmentPriority & propertyPriority;
-      
+
       if( ( v[count] != prioritySum ) || ( priorityAnd != 0 ) ) {
          throw
             new IllegalArgumentException
@@ -195,7 +195,7 @@ public class CommandLineParameterDefinition implements ToMessage {
       }
 
       this.priorityList = new ArrayList<>(count);
-      
+
       if (optionPriority > 0) {
          this.priorityList.add(optionPriority - 1, OptionType.COMMAND_LINE);
       }
@@ -212,8 +212,8 @@ public class CommandLineParameterDefinition implements ToMessage {
          this.environmentVariable = this.priorityKeyCheck(environmentPriority, environmentVariable, OptionType.ENVIRONMENT );
          this.property = this.priorityKeyCheck(propertyPriority, property, OptionType.PROPERTY );
       } catch (Exception e ) {
-         
-         throw 
+
+         throw
             new IllegalArgumentException
                    (
                       new Message()
@@ -225,13 +225,25 @@ public class CommandLineParameterDefinition implements ToMessage {
                       e
                    );
       }
-      
+
    }
    //@formatter:on
 
    /**
+    * Implementation of the {@link Comparable} interface. The comparison is based upon the natural comparison of the
+    * member {@link #longOption}.
+    *
+    * @param other the other {@link CommandLineParameterDefinition} to be compared.
+    */
+
+   @Override
+   public int compareTo(CommandLineParameterDefinition other) {
+      return this.longOption.compareTo(other.longOption);
+   }
+
+   /**
     * Returns whether the command line option may have a parameter value.
-    * 
+    *
     * @return {@code true} when the command line option does not have parameter value; otherwise, {@code false} when the
     * command line option may have a parameter value.
     */
@@ -242,7 +254,7 @@ public class CommandLineParameterDefinition implements ToMessage {
 
    /**
     * Gets the command line option's long option
-    * 
+    *
     * @return the long option name
     */
 
@@ -253,7 +265,7 @@ public class CommandLineParameterDefinition implements ToMessage {
 
    /**
     * Gets the command line option's short option
-    * 
+    *
     * @return the short option
     */
 
@@ -264,7 +276,7 @@ public class CommandLineParameterDefinition implements ToMessage {
 
    /**
     * Gets a description for the command line option
-    * 
+    *
     * @return the synopsis
     */
 
@@ -275,7 +287,7 @@ public class CommandLineParameterDefinition implements ToMessage {
 
    /**
     * Returns whether the command line option parameter value is optional.
-    * 
+    *
     * @return {@code true} when the command line option parameter value is optional; otherwise, {@code false}.
     */
 
@@ -285,7 +297,7 @@ public class CommandLineParameterDefinition implements ToMessage {
 
    /**
     * Returns whether the command line option parameter value is required.
-    * 
+    *
     * @return {@code true} when the command line option parameter value is required; otherwise, {@code false}.
     */
 
@@ -295,7 +307,7 @@ public class CommandLineParameterDefinition implements ToMessage {
 
    /**
     * Returns whether the command line option is required.
-    * 
+    *
     * @return {@code true} when required; otherwise, {@code false}.
     */
 
@@ -305,7 +317,7 @@ public class CommandLineParameterDefinition implements ToMessage {
 
    /**
     * Returns whether the command line option may have a parameter value.
-    * 
+    *
     * @return {@code true} when the command line option parameter value is optional or required; otherwise,
     * {@code false}.
     */
@@ -317,7 +329,7 @@ public class CommandLineParameterDefinition implements ToMessage {
    /**
     * When a priority is greater than zero the key must be non-{@code null} and when the priority is zero the key must
     * be {@code null}.
-    * 
+    *
     * @param priority the priority value for an option type
     * @param key the option, environment, or property name associated with the priority value.
     * @param optionType the option type the priority and key values are for.
@@ -333,7 +345,7 @@ public class CommandLineParameterDefinition implements ToMessage {
       //@formatter:off
       if (priority > 0) {
          if (key == null) {
-            throw 
+            throw
                new IllegalArgumentException
                       (
                           new Message()
@@ -366,7 +378,7 @@ public class CommandLineParameterDefinition implements ToMessage {
 
    /**
     * Runs the command line option's processor.
-    * 
+    *
     * @param application a reference to the application.
     * @param commandLineParameter the {@link CommandLineParameterToken} for the command line option to be processed.
     * @param message a {@link Message} that command line processing errors can be appended to.
@@ -403,7 +415,7 @@ public class CommandLineParameterDefinition implements ToMessage {
          .segment( "Synopsis",               this.synopsis            )
          .indentDec()
          ;
-
+      //@formatter:on
       return outMessage;
    }
 
