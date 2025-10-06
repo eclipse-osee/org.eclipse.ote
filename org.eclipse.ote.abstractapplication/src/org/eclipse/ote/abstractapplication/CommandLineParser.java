@@ -363,36 +363,45 @@ public class CommandLineParser implements ToMessage {
          .title( "Command Line Options" )
          .indentInc();
 
-      for( CommandLineParameterDefinition commandLineParameterDefinition : this.shortMap.values() ) {
+      this.longMap
+         .values()
+         .stream()
+         .sorted()
+         .forEach
+            (
+               ( CommandLineParameterDefinition commandLineParameterDefinition ) ->
+               {
 
-         outMessage
-            .blank()
-            .title( commandLineParameterDefinition.getSynopsis() )
-            .indentInc()
-            .segment( "Short Option", commandLineParameterDefinition.getShortOption() )
-            .segment( "Long Option",  commandLineParameterDefinition.getLongOption()  )
-            ;
+                  outMessage
+                     .blank()
+                     .segment( "Short Option", commandLineParameterDefinition.getShortOption() )
+                     .segment( "Long Option",  commandLineParameterDefinition.getLongOption()  )
+                     ;
 
-         String required =
-            commandLineParameterDefinition.isRequired()
-               ? "This is a required command line parameter "
-               : "This is an optional command line parameter ";
+                  String required =
+                     commandLineParameterDefinition.isRequired()
+                        ? "This is a required command line parameter "
+                        : "This is an optional command line parameter ";
 
-         required +=
-            commandLineParameterDefinition.doesNotHaveParameterValue()
-               ? "that does not have a value."
-               : commandLineParameterDefinition.hasOptionalParameterValue()
-                    ? "that may have a value."
-                    : commandLineParameterDefinition.hasRequiredParameter()
-                         ? "that requires a value."
-                         : "."
-               ;
+                  required +=
+                     commandLineParameterDefinition.doesNotHaveParameterValue()
+                        ? "that does not have a value."
+                        : commandLineParameterDefinition.hasOptionalParameterValue()
+                             ? "that may have a value."
+                             : commandLineParameterDefinition.hasRequiredParameter()
+                                  ? "that requires a value."
+                                  : "."
+                        ;
 
-         outMessage
-            .title( required )
-            .indentDec()
-            ;
-      }
+                  outMessage
+                     .title( required )
+                     .blank()
+                     .indentInc()
+                     .title( commandLineParameterDefinition.getSynopsis() )
+                     .indentDec()
+                     ;
+               }
+            );
       //@formatter:on
 
       return outMessage.toString();
