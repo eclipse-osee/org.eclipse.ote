@@ -47,14 +47,20 @@ public class OutfileSummaryLabelProvider extends XViewerLabelProvider {
          TestPointSummary item = (TestPointSummary) element;
          switch (columnIndex) {
             case 0:
-               return item.getFirstColumn();
+               if (item.isPassed())
+                  return "PASSED";
+               else
+                  return "FAILED";
             case 1:
-               return item.getExpected();
+               return item.getFirstColumn();
             case 2:
-               return item.getActual();
+               return item.getExpected();
+
             case 3:
+               return item.getActual();
+            case 4:
                return item.getElapsedTime();
-            case 4: 
+            case 5:
                return item.getRequirement();
          }
       }
