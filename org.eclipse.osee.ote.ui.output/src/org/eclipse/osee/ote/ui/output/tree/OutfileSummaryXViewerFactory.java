@@ -28,6 +28,9 @@ import org.eclipse.ui.forms.IManagedForm;
 public class OutfileSummaryXViewerFactory extends XViewerFactory {
 
    private static String VIEWER_NAMESPACE = "org.eclipse.osee.ote.ui.output";
+
+   public static XViewerColumn Result = new XViewerColumn("osee.outfilesummary.view.icon", "Result", 80,
+      XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn Title = new XViewerColumn("osee.outfilesummary.view.title", "Title", 375,
       XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn Expected = new XViewerColumn("osee.outfilesummary.view.expected", "Expected", 200,
@@ -42,7 +45,7 @@ public class OutfileSummaryXViewerFactory extends XViewerFactory {
 
    public OutfileSummaryXViewerFactory(IManagedForm managedForm) {
       super(VIEWER_NAMESPACE);
-      registerColumns(Title, Expected, Actual, Time, Requirements);
+      registerColumns(Result, Title, Expected, Actual, Time, Requirements);
       this.managedForm = managedForm;
    }
 
