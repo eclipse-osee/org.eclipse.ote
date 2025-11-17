@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.ote.tools.util;
+package org.eclipse.ote.tools.util.function;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -27,15 +27,10 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses
    (
       {
-         ConditionsTest.class,
-         DoubleMapTest.class,
-         DoubleMapSetTest.class,
-         EnumFunctionalInterafaceMapsTest.class,
-         EventsTest.class,
-         MapSetTest.class
+         FunctionsTest.class,
       }
    )
-public class ToolsUtilTestSuite {
+public class ToolsUtilFunctionTestSuite {
    // Test Suite
 }
 //@formatter:on

@@ -8,9 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: org.eclipse.osee.framework2
 Export-Package: 
  org.eclipse.ote.tools.util,
- org.eclipse.ote.tools.util.io,
- org.eclipse.ote.tools.util.io.json,
- org.eclipse.ote.tools.util.io.poly
+ org.eclipse.ote.tools.util.function
 Import-Package: 
  com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,

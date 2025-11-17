@@ -29,6 +29,7 @@
 		<module>../org.eclipse.osee.ote.connection.jini</module>
 		<module>../org.eclipse.osee.ote.connection.service</module>
 		<module>../org.eclipse.osee.ote.container</module>
+      <module>../org.eclipse.ote.tools</module>
 		<module>../org.eclipse.osee.ote.core</module>
 		<module>../org.eclipse.osee.ote.core.test</module>
 		<module>../org.eclipse.osee.ote.jms</module>
