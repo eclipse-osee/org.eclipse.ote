@@ -13,16 +13,17 @@
 
 package org.eclipse.osee.ote.core.testPoint;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.ote.core.XmlSupport;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
+import org.eclipse.ote.tools.util.Message;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -39,26 +40,21 @@ public class CheckPoint implements ITestPoint {
    private final int numTransmissions;
 
    /**
-    * CheckPoint objects are used for describing the result of a check and can
-    * be logged directly to a the logger as a testPoint or can be added to a
-    * CheckGroup if it is just a part of a larger series of checks being
-    * performed that all constitute one overall check.
-    * 
-    * @param testPointName
-    *            The item being tested. (i.e. TSD Button).
-    * @param expected
-    *            The expected condition for a pass point.
-    * @param actual
-    *            The actual condition during the check.
-    * @param pass
-    *            The result of the check.
-    * @param elapsedTime
-    *            The amount of time elapsed in milliseconds
+    * CheckPoint objects are used for describing the result of a check and can be logged directly to a the logger as a
+    * testPoint or can be added to a CheckGroup if it is just a part of a larger series of checks being performed that
+    * all constitute one overall check.
+    *
+    * @param testPointName The item being tested. (i.e. TSD Button).
+    * @param expected The expected condition for a pass point.
+    * @param actual The actual condition during the check.
+    * @param pass The result of the check.
+    * @param elapsedTime The amount of time elapsed in milliseconds
     */
+
    public CheckPoint(String testPointName, String expected, String actual, boolean pass, long elapsedTime) {
       this(testPointName, expected, actual, pass, 0, elapsedTime);
    }
-   
+
    public CheckPoint(String testPointName, String expected, String actual, boolean pass, int numTransmissions, long elapsedTime) {
       this.testPointName = testPointName;
       this.expected = expected.equals("") ? " " : XmlSupport.convertNonPrintableCharacers(expected);
@@ -121,13 +117,14 @@ public class CheckPoint implements ITestPoint {
       checkPointElement.appendChild(Jaxp.createElement(doc, "Expected", expected));
       checkPointElement.appendChild(Jaxp.createElement(doc, "Actual", actual));
       checkPointElement.appendChild(Jaxp.createElement(doc, "Result", pass ? "PASSED" : "FAILED"));
-      if(requirementIds != null && requirementIds.size() > 0) {
-         for(String req : requirementIds) {
+      if (requirementIds != null && requirementIds.size() > 0) {
+         for (String req : requirementIds) {
             checkPointElement.appendChild(Jaxp.createElement(doc, "Requirement", req));
          }
       }
       checkPointElement.appendChild(Jaxp.createElement(doc, "ElapsedTime", Long.toString(this.elpasedTime)));
-      checkPointElement.appendChild(Jaxp.createElement(doc, "NumberOfTransmissions", Integer.toString(this.numTransmissions)));
+      checkPointElement.appendChild(
+         Jaxp.createElement(doc, "NumberOfTransmissions", Integer.toString(this.numTransmissions)));
 
       return checkPointElement;
    }
@@ -139,8 +136,8 @@ public class CheckPoint implements ITestPoint {
       XMLStreamWriterUtil.writeElement(writer, "Expected", expected);
       XMLStreamWriterUtil.writeElement(writer, "Actual", actual);
       XMLStreamWriterUtil.writeElement(writer, "Result", pass ? "PASSED" : "FAILED");
-      if(requirementIds != null && requirementIds.size() > 0) {
-         for(String req : requirementIds) {
+      if (requirementIds != null && requirementIds.size() > 0) {
+         for (String req : requirementIds) {
             XMLStreamWriterUtil.writeElement(writer, "Requirement", req);
          }
       }
@@ -169,11 +166,55 @@ public class CheckPoint implements ITestPoint {
    public int getNumTransmissions() {
       return numTransmissions;
    }
-   
+
    @Override
    public void setRequirements(Set<String> requirementIds) {
       //This is to ensure we get this by object and not be reference.
       this.requirementIds = new HashSet<String>(requirementIds);
+   }
+
+   /**
+    * Generates a {@link Message} describing the contents of this {@link CheckPoint}. The generated message is for
+    * debugging purposes and no contract for the contents of the returned {@link Message} is implied.
+    *
+    * @param indent the indent level for the message.
+    * @param message when not null the message is appended to the {@link Message} provided by the {@code message}
+    * parameter.
+    * @return a {@link Message} describing the contents of this {@link CheckPoint} object.
+    */
+
+   @Override
+   public Message toMessage(int indent, Message message) {
+      message = Objects.nonNull(message) ? message : new Message();
+      //@formatter:off
+      message
+         .indent( indent )
+         .title( "CheckPoint" )
+         .indentInc()
+         .segment        ( "Test Point Name",         this.testPointName    )
+         .segmentIndexed ( "Requirement Identifiers", this.requirementIds   )
+         .segment        ( "Expected",                this.expected         )
+         .segment        ( "Actual",                  this.actual           )
+         .segment        ( "Pass",                    this.pass             )
+         .segment        ( "Elapsed Time",            this.elpasedTime      )
+         .segment        ( "Number Transmissions",    this.numTransmissions )
+         .indentDec()
+         .toString()
+         ;
+      //@formatter:on
+      return message;
+   }
+
+   /**
+    * Generates a {@link String} describing the contents of this {@link CheckPoint}. The generated string is for
+    * debugging purposes and no contract for the contents of the returned {@link String} is implied.
+    *
+    * @return a {@link String} describing the contents of this {@link CheckPoint} object.
+    */
+
+   @Override
+   public String toString() {
+      return this.toMessage(0, null).toString();
    }
 
 }

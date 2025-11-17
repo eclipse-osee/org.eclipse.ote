@@ -15,4 +15,5 @@ Import-Package: org.eclipse.osee.framework.jdk.core.persistence,
  org.eclipse.osee.ote.core.environment.status,
  org.eclipse.osee.ote.core.log.record,
  org.eclipse.osee.ote.core.testPoint,
- org.eclipse.osee.ote.message.interfaces
+ org.eclipse.osee.ote.message.interfaces,
+ org.eclipse.ote.tools.util
