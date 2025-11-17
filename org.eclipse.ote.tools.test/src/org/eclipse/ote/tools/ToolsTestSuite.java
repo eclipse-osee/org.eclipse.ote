@@ -14,6 +14,7 @@
 package org.eclipse.ote.tools;
 
 import org.eclipse.ote.tools.util.ToolsUtilTestSuite;
+import org.eclipse.ote.tools.util.function.ToolsUtilFunctionTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -29,7 +30,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses
    (
       {
-         ToolsUtilTestSuite.class
+         ToolsUtilTestSuite.class,
+         ToolsUtilFunctionTestSuite.class
       }
    )
 public class ToolsTestSuite {

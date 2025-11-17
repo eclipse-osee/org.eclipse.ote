@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestGroup;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
+import org.eclipse.ote.tools.util.Message;
+import org.eclipse.ote.tools.util.ToMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -34,7 +36,7 @@ import org.w3c.dom.Element;
  * @author Charles Shaw
  * @author Loren K. Ashley
  */
-public class CheckGroup implements ITestGroup {
+public class CheckGroup implements ITestGroup, ToMessage {
    private final String groupName;
    private final ArrayList<ITestPoint> testPoints;
    private final Operation operation;
@@ -69,7 +71,7 @@ public class CheckGroup implements ITestGroup {
 
       /**
        * {@inheritDoc}
-       * 
+       *
        * @return true
        */
 
@@ -80,7 +82,7 @@ public class CheckGroup implements ITestGroup {
 
       /**
        * {@inheritDoc}
-       * 
+       *
        * @return false
        */
 
@@ -118,7 +120,7 @@ public class CheckGroup implements ITestGroup {
 
    /**
     * Determines if the {@link CheckGroup} implementation is <code>null</code> or a sentinel implementation.
-    * 
+    *
     * @return <code>true</code> when the implementation is <code>null</code> or sentinel; otherwise, <code>false</code>.
     */
 
@@ -128,7 +130,7 @@ public class CheckGroup implements ITestGroup {
 
    /**
     * Determines if the {@link CheckGroup} implementation is non-<code>null</code> and a non-sentinel implementation.
-    * 
+    *
     * @return <code>true</code> when the implementation is non-<code>null</code> and non-sentinel; otherwise,
     * <code>false</code>.
     */
@@ -143,7 +145,7 @@ public class CheckGroup implements ITestGroup {
     * <p>
     * More complex TestPoint syntax can be obtained using the CheckGroup as a parent of other CheckGroup objects, of
     * which the <b>And </b> or <b>Or </b> setting can be set differently.
-    * 
+    *
     * @param operation The logical operation used for combining items within this CheckGroup.
     */
    public CheckGroup(Operation operation, String groupName) {
@@ -191,7 +193,7 @@ public class CheckGroup implements ITestGroup {
 
    /**
     * Predicate to determine if the {@link CheckGroup} implementation is sentinel.
-    * 
+    *
     * @return true
     */
 
@@ -201,7 +203,7 @@ public class CheckGroup implements ITestGroup {
 
    /**
     * Predicate to determine if the {@link CheckGroup} implementation is non-sentinel.
-    * 
+    *
     * @return false
     */
 
@@ -323,6 +325,47 @@ public class CheckGroup implements ITestGroup {
    public void setRequirements(Set<String> requirementIds) {
       //This is to ensure we get this by object and not be reference.
       this.requirementIds = new HashSet<String>(requirementIds);
+   }
+
+   /**
+    * Generates a {@link Message} describing the contents of this {@link CheckGroup}. The generated message is for
+    * debugging purposes and no contract for the contents of the returned {@link Message} is implied.
+    *
+    * @param indent the indent level for the message.
+    * @param message when not null the message is appended to the {@link Message} provided by the {@code message}
+    * parameter.
+    * @return a {@link Message} describing the contents of this {@link CheckGroup} object.
+    */
+
+   @Override
+   public Message toMessage(int indent, Message message) {
+      message = Objects.nonNull(message) ? message : new Message();
+      //@formatter:off
+      message
+         .indent( indent )
+         .title( "CheckGroup" )
+         .indentInc()
+         .segment( "Group Name", this.groupName )
+         .segment( "Operation", this.operation )
+         .segmentIndexed( "Requirement Identifiers", this.requirementIds )
+         .segmentIndexed( "Test Points", this.testPoints )
+         .indentDec()
+         .toString()
+         ;
+      //@formatter:on
+      return message;
+   }
+
+   /**
+    * Generates a {@link String} describing the contents of this {@link CheckGroup}. The generated string is for
+    * debugging purposes and no contract for the contents of the returned {@link String} is implied.
+    *
+    * @return a {@link String} describing the contents of this {@link CheckGroup} object.
+    */
+
+   @Override
+   public String toString() {
+      return this.toMessage(0, null).toString();
    }
 
 }
