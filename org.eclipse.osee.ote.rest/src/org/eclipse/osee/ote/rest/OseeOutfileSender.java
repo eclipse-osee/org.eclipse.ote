@@ -49,6 +49,7 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
    private static final String DEFAULT_CI_CONFIG_ATTRIBUTE_ID = "no_osee_ciConfigAttribute_provided";
    private static final String DEFAULT_CI_SET_ID = "no_osee_ciSet_provided";
 
+   private final boolean postToZenith = OtePropertiesCore.zenithResultsPushEnabled.getBooleanValue(true);
    private final String branchId = OtePropertiesCore.oseeBranchId.getValue(DEFAULT_BRANCH_ID);
    private final String configBranchId = OtePropertiesCore.oseeConfigBranchId.getValue(DEFAULT_BRANCH_ID);
    private final String ciConfigId = OtePropertiesCore.oseeCiConfigId.getValue(DEFAULT_CI_CONFIG_ID);
@@ -103,32 +104,40 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
     * Posts the TMO file for a given test class
     * 
     * @param testClassName the name of the test class for which the TMO file is being uploaded
-    * @param ciSetId the OSEE CI Set ID
+    * @param ciSetId the Zenith CI Set ID
     */
    private void postTmoFile(String testClassName, String ciSetId) {
       boolean useSpecificBranchId = false;
 
+      if (!postToZenith) {
+         OseeLog.logf(getClass(), Level.INFO,
+            "Posting to Zenith Desabled in ini, TMO file will not be uploaded to Zenith.");
+         return;
+      }
+
       if (configBranchId.equals(DEFAULT_BRANCH_ID)) {
          OseeLog.logf(getClass(), Level.WARNING,
-            "No OSEE Config Branch ID provided, attempting to upload using a specific branch if provided.");
+            "No Zenith Config Branch ID provided, attempting to upload using a specific branch if provided.");
          useSpecificBranchId = true;
       } else if (ciConfigId.equals(DEFAULT_CI_CONFIG_ID)) {
          OseeLog.logf(getClass(), Level.WARNING,
-            "No OSEE CI Config Artifact ID provided, attempting to upload using a specific branch if provided.");
+            "No Zenith CI Config Artifact ID provided, attempting to upload using a specific branch if provided.");
          useSpecificBranchId = true;
       } else if (ciConfigAttributeId.equals(DEFAULT_CI_CONFIG_ATTRIBUTE_ID)) {
          OseeLog.logf(getClass(), Level.WARNING,
-            "No OSEE CI Config Attribute ID provided, attempting to upload using a specific branch if provided.");
+            "No Zenith CI Config Attribute ID provided, attempting to upload using a specific branch if provided.");
          useSpecificBranchId = true;
       }
 
       if (useSpecificBranchId && branchId.equals(DEFAULT_BRANCH_ID)) {
-         OseeLog.logf(getClass(), Level.WARNING, "No OSEE Branch ID provided, TMO file will not be uploaded to OSEE.");
+         OseeLog.logf(getClass(), Level.WARNING,
+            "No Zenith Branch ID provided, TMO file will not be uploaded to Zenith.");
          return;
       }
 
       if (ciSetId.equals(DEFAULT_CI_SET_ID)) {
-         OseeLog.logf(getClass(), Level.WARNING, "No OSEE CI Set ID provided, TMO file will not be uploaded to OSEE.");
+         OseeLog.logf(getClass(), Level.WARNING,
+            "No Zenith CI Set ID provided, TMO file will not be uploaded to Zenith.");
          return;
       }
 
@@ -151,7 +160,7 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
          ciBranchId = branchIdResponse.getContents(String.class);
          if (ciBranchId == null || ciBranchId.trim().isEmpty()) {
             OseeLog.logf(getClass(), Level.WARNING,
-               "No valid CI Branch ID returned from REST call, TMO file will not be uploaded to OSEE.");
+               "No valid CI Branch ID returned from REST call, TMO file will not be uploaded to Zenith.");
             return;
          }
       }
@@ -164,10 +173,10 @@ public final class OseeOutfileSender implements ITestLifecycleListener {
       }
 
       if (response.getResponse().getStatus() != OK_RESPONSE_CODE) {
-         OseeLog.logf(getClass(), Level.WARNING, "TMO File not sent to OSEE. Rest response contents:\n%s",
+         OseeLog.logf(getClass(), Level.WARNING, "TMO File not sent to Zenith. Rest response contents:\n%s",
             response.getContents(String.class));
       } else {
-         OseeLog.log(getClass(), Level.INFO, "TMO File sent successfully to OSEE.");
+         OseeLog.log(getClass(), Level.INFO, "TMO File sent successfully to Zenith.");
       }
    }
 
